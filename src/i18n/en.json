@@ -1,0 +1,84 @@
+{
+
+"airdrop": {
+  "headline": "Be Part of the Hyper Strategies Airdrop",
+  "subtext": "This airdrop is for early community members who want to show support and stay involved. All you need is interest — and a Metamask wallet.",
+  "requirementsTitle": "What You Need",
+  "bullets": [
+    "A Telegram account",
+    "A Metamask wallet (browser extension)",
+    "1 minute to sign up"
+  ],
+  "browserWallet": "Browser wallet (Hot wallet)",
+  "hardwareWallet": "Hardware wallet",
+  "metamaskText": "Secure, easy to install — perfect for quick signup.",
+  "ledgerText": "Optional — use Ledger for long-term secure storage.",
+  "joinTelegram": "Join the Telegram Community",
+  "submitWallet": "Submit Wallet for Airdrop"
+},
+
+
+"selfserve": {
+  "headline": "Use Automated Trading Your Way",
+  "subtext": "Run your own algorithms with full control over parameters and risk management.",
+  "callout": "Access to 17 trading strategies, no coding required",
+  "comingSoon": "Coming Soon — Join our community for early access"
+},
+
+"managed": {
+  "headline": "Let our system trade for you",
+  "subtext": "A professionally managed strategy that automatically executes trades on your behalf. Designed for passive investors who value simplicity and long-term growth.",
+  "point1": "Low-burn MVP already in motion",
+  "point2": "Access to real automated strategies",
+  "point3": "Strong narrative with $FORGE utility",
+  "point4": "Pre-token exposure potential",
+  "cta": "Join the Telegram"
+},
+
+"investor": {
+  "headline": "Invest in Hyper Strategies",
+  "subtext": "We’re seeking strategic backers aligned with our vision of accessible, automated crypto investing. If you’re a pre-seed investor, VC, or early-stage fund — let’s talk.",
+  "cta": "Get in contact"
+},
+
+"home": {
+  "hero": {
+    "headline": "Modern, automated trading. For everyone.",
+    "subtext": "Automate your trading with customized strategies — easily accessible on the Hyperliquid platform.",
+    "cta1": "Join the Airdrop",
+    "cta2": "Speak With Us"
+  },
+  "about": {
+    "title": "What is this platform?",
+    "bullets": [
+      "Built on the Hyperliquid protocol",
+      "User-friendly strategy builder (coming soon)",
+      "Managed fund for passive investors"
+    ]
+  },
+  "cards": {
+    "title": "Where do you see yourself?",
+    "select": "Select this option",
+    "airdrop": {
+      "title": "I just want to be included",
+      "text": "Submit your address to join the airdrop."
+    },
+    "self": {
+      "title": "I want to use the platform",
+      "text": "Build and run my own automated strategies."
+    },
+    "managed": {
+      "title": "I want the system to trade for me",
+      "text": "Benefit from the managed fund without setup."
+    },
+    "invest": {
+      "title": "I'm interested in investing",
+      "text": "Learn about investment opportunities in the project."
+    }
+  }
+}
+
+
+
+}
+

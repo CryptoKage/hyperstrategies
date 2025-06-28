@@ -1,0 +1,83 @@
+{
+
+  "airdrop": {
+  "headline": "Sei Teil des Hyper Strategies Airdrops",
+  "subtext": "Dieser Airdrop richtet sich an frühe Community-Mitglieder, die Unterstützung zeigen und aktiv bleiben möchten. Alles, was du brauchst, ist Interesse – und eine Metamask-Wallet.",
+  "requirementsTitle": "Was du brauchst",
+  "bullets": [
+    "Ein Telegram-Konto",
+    "Eine Metamask-Wallet (Browser-Erweiterung)",
+    "1 Minute zum Anmelden"
+  ],
+  "browserWallet": "Browser-Wallet (Hot Wallet)",
+  "hardwareWallet": "Hardware-Wallet",
+  "metamaskText": "Sicher, einfach zu installieren – ideal für schnellen Einstieg.",
+  "ledgerText": "Optional – nutze Ledger für langfristige sichere Aufbewahrung.",
+  "joinTelegram": "Telegram-Community beitreten",
+  "submitWallet": "Wallet für Airdrop einreichen"
+},
+
+"selfserve": {
+  "headline": "Use Automated Trading Your Way",
+  "subtext": "Run your own algorithms with full control over parameters and risk management.",
+  "callout": "Access to 17 trading strategies, no coding required",
+  "comingSoon": "Coming Soon — Join our community for early access"
+},
+
+"managed": {
+  "headline": "Lassen Sie unser System für Sie handeln",
+  "subtext": "Eine professionell verwaltete Strategie, die automatisch in Ihrem Namen handelt. Entwickelt für passive Anleger, die Einfachheit und langfristiges Wachstum schätzen.",
+  "point1": "Low-Burn-MVP bereits aktiv",
+  "point2": "Zugang zu echten automatisierten Strategien",
+  "point3": "Starke Erzählung mit $FORGE-Nutzen",
+  "point4": "Token-Exposition vor dem Start",
+  "cta": "Treten Sie dem Telegram bei"
+},
+
+"investor": {
+  "headline": "Investiere in Hyper Strategies",
+  "subtext": "Wir suchen strategische Partner, die unsere Vision von zugänglichem, automatisiertem Krypto-Investing teilen. Wenn du ein Frühphaseninvestor, VC oder Fonds bist – lass uns sprechen.",
+  "cta": "Bleib in Kontakt"
+},
+
+"home": {
+  "hero": {
+    "headline": "Modernes, automatisiertes Trading. Für alle.",
+    "subtext": "Automatisieren Sie Ihr Trading mit maßgeschneiderten Strategien – einfach zugänglich auf der Hyperliquid-Plattform.",
+    "cta1": "Am Airdrop teilnehmen",
+    "cta2": "Mit uns sprechen"
+  },
+  "about": {
+    "title": "Was ist diese Plattform?",
+    "bullets": [
+      "Aufbauend auf dem Hyperliquid-Protokoll",
+      "Benutzerfreundlicher Strategy-Builder (demnächst verfügbar)",
+      "Managed Fund für passive Anleger"
+    ]
+  },
+  "cards": {
+    "title": "Wo sehen Sie sich selbst?",
+    "select": "Diese Option wählen",
+    "airdrop": {
+      "title": "Ich möchte nur einbezogen werden",
+      "text": "Teilen Sie Ihre Adresse zur Teilnahme am Airdrop."
+    },
+    "self": {
+      "title": "Ich möchte die Plattform selbst nutzen",
+      "text": "Automatisierte Strategien für mein eigenes Trading erstellen."
+    },
+    "managed": {
+      "title": "Ich möchte das System für mich traden lassen",
+      "text": "Vom Managed Fund profitieren – ohne Einrichtung."
+    },
+    "investor": {
+      "headline": "Investiere in Hyper Strategies",
+      "subtext": "Wir suchen strategische Partner, die unsere Vision von zugänglichem, automatisiertem Krypto-Investing teilen. Wenn du ein Frühphaseninvestor, VC oder Fonds bist – lass uns sprechen.",
+      "cta": "Bleib in Kontakt"
+}
+
+  }
+}
+
+
+}
