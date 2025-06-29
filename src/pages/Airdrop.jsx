@@ -52,7 +52,7 @@ const Airdrop = () => {
             {t('airdrop.joinTelegram')}
           </a>
           <a
-            href="https://forms.gle/INSERT_FORM_HERE"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSesgE4CqUxM4uKx1G6fXn8gba2sVojpyYum3dw70YeEvqmbjQ/viewform?usp=header"
             target="_blank"
             rel="noreferrer"
             className="btn-outline"
