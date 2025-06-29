@@ -76,9 +76,20 @@
       "text": "Learn about investment opportunities in the project."
     }
   }
+},
+
+"legal": {
+  "title": "Legal Notice",
+  "company": "Hyper Strategies Ltd.",
+  "address": "Registration in progress",
+  "email": "Email: erokage2@gmail.com",
+  "disclaimerTitle": "Disclaimer",
+  "disclaimer1": "The content on this website is for informational purposes only and does not constitute financial advice or a solicitation to invest.",
+  "disclaimer2": "Cryptocurrency trading involves substantial risk. Past performance is not indicative of future results.",
+  "disclaimer3": "Users are solely responsible for their investment decisions. Hyper Strategies is not liable for any losses.",
+  "rightsTitle": "Copyright and Rights",
+  "rights": "© 2025 Hyper Strategies. All rights reserved. All content on this site is protected under intellectual property law."
 }
-
-
 
 }
 

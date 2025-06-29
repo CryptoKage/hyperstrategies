@@ -18,10 +18,10 @@
 },
 
 "selfserve": {
-  "headline": "Use Automated Trading Your Way",
-  "subtext": "Run your own algorithms with full control over parameters and risk management.",
-  "callout": "Access to 17 trading strategies, no coding required",
-  "comingSoon": "Coming Soon — Join our community for early access"
+  "headline": "Nutzen Sie automatisierten Handel auf Ihre Weise",
+  "subtext": "Führen Sie Ihre eigenen Algorithmen mit voller Kontrolle über Parameter und Risikomanagement aus.",
+  "callout": "Zugriff auf 17 Handelsstrategien – ganz ohne Programmierkenntnisse",
+  "comingSoon": "Demnächst verfügbar – Treten Sie unserer Community für einen frühen Zugang bei"
 },
 
 "managed": {
@@ -75,8 +75,20 @@
       "subtext": "Wir suchen strategische Partner, die unsere Vision von zugänglichem, automatisiertem Krypto-Investing teilen. Wenn du ein Frühphaseninvestor, VC oder Fonds bist – lass uns sprechen.",
       "cta": "Bleib in Kontakt"
 }
+ }
+},
 
-  }
+"legal": {
+  "title": "Impressum",
+  "company": "Hyper Strategies Ltd.",
+  "address": "Registrierung wird durchgeführt",
+  "email": "E-Mail: erokage2@gmail.com",
+  "disclaimerTitle": "Haftungsausschluss",
+  "disclaimer1": "Die Inhalte dieser Website dienen ausschließlich zu Informationszwecken und stellen keine Finanzberatung oder Aufforderung zur Investition dar.",
+  "disclaimer2": "Der Handel mit Kryptowährungen birgt erhebliche Risiken. Frühere Leistungen sind keine Garantie für zukünftige Ergebnisse.",
+  "disclaimer3": "Die Nutzer sind allein verantwortlich für ihre Investitionsentscheidungen. Hyper Strategies haftet nicht für Verluste.",
+  "rightsTitle": "Urheberrecht und Rechte",
+  "rights": "© 2025 Hyper Strategies. Alle Rechte vorbehalten. Alle Inhalte dieser Website sind urheberrechtlich geschützt."
 }
 
 

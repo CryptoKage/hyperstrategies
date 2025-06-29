@@ -1,51 +1,52 @@
 import React from 'react';
 import Header from './Header';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import '../index.css';
-
-const pageVariants = {
-  initial: {
-    opacity: 0,
-    y: 20,
-  },
-  in: {
-    opacity: 1,
-    y: 0,
-  },
-  out: {
-    opacity: 0,
-    y: -20,
-  },
-};
-
-const pageTransition = {
-  type: 'tween',
-  ease: 'anticipate',
-  duration: 0.6,
-};
 
 const Layout = ({ children }) => {
   const location = useLocation();
 
   return (
-    <div className="app-wrapper">
+    <div className="layout-wrapper" style={styles.wrapper}>
       <Header />
-      <AnimatePresence mode="wait">
-        <motion.main
-          className="page-wrapper"
-          key={location.pathname}
-          initial="initial"
-          animate="in"
-          exit="out"
-          variants={pageVariants}
-          transition={pageTransition}
-        >
-          {children}
-        </motion.main>
-      </AnimatePresence>
+      <main style={styles.main}>{children}</main>
+
+      {/* Footer */}
+      <footer style={styles.footer}>
+        <p style={styles.text}>© Hyper Strategies 2025</p>
+        <a href="/legal" style={styles.link}>Legal Notice</a>
+      </footer>
     </div>
   );
+};
+
+const styles = {
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh',
+    backgroundColor: '#0e1a14', // consistent background
+  },
+  main: {
+    flex: 1,
+  },
+  footer: {
+    padding: '24px',
+    textAlign: 'center',
+    borderTop: '1px solid #1a2e24',
+    backgroundColor: '#0e1a14',
+  },
+  text: {
+    margin: '0',
+    color: '#999',
+    fontSize: '14px',
+  },
+  link: {
+    display: 'block',
+    marginTop: '8px',
+    fontSize: '14px',
+    color: '#3fbaf3',
+    textDecoration: 'none',
+  },
 };
 
 export default Layout;

@@ -9,6 +9,7 @@ import Managed from './Managed';
 import Airdrop from './Airdrop';
 import Investor from './Investor';
 import Home from './Home';
+import Legal from './Legal';
 import Layout from '../components/Layout';
 
 
@@ -78,6 +79,7 @@ const Router = () => {
       <Route path="/managed" element={<Managed />} />
       <Route path="/investor" element={<Investor />} />
       <Route path="/managed" element={<Managed />} />
+      <Route path="/legal" element={<Legal />} />
     </Routes>
   );
 };
