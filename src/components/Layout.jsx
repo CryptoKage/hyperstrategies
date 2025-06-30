@@ -2,12 +2,8 @@
 
 import React from 'react';
 import Header from './Header';
-import { useLocation } from 'react-router-dom';
-
-// REMOVE the styles object for the wrapper. We will move this to CSS.
 
 const Layout = ({ children }) => {
-  const location = useLocation();
 
   return (
     // Use className instead of inline style
