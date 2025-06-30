@@ -1,9 +1,13 @@
+// src/pages/Register.jsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../components/Layout';
 
 const Register = () => {
+  // We need state for all three fields
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -14,12 +18,15 @@ const Register = () => {
     setError('');
 
     try {
+      // We must send all three fields to the backend
       await axios.post('http://localhost:5000/api/auth/register', {
+        username,
         email,
         password,
       });
 
-      // After successful registration, redirect to the login page
+      // After a successful registration, guide the user to the login page
+      // so they can sign in with their new credentials.
       navigate('/login');
 
     } catch (err) {
@@ -33,6 +40,19 @@ const Register = () => {
         <form className="auth-form" onSubmit={handleSubmit}>
           <h2>Create Account</h2>
           {error && <p className="error-message">{error}</p>}
+
+          {/* This is the missing input field */}
+          <div className="form-group">
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
