@@ -1,12 +1,17 @@
+// src/components/Layout.jsx
+
 import React from 'react';
 import Header from './Header';
 import { useLocation } from 'react-router-dom';
+
+// REMOVE the styles object for the wrapper. We will move this to CSS.
 
 const Layout = ({ children }) => {
   const location = useLocation();
 
   return (
-    <div className="layout-wrapper" style={styles.wrapper}>
+    // Use className instead of inline style
+    <div className="layout-wrapper">
       <Header />
       <main style={styles.main}>{children}</main>
 
@@ -19,13 +24,8 @@ const Layout = ({ children }) => {
   );
 };
 
+// Keep the other styles, just remove the 'wrapper' property from it
 const styles = {
-  wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100vh',
-    backgroundColor: '#0e1a14', // consistent background
-  },
   main: {
     flex: 1,
   },
@@ -33,7 +33,7 @@ const styles = {
     padding: '24px',
     textAlign: 'center',
     borderTop: '1px solid #1a2e24',
-    backgroundColor: '#0e1a14',
+    backgroundColor: '#0e1a14', // We can leave this for now or move it too
   },
   text: {
     margin: '0',

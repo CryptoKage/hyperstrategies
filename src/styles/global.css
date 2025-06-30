@@ -1,5 +1,5 @@
 html, body {
-  background-color: #23513a;
+  background-color: #4b82e7;
   color: #e4e4e7;
   height: 100%;
   margin: 0;
@@ -9,7 +9,7 @@ html, body {
 body {
   margin: 0;
   padding: 0;
-  background-color: #172c22;
+  background-color: #376dd0;
   color: #e4e4e7;
   font-family: 'Inter', sans-serif;
 }
@@ -34,7 +34,7 @@ button {
 
 .btn-primary {
   background-color: #00d4ff;
-  color: #0e0e10;
+  color: #f3f3f3;
   padding: 12px 24px;
   border-radius: 6px;
   border: none;
@@ -43,7 +43,7 @@ button {
 }
 
 .btn-primary:hover {
-  background-color: #00f0ff;
+  background-color: #0e0e10;
 }
 
 .btn-outline {
@@ -145,4 +145,180 @@ button {
 .card li {
   color: #e4e4e7;
   line-height: 1.6;
+}
+
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* This color will now be applied from your logo! */
+  background-color: #040e21; 
+}
+
+.footer {
+  background-color: #ffffff; /* Or a dark color to match your theme */
+  border-top: 1px solid #ddd;
+  text-align: center;
+  padding: 24px;
+  font-size: 14px;
+  color: #666;
+  margin-top: 40px;
+}
+
+.footer__disclaimer {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .hero-headline {
+    font-size: 28px; /* Make text smaller on mobile */
+  }
+
+  /* Make the card grid stack into a single column on mobile */
+  .card-grid {
+    display: flex;
+    flex-direction: column; /* Stacks them vertically */
+    align-items: center; /* Centers the single column */
+  }
+}
+
+/* --- General Section Styling --- */
+
+.hero-section,
+.about-section,
+.path-selector-section {
+  max-width: 1024px;
+  margin: 0 auto; /* Centers the content */
+  padding: 60px 24px; /* Consistent padding for top/bottom and sides */
+}
+
+
+/* --- Hero Section --- */
+
+.hero-section {
+  display: flex;
+  flex-wrap: wrap; /* Allows content to stack on smaller screens */
+  align-items: center;
+  gap: 40px; /* Space between the text content and the image */
+}
+
+.hero-content {
+  flex: 1; /* Takes up available space */
+  min-width: 300px; /* Prevents it from getting too squished on mobile */
+}
+
+.hero-logo {
+  width: 80%;
+  max-width: 320px;
+  margin-bottom: 24px;
+  height: auto; /* Maintain aspect ratio */
+}
+
+/* You may already have these, but ensure they match */
+.hero-headline {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.hero-subtext {
+  font-size: 18px;
+  color: #a0a0a0;
+  margin-bottom: 24px;
+  max-width: 600px;
+}
+
+.hero-image-container {
+  flex: 1;
+  min-width: 300px;
+  text-align: center;
+}
+
+.hero-image {
+  max-width: 100%;
+  max-height: 320px;
+  border-radius: 8px;
+  object-fit: contain;
+  border: 1px solid #333; /* A subtle border for the chart */
+}
+
+
+/* --- About Section --- */
+
+.about-section h2,
+.path-selector-section h2 {
+    margin-bottom: 24px;
+}
+
+.platform-list {
+  font-size: 16px;
+  color: #b0b0b0;
+  margin-top: 12px;
+  padding-left: 0;
+  list-style: none;
+  line-height: 1.8;
+}
+
+
+/* --- Card Section (for CardSection.jsx) --- */
+
+/* This styles the wrapper div inside the CardSection component */
+.card-section__wrapper {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* We'll override the default card styles for the dark theme */
+.card {
+  background-color: #1a1e1b;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 24px;
+  color: #a0a0a0;
+  
+  /* Flexbox magic for alignment! */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* This pushes the footer to the bottom */
+  text-align: center; /* Center align all content */
+  transition: all 0.3s ease;
+}
+
+.card--clickable {
+  cursor: pointer;
+}
+
+.card--clickable:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transform: translateY(-4px);
+  border-color: #444;
+}
+
+.card__icon {
+  font-size: 36px; /* Make the emoji bigger */
+  margin-bottom: 16px;
+}
+
+.card__content {
+  flex-grow: 1; /* Allows this section to take up available space */
+}
+
+.card__title {
+  color: #ffffff;
+  font-size: 18px; /* Slightly larger title */
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.card__description {
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 60px; /* Ensures cards have a similar text area height */
+}
+
+.card__footer {
+  margin-top: 24px; /* Space above the button */
 }
