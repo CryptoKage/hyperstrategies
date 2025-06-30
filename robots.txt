@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://www.hyper-strategies.com/sitemap.xml
