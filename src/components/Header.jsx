@@ -1,31 +1,31 @@
+// src/components/Header.jsx
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // 1. Import the auth hook
 import Logo from '../assets/logo.png';
-import { useAuth } from '../context/AuthContext'; 
 
 const Header = () => {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
-  const { isLoggedIn, user, logout } = useAuth(); 
-
-  const handleLogout = () => {
-    logout();
-    navigate('/'); 
-  };
+  const { user, logout } = useAuth(); // 2. Get the user and logout function from context
 
   const changeLanguage = (e) => {
     i18n.changeLanguage(e.target.value);
   };
 
+  const handleLogout = () => {
+    logout(); // This clears the user state and localStorage
+    navigate('/login'); // Redirect to login after logout
+  };
+
   return (
     <header className="header">
       <div className="header__left" onClick={() => navigate('/')}>
-        <img src={Logo} alt="Hyper Strategies Logo" className="header__logo" />
-        {/* ✅ CHANGE #1: Added a clickable text link to home */}
-        <span className="header__brand-name">Hyper Strategies</span>
+        <img src={Logo} alt="Hyper Strategies" className="header__logo" />
+        <span className="header__title">Hyper Strategies</span>
       </div>
-
       <div className="header__right">
         <select
           className="header__language-select"
@@ -36,26 +36,22 @@ const Header = () => {
           <option value="de">DE</option>
         </select>
 
-        {isLoggedIn ? (
-          <div className="header__user-info">
-            {/* ✅ CHANGE #2: Changed the user email span into a clickable button */}
-            <button 
-              className="header__user-button" 
-              onClick={() => navigate('/dashboard')}
-            >
-              {user?.email || 'My Dashboard'}
+        {/* --- THIS IS THE NEW LOGIC --- */}
+        {/* 3. We conditionally render buttons based on whether the user exists. */}
+        {user ? (
+          <>
+            <Link to="/dashboard" className="header__button">Dashboard</Link>
+            <button onClick={handleLogout} className="header__button header__button--primary">
+              Logout
             </button>
-            <button className="btn-outline" onClick={handleLogout}>Logout</button>
-          </div>
+          </>
         ) : (
-          <div className="header__auth-buttons">
-            <button className="btn-secondary" onClick={() => navigate('/login')}>
-              Sign In
-            </button>
-            <button className="btn-primary" onClick={() => navigate('/register')}>
+          <>
+            <Link to="/login" className="header__button">Sign In</Link>
+            <Link to="/register" className="header__button header__button--primary">
               Register
-            </button>
-          </div>
+            </Link>
+          </>
         )}
       </div>
     </header>

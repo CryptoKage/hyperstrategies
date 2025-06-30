@@ -3,18 +3,21 @@
 import React, { createContext, useState, useContext } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
-// 1. Define a function to get the initial state. This runs synchronously.
+// --- This is the key change ---
+// 1. Define a function to get the initial state. This runs synchronously, ONCE.
 const getInitialState = () => {
   try {
     const token = localStorage.getItem('token');
     if (token) {
       // If a valid token exists, the initial user is the decoded user.
-      return jwtDecode(token).user;
+      const decodedUser = jwtDecode(token).user;
+      return decodedUser;
     }
     // Otherwise, the initial user is null.
     return null;
   } catch (e) {
-    // If token is invalid, start with no user.
+    // If token is invalid (e.g., expired, malformed), start with no user.
+    localStorage.removeItem('token'); // Clean up bad token
     return null;
   }
 };
@@ -22,7 +25,8 @@ const getInitialState = () => {
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  // 2. Initialize the user state by calling our function. NO FLICKER.
+  // 2. Initialize the user state by CALLING our function. NO FLICKER.
+  // The user state is now correct from the very first render.
   const [user, setUser] = useState(getInitialState);
 
   // The login function is now very simple.
@@ -41,7 +45,6 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  // The user object is now correct from the very first render.
   const value = { user, login, logout };
 
   return (

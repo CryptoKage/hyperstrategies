@@ -382,8 +382,8 @@ button {
 }
 
 .header {
-  background-color: #0e0e10;
-  border-bottom: 1px solid #222;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
   padding: 12px 24px;
   display: flex;
   justify-content: space-between;
@@ -394,26 +394,61 @@ button {
   display: flex;
   align-items: center;
   cursor: pointer;
+  gap: 16px;
 }
 
 .header__logo {
-  height: 48px; /* Adjusted for a nice size */
-  object-fit: contain;
+  height: 40px;
+}
+
+.header__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
 .header__right {
   display: flex;
   align-items: center;
-  gap: 20px; /* Space between language select and buttons */
+  gap: 16px;
 }
 
 .header__language-select {
-  background-color: #1a1a1d;
-  border: 1px solid #444;
-  color: #e4e4e7;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
   border-radius: 6px;
   padding: 8px 12px;
   font-size: 14px;
+}
+
+.header__button {
+  text-decoration: none;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.header__button:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.header__button--primary {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  font-weight: bold;
+}
+.header__button--primary:hover {
+  background-color: #63cfff; /* A slightly lighter primary for hover */
+  color: var(--color-background);
 }
 
 /* Container for the Sign In / Register buttons */
