@@ -11,7 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth(); 
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://hyperstrategies-backend.onrender.com/api';
@@ -19,26 +19,29 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     try {
-      await axios.post(`${backendUrl}/auth/register`, {
-  username,
-  email,
-  password
-});
+      const response = await axios.post(`${backendUrl}/login`, {
+        email,
+        password,
+      });
 
       login(response.data.token);
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Please try again.');
     }
   };
 
   const handleGoogleLogin = () => {
-    console.log('Redirecting to:', `${backendUrl}/auth/google`);
     if (!backendUrl) {
       alert("Backend URL is missing. Please check environment variables.");
       return;
     }
-    window.location.href = `${backendUrl}/auth/google`;
+
+    const redirectUrl = `${backendUrl}/auth/google`;
+    console.log('Redirecting to:', redirectUrl);
+    window.location.href = redirectUrl;
   };
 
   return (
@@ -47,32 +50,33 @@ const Login = () => {
         <form className="auth-form" onSubmit={handleSubmit}>
           <h2>Sign In</h2>
           {error && <p className="error-message">{error}</p>}
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
-            <input 
-              type="email" 
-              id="email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-              required 
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
+
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input 
-              type="password" 
-              id="password" 
-              value={password} 
-              onChange={(e) => setPassword(e.target.value)} 
-              required 
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
+
           <button type="submit" className="btn-primary">Sign In</button>
         </form>
 
-        <div className="auth-divider">
-          <span>OR</span>
-        </div>
+        <div className="auth-divider"><span>OR</span></div>
 
         <div className="social-login">
           <button onClick={handleGoogleLogin} className="btn-google">

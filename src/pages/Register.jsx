@@ -13,18 +13,19 @@ const Register = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Get backend URL from .env or fallback
-  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://hyperstrategies-backend.onrender.com/api';
+  const backendUrl =
+    process.env.REACT_APP_BACKEND_URL || 'https://hyperstrategies-backend.onrender.com/api';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     try {
       await axios.post(`${backendUrl}/auth/register`, {
-  username,
-  email,
-  password
-});
+        username,
+        email,
+        password,
+      });
       navigate('/login');
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed. Please try again.');
@@ -32,14 +33,14 @@ const Register = () => {
   };
 
   const handleGoogleLogin = () => {
-    console.log('Redirecting to:', `${backendUrl}/auth/google`);
-
     if (!backendUrl) {
-      alert("Backend URL is missing. Please check environment variables.");
+      alert('Backend URL is missing. Please check environment variables.');
       return;
     }
 
-    window.location.href = `${backendUrl}/auth/google`;
+    const redirectUrl = `${backendUrl}/auth/google`;
+    console.log('Redirecting to:', redirectUrl);
+    window.location.href = redirectUrl;
   };
 
   return (
@@ -48,6 +49,7 @@ const Register = () => {
         <form className="auth-form" onSubmit={handleSubmit}>
           <h2>Create Account</h2>
           {error && <p className="error-message">{error}</p>}
+
           <div className="form-group">
             <label htmlFor="username">Username</label>
             <input
@@ -58,6 +60,7 @@ const Register = () => {
               required
             />
           </div>
+
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -68,6 +71,7 @@ const Register = () => {
               required
             />
           </div>
+
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
@@ -78,12 +82,11 @@ const Register = () => {
               required
             />
           </div>
+
           <button type="submit" className="btn-primary">Create Account</button>
         </form>
 
-        <div className="auth-divider">
-          <span>OR</span>
-        </div>
+        <div className="auth-divider"><span>OR</span></div>
 
         <div className="social-login">
           <button onClick={handleGoogleLogin} className="btn-google">
