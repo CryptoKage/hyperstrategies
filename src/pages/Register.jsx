@@ -13,11 +13,14 @@ const Register = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Get backend URL from .env or fallback
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://hyperstrategies-backend.onrender.com/api';
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      await axios.post('http://localhost:5000/api/auth/register', {
+      await axios.post(`${backendUrl}/register`, {
         username,
         email,
         password,
@@ -28,17 +31,16 @@ const Register = () => {
     }
   };
 
-const handleGoogleLogin = () => {
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
-  console.log('Redirecting to:', backendUrl); // ✅ Debug line
+  const handleGoogleLogin = () => {
+    console.log('Redirecting to:', `${backendUrl}/auth/google`);
 
-  if (!backendUrl) {
-    alert("Backend URL is missing. Please check environment variables.");
-    return;
-  }
+    if (!backendUrl) {
+      alert("Backend URL is missing. Please check environment variables.");
+      return;
+    }
 
-  window.location.href = `${backendUrl}/auth/google`;
-};
+    window.location.href = `${backendUrl}/auth/google`;
+  };
 
   return (
     <Layout>

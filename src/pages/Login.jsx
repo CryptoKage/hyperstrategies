@@ -11,41 +11,34 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  
-  // We get the login function from our context.
   const { login } = useAuth(); 
-  
-  // The useEffect for navigation has been removed from this component.
+  const navigate = useNavigate();
+
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://hyperstrategies-backend.onrender.com/api';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post(`${backendUrl}/login`, {
         email,
         password,
       });
 
-      // This now only sets the user state in the context.
-      // The redirect will be handled automatically by the GuestRoute guard.
       login(response.data.token);
-
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed. Please try again.');
     }
   };
 
-const handleGoogleLogin = () => {
-  const backendUrl = process.env.REACT_APP_BACKEND_URL;
-  console.log('Redirecting to:', backendUrl); // ✅ Debug line
-
-  if (!backendUrl) {
-    alert("Backend URL is missing. Please check environment variables.");
-    return;
-  }
-
-  window.location.href = `${backendUrl}/auth/google`;
-};
+  const handleGoogleLogin = () => {
+    console.log('Redirecting to:', `${backendUrl}/auth/google`);
+    if (!backendUrl) {
+      alert("Backend URL is missing. Please check environment variables.");
+      return;
+    }
+    window.location.href = `${backendUrl}/auth/google`;
+  };
 
   return (
     <Layout>
@@ -75,9 +68,11 @@ const handleGoogleLogin = () => {
           </div>
           <button type="submit" className="btn-primary">Sign In</button>
         </form>
+
         <div className="auth-divider">
           <span>OR</span>
         </div>
+
         <div className="social-login">
           <button onClick={handleGoogleLogin} className="btn-google">
             <GoogleIcon />
