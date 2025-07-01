@@ -3,5 +3,23 @@
     "env": {
       "NPM_FLAGS": "--legacy-peer-deps"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/oauth-success",
+      "destination": "/"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/"
+    },
+    {
+      "source": "/login",
+      "destination": "/"
+    },
+    {
+      "source": "/register",
+      "destination": "/"
+    }
+  ]
 }
