@@ -5,6 +5,6 @@
     }
   },
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    { "source": "/oauth-success", "destination": "/" }
   ]
 }
