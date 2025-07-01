@@ -13,6 +13,8 @@ import Legal from './Legal';
 import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
+import OAuthSuccess from './OAuthSuccess';
+
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -29,7 +31,7 @@ const Router = () => {
       <Route path="/managed" element={<Managed />} />
       <Route path="/investor" element={<Investor />} />
       <Route path="/legal" element={<Legal />} />
-
+      <Route path="/oauth-success" element={<OAuthSuccess />} />
 
       {/* --- Guest-Only Routes --- */}
       {/* These pages are ONLY for logged-out users. */}

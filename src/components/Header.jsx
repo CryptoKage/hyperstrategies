@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; // 1. Import the auth hook
 import Logo from '../assets/logo.png';
+import jwtDecode from 'jwt-decode';
 
 const Header = () => {
   const { i18n } = useTranslation();

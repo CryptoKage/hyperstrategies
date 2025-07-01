@@ -1,59 +1,47 @@
 // src/context/AuthContext.js
 
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useMemo, useCallback, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-
-// --- This is the key change ---
-// 1. Define a function to get the initial state. This runs synchronously, ONCE.
-const getInitialState = () => {
-  try {
-    const token = localStorage.getItem('token');
-    if (token) {
-      // If a valid token exists, the initial user is the decoded user.
-      const decodedUser = jwtDecode(token).user;
-      return decodedUser;
-    }
-    // Otherwise, the initial user is null.
-    return null;
-  } catch (e) {
-    // If token is invalid (e.g., expired, malformed), start with no user.
-    localStorage.removeItem('token'); // Clean up bad token
-    return null;
-  }
-};
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  // 2. Initialize the user state by CALLING our function. NO FLICKER.
-  // The user state is now correct from the very first render.
-  const [user, setUser] = useState(getInitialState);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // ⬅️ Add loading guard
 
-  // The login function is now very simple.
-  const login = (token) => {
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded.user);
+      } catch (err) {
+        console.error("Invalid token:", err);
+        localStorage.removeItem('token');
+        setUser(null);
+      }
+    }
+    setLoading(false); // ✅ only set after checking token once
+  }, []);
+
+  const login = useCallback((token) => {
     localStorage.setItem('token', token);
     try {
-      setUser(jwtDecode(token).user);
-    } catch (e) {
-      console.error("Failed to decode token on login", e);
-      setUser(null); // Ensure user is null if token is bad
+      const decoded = jwtDecode(token);
+      setUser(decoded.user);
+    } catch {
+      setUser(null);
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('token');
     setUser(null);
-  };
+  }, []);
 
-  const value = { user, login, logout };
+  const value = useMemo(() => ({ user, login, logout, loading }), [user, login, logout, loading]);
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
