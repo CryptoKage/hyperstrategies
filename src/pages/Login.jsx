@@ -36,7 +36,14 @@ const Login = () => {
   };
 
 const handleGoogleLogin = () => {
-  const backendUrl = process.env.REACT_APP_BACKEND_URL
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  console.log('Redirecting to:', backendUrl); // ✅ Debug line
+
+  if (!backendUrl) {
+    alert("Backend URL is missing. Please check environment variables.");
+    return;
+  }
+
   window.location.href = `${backendUrl}/auth/google`;
 };
 

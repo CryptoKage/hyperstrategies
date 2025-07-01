@@ -28,9 +28,17 @@ const Register = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
-  };
+const handleGoogleLogin = () => {
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+  console.log('Redirecting to:', backendUrl); // ✅ Debug line
+
+  if (!backendUrl) {
+    alert("Backend URL is missing. Please check environment variables.");
+    return;
+  }
+
+  window.location.href = `${backendUrl}/auth/google`;
+};
 
   return (
     <Layout>
