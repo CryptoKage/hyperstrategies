@@ -36,22 +36,8 @@ const Router = () => {
       {/* --- Guest-Only Routes --- */}
       {/* These pages are ONLY for logged-out users. */}
       {/* If a logged-in user tries to visit /login, they will be redirected to /dashboard. */}
-      <Route 
-        path="/login" 
-        element={
-          <GuestRoute>
-            <Login />
-          </GuestRoute>
-        } 
-      />
-      <Route 
-        path="/register" 
-        element={
-          <GuestRoute>
-            <Register />
-          </GuestRoute>
-        } 
-      />
+      <Route path="/login" element={<GuestRoute><Login /></GuestRoute>}/>
+      <Route         path="/register"        element={          <GuestRoute>            <Register />          </GuestRoute>        }       />
       
 
       {/* --- Protected Routes --- */}
