@@ -20,11 +20,11 @@ const Register = () => {
     e.preventDefault();
     setError('');
     try {
-      await axios.post(`${backendUrl}/register`, {
-        username,
-        email,
-        password,
-      });
+      await axios.post(`${backendUrl}/auth/register`, {
+  username,
+  email,
+  password
+});
       navigate('/login');
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed. Please try again.');

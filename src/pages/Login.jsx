@@ -20,10 +20,11 @@ const Login = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post(`${backendUrl}/login`, {
-        email,
-        password,
-      });
+      await axios.post(`${backendUrl}/auth/register`, {
+  username,
+  email,
+  password
+});
 
       login(response.data.token);
     } catch (err) {
