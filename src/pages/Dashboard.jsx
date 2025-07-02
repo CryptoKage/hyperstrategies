@@ -138,6 +138,30 @@ const Dashboard = () => {
 
         <h2 style={{ marginTop: '2rem' }}>Your Vaults</h2>
         <div className="vaults-grid">
+          {/* Vault 1 with info + disabled deposit */}
+          <div className="vault-card">
+            <h3>Vault 1</h3>
+            <div className="vault-stat">
+              <span>APY:</span>
+              <span>14.2%</span>
+            </div>
+            <div className="vault-stat">
+              <span>Status:</span>
+              <span>Open</span>
+            </div>
+            <div className="vault-actions">
+              <button className="btn-primary" disabled>Deposit</button>
+              <a href="/faq" className="btn-secondary">Info</a>
+            </div>
+          </div>
+
+          {/* Vault 2 Coming Soon */}
+          <div className="vault-card placeholder">
+            <h3>Vault 2</h3>
+            <p className="placeholder-text">🚧 Coming Soon</p>
+          </div>
+
+          {/* Dynamic vaults if any */}
           {vaults.map((vault) => (
             <div key={vault.vault_id} className="vault-card">
               <h3>{vault.name}</h3>
@@ -157,11 +181,6 @@ const Dashboard = () => {
               </div>
             </div>
           ))}
-
-          <div className="vault-card placeholder">
-            <h3>Long-Term Hold Vault</h3>
-            <span className="placeholder-text">Coming Soon</span>
-          </div>
         </div>
       </div>
     </Layout>
