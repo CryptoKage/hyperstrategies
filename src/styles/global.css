@@ -32,7 +32,7 @@ button {
   font-weight: 500;
 }
 
-.btn-primary {
+/*.btn-primary {
   background-color: #00d4ff;
   color: #f3f3f3;
   padding: 12px 24px;
@@ -40,7 +40,7 @@ button {
   border: none;
   font-weight: bold;
   transition: background 0.2s;
-}
+}*/
 
 .btn-primary:hover {
   background-color: #0e0e10;
@@ -854,7 +854,7 @@ button {
   font-size: 1rem;
 }
 
-.btn-primary {
+/*.btn-primary {
   background-color: #6a67ce;
   color: white;
   padding: 0.75rem;
@@ -862,7 +862,7 @@ button {
   border-radius: 8px;
   font-weight: 600;
   transition: background-color 0.3s ease;
-}
+}*/
 
 .btn-primary:hover {
   background-color: #5855c1;
@@ -934,4 +934,117 @@ button {
   .auth-form h2 {
     font-size: 1.5rem;
   }
+}
+
+.auth-container {
+  max-width: 400px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.07);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-form h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.auth-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.auth-form input {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: border 0.2s ease-in-out;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.auth-divider {
+  text-align: center;
+  margin: 1.5rem 0;
+  font-weight: bold;
+  color: #aaa;
+  position: relative;
+}
+
+.auth-divider span {
+  background-color: #fff;
+  padding: 0 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-divider::before {
+  content: "";
+  height: 1px;
+  background: #ddd;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  z-index: 0;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-google:hover {
+  background: #f7f7f7;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
 }
