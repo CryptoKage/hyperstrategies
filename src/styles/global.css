@@ -589,7 +589,7 @@ button {
   margin-bottom: 24px;
 }
 
-/* --- Buttons --- */
+/* --- Buttons --- 
 .auth-form .btn-primary {
   width: 100%;
   padding: 14px;
@@ -598,7 +598,7 @@ button {
   color: var(--color-background);
 }
 
-/* --- Divider --- */
+ --- Divider --- 
 .auth-divider {
   margin: 32px 0;
   text-align: center;
@@ -612,7 +612,7 @@ button {
   top: 50%;
   width: 40%;
   height: 1px;
-  background-color: var(--color-border); /* Use our theme border color */
+  background-color: var(--color-border); /* Use our theme border color 
 }
 .auth-divider::before { left: 0; }
 .auth-divider::after { right: 0; }
