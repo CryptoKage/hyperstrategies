@@ -138,45 +138,27 @@ const Dashboard = () => {
 
         <h2 style={{ marginTop: '2rem' }}>Your Vaults</h2>
         <div className="vaults-grid">
-          {/* Vault 1 with info + disabled deposit */}
-          <div className="vault-card">
-            <h3>Vault 1</h3>
-<div className="vault-metrics">
-  <div className="vault-metric">
-    <span className="metric-label">APY:</span>
-    <span className="metric-value">
-      Avg X% / month
-      <span className="metric-subvalue"> (Y% / day)</span>
-    </span>
-  </div>
-
-  <div className="vault-metric">
-    <span className="metric-label">Status:</span>
-    <span className={`metric-status ${vault.status === 'open' ? 'status-open' : 'status-closed'}`}>
-      {vault.status === 'open' ? 'Open' : 'Closed'}
-    </span>
-  </div>
-</div>
-            <div className="vault-actions">
-              <button className="btn-primary" disabled>Deposit</button>
-              <a href="/faq" className="btn-secondary">Info</a>
-            </div>
-          </div>
-
-          {/* Vault 2 Coming Soon */}
-          <div className="vault-card placeholder">
-            <h3>Vault 2</h3>
-            <p className="placeholder-text">🚧 Coming Soon</p>
-          </div>
-
-          {/* Dynamic vaults if any */}
           {vaults.map((vault) => (
             <div key={vault.vault_id} className="vault-card">
               <h3>{vault.name}</h3>
+              <div className="vault-metric">
+                <span className="metric-label">APY:</span>
+                <span className="metric-value">
+                  Avg X% / month <span className="metric-subvalue">(Y% / day)</span>
+                </span>
+              </div>
+              <div className="vault-metric">
+                <span className="metric-label">Status:</span>
+                <span className={vault.status === 'open' ? 'status-open' : 'status-closed'}>
+                  {vault.status === 'open' ? 'Open' : 'Closed'}
+                </span>
+              </div>
+
               <div className="vault-stat">
                 <span className="stat-label">Your Position</span>
                 <span>${Number(vault.amount_deposited).toFixed(2)}</span>
               </div>
+
               <div className="vault-stat">
                 <span className="stat-label">Your P&L</span>
                 <span className={Number(vault.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
@@ -189,6 +171,11 @@ const Dashboard = () => {
               </div>
             </div>
           ))}
+
+          <div className="vault-card placeholder">
+            <h3>Long-Term Hold Vault</h3>
+            <span className="placeholder-text">Coming Soon</span>
+          </div>
         </div>
       </div>
     </Layout>
