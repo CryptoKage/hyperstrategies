@@ -883,7 +883,7 @@ button {
   font-weight: bold;
 }*/
 
-.auth-divider::before,
+/*.auth-divider::before,
 .auth-divider::after {
   content: "";
   flex: 1;
@@ -906,7 +906,7 @@ button {
   padding: 0 1rem;
   z-index: 1;
   position: relative;
-}
+}*/
 
 .error-message {
   color: var(--color-error);
