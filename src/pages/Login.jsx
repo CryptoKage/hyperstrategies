@@ -44,42 +44,44 @@ const Login = () => {
 
   return (
     <Layout>
-      <div className="auth-container">
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <h2>Sign In</h2>
-          {error && <p className="error-message">{error}</p>}
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="submit" className="btn-primary">Sign In</button>
-        </form>
+      <div className="auth-wrapper">{/* ✅ Centering wrapper */}
+        <div className="auth-container">
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <h2>Sign In</h2>
+            {error && <p className="error-message">{error}</p>}
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="btn-primary">Sign In</button>
+          </form>
 
-        <div className="auth-divider"><span>OR</span></div>
+          <div className="auth-divider"><span>OR</span></div>
 
-        <div className="social-login">
-          <button onClick={handleGoogleLogin} className="btn-google">
-            <GoogleIcon />
-            <span>Sign in with Google</span>
-          </button>
+          <div className="social-login">
+            <button onClick={handleGoogleLogin} className="btn-google">
+              <GoogleIcon />
+              <span>Sign in with Google</span>
+            </button>
+          </div>
         </div>
       </div>
     </Layout>

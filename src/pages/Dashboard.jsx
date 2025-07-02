@@ -143,11 +143,12 @@ const Dashboard = () => {
             <h3>Vault 1</h3>
             <div className="vault-stat">
               <span>APY:</span>
-              <span>14.2%</span>
+              <span>Avg X % Per month</span>
+              <span>Avg X % Per day</span>
             </div>
             <div className="vault-stat">
               <span>Status:</span>
-              <span>Open</span>
+              <span>Closed</span>
             </div>
             <div className="vault-actions">
               <button className="btn-primary" disabled>Deposit</button>

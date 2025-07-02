@@ -1,5 +1,3 @@
-// src/pages/Register.jsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -45,54 +43,56 @@ const Register = () => {
 
   return (
     <Layout>
-      <div className="auth-container">
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <h2>Create Account</h2>
-          {error && <p className="error-message">{error}</p>}
+      <div className="auth-wrapper">{/* ✅ New wrapper for centering */}
+        <div className="auth-container">
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <h2>Create Account</h2>
+            {error && <p className="error-message">{error}</p>}
 
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+
+            <button type="submit" className="btn-primary">Create Account</button>
+          </form>
+
+          <div className="auth-divider"><span>OR</span></div>
+
+          <div className="social-login">
+            <button onClick={handleGoogleLogin} className="btn-google">
+              <GoogleIcon />
+              <span>Sign up with Google</span>
+            </button>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-
-          <button type="submit" className="btn-primary">Create Account</button>
-        </form>
-
-        <div className="auth-divider"><span>OR</span></div>
-
-        <div className="social-login">
-          <button onClick={handleGoogleLogin} className="btn-google">
-            <GoogleIcon />
-            <span>Sign up with Google</span>
-          </button>
         </div>
       </div>
     </Layout>
