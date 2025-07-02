@@ -331,7 +331,7 @@ button {
   padding: 60px 24px;
 }
 
-.auth-form {
+/*.auth-form {
   width: 100%;
   max-width: 400px;
   padding: 32px;
@@ -372,14 +372,14 @@ button {
 }
 
 .error-message {
-  color: #f87171; /* A reddish error color */
+  color: #f87171; /* /* A reddish error color */ /*
   background-color: #f8717120;
   border: 1px solid #f87171;
   padding: 12px;
   border-radius: 6px;
   text-align: center;
   margin-bottom: 20px;
-}
+} */
 
 .header {
   background-color: var(--color-surface);
