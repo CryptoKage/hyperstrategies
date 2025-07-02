@@ -960,7 +960,7 @@ button {
 }
 
 .auth-form {
-  background: white;
+  background: transparent;
   padding: 2rem;
   border-radius: 12px;
   width: 100%;
