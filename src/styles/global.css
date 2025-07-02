@@ -873,7 +873,7 @@ button {
   box-shadow: 0 0 0 3px rgba(63, 186, 243, 0.3);
 }*/
 
-.auth-divider {
+/*.auth-divider {
   display: flex;
   align-items: center;
   text-align: center;
@@ -881,7 +881,7 @@ button {
   position: relative;
   color: var(--color-text-secondary);
   font-weight: bold;
-}
+}*/
 
 .auth-divider::before,
 .auth-divider::after {
@@ -1006,12 +1006,12 @@ button {
   background: #2d3748;
 }
 
-.auth-divider {
+/*.auth-divider {
   text-align: center;
   margin: 1.5rem 0;
   font-size: 0.9rem;
   color: #888;
-}
+}*/
 
 .social-login {
   display: flex;
@@ -1043,4 +1043,26 @@ button {
   border-radius: 8px;
   color: var(--color-text-primary);
   font-size: 16px;
+}
+
+.auth-divider {
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+  color: var(--color-text-secondary);
+}
+.auth-divider span::before,
+.auth-divider span::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  height: 1px;
+  width: 40%;
+  background-color: var(--color-border);
+}
+.auth-divider span::before {
+  left: 0;
+}
+.auth-divider span::after {
+  right: 0;
 }
