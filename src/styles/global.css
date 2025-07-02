@@ -950,22 +950,22 @@ button {
 }
 
 .auth-container {
-  background-color: var(--color-surface);  /* Dark card */
+  background-color: transparent;
   border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 2.5rem;
   width: 100%;
-  max-width: 420px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  box-shadow: none;
+
 }
 
 .auth-form {
   background: white;
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
   width: 100%;
-  max-width: 420px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  box-sizing: border-box;
 }
 
 .auth-form h2 {
@@ -1066,4 +1066,50 @@ button {
 }
 .auth-divider span::after {
   right: 0;
+}
+
+.vault-metrics {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.vault-metric {
+  display: flex;
+  flex-direction: column;
+  min-width: 160px;
+  margin-bottom: 8px;
+}
+
+.metric-label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.metric-subvalue {
+  font-size: 12px;
+  color: #888;
+  margin-left: 4px;
+}
+
+.metric-status {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.status-open {
+  color: #4ade80; /* Green */
+}
+
+.status-closed {
+  color: #f87171; /* Red */
 }

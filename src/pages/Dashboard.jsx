@@ -141,15 +141,22 @@ const Dashboard = () => {
           {/* Vault 1 with info + disabled deposit */}
           <div className="vault-card">
             <h3>Vault 1</h3>
-            <div className="vault-stat">
-              <span>APY:</span>
-              <span>Avg X % Per month</span>
-              <span>Avg X % Per day</span>
-            </div>
-            <div className="vault-stat">
-              <span>Status:</span>
-              <span>Closed</span>
-            </div>
+<div className="vault-metrics">
+  <div className="vault-metric">
+    <span className="metric-label">APY:</span>
+    <span className="metric-value">
+      Avg X% / month
+      <span className="metric-subvalue"> (Y% / day)</span>
+    </span>
+  </div>
+
+  <div className="vault-metric">
+    <span className="metric-label">Status:</span>
+    <span className={`metric-status ${vault.status === 'open' ? 'status-open' : 'status-closed'}`}>
+      {vault.status === 'open' ? 'Open' : 'Closed'}
+    </span>
+  </div>
+</div>
             <div className="vault-actions">
               <button className="btn-primary" disabled>Deposit</button>
               <a href="/faq" className="btn-secondary">Info</a>
