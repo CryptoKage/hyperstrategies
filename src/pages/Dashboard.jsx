@@ -148,6 +148,13 @@ const Dashboard = () => {
                 </span>
               </div>
               <div className="vault-metric">
+  <span className="metric-label">Max Cap:</span>
+  <span className="metric-value">
+    {vault.max_cap ? `$${Number(vault.max_cap).toLocaleString()}` : '—'}
+  </span>
+</div>
+
+              <div className="vault-metric">
                 <span className="metric-label">Status:</span>
                 <span className={vault.status === 'open' ? 'status-open' : 'status-closed'}>
                   {vault.status === 'open' ? 'Open' : 'Closed'}
