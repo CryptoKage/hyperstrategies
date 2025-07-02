@@ -178,11 +178,7 @@ const Dashboard = () => {
               </div>
             </div>
           ))}
-
-          <div className="vault-card placeholder">
-            <h3>Long-Term Hold Vault</h3>
-            <span className="placeholder-text">Coming Soon</span>
-          </div>
+          
         </div>
       </div>
     </Layout>
