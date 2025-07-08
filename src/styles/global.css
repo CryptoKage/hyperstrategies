@@ -1441,3 +1441,45 @@ button {
   cursor: pointer;
   min-width: 80px; /* Prevents button from resizing */
 }
+
+/* In src/styles/global.css */
+
+.actions-section {
+  margin-top: 48px;
+}
+
+.actions-section h2 {
+  font-size: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.action-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.action-card h3 {
+  margin-top: 0;
+}
+
+.action-card p {
+  color: var(--color-text-secondary);
+  flex-grow: 1; /* This makes the text take up space to align buttons at the bottom */
+}
+
+.action-card .btn-primary {
+  margin-top: 16px;
+  width: 100%;
+}
