@@ -1,35 +1,38 @@
 // src/pages/Wallet.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
 import api from '../api/api';
-import WithdrawModal from '../components/WithdrawModal'; // ✅ 1. Import the new modal
+import WithdrawModal from '../components/WithdrawModal';
+import WithdrawalHistory from '../components/WithdrawalHistory';
 
 const Wallet = () => {
   const [walletData, setWalletData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [copySuccess, setCopySuccess] = useState('');
-
-  // ✅ 2. State to control the withdrawal modal
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
-  const fetchWalletData = async () => {
+  // We wrap this in useCallback to prevent it from being recreated on every render
+  const fetchWalletData = useCallback(async () => {
+    // Show loader on manual refresh clicks, but not on initial load
+    if (!loading) setLoading(true); 
     try {
-      if(!loading) setLoading(true); // Show loader for refresh clicks
       const response = await api.get('/user/wallet');
       setWalletData(response.data);
+      setError(''); // Clear previous errors on a successful fetch
     } catch (err) {
-      setError('Could not fetch wallet data.');
+      setError('Could not fetch wallet data. Please try refreshing.');
       console.error(err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [loading]); // Dependency on 'loading' state
 
+  // Initial data fetch on component mount
   useEffect(() => {
     fetchWalletData();
-  }, []);
+  }, [fetchWalletData]); // Now depends on the stable fetchWalletData function
 
   const handleCopyToClipboard = () => {
     if (walletData?.address) {
@@ -39,15 +42,19 @@ const Wallet = () => {
     }
   };
 
+  // This function will be called by the modal on a successful withdrawal
   const handleWithdrawalQueued = () => {
-    // When a withdrawal is successfully queued, refresh the wallet data
-    // to show the new, reduced USDC balance instantly.
+    // Refresh all wallet data to show updated balances and history
     fetchWalletData();
   };
 
   const renderContent = () => {
-    if (loading) { return <h1>Loading Wallet...</h1>; }
-    if (error || !walletData) { return <p className="error-message">{error || 'Could not load data.'}</p>; }
+    if (loading) {
+      return <h1>Loading Wallet...</h1>;
+    }
+    if (error || !walletData) {
+      return <p className="error-message">{error || 'Could not load wallet data.'}</p>;
+    }
 
     return (
       <>
@@ -56,27 +63,42 @@ const Wallet = () => {
           <button onClick={fetchWalletData} className="btn-secondary">Refresh Balances</button>
         </div>
         
-        <div className="balance-grid">{/* ... your balance cards ... */}</div>
-        <div className="address-section">{/* ... your address display ... */}</div>
+        <div className="balance-grid">
+          <div className="balance-card">
+            <span className="balance-label">USDC Balance</span>
+            <span className="balance-value">{(walletData.usdcBalance || 0).toFixed(4)}</span>
+          </div>
+          <div className="balance-card">
+            <span className="balance-label">ETH Balance</span>
+            <span className="balance-value">{(walletData.ethBalance || 0).toFixed(6)}</span>
+          </div>
+        </div>
 
-        {/* --- This is the new section for actions --- */}
+        <div className="address-section">
+          <h2>Your Deposit Address</h2>
+          <p className="address-subtext">Send USDC (Mainnet) to this address to fund your account.</p>
+          <div className="address-box">
+            <span className="eth-address">{walletData.address}</span>
+            <button onClick={handleCopyToClipboard} className="btn-copy">
+              {copySuccess || 'Copy'}
+            </button>
+          </div>
+        </div>
+
         <div className="actions-section">
           <h2>Actions</h2>
           <div className="actions-grid">
             <div className="action-card">
-              <h3>Deposit USDC</h3>
-              <p>Send USDC (Mainnet) to your unique deposit address shown above.</p>
-            </div>
-            <div className="action-card">
               <h3>Withdraw Funds</h3>
               <p>Queue a withdrawal of your available USDC to an external wallet.</p>
-              {/* ✅ 3. This button now opens our modal */}
               <button onClick={() => setIsWithdrawModalOpen(true)} className="btn-primary">
                 Start Withdrawal
               </button>
             </div>
           </div>
         </div>
+
+        <WithdrawalHistory />
       </>
     );
   };
@@ -89,7 +111,7 @@ const Wallet = () => {
         </div>
       </Layout>
 
-      {/* ✅ 4. Render the modal. It will be invisible until its state is true. */}
+      {/* Conditionally render the modal to ensure walletData is available */}
       {walletData && (
         <WithdrawModal
           isOpen={isWithdrawModalOpen}
