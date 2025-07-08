@@ -1113,3 +1113,42 @@ button {
 .status-closed {
   color: #f87171; /* Red */
 }
+
+/* In global.css */
+
+.input-group {
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.input-field {
+  width: 100%;
+  padding: 14px 16px;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+/* Add a focus state for better UX */
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(63, 186, 243, 0.2);
+}
+
+/* Style for placeholder text */
+.input-field::placeholder {
+  color: #4a5568;
+}
