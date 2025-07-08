@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { isAddress } from 'ethers';
 import api from '../api/api';
 import InputField from './InputField';
 
