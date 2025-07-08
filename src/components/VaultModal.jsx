@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import api from '../api/api';
-import InputField from './InputField'; // We're using our new, modern input
+import InputField from './InputField';
 
-const VaultModal = ({ isOpen, onClose, vault, onInvestmentSuccess }) => {
+// We now pass in the user's available balance to display it
+const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSuccess }) => {
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Reset state when the modal is opened or closed
   useEffect(() => {
     if (!isOpen) {
       setAmount('');
@@ -18,32 +18,46 @@ const VaultModal = ({ isOpen, onClose, vault, onInvestmentSuccess }) => {
     }
   }, [isOpen]);
 
-  if (!isOpen) {
+  if (!isOpen || !vault) { // Added a check for vault to prevent errors
     return null;
   }
 
-  const handleInvest = async (e) => {
+  const handleAllocate = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
+    const allocationAmount = parseFloat(amount);
+    if (isNaN(allocationAmount) || allocationAmount <= 0) {
+      setError('Please enter a valid amount.');
+      setIsLoading(false);
+      return;
+    }
+    if (allocationAmount > availableBalance) {
+      setError('Allocation exceeds your available balance.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
+      // This endpoint now represents "allocating" funds from the main balance to a vault
       await api.post('/vaults/invest', {
         vaultId: vault.vault_id,
-        amount: parseFloat(amount),
+        amount: allocationAmount,
       });
 
-      // On success, call the refresh function from the parent and close
-      onInvestmentSuccess();
+      // On success, call the parent's refresh function and close the modal
+      onAllocationSuccess();
       onClose();
 
     } catch (err) {
-      setError(err.response?.data?.error || 'Investment failed. Please try again.');
+      setError(err.response?.data?.error || 'Allocation failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Calculations for the UI breakdown
   const loyaltyPoints = (parseFloat(amount) * 0.20) || 0;
   const tradableCapital = (parseFloat(amount) * 0.80) || 0;
 
@@ -51,14 +65,14 @@ const VaultModal = ({ isOpen, onClose, vault, onInvestmentSuccess }) => {
     <div className="modal-overlay">
       <div className="modal-content">
         <button onClick={onClose} className="modal-close-btn">×</button>
-        <h2>Invest in {vault.name}</h2>
-        <p className="modal-subtitle">Enter the amount you wish to invest. Your capital will be allocated according to our unique model.</p>
+        <h2>Allocate Funds to {vault.name}</h2>
+        <p className="modal-subtitle">Your funds will be split into Tradable Capital and Loyalty Points.</p>
         
-        <form onSubmit={handleInvest}>
+        <form onSubmit={handleAllocate}>
           {error && <p className="error-message">{error}</p>}
           
           <InputField
-            label="Investment Amount (USDC)"
+            label={`Amount to Allocate (Available: $${availableBalance.toFixed(2)} USDC)`}
             id="investAmount"
             type="number"
             value={amount}
@@ -68,7 +82,7 @@ const VaultModal = ({ isOpen, onClose, vault, onInvestmentSuccess }) => {
           />
 
           <div className="investment-breakdown">
-            <h4>Your Allocation:</h4>
+            <h4>Allocation Breakdown:</h4>
             <div className="breakdown-row">
               <span>Tradable Capital (80%):</span>
               <span className="breakdown-value">${tradableCapital.toFixed(2)}</span>
@@ -80,13 +94,13 @@ const VaultModal = ({ isOpen, onClose, vault, onInvestmentSuccess }) => {
           </div>
 
           <div className="disclaimer">
-            <p><strong>Please Note:</strong> Loyalty Points are internal credits representing your contribution to the platform's operational costs. They are not a tradable cryptocurrency and are subject to the terms of service pending full MICA compliance.</p>
+            <p><strong>Please Note:</strong> Loyalty Points are internal credits representing your contribution to platform operations. They are not a tradable cryptocurrency and are subject to the terms of service pending full MICA compliance.</p>
           </div>
 
           <div className="modal-actions">
             <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
             <button type="submit" className="btn-primary" disabled={isLoading}>
-              {isLoading ? 'Processing...' : 'Confirm Investment'}
+              {isLoading ? 'Processing...' : 'Confirm Allocation'}
             </button>
           </div>
         </form>
