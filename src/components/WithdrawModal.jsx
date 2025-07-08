@@ -29,7 +29,7 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
     setError('');
 
     // --- Frontend Validation ---
-    if (!ethers.utils.isAddress(address)) {
+    if (!isAddress(address)) { 
       setError('Please enter a valid Ethereum address.');
       return;
     }
