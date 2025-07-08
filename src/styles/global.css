@@ -1349,3 +1349,95 @@ button {
   background-color: rgba(239, 68, 68, 0.1); color: #ef4444; 
 }
 
+/* --- Wallet Page Styles --- */
+.wallet-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.wallet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.wallet-header h1 {
+  margin: 0;
+  font-size: 32px;
+}
+
+.balance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.balance-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.balance-label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.balance-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.address-section {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 32px;
+  text-align: center;
+}
+
+.address-section h2 {
+  margin-top: 0;
+}
+
+.address-subtext {
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.address-box {
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.eth-address {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  word-break: break-all;
+  text-align: left;
+}
+
+.btn-copy {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 80px; /* Prevents button from resizing */
+}
