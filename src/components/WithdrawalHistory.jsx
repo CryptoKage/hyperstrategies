@@ -24,7 +24,7 @@ const WithdrawalHistory = () => {
   }, []);
 
   const getStatusClass = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'sent':
       case 'complete':
         return 'status-sent';
@@ -33,13 +33,14 @@ const WithdrawalHistory = () => {
       case 'queued':
         return 'status-queued';
       case 'failed':
+      case 'cancelled':
         return 'status-failed';
       default:
         return '';
     }
   };
   
-  const formatAddress = (address) => `${address.slice(0, 6)}...${address.slice(-4)}`;
+  const formatAddress = (address) => address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'N/A';
 
   if (loading) return <p>Loading history...</p>;
   if (error) return <p className="error-message">{error}</p>;
@@ -62,30 +63,32 @@ const WithdrawalHistory = () => {
             </tr>
           </thead>
           <tbody>
-            {history.map((item) => (
-              <tr key={item.id}>
+            {history.map((item, index) => (
+              <tr key={item.id || index}>
                 <td>{new Date(item.created_at).toLocaleString()}</td>
                 <td>{parseFloat(item.amount).toFixed(4)}</td>
                 <td>{item.token}</td>
                 <td>{formatAddress(item.to_address)}</td>
                 <td>
-                  <span className={`status-badge ${getStatusClass(item.status)}`}>
-                    {item.status}
-                  </span>
+                  <div className="status-cell">
+                    <span className={`status-badge ${getStatusClass(item.status)}`}>
+                      {item.status}
+                    </span>
+                    {item.status?.toLowerCase() === 'failed' && (
+                      <div className="tooltip">i
+                        <span className="tooltip-text">
+                          {item.error_message || "This transaction failed. Our team has been notified. Please contact support if the issue persists."}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td>
                   {item.tx_hash ? (
-                    <a 
-                      href={`https://etherscan.io/tx/${item.tx_hash}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="etherscan-link"
-                    >
+                    <a href={`https://etherscan.io/tx/${item.tx_hash}`} target="_blank" rel="noopener noreferrer" className="etherscan-link">
                       View on Etherscan
                     </a>
-                  ) : (
-                    'N/A'
-                  )}
+                  ) : ( '—' )}
                 </td>
               </tr>
             ))}
