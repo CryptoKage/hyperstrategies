@@ -1,6 +1,6 @@
 // src/components/WithdrawModal.jsx
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import api from '../api/api';
 import InputField from './InputField';
