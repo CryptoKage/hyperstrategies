@@ -3,22 +3,21 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext'; // 1. Import the auth hook
+import { useAuth } from '../context/AuthContext';
 import Logo from '../assets/logo.png';
-import jwtDecode from 'jwt-decode';
 
 const Header = () => {
   const { i18n } = useTranslation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth(); // 2. Get the user and logout function from context
+  const { user, logout } = useAuth();
 
   const changeLanguage = (e) => {
     i18n.changeLanguage(e.target.value);
   };
 
   const handleLogout = () => {
-    logout(); // This clears the user state and localStorage
-    navigate('/login'); // Redirect to login after logout
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -37,11 +36,11 @@ const Header = () => {
           <option value="de">DE</option>
         </select>
 
-        {/* --- THIS IS THE NEW LOGIC --- */}
-        {/* 3. We conditionally render buttons based on whether the user exists. */}
         {user ? (
           <>
             <Link to="/dashboard" className="header__button">Dashboard</Link>
+            {/* ✅ ADD THIS WALLET LINK */}
+            <Link to="/wallet" className="header__button">Wallet</Link>
             <button onClick={handleLogout} className="header__button header__button--primary">
               Logout
             </button>

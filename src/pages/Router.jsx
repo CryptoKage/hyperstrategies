@@ -13,6 +13,7 @@ import Legal from './Legal';
 import Login from './Login';
 import Register from './Register';
 import Dashboard from './Dashboard';
+import Wallet from './Wallet';
 import OAuthSuccess from './OAuthSuccess';
 
 
@@ -45,17 +46,13 @@ const Router = () => {
       {/* If a logged-out user tries to visit /dashboard, they will be redirected to /login. */}
       <Route 
         path="/dashboard" 
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } 
+        element={<ProtectedRoute><Dashboard /></ProtectedRoute>} 
       />
-
-      {/* 
-        In the future, you can add more protected routes here easily:
-        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} /> 
-      */}
+      {/* ✅ 2. ADD THE NEW PROTECTED ROUTE FOR THE WALLET */}
+      <Route 
+        path="/wallet" 
+        element={<ProtectedRoute><Wallet /></ProtectedRoute>} 
+      />
     </Routes>
   );
 };
