@@ -63,20 +63,20 @@ const Dashboard = () => {
         <div className="dashboard-container">
           <h1>Welcome back, {user?.username || 'User'}!</h1>
           
-          <div className="stats-grid">
-            <div className="stat-card">
-              <span className="stat-label">Total Portfolio Value</span>
-              <span className="stat-value">${dashboardData.totalPortfolioValue.toFixed(2)}</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-label">Available Balance</span>
-              <span className="stat-value">${dashboardData.availableBalance.toFixed(2)}</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-label">Loyalty Points</span>
-              <span className="stat-value">${dashboardData.totalLoyaltyPoints.toFixed(2)}</span>
-            </div>
-          </div>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <span className="stat-label">Total Portfolio Value</span>
+            <span className="stat-value">${(dashboardData.totalPortfolioValue || 0).toFixed(2)}</span>
+         </div>
+         <div className="stat-card">
+            <span className="stat-label">Available Balance</span>
+           <span className="stat-value">${(dashboardData.availableBalance || 0).toFixed(2)}</span>
+         </div>
+         <div className="stat-card">
+            <span className="stat-label">Loyalty Points</span>
+            <span className="stat-value">${(dashboardData.totalLoyaltyPoints || 0).toFixed(2)}</span>
+         </div>
+        </div>
 
           {/* This section only renders if the user has active investments */}
           {investedVaults.length > 0 && (
