@@ -1,28 +1,12 @@
 // src/components/WithdrawalHistory.jsx
 
-import React, { useState, useEffect } from 'react';
-import api from '../api/api';
+import React from 'react';
 
-const WithdrawalHistory = () => {
-  const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const response = await api.get('/withdraw/history');
-        setHistory(response.data);
-      } catch (err) {
-        setError('Could not load withdrawal history.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchHistory();
-  }, []);
-
+// The component now receives its data directly as a prop.
+// It no longer needs useState or useEffect.
+const WithdrawalHistory = ({ historyData = [] }) => {
+  
+  // Helper function to get the CSS class for the status badge
   const getStatusClass = (status) => {
     switch (status?.toLowerCase()) {
       case 'sent':
@@ -40,15 +24,15 @@ const WithdrawalHistory = () => {
     }
   };
   
+  // Helper function to shorten the ETH address for display
   const formatAddress = (address) => address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'N/A';
 
-  if (loading) return <p>Loading history...</p>;
-  if (error) return <p className="error-message">{error}</p>;
-
+  // The parent component now handles loading and error states.
+  // We just need to handle the case where the history array is empty.
   return (
     <div className="history-container">
       <h2>Withdrawal History</h2>
-      {history.length === 0 ? (
+      {historyData.length === 0 ? (
         <p>You have no withdrawal history.</p>
       ) : (
         <table className="history-table">
@@ -63,7 +47,7 @@ const WithdrawalHistory = () => {
             </tr>
           </thead>
           <tbody>
-            {history.map((item, index) => (
+            {historyData.map((item, index) => (
               <tr key={item.id || index}>
                 <td>{new Date(item.created_at).toLocaleString()}</td>
                 <td>{parseFloat(item.amount).toFixed(4)}</td>
@@ -74,6 +58,7 @@ const WithdrawalHistory = () => {
                     <span className={`status-badge ${getStatusClass(item.status)}`}>
                       {item.status}
                     </span>
+                    {/* The tooltip for failed transactions */}
                     {item.status?.toLowerCase() === 'failed' && (
                       <div className="tooltip">i
                         <span className="tooltip-text">
@@ -85,7 +70,12 @@ const WithdrawalHistory = () => {
                 </td>
                 <td>
                   {item.tx_hash ? (
-                    <a href={`https://etherscan.io/tx/${item.tx_hash}`} target="_blank" rel="noopener noreferrer" className="etherscan-link">
+                    <a 
+                      href={`https://etherscan.io/tx/${item.tx_hash}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="etherscan-link"
+                    >
                       View on Etherscan
                     </a>
                   ) : ( '—' )}

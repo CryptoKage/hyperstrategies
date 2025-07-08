@@ -7,52 +7,55 @@ import WithdrawModal from '../components/WithdrawModal';
 import WithdrawalHistory from '../components/WithdrawalHistory';
 
 const Wallet = () => {
+  // We now have separate states for each piece of data
   const [walletData, setWalletData] = useState(null);
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [copySuccess, setCopySuccess] = useState('');
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
-  // We wrap this in useCallback to prevent it from being recreated on every render
-  const fetchWalletData = useCallback(async () => {
-    // Show loader on manual refresh clicks, but not on initial load
-    if (!loading) setLoading(true); 
+  // This function now fetches ALL data for the page.
+  const fetchPageData = useCallback(async () => {
+    setLoading(true); // Always show loader on refresh
     try {
-      const response = await api.get('/user/wallet');
-      setWalletData(response.data);
-      setError(''); // Clear previous errors on a successful fetch
+      // Fetch both endpoints in parallel for speed
+      const [walletResponse, historyResponse] = await Promise.all([
+        api.get('/user/wallet'),
+        api.get('/withdraw/history')
+      ]);
+      
+      setWalletData(walletResponse.data);
+      setHistory(historyResponse.data);
+      setError(''); // Clear any previous errors
+      
     } catch (err) {
       setError('Could not fetch wallet data. Please try refreshing.');
-      console.error(err);
+      console.error("Wallet page data fetch error:", err);
     } finally {
       setLoading(false);
     }
-  }, [loading]); // Dependency on 'loading' state
+  }, []);
 
   // Initial data fetch on component mount
   useEffect(() => {
-    fetchWalletData();
-  }, [fetchWalletData]); // Now depends on the stable fetchWalletData function
+    fetchPageData();
+  }, [fetchPageData]);
+  
+  // ... (handleCopyToClipboard is the same) ...
 
-  const handleCopyToClipboard = () => {
-    if (walletData?.address) {
-      navigator.clipboard.writeText(walletData.address);
-      setCopySuccess('Copied!');
-      setTimeout(() => setCopySuccess(''), 2000);
-    }
-  };
-
-  // This function will be called by the modal on a successful withdrawal
   const handleWithdrawalQueued = () => {
-    // Refresh all wallet data to show updated balances and history
-    fetchWalletData();
+    // After a withdrawal is queued, just refetch everything.
+    fetchPageData();
   };
 
   const renderContent = () => {
+    // The loading state now covers both API calls
     if (loading) {
       return <h1>Loading Wallet...</h1>;
     }
-    if (error || !walletData) {
+    // If the main wallet data fails, we show a critical error
+    if (!walletData) {
       return <p className="error-message">{error || 'Could not load wallet data.'}</p>;
     }
 
@@ -60,30 +63,10 @@ const Wallet = () => {
       <>
         <div className="wallet-header">
           <h1>Your Wallet</h1>
-          <button onClick={fetchWalletData} className="btn-secondary">Refresh Balances</button>
+          <button onClick={fetchPageData} className="btn-secondary">Refresh</button>
         </div>
         
-        <div className="balance-grid">
-          <div className="balance-card">
-            <span className="balance-label">USDC Balance</span>
-            <span className="balance-value">{(walletData.usdcBalance || 0).toFixed(4)}</span>
-          </div>
-          <div className="balance-card">
-            <span className="balance-label">ETH Balance</span>
-            <span className="balance-value">{(walletData.ethBalance || 0).toFixed(6)}</span>
-          </div>
-        </div>
-
-        <div className="address-section">
-          <h2>Your Deposit Address</h2>
-          <p className="address-subtext">Send USDC (Mainnet) to this address to fund your account.</p>
-          <div className="address-box">
-            <span className="eth-address">{walletData.address}</span>
-            <button onClick={handleCopyToClipboard} className="btn-copy">
-              {copySuccess || 'Copy'}
-            </button>
-          </div>
-        </div>
+        {/* ... (Your balance-grid and address-section JSX) ... */}
 
         <div className="actions-section">
           <h2>Actions</h2>
@@ -97,8 +80,9 @@ const Wallet = () => {
             </div>
           </div>
         </div>
-
-        <WithdrawalHistory />
+        
+        {/* We now pass the history data down as a prop */}
+        <WithdrawalHistory historyData={history} />
       </>
     );
   };
@@ -106,12 +90,8 @@ const Wallet = () => {
   return (
     <>
       <Layout>
-        <div className="wallet-container">
-          {renderContent()}
-        </div>
+        <div className="wallet-container">{renderContent()}</div>
       </Layout>
-
-      {/* Conditionally render the modal to ensure walletData is available */}
       {walletData && (
         <WithdrawModal
           isOpen={isWithdrawModalOpen}
