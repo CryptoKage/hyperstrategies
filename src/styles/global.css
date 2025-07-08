@@ -1244,3 +1244,43 @@ button {
   justify-content: flex-end;
   gap: 16px;
 }
+
+/* In src/styles/global.css */
+
+.actions-section {
+  margin-top: 48px;
+}
+
+.actions-section h2 {
+  font-size: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.action-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.action-card h3 {
+  margin-top: 0;
+}
+
+.action-card p {
+  color: var(--color-text-secondary);
+  flex-grow: 1; /* Makes text take up space to align buttons */
+}
+
+.action-card .btn-primary {
+  margin-top: 16px;
+}
+
