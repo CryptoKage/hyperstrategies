@@ -7,111 +7,121 @@ import WithdrawModal from '../components/WithdrawModal';
 import WithdrawalHistory from '../components/WithdrawalHistory';
 
 const Wallet = () => {
-  // We initialize with a default structure to prevent rendering errors
-  const [walletData, setWalletData] = useState({ usdcBalance: 0, ethBalance: 0 });
+  // --- ✅ THIS IS THE FIX ---
+  // All state variables must be declared here at the top.
+  const [walletData, setWalletData] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  // ... other states are the same ...
+  const [error, setError] = useState(''); // <-- This was missing
+  const [copySuccess, setCopySuccess] = useState('');
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false); // <-- This was missing
 
   const fetchPageData = useCallback(async () => {
     // We don't need to re-set loading for manual refreshes with skeletons
     try {
+      if (!loading) setLoading(true); // Re-enable loading for manual refresh
       const [walletResponse, historyResponse] = await Promise.all([
         api.get('/user/wallet'),
         api.get('/withdraw/history')
       ]);
       setWalletData(walletResponse.data);
       setHistory(historyResponse.data);
-      setError('');
+      setError(''); // Clear previous errors on a successful fetch
     } catch (err) {
       setError('Could not fetch wallet data.');
       console.error("Wallet page data fetch error:", err);
     } finally {
       setLoading(false);
     }
-  }, []); // Empty dependency array makes this stable
+  }, [loading]);
 
   useEffect(() => {
     fetchPageData();
   }, [fetchPageData]);
 
-  // ... handleCopyToClipboard and handleWithdrawalQueued are the same ...
-  const handleCopyToClipboard = () => {};
-  const handleWithdrawalQueued = () => { fetchPageData(); };
+  const handleCopyToClipboard = () => {
+    if (walletData?.address) {
+      navigator.clipboard.writeText(walletData.address);
+      setCopySuccess('Copied!');
+      setTimeout(() => setCopySuccess(''), 2000);
+    }
+  };
+  
+  const handleWithdrawalQueued = () => {
+    fetchPageData();
+  };
 
+  const renderContent = () => {
+    if (loading) {
+      return <h1>Loading Wallet...</h1>;
+    }
+    if (error || !walletData) {
+      return <p className="error-message">{error || 'Could not load wallet data.'}</p>;
+    }
 
-  // --- SKELETON COMPONENT ---
-  const BalanceCardSkeleton = () => (
-    <div className="balance-card skeleton">
-      <div className="skeleton-text short"></div>
-      <div className="skeleton-text long"></div>
-    </div>
-  );
+    return (
+      <>
+        <div className="wallet-header">
+          <h1>Your Wallet</h1>
+          <button onClick={fetchPageData} className="btn-secondary" disabled={loading}>
+            {loading ? 'Refreshing...' : 'Refresh'}
+          </button>
+        </div>
+        
+        <div className="balance-grid">
+          <div className="balance-card">
+            <span className="balance-label">USDC Balance</span>
+            <span className="balance-value">{(walletData.usdcBalance || 0).toFixed(4)}</span>
+          </div>
+          <div className="balance-card">
+            <span className="balance-label">ETH Balance (for Gas)</span>
+            <span className="balance-value">{(walletData.ethBalance || 0).toFixed(6)}</span>
+          </div>
+        </div>
+
+        <div className="address-section">
+          <h2>Your Deposit Address</h2>
+          <p className="address-subtext">Send USDC (Mainnet) to this address to fund your account.</p>
+          <div className="address-box">
+            <span className="eth-address">{walletData.address}</span>
+            <button onClick={handleCopyToClipboard} className="btn-copy">
+              {copySuccess || 'Copy'}
+            </button>
+          </div>
+        </div>
+
+        <div className="actions-section">
+          <h2>Actions</h2>
+          <div className="actions-grid">
+            <div className="action-card">
+              <h3>Withdraw Funds</h3>
+              <p>Queue a withdrawal of your available USDC to an external wallet.</p>
+              <button onClick={() => setIsWithdrawModalOpen(true)} className="btn-primary">
+                Start Withdrawal
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <WithdrawalHistory historyData={history} />
+      </>
+    );
+  };
 
   return (
     <>
       <Layout>
-        <div className="wallet-container">
-          <div className="wallet-header">
-            <h1>Your Wallet</h1>
-            <button onClick={fetchPageData} className="btn-secondary" disabled={loading}>
-              {loading ? 'Refreshing...' : 'Refresh'}
-            </button>
-          </div>
-          
-          {loading ? (
-            // Render skeletons while loading
-            <div className="balance-grid">
-              <BalanceCardSkeleton />
-              <BalanceCardSkeleton />
-            </div>
-          ) : (
-            // Render real data when loaded
-            <div className="balance-grid">
-              <div className="balance-card">
-                <span className="balance-label">USDC Balance</span>
-                <span className="balance-value">{walletData.usdcBalance.toFixed(4)}</span>
-              </div>
-              <div className="balance-card">
-                <span className="balance-label">ETH Balance (for Gas)</span>
-                <span className="balance-value">{walletData.ethBalance.toFixed(6)}</span>
-              </div>
-            </div>
-          )}
-
-          <div className="address-section">
-            <h2>Your Deposit Address</h2>
-            <p className="address-subtext">Send USDC (Mainnet) to this address to fund your account.</p>
-            <div className="address-box">
-              {/* Also handle loading state for the address */}
-              <span className="eth-address">{loading ? '...' : walletData.address}</span>
-              <button onClick={handleCopyToClipboard} className="btn-copy">...</button>
-            </div>
-          </div>
-
-          <div className="actions-section">
-            <h2>Actions</h2>
-            <div className="actions-grid">
-              <div className="action-card">
-                <h3>Withdraw Funds</h3>
-                <p>Queue a withdrawal of your available USDC to an external wallet.</p>
-                <button onClick={() => setIsWithdrawModalOpen(true)} className="btn-primary" disabled={loading}>
-                  Start Withdrawal
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <WithdrawalHistory historyData={history} />
-        </div>
+        <div className="wallet-container">{renderContent()}</div>
       </Layout>
 
-      <WithdrawModal
-        isOpen={isWithdrawModalOpen}
-        onClose={() => setIsWithdrawModalOpen(false)}
-        usdcBalance={walletData.usdcBalance}
-        onWithdrawalQueued={handleWithdrawalQueued}
-      />
+      {walletData && (
+        <WithdrawModal
+          isOpen={isWithdrawModalOpen}
+          onClose={() => setIsWithdrawModalOpen(false)}
+          usdcBalance={walletData.usdcBalance}
+          onWithdrawalQueued={handleWithdrawalQueued}
+        />
+      )}
     </>
   );
 };
