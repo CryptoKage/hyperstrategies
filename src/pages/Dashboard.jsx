@@ -25,16 +25,25 @@ const Dashboard = () => {
   const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false);
   const [selectedVault, setSelectedVault] = useState(null);
 
+  // --- Data Fetching with Performance Logging ---
   const fetchDashboardData = useCallback(async () => {
+    console.log('[Dashboard] 🚀 Starting data fetch...');
+    console.time("DashboardDataFetchTime"); // 1. START the timer
+    
+    // On subsequent refreshes, don't show the main skeleton, just a small indicator if needed.
+    // For now, we just refetch in the background.
+    
     try {
-      if (!loading) setLoading(true);
       const response = await api.get('/dashboard');
+      console.log('[Dashboard] ✅ API response received.');
       setDashboardData(response.data);
       setError('');
     } catch (err) {
+      console.error('[Dashboard] ❌ API call failed:', err);
       setError('Could not fetch dashboard data.');
     } finally {
-      setLoading(false);
+      if (loading) setLoading(false);
+      console.timeEnd("DashboardDataFetchTime"); // 2. STOP the timer and print duration
     }
   }, [loading]);
 
@@ -51,6 +60,7 @@ const Dashboard = () => {
     setWithdrawModalOpen(true);
   };
   const handleActionSuccess = () => {
+    console.log('[Dashboard] 🔄 Action successful, refreshing dashboard data...');
     fetchDashboardData();
   };
 
@@ -72,14 +82,15 @@ const Dashboard = () => {
       );
     }
     
-    if (error) { return <p className="error-message">{error}</p>; }
+    if (error) {
+      return <p className="error-message">{error}</p>;
+    }
 
     const investedVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) > 0);
     const availableVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) <= 0);
 
     return (
       <>
-        {/* ✅ THIS IS THE FIX: The missing JSX for the stat cards */}
         <div className="stats-grid">
             <div className="stat-card">
               <span className="stat-label">Total Portfolio Value</span>
