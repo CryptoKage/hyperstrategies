@@ -1538,3 +1538,64 @@ button {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
+
+/* ==========================================================================
+   MOBILE & RESPONSIVE STYLES
+   ========================================================================== */
+
+/* We'll use 768px as our breakpoint. This targets most tablets and all phones. */
+@media (max-width: 768px) {
+
+  /* --- 1. General Layout & Typography --- */
+  
+  /* Reduce padding on the main containers for more space */
+  .dashboard-container, .wallet-container {
+    padding: 20px 16px;
+    margin-top: 24px;
+  }
+
+  .auth-container {
+    padding: 24px;
+    margin: 40px 16px;
+  }
+
+  /* Make headings slightly smaller on mobile */
+  .dashboard-container h1, .wallet-header h1 {
+    font-size: 28px;
+  }
+
+  .dashboard-container h2, .actions-section h2, .history-container h2 {
+    font-size: 20px;
+  }
+  
+  /* --- 2. Header Adjustments --- */
+  .header__title {
+    display: none; /* Hide the "Hyper Strategies" text to save space */
+  }
+
+  .header {
+    padding: 12px 16px;
+  }
+
+
+  /* --- 3. Grid Adjustments --- */
+
+  /* Make all our grids stack into a single column on mobile */
+  .stats-grid,
+  .vaults-grid,
+  .balance-grid,
+  .actions-grid {
+    grid-template-columns: 1fr; /* This is the magic rule */
+  }
+
+
+  /* --- 4. Font and Button Sizes --- */
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .btn-large {
+    padding: 14px 24px;
+    font-size: 16px;
+  }
+}
