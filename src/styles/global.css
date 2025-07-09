@@ -1520,3 +1520,21 @@ button {
   padding: 4px;
   text-decoration: underline;
 }
+/* --- Skeleton Loading Styles --- */
+.skeleton {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeleton-text {
+  height: 20px;
+  background-color: var(--color-border);
+  border-radius: 4px;
+}
+
+.skeleton-text.short { width: 40%; margin-bottom: 12px; height: 16px; }
+.skeleton-text.long { width: 60%; height: 28px; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

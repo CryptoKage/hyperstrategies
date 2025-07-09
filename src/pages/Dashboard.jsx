@@ -6,6 +6,7 @@ import Layout from '../components/Layout';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import VaultModal from '../components/VaultModal';
+import VaultWithdrawModal from '../components/VaultWithdrawModal'; // 1. Import the new modal
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -13,139 +14,130 @@ const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // State for both modals
+  const [isAllocateModalOpen, setAllocateModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false); // 2. New state for withdraw modal
   const [selectedVault, setSelectedVault] = useState(null);
 
-  const fetchDashboardData = useCallback(async () => {
-    if (!loading) setLoading(true);
-    try {
-      const response = await api.get('/dashboard');
-      setDashboardData(response.data);
-      setError('');
-    } catch (err) {
-      setError('Could not fetch dashboard data.');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [loading]);
+  const fetchDashboardData = useCallback(async () => { /* ... same as before ... */ }, []);
+  useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
-
-  const handleOpenModal = (vault) => {
+  const handleOpenAllocateModal = (vault) => {
     setSelectedVault(vault);
-    setIsModalOpen(true);
+    setAllocateModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setSelectedVault(null);
-    setIsModalOpen(false);
+  // 3. New handler to open the withdraw modal
+  const handleOpenWithdrawModal = (vault) => {
+    setSelectedVault(vault);
+    setWithdrawModalOpen(true);
   };
 
-  const handleAllocationSuccess = () => {
+  // This single function can handle success for both allocating and withdrawing
+  const handleActionSuccess = () => {
     fetchDashboardData();
   };
 
-  if (loading) {
-    return <Layout><div className="dashboard-container"><h1>Loading Dashboard...</h1></div></Layout>;
-  }
+  const StatCardSkeleton = () => (
+    <div className="stat-card skeleton">
+      <div className="skeleton-text short"></div>
+      <div className="skeleton-text long"></div>
+    </div>
+  );
 
-  if (error || !dashboardData) {
-    return <Layout><div className="dashboard-container"><p className="error-message">{error || 'No data available.'}</p></div></Layout>;
-  }
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="stats-grid">
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+        </div>
+      );
+    }
+    
+    if (error || !dashboardData) {
+      return <p className="error-message">{error || 'Could not load data.'}</p>;
+    }
 
-  const investedVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) > 0);
-  const availableVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) <= 0);
-  const isNewUser = dashboardData.totalPortfolioValue === 0;
+    const investedVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) > 0);
+    const availableVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) <= 0);
 
-  return (
-    <>
-      <Layout>
-        <div className="dashboard-container">
-          <h1>Welcome back, {user?.username || 'User'}!</h1>
-
-          {isNewUser ? (
-            <div className="new-user-cta">
-              <h2>Ready to Get Started?</h2>
-              <p>Your first step is to fund your account. Go to your wallet to find your unique deposit address.</p>
-              <button className="btn-primary btn-large" onClick={() => navigate('/wallet')}>
-                Go to Wallet
-              </button>
+    return (
+      <>
+        <div className="stats-grid">
+            <div className="stat-card">
+              <span className="stat-label">Total Portfolio Value</span>
+              <span className="stat-value">${(dashboardData.totalPortfolioValue || 0).toFixed(2)}</span>
             </div>
-          ) : (
-            <>
-              <div className="stats-grid">
-                <div className="stat-card">
-                  <span className="stat-label">Total Portfolio Value</span>
-                  <span className="stat-value">${(dashboardData.totalPortfolioValue || 0).toFixed(2)}</span>
-                </div>
-                <div className="stat-card">
-                  <span className="stat-label">Available to Allocate</span>
-                  <div className="stat-main">
-                    <span className="stat-value">${(dashboardData.availableBalance || 0).toFixed(2)}</span>
-                    <button onClick={() => navigate('/wallet')} className="btn-link">Manage</button>
-                  </div>
-                </div>
-                <div className="stat-card">
-                  <span className="stat-label">Bonus Points Value</span>
-                  <span className="stat-value">${(dashboardData.totalBonusPoints || 0).toFixed(2)}</span>
-                </div>
+            <div className="stat-card">
+              <span className="stat-label">Available to Allocate</span>
+              <div className="stat-main">
+                <span className="stat-value">${(dashboardData.availableBalance || 0).toFixed(2)}</span>
+                <button onClick={() => navigate('/wallet')} className="btn-link">Manage</button>
               </div>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Bonus Points Value</span>
+              <span className="stat-value">${(dashboardData.totalBonusPoints || 0).toFixed(2)}</span>
+            </div>
+        </div>
 
-              {investedVaults.length > 0 && (
-                <>
-                  <h2>Your Positions</h2>
-                  <div className="vaults-grid">
-                    {investedVaults.map(vault => (
-                      <div key={vault.vault_id} className="vault-card">
-                        <h3>{vault.name}</h3>
-                        <div className="vault-stat">
-                          <span>Tradable Capital</span>
-                          <span>${parseFloat(vault.tradable_capital).toFixed(2)}</span>
-                        </div>
-                        <div className="vault-stat">
-                          <span>Unrealized P&L</span>
-                          <span className={parseFloat(vault.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
-                            {parseFloat(vault.pnl) >= 0 ? '+' : ''}${parseFloat(vault.pnl).toFixed(2)}
-                          </span>
-                        </div>
-                        <div className="vault-actions">
-                          <button className="btn-secondary" onClick={() => handleOpenModal(vault)}>Add Funds</button>
-                          <button className="btn-secondary" onClick={() => navigate('/wallet')}>Withdraw</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-
-              <h2 style={{ marginTop: '48px' }}>Available Strategies</h2>
+        {investedVaults.length > 0 && (
+            <>
+              <h2>Your Positions</h2>
               <div className="vaults-grid">
-                {availableVaults.map(vault => (
-                  <div key={vault.vault_id} className="vault-card cta">
+                {investedVaults.map(vault => (
+                  <div key={vault.vault_id} className="vault-card">
                     <h3>{vault.name}</h3>
-                    <p className="cta-text">{vault.description}</p>
+                    <div className="vault-stat">
+                      <span>Tradable Capital</span>
+                      <span>${parseFloat(vault.tradable_capital).toFixed(2)}</span>
+                    </div>
+                    {/* ... pnl stat ... */}
                     <div className="vault-actions">
-                      <button className="btn-primary" onClick={() => handleOpenModal(vault)}>
-                        Allocate Funds
-                      </button>
+                      <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vault)}>Add Funds</button>
+                      {/* 4. This button now calls the correct handler */}
+                      <button className="btn-secondary" onClick={() => handleOpenWithdrawModal(vault)}>Withdraw</button>
                     </div>
                   </div>
                 ))}
               </div>
             </>
           )}
+
+        <h2>Available Strategies</h2>
+        <div className="vaults-grid">
+            {/* ... your available vaults map ... */}
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <>
+      <Layout>
+        <div className="dashboard-container">
+          <h1>Welcome back, {user?.username || 'User'}!</h1>
+          {renderContent()}
         </div>
       </Layout>
 
       <VaultModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        isOpen={isAllocateModalOpen}
+        onClose={() => setAllocateModalOpen(false)}
         vault={selectedVault}
-        availableBalance={dashboardData.availableBalance || 0}
-        onAllocationSuccess={handleAllocationSuccess}
+        availableBalance={dashboardData?.availableBalance || 0}
+        onAllocationSuccess={handleActionSuccess}
+      />
+      
+      {/* 5. Render the new withdraw modal, passing the correct props */}
+      <VaultWithdrawModal
+        isOpen={isWithdrawModalOpen}
+        onClose={() => setWithdrawModalOpen(false)}
+        vault={selectedVault}
+        onWithdrawalSuccess={handleActionSuccess}
       />
     </>
   );
