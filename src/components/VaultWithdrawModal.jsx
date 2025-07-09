@@ -27,17 +27,21 @@ const VaultWithdrawModal = ({ isOpen, onClose, vault, onWithdrawalSuccess }) => 
     setError('');
 
     const withdrawAmount = parseFloat(amount);
+    console.log('[VaultWithdrawModal] 🚀 Attempting to withdraw:', { vaultId: vault.vault_id, amount: withdrawAmount });
 
     try {
-      await api.post('/vaults/withdraw', {
+      const response = await api.post('/vaults/withdraw', {
         vaultId: vault.vault_id,
         amount: withdrawAmount,
       });
+      console.log('[VaultWithdrawModal] ✅ API call successful:', response.data);
 
       onWithdrawalSuccess();
       onClose();
 
     } catch (err) {
+      // This will now log the detailed error object from Axios
+      console.error('[VaultWithdrawModal] ❌ API call failed:', err);
       setError(err.response?.data?.error || 'Withdrawal failed.');
     } finally {
       setIsLoading(false);
