@@ -2,14 +2,16 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import VaultModal from '../components/VaultModal';
 import VaultWithdrawModal from '../components/VaultWithdrawModal';
-import InfoIcon from '../components/InfoIcon'; // Import the InfoIcon
+import InfoIcon from '../components/InfoIcon';
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -21,13 +23,17 @@ const Dashboard = () => {
   const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false);
   const [selectedVault, setSelectedVault] = useState(null);
 
+  // ✅ THE FIX FOR THE HANG/INFINITE LOOP:
+  // The dependency array is now empty []. This makes this function "stable"
+  // and ensures it is only created ONCE, breaking the re-render loop.
   const fetchDashboardData = useCallback(async () => {
     try {
-      if (!loading) setLoading(true);
+      if (!loading) setLoading(true); // Show loader for manual refreshes
       const response = await api.get('/dashboard');
       setDashboardData(response.data);
       setError('');
     } catch (err) {
+      console.error('[Dashboard] API call failed:', err);
       setError('Could not fetch dashboard data.');
     } finally {
       setLoading(false);
@@ -76,22 +82,23 @@ const Dashboard = () => {
 
     return (
       <>
+        {/* ✅ ADDED BACK: The complete stats grid */}
         <div className="stats-grid">
             <div className="stat-card">
-              <span className="stat-label">Total Portfolio Value</span>
+              <span className="stat-label">{t('dashboard.total_value')}</span>
               <span className="stat-value">${(dashboardData.totalPortfolioValue || 0).toFixed(2)}</span>
             </div>
             <div className="stat-card">
-              <span className="stat-label">Available to Allocate</span>
+              <span className="stat-label">{t('dashboard.available_balance')}</span>
               <div className="stat-main">
                 <span className="stat-value">${(dashboardData.availableBalance || 0).toFixed(2)}</span>
-                <button onClick={() => navigate('/wallet')} className="btn-link">Manage</button>
+                <button onClick={() => navigate('/wallet')} className="btn-link">{t('dashboard.manage')}</button>
               </div>
             </div>
             <div className="stat-card">
               <div className="stat-label-with-icon">
-                <span className="stat-label">Bonus Points Value</span>
-                <Link to="/faq" className="info-icon-link" title="What are Bonus Points?">
+                <span className="stat-label">{t('dashboard.bonus_points')}</span>
+                <Link to="/faq" className="info-icon-link" title={t('faq.q1_title')}>
                   <InfoIcon />
                 </Link>
               </div>
@@ -101,24 +108,24 @@ const Dashboard = () => {
 
         {investedVaults.length > 0 && (
           <>
-            <h2 style={{ marginTop: '48px' }}>Your Positions</h2>
+            <h2 style={{ marginTop: '48px' }}>{t('dashboard.your_positions')}</h2>
             <div className="vaults-grid">
               {investedVaults.map(vault => (
                 <div key={vault.vault_id} className="vault-card">
                   <h3>{vault.name}</h3>
                   <div className="vault-stat">
-                    <span>Tradable Capital</span>
+                    <span>{t('dashboard.tradable_capital')}</span>
                     <span>${parseFloat(vault.tradable_capital).toFixed(2)}</span>
                   </div>
                   <div className="vault-stat">
-                    <span>Unrealized P&L</span>
+                    <span>{t('dashboard.pnl')}</span>
                     <span className={parseFloat(vault.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
                       {parseFloat(vault.pnl) >= 0 ? '+' : ''}${parseFloat(vault.pnl).toFixed(2)}
                     </span>
                   </div>
                   <div className="vault-actions">
-                    <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vault)}>Add Funds</button>
-                    <button className="btn-secondary" onClick={() => handleOpenWithdrawModal(vault)}>Withdraw</button>
+                    <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vault)}>{t('dashboard.add_funds')}</button>
+                    <button className="btn-secondary" onClick={() => handleOpenWithdrawModal(vault)}>{t('dashboard.withdraw')}</button>
                   </div>
                 </div>
               ))}
@@ -126,13 +133,12 @@ const Dashboard = () => {
           </>
         )}
 
-        <h2 style={{ marginTop: '48px' }}>Available Strategies</h2>
+        <h2 style={{ marginTop: '48px' }}>{t('dashboard.available_strategies')}</h2>
         <div className="vaults-grid">
+          {/* ✅ ADDED BACK: The dynamic logic for vault status */}
           {dashboardData.vaults.map(vault => {
             if (investedVaults.find(v => v.vault_id === vault.vault_id)) return null;
-
             const isActive = vault.status === 'active';
-
             return (
               <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'}`}>
                 <h3>{vault.name}</h3>
@@ -140,14 +146,14 @@ const Dashboard = () => {
                 <div className="vault-actions">
                   {isActive ? (
                     <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
-                      Allocate Funds
+                      {t('dashboard.allocate_funds')}
                     </button>
                   ) : (
-                    <span className="placeholder-text">Coming Soon</span>
+                    <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
                   )}
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       </>
@@ -158,7 +164,7 @@ const Dashboard = () => {
     <>
       <Layout>
         <div className="dashboard-container">
-          <h1>Welcome back, {user?.username || 'User'}!</h1>
+          <h1>{t('dashboard.welcome', { username: user?.username || 'User' })}</h1>
           {renderContent()}
         </div>
       </Layout>
@@ -172,7 +178,6 @@ const Dashboard = () => {
             onAllocationSuccess={handleActionSuccess}
         />
       )}
-      
       {dashboardData && (
         <VaultWithdrawModal
             isOpen={isWithdrawModalOpen}
