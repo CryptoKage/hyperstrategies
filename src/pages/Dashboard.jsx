@@ -1,23 +1,19 @@
 // src/pages/Dashboard.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import VaultModal from '../components/VaultModal';
 import VaultWithdrawModal from '../components/VaultWithdrawModal';
+import InfoIcon from '../components/InfoIcon'; // Import the InfoIcon
 
 const Dashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
-  const [dashboardData, setDashboardData] = useState({
-    totalPortfolioValue: 0,
-    availableBalance: 0,
-    totalBonusPoints: 0,
-    vaults: [],
-  });
+  const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
@@ -25,25 +21,16 @@ const Dashboard = () => {
   const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false);
   const [selectedVault, setSelectedVault] = useState(null);
 
-  // --- Data Fetching with Performance Logging ---
   const fetchDashboardData = useCallback(async () => {
-    console.log('[Dashboard] 🚀 Starting data fetch...');
-    console.time("DashboardDataFetchTime"); // 1. START the timer
-    
-    // On subsequent refreshes, don't show the main skeleton, just a small indicator if needed.
-    // For now, we just refetch in the background.
-    
     try {
+      if (!loading) setLoading(true);
       const response = await api.get('/dashboard');
-      console.log('[Dashboard] ✅ API response received.');
       setDashboardData(response.data);
       setError('');
     } catch (err) {
-      console.error('[Dashboard] ❌ API call failed:', err);
       setError('Could not fetch dashboard data.');
     } finally {
-      if (loading) setLoading(false);
-      console.timeEnd("DashboardDataFetchTime"); // 2. STOP the timer and print duration
+      setLoading(false);
     }
   }, [loading]);
 
@@ -60,7 +47,6 @@ const Dashboard = () => {
     setWithdrawModalOpen(true);
   };
   const handleActionSuccess = () => {
-    console.log('[Dashboard] 🔄 Action successful, refreshing dashboard data...');
     fetchDashboardData();
   };
 
@@ -82,12 +68,11 @@ const Dashboard = () => {
       );
     }
     
-    if (error) {
-      return <p className="error-message">{error}</p>;
+    if (error || !dashboardData) {
+      return <p className="error-message">{error || 'Could not load data.'}</p>;
     }
 
     const investedVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) > 0);
-    const availableVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) <= 0);
 
     return (
       <>
@@ -104,7 +89,12 @@ const Dashboard = () => {
               </div>
             </div>
             <div className="stat-card">
-              <span className="stat-label">Bonus Points Value</span>
+              <div className="stat-label-with-icon">
+                <span className="stat-label">Bonus Points Value</span>
+                <Link to="/faq" className="info-icon-link" title="What are Bonus Points?">
+                  <InfoIcon />
+                </Link>
+              </div>
               <span className="stat-value">${(dashboardData.totalBonusPoints || 0).toFixed(2)}</span>
             </div>
         </div>
@@ -138,17 +128,27 @@ const Dashboard = () => {
 
         <h2 style={{ marginTop: '48px' }}>Available Strategies</h2>
         <div className="vaults-grid">
-          {availableVaults.map(vault => (
-            <div key={vault.vault_id} className="vault-card cta">
-              <h3>{vault.name}</h3>
-              <p className="cta-text">{vault.description}</p>
-              <div className="vault-actions">
-                <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
-                  Allocate Funds
-                </button>
+          {dashboardData.vaults.map(vault => {
+            if (investedVaults.find(v => v.vault_id === vault.vault_id)) return null;
+
+            const isActive = vault.status === 'active';
+
+            return (
+              <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'}`}>
+                <h3>{vault.name}</h3>
+                <p className="cta-text">{vault.description}</p>
+                <div className="vault-actions">
+                  {isActive ? (
+                    <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
+                      Allocate Funds
+                    </button>
+                  ) : (
+                    <span className="placeholder-text">Coming Soon</span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </>
     );
@@ -163,20 +163,24 @@ const Dashboard = () => {
         </div>
       </Layout>
 
-      <VaultModal
-        isOpen={isAllocateModalOpen}
-        onClose={() => setAllocateModalOpen(false)}
-        vault={selectedVault}
-        availableBalance={dashboardData.availableBalance}
-        onAllocationSuccess={handleActionSuccess}
-      />
+      {dashboardData && (
+        <VaultModal
+            isOpen={isAllocateModalOpen}
+            onClose={() => setAllocateModalOpen(false)}
+            vault={selectedVault}
+            availableBalance={dashboardData.availableBalance}
+            onAllocationSuccess={handleActionSuccess}
+        />
+      )}
       
-      <VaultWithdrawModal
-        isOpen={isWithdrawModalOpen}
-        onClose={() => setWithdrawModalOpen(false)}
-        vault={selectedVault}
-        onWithdrawalSuccess={handleActionSuccess}
-      />
+      {dashboardData && (
+        <VaultWithdrawModal
+            isOpen={isWithdrawModalOpen}
+            onClose={() => setWithdrawModalOpen(false)}
+            vault={selectedVault}
+            onWithdrawalSuccess={handleActionSuccess}
+        />
+      )}
     </>
   );
 };

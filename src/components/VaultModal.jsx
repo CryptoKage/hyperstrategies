@@ -8,12 +8,15 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  // 1. New state to track if the user has acknowledged the risk warning
+  const [riskAcknowledged, setRiskAcknowledged] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
       setAmount('');
       setError('');
       setIsLoading(false);
+      setRiskAcknowledged(false); // Reset acknowledgement when modal closes
     }
   }, [isOpen]);
 
@@ -52,16 +55,16 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
     }
   };
 
-  // ✅ 1. ADDED: This function handles the "Max" button click
   const handleMaxClick = () => {
-    // We set the amount to the user's full available balance, formatted as a string
-    setAmount(availableBalance.toFixed(2).toString());
+    setAmount((availableBalance || 0).toFixed(2).toString());
   };
 
-
-  // ✅ 2. RENAMED: All instances of 'loyaltyPoints' are now 'bonusPoints'
   const bonusPoints = (parseFloat(amount) * 0.20) || 0;
   const tradableCapital = (parseFloat(amount) * 0.80) || 0;
+
+  // 2. Determine if a warning is needed and if the button should be disabled
+  const needsWarning = vault.risk_level === 'high' || vault.risk_level === 'extreme';
+  const isSubmitDisabled = isLoading || (needsWarning && !riskAcknowledged);
 
   return (
     <div className="modal-overlay">
@@ -81,7 +84,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
             onChange={(e) => setAmount(e.target.value)}
             placeholder="e.g., 1000"
             required
-            // ✅ 3. ADDED: The onMaxClick prop connects the new handler to the InputField component
             onMaxClick={handleMaxClick}
           />
 
@@ -97,13 +99,34 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
             </div>
           </div>
 
-          <div className="disclaimer">
-            <p><strong>Please Note:</strong> Bonus Points are internal credits representing your contribution to platform operations. They are not a tradable cryptocurrency and are subject to the terms of service pending full MICA compliance.</p>
-          </div>
+          {/* 3. Conditionally render the correct warning box based on vault.risk_level */}
+          {vault.risk_level === 'high' && (
+            <div className="disclaimer warning">
+              <p><strong>High-Risk Strategy:</strong> This vault employs strategies with a higher potential for loss. Please ensure you understand the risks before allocating funds.</p>
+            </div>
+          )}
+          {vault.risk_level === 'extreme' && (
+            <div className="disclaimer warning extreme">
+              <p><strong>Extreme Risk - AI Driven:</strong> This vault utilizes experimental AI trading models. The strategies are highly volatile and can result in a significant or total loss of your allocated capital. Proceed with extreme caution.</p>
+            </div>
+          )}
+
+          {/* 4. Conditionally render the acknowledgement checkbox */}
+          {needsWarning && (
+            <div className="acknowledgement-box">
+              <input 
+                type="checkbox"
+                id="risk-ack"
+                checked={riskAcknowledged}
+                onChange={(e) => setRiskAcknowledged(e.target.checked)}
+              />
+              <label htmlFor="risk-ack">I acknowledge and accept the risks associated with this strategy.</label>
+            </div>
+          )}
 
           <div className="modal-actions">
             <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
-            <button type="submit" className="btn-primary" disabled={isLoading}>
+            <button type="submit" className="btn-primary" disabled={isSubmitDisabled}>
               {isLoading ? 'Processing...' : 'Confirm Allocation'}
             </button>
           </div>

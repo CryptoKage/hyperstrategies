@@ -1,95 +1,145 @@
 {
-
   "airdrop": {
-  "headline": "Sei Teil des Hyper Strategies Airdrops",
-  "subtext": "Dieser Airdrop richtet sich an frühe Community-Mitglieder, die Unterstützung zeigen und aktiv bleiben möchten. Alles, was du brauchst, ist Interesse – und eine Metamask-Wallet.",
-  "requirementsTitle": "Was du brauchst",
-  "bullets": [
-    "Ein Telegram-Konto",
-    "Eine Metamask-Wallet (Browser-Erweiterung)",
-    "1 Minute zum Anmelden"
-  ],
-  "browserWallet": "Browser-Wallet (Hot Wallet)",
-  "hardwareWallet": "Hardware-Wallet",
-  "metamaskText": "Sicher, einfach zu installieren – ideal für schnellen Einstieg.",
-  "ledgerText": "Optional – nutze Ledger für langfristige sichere Aufbewahrung.",
-  "joinTelegram": "Telegram-Community beitreten",
-  "submitWallet": "Wallet für Airdrop einreichen"
-},
-
-"selfserve": {
-  "headline": "Nutzen Sie automatisierten Handel auf Ihre Weise",
-  "subtext": "Führen Sie Ihre eigenen Algorithmen mit voller Kontrolle über Parameter und Risikomanagement aus.",
-  "callout": "Zugriff auf 17 Handelsstrategien – ganz ohne Programmierkenntnisse",
-  "comingSoon": "Demnächst verfügbar – Treten Sie unserer Community für einen frühen Zugang bei"
-},
-
-"managed": {
-  "headline": "Lassen Sie unser System für Sie handeln",
-  "subtext": "Eine professionell verwaltete Strategie, die automatisch in Ihrem Namen handelt. Entwickelt für passive Anleger, die Einfachheit und langfristiges Wachstum schätzen.",
-  "point1": "Low-Burn-MVP bereits aktiv",
-  "point2": "Zugang zu echten automatisierten Strategien",
-  "point3": "Starke Erzählung mit $FORGE-Nutzen",
-  "point4": "Token-Exposition vor dem Start",
-  "cta": "Treten Sie dem Telegram bei"
-},
-
-"investor": {
-  "headline": "Investiere in Hyper Strategies",
-  "subtext": "Wir suchen strategische Partner, die unsere Vision von zugänglichem, automatisiertem Krypto-Investing teilen. Wenn du ein Frühphaseninvestor, VC oder Fonds bist – lass uns sprechen.",
-  "cta": "Bleib in Kontakt"
-},
-
-"home": {
-  "hero": {
-    "headline": "Modernes, automatisiertes Trading. Für alle.",
-    "subtext": "Automatisieren Sie Ihr Trading mit maßgeschneiderten Strategien – einfach zugänglich auf der Hyperliquid-Plattform.",
-    "cta1": "Am Airdrop teilnehmen",
-    "cta2": "Mit uns sprechen"
-  },
-  "about": {
-    "title": "Was ist diese Plattform?",
+    "headline": "Nehmen Sie am Hyper Strategies Airdrop teil",
+    "subtext": "Dieser Airdrop ist für frühe Community-Mitglieder, die Unterstützung zeigen und dabei bleiben möchten. Alles, was Sie brauchen, ist Interesse – und eine Metamask-Wallet.",
+    "requirementsTitle": "Was Sie benötigen",
     "bullets": [
-      "Aufbauend auf dem Hyperliquid-Protokoll",
-      "Benutzerfreundlicher Strategy-Builder (demnächst verfügbar)",
-      "Managed Fund für passive Anleger"
-    ]
+      "Einen Telegram-Account",
+      "Eine Metamask-Wallet (Browser-Erweiterung)",
+      "1 Minute zur Anmeldung"
+    ],
+    "browserWallet": "Browser-Wallet (Hot Wallet)",
+    "hardwareWallet": "Hardware-Wallet",
+    "metamaskText": "Sicher, einfach zu installieren – perfekt für eine schnelle Anmeldung.",
+    "ledgerText": "Optional – verwenden Sie Ledger für eine langfristig sichere Aufbewahrung.",
+    "joinTelegram": "Treten Sie der Telegram-Community bei",
+    "submitWallet": "Wallet für Airdrop einreichen"
   },
-  "cards": {
-    "title": "Wo sehen Sie sich selbst?",
-    "select": "Diese Option wählen",
-    "airdrop": {
-      "title": "Ich möchte nur einbezogen werden",
-      "text": "Teilen Sie Ihre Adresse zur Teilnahme am Airdrop."
+  "selfserve": {
+    "headline": "Nutzen Sie automatisierten Handel auf Ihre Weise",
+    "subtext": "Führen Sie Ihre eigenen Algorithmen mit voller Kontrolle über Parameter und Risikomanagement aus.",
+    "callout": "Zugang zu 17 Handelsstrategien, keine Programmierkenntnisse erforderlich",
+    "comingSoon": "Demnächst verfügbar – Treten Sie unserer Community bei, um frühen Zugang zu erhalten"
+  },
+  "managed": {
+    "headline": "Lassen Sie unser System für Sie handeln",
+    "subtext": "Eine professionell verwaltete Strategie, die automatisch Trades in Ihrem Namen ausführt. Entwickelt für passive Investoren, die Einfachheit und langfristiges Wachstum schätzen.",
+    "point1": "Ein Low-burn-MVP ist bereits in Bewegung",
+    "point2": "Zugang zu echten automatisierten Strategien",
+    "point3": "Starke Erzählung mit $FORGE-Nutzen",
+    "point4": "Potenzial für Pre-Token-Exposure",
+    "cta": "Treten Sie Telegram bei"
+  },
+  "investor": {
+    "headline": "Investieren Sie in Hyper Strategies",
+    "subtext": "Wir suchen strategische Unterstützer, die mit unserer Vision von zugänglichem, automatisiertem Krypto-Handel übereinstimmen. Wenn Sie ein Pre-Seed-Investor, VC oder Frühphasen-Fonds sind – lassen Sie uns reden.",
+    "cta": "Kontakt aufnehmen"
+  },
+  "home": {
+    "hero": {
+      "headline": "Moderner, automatisierter Handel. Für alle.",
+      "subtext": "Automatisieren Sie Ihren Handel mit maßgeschneiderten Strategien – einfach zugänglich auf der Hyperliquid-Plattform.",
+      "cta1": "Am Airdrop teilnehmen",
+      "cta2": "Sprechen Sie mit uns"
     },
-    "self": {
-      "title": "Ich möchte die Plattform selbst nutzen",
-      "text": "Automatisierte Strategien für mein eigenes Trading erstellen."
+    "about": {
+      "title": "Was ist diese Plattform?",
+      "bullets": [
+        "Auf dem Hyperliquid-Protokoll aufgebaut",
+        "Benutzerfreundlicher Strategie-Builder (demnächst verfügbar)",
+        "Verwalteter Fonds für passive Investoren"
+      ]
     },
-    "managed": {
-      "title": "Ich möchte das System für mich traden lassen",
-      "text": "Vom Managed Fund profitieren – ohne Einrichtung."
-    },
-    "investor": {
-      "headline": "Investiere in Hyper Strategies",
-      "subtext": "Wir suchen strategische Partner, die unsere Vision von zugänglichem, automatisiertem Krypto-Investing teilen. Wenn du ein Frühphaseninvestor, VC oder Fonds bist – lass uns sprechen.",
-      "cta": "Bleib in Kontakt"
-}
- }
-},
-
-"legal": {
-  "title": "Impressum",
-  "company": "Hyper Strategies Ltd.",
-  "address": "Registrierung wird durchgeführt",
-  "email": "E-Mail: erokage2@gmail.com",
-  "disclaimerTitle": "Haftungsausschluss",
-  "disclaimer1": "Die Inhalte dieser Website dienen ausschließlich zu Informationszwecken und stellen keine Finanzberatung oder Aufforderung zur Investition dar.",
-  "disclaimer2": "Der Handel mit Kryptowährungen birgt erhebliche Risiken. Frühere Leistungen sind keine Garantie für zukünftige Ergebnisse.",
-  "disclaimer3": "Die Nutzer sind allein verantwortlich für ihre Investitionsentscheidungen. Hyper Strategies haftet nicht für Verluste.",
-  "rightsTitle": "Urheberrecht und Rechte",
-  "rights": "© 2025 Hyper Strategies. Alle Rechte vorbehalten. Alle Inhalte dieser Website sind urheberrechtlich geschützt."
-}
-
-
+    "cards": {
+      "title": "Wo sehen Sie sich?",
+      "select": "Diese Option wählen",
+      "airdrop": {
+        "title": "Ich möchte nur dabei sein",
+        "text": "Reichen Sie Ihre Adresse ein, um am Airdrop teilzunehmen."
+      },
+      "self": {
+        "title": "Ich möchte die Plattform nutzen",
+        "text": "Meine eigenen automatisierten Strategien erstellen und ausführen."
+      },
+      "managed": {
+        "title": "Ich möchte, dass das System für mich handelt",
+        "text": "Vom verwalteten Fonds ohne Einrichtung profitieren."
+      },
+      "invest": {
+        "title": "Ich bin an einer Investition interessiert",
+        "text": "Erfahren Sie mehr über Investitionsmöglichkeiten in das Projekt."
+      }
+    }
+  },
+  "legal": {
+    "title": "Impressum",
+    "company": "Hyper Strategies Ltd.",
+    "address": "Registrierung in Bearbeitung",
+    "email": "E-Mail: erokage2@gmail.com",
+    "disclaimerTitle": "Haftungsausschluss",
+    "disclaimer1": "Die Inhalte auf dieser Website dienen nur zu Informationszwecken und stellen keine Finanzberatung oder eine Aufforderung zur Investition dar.",
+    "disclaimer2": "Der Handel mit Kryptowährungen birgt erhebliche Risiken. Die bisherige Wertentwicklung ist kein Hinweis auf zukünftige Ergebnisse.",
+    "disclaimer3": "Benutzer sind allein für ihre Anlageentscheidungen verantwortlich. Hyper Strategies haftet nicht für etwaige Verluste.",
+    "rightsTitle": "Urheberrecht und Rechte",
+    "rights": "© 2025 Hyper Strategies. Alle Rechte vorbehalten. Alle Inhalte auf dieser Website sind urheberrechtlich geschützt."
+  },
+  "header": {
+    "dashboard": "Dashboard",
+    "wallet": "Wallet",
+    "logout": "Abmelden",
+    "signIn": "Anmelden",
+    "register": "Registrieren"
+  },
+  "dashboard": {
+    "welcome": "Willkommen zurück, {{username}}!",
+    "loading": "Lade Dashboard...",
+    "error": "Dashboard-Daten konnten nicht geladen werden.",
+    "no_data": "Keine Daten verfügbar.",
+    "total_value": "Gesamter Portfoliowert",
+    "available_balance": "Verfügbar zum Zuweisen",
+    "bonus_points": "Wert der Bonuspunkte",
+    "manage": "Verwalten",
+    "your_positions": "Ihre Positionen",
+    "tradable_capital": "Handelbares Kapital",
+    "pnl": "Unrealisierter G&V",
+    "add_funds": "Mittel hinzufügen",
+    "withdraw": "Abheben",
+    "available_strategies": "Verfügbare Strategien",
+    "allocate_funds": "Mittel zuweisen",
+    "coming_soon": "Demnächst verfügbar",
+    "new_user_title": "Bereit loszulegen?",
+    "new_user_text": "Ihr erster Schritt ist die Einzahlung von Mitteln auf Ihr Konto. Gehen Sie zu Ihrer Wallet, um Ihre eindeutige Einzahlungsadresse zu finden.",
+    "go_to_wallet": "Zur Wallet gehen"
+  },
+  "wallet": {
+    "title": "Ihre Wallet",
+    "loading": "Lade Wallet...",
+    "refresh": "Aktualisieren",
+    "refreshing": "Aktualisiere...",
+    "usdc_balance": "USDC-Guthaben (On-Chain)",
+    "eth_balance": "ETH-Guthaben (für Gas)",
+    "deposit_address_title": "Ihre Einzahlungsadresse",
+    "deposit_address_text": "Senden Sie USDC (Mainnet) an diese Adresse, um Ihr Konto aufzuladen.",
+    "copy": "Kopieren",
+    "copied": "Kopiert!",
+    "actions_title": "Aktionen",
+    "withdraw_title": "Mittel abheben",
+    "withdraw_text": "Eine Auszahlung Ihres verfügbaren USDC an eine externe Wallet in die Warteschlange stellen.",
+    "start_withdrawal": "Auszahlung starten",
+    "history_title": "Auszahlungsverlauf",
+    "history_none": "Sie haben keinen Auszahlungsverlauf."
+  },
+  "modals": {
+    "cancel": "Abbrechen",
+    "processing": "Verarbeite..."
+  },
+  "faq": {
+    "title": "Häufig gestellte Fragen",
+    "q1_title": "Was sind Bonuspunkte?",
+    "q1_answer": "Bonuspunkte sind unsere Art, Benutzer zu belohnen, die Kapital in unsere Vaults einlegen. Wenn Sie Geld in einen Vault einzahlen, werden 20 % dieses Kapitals in Bonuspunkte umgewandelt, die im Verhältnis 1:1 zu USDC bewertet werden. Diese 20 % helfen, die Betriebs- und Entwicklungskosten der Plattform zu decken, sodass wir einen besseren Service für Sie aufbauen können.",
+    "q2_title": "Kann ich meine Bonuspunkte abheben?",
+    "q2_answer": "Bonuspunkte können nicht direkt abgehoben werden. Sie repräsentieren Ihren Beitrag zur Plattform. Im Laufe der Zeit, wenn unsere Plattform Einnahmen aus Performancegebühren erzielt, werden wir einen Teil dieser Einnahmen verwenden, um Bonuspunkte von den Benutzern zurückzukaufen. Dieser Prozess wandelt Ihre Bonuspunkte wieder in USDC um, die dann Ihrem Hauptguthaben 'Verfügbar zum Zuweisen' hinzugefügt werden.",
+    "q3_title": "Wie werden Vault-Auszahlungen verarbeitet?",
+    "q3_answer": "Wenn Sie Geld aus einem Vault abheben, verschieben Sie Ihr 'Handelbares Kapital' zurück in Ihr Hauptguthaben 'Verfügbar zum Zuweisen'. Dies ist eine interne Überweisung und erfolgt in der Regel sofort. Um Geld von der Plattform auf eine externe Wallet abzuheben, müssen Sie die Funktion 'Mittel abheben' auf der Wallet-Seite verwenden."
+  }
 }

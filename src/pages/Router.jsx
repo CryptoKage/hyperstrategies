@@ -15,6 +15,7 @@ import Register from './Register';
 import Dashboard from './Dashboard';
 import Wallet from './Wallet';
 import OAuthSuccess from './OAuthSuccess';
+import FAQ from './FAQ';
 
 
 // --- Guard Components ---
@@ -32,6 +33,8 @@ const Router = () => {
       <Route path="/managed" element={<Managed />} />
       <Route path="/investor" element={<Investor />} />
       <Route path="/legal" element={<Legal />} />
+      <Route path="/faq" element={<FAQ />} />
+
       <Route path="/oauth-success" element={<OAuthSuccess />} />
 
       {/* --- Guest-Only Routes --- */}
