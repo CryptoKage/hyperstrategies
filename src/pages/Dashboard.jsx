@@ -23,12 +23,10 @@ const Dashboard = () => {
   const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false);
   const [selectedVault, setSelectedVault] = useState(null);
 
-  // ✅ THE FIX FOR THE HANG/INFINITE LOOP:
-  // The dependency array is now empty []. This makes this function "stable"
-  // and ensures it is only created ONCE, breaking the re-render loop.
+  // This function is now stable and will not cause re-renders.
   const fetchDashboardData = useCallback(async () => {
+    setLoading(true);
     try {
-      if (!loading) setLoading(true); // Show loader for manual refreshes
       const response = await api.get('/dashboard');
       setDashboardData(response.data);
       setError('');
@@ -38,8 +36,9 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [loading]);
+  }, []); // The empty dependency array is the key.
 
+  // This effect runs only once on mount.
   useEffect(() => {
     fetchDashboardData();
   }, [fetchDashboardData]);
@@ -75,14 +74,13 @@ const Dashboard = () => {
     }
     
     if (error || !dashboardData) {
-      return <p className="error-message">{error || 'Could not load data.'}</p>;
+      return <p className="error-message">{error || t('dashboard.no_data')}</p>;
     }
 
     const investedVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) > 0);
-
+    
     return (
       <>
-        {/* ✅ ADDED BACK: The complete stats grid */}
         <div className="stats-grid">
             <div className="stat-card">
               <span className="stat-label">{t('dashboard.total_value')}</span>
@@ -135,7 +133,6 @@ const Dashboard = () => {
 
         <h2 style={{ marginTop: '48px' }}>{t('dashboard.available_strategies')}</h2>
         <div className="vaults-grid">
-          {/* ✅ ADDED BACK: The dynamic logic for vault status */}
           {dashboardData.vaults.map(vault => {
             if (investedVaults.find(v => v.vault_id === vault.vault_id)) return null;
             const isActive = vault.status === 'active';
@@ -168,24 +165,19 @@ const Dashboard = () => {
           {renderContent()}
         </div>
       </Layout>
-
-      {dashboardData && (
-        <VaultModal
-            isOpen={isAllocateModalOpen}
-            onClose={() => setAllocateModalOpen(false)}
-            vault={selectedVault}
-            availableBalance={dashboardData.availableBalance}
-            onAllocationSuccess={handleActionSuccess}
-        />
-      )}
-      {dashboardData && (
-        <VaultWithdrawModal
-            isOpen={isWithdrawModalOpen}
-            onClose={() => setWithdrawModalOpen(false)}
-            vault={selectedVault}
-            onWithdrawalSuccess={handleActionSuccess}
-        />
-      )}
+      <VaultModal
+        isOpen={isAllocateModalOpen}
+        onClose={() => setAllocateModalOpen(false)}
+        vault={selectedVault}
+        availableBalance={dashboardData?.availableBalance || 0}
+        onAllocationSuccess={handleActionSuccess}
+      />
+      <VaultWithdrawModal
+        isOpen={isWithdrawModalOpen}
+        onClose={() => setWithdrawModalOpen(false)}
+        vault={selectedVault}
+        onWithdrawalSuccess={handleActionSuccess}
+      />
     </>
   );
 };
