@@ -1,18 +1,18 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import RotatingText from '../components/RotatingText'; // Your custom component
+import RotatingText from '../components/RotatingText';
 
 import Layout from '../components/Layout';
 import CardSection from '../components/CardSection';
 import ChartImage from '../assets/chart-placeholder.png';
-import LogoImage from '../assets/logo2.png';
+// 🔴 Remove text-based logo to avoid repetition
 
 const Home = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const rotatingWords = ['Experimental', 'Automated', 'Hedgefund', 'Smart', 'Hyper'];
+  const rotatingWords = ['EXPERIMENTAL', 'AUTOMATED', 'HEDGEFUND', 'SMART', 'HYPER'];
 
   const homePageCards = [
     { icon: '📩', title: t('home.cards.airdrop.title'), description: t('home.cards.airdrop.text'), route: '/airdrop' },
@@ -25,28 +25,25 @@ const Home = () => {
     <Layout>
       <section className="hero-section">
         <div className="hero-content">
-          <img src={LogoImage} alt="Hyper Strategies Logo" className="hero-logo" />
+          {/* Logo image only (no text) */}
+          <img src={ChartImage} alt="Trading Chart" className="hero-logo-chart" />
 
           <h1 className="hero-headline">
             <RotatingText
               texts={rotatingWords}
-              mainClassName="text-rotate"
-              initial={{ y: '100%', opacity: 0 }}
-              animate={{ y: '0%', opacity: 1 }}
-              exit={{ y: '-120%', opacity: 0 }}
+              mainClassName="text-rotate-bg"
               staggerFrom="last"
-              staggerDuration={0.025}
-              transition={{ type: 'spring', damping: 30, stiffness: 400 }}
               rotationInterval={2500}
+              loop={false}
             />
-            -strategies
+            -STRATEGIES
           </h1>
 
           <p className="hero-subtext">{t('home.hero.subtext')}</p>
 
           <div className="button-row">
             <a href="https://t.me/hyperstrategies" target="_blank" rel="noopener noreferrer" className="btn-primary">
-              Join The Community
+              JOIN THE COMMUNITY
             </a>
             <button className="btn-outline" onClick={() => navigate('/investor')}>
               {t('home.hero.cta2')}

@@ -1785,11 +1785,21 @@ button {
 }
 
 /* ===== Rotating Text Styling (ReactBits-style) ===== */
-.text-rotate {
-  display: flex;
-  flex-wrap: wrap;
-  white-space: pre-wrap;
-  position: relative;
+.text-rotate-bg {
+  background-color: #007AFF; /* your primary accent blue */
+  color: #ffffff;
+  padding: 0.15em 0.4em;
+  border-radius: 0.25em;
+  display: inline-block;
+  margin-right: 0.2em;
+}
+
+.hero-headline {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-bottom: 1rem;
 }
 
 .text-rotate-sr-only {
@@ -1843,13 +1853,7 @@ button {
   height: auto;
 }
 
-.hero-headline {
-  font-size: 3rem;
-  font-weight: bold;
-  color: var(--color-text-primary, #ffffff);
-  margin-bottom: 1rem;
-  line-height: 1.1;
-}
+
 
 .hero-subtext {
   font-size: 1.125rem;
