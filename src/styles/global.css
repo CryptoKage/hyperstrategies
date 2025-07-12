@@ -79,13 +79,7 @@ button {
   max-width: 600px;
 }
 
-.hero-image {
-  max-width: 100%;
-  max-height: 320px;
-  border-radius: 8px;
-  object-fit: contain;
-  border: 1px solid #333;
-}
+
 
 .platform-list {
   font-size: 16px;
@@ -230,19 +224,9 @@ button {
   max-width: 600px;
 }
 
-.hero-image-container {
-  flex: 1;
-  min-width: 300px;
-  text-align: center;
-}
 
-.hero-image {
-  max-width: 100%;
-  max-height: 320px;
-  border-radius: 8px;
-  object-fit: contain;
-  border: 1px solid #333; /* A subtle border for the chart */
-}
+
+
 
 
 /* --- About Section --- */

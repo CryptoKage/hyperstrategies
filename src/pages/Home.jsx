@@ -26,8 +26,7 @@ const Home = () => {
       <section className="hero-section">
         <div className="hero-content">
           {/* Logo image only (no text) */}
-          <img src={ChartImage} alt="Trading Chart" className="hero-logo-chart" />
-
+          
           <h1 className="hero-headline">
             <RotatingText
               texts={rotatingWords}
