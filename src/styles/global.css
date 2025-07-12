@@ -1693,3 +1693,55 @@ button {
   color: var(--color-primary);
 }
 
+.hero-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4rem 2rem;
+  flex-wrap: wrap;
+}
+
+.hero-content {
+  flex: 1 1 400px;
+}
+
+.hero-image-container {
+  flex: 1 1 400px;
+  display: flex;
+  justify-content: center;
+}
+
+.rotating-chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-headline {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #1F1F1F;
+  margin-top: 1rem;
+}
+
+.rotating-text {
+  display: inline;
+}
+.rotating-text > * {
+  color: #007AFF;
+}
+
+.hero-image {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive stacking on mobile */
+@media (max-width: 768px) {
+  .hero-section {
+    flex-direction: column;
+  }
+  .hero-headline {
+    font-size: 2.25rem;
+  }
+}

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import ReactRotatingText from 'react-rotating-text';
 
-// Component & Asset Imports
 import Layout from '../components/Layout';
 import CardSection from '../components/CardSection';
 import ChartImage from '../assets/chart-placeholder.png';
@@ -11,6 +11,7 @@ import LogoImage from '../assets/logo2.png';
 const Home = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const rotatingWords = ['Experimental', 'Automated', 'Hedgefund', 'Smart', 'Hyper'];
 
   const homePageCards = [
     {
@@ -45,10 +46,23 @@ const Home = () => {
       <section className="hero-section">
         <div className="hero-content">
           <img src={LogoImage} alt="Hyper Strategies Logo" className="hero-logo" />
-          <h1 className="hero-headline">{t('home.hero.headline')}</h1>
+
+          <h1 className="hero-headline">
+            <ReactRotatingText
+              items={rotatingWords}
+              className="rotating-text"
+              color="#007AFF"
+              cursor={true}
+              pause={1500}
+              typingInterval={60}
+              deletingInterval={40}
+            />
+            -strategies
+          </h1>
+
           <p className="hero-subtext">{t('home.hero.subtext')}</p>
+
           <div className="button-row">
-            {/* === 👇 THIS IS THE MODIFIED BUTTON 👇 === */}
             <a
               href="https://t.me/hyperstrategies"
               target="_blank"
@@ -57,16 +71,17 @@ const Home = () => {
             >
               Join The Community
             </a>
-            {/* === END OF MODIFICATION === */}
-
-            {/* This button remains unchanged */}
             <button className="btn-outline" onClick={() => navigate('/investor')}>
               {t('home.hero.cta2')}
             </button>
           </div>
         </div>
+
+        {/* Rotating text + chart image */}
         <div className="hero-image-container">
-          <img src={ChartImage} alt="Trading Chart" className="hero-image" />
+          <div className="rotating-chart-wrapper">
+            <img src={ChartImage} alt="Trading Chart" className="hero-image" />
+          </div>
         </div>
       </section>
 
