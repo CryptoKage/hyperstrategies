@@ -1692,147 +1692,7 @@ button {
 .info-icon-link:hover {
   color: var(--color-primary);
 }
-
-.hero-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4rem 2rem;
-  flex-wrap: wrap;
-}
-
-.hero-content {
-  flex: 1 1 400px;
-}
-
-.hero-image-container {
-  flex: 1 1 400px;
-  display: flex;
-  justify-content: center;
-}
-
-.rotating-chart-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.hero-headline {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #1F1F1F;
-  margin-top: 1rem;
-}
-
-.rotating-text {
-  display: inline;
-}
-.rotating-text > * {
-  color: #007AFF;
-}
-
-.hero-image {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Responsive stacking on mobile */
-@media (max-width: 768px) {
-  .hero-section {
-    flex-direction: column;
-  }
-  .hero-headline {
-    font-size: 2.25rem;
-  }
-}
-
-/* Rotating Text Styling */
-.text-rotate {
-  display: flex;
-  flex-wrap: wrap;
-  white-space: pre-wrap;
-  position: relative;
-}
-
-.text-rotate-sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.text-rotate-word {
-  display: inline-flex;
-}
-
-.text-rotate-lines {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.text-rotate-element {
-  display: inline-block;
-}
-
-.text-rotate-space {
-  white-space: pre;
-}
-
-/* ===== Rotating Text Styling (ReactBits-style) ===== */
-.text-rotate-bg {
-  background-color: #007AFF; /* your primary accent blue */
-  color: #ffffff;
-  padding: 0.15em 0.4em;
-  border-radius: 0.25em;
-  display: inline-block;
-  margin-right: 0.2em;
-}
-
-.hero-headline {
-  font-size: 3rem;
-  font-weight: bold;
-  color: #ffffff;
-  line-height: 1.1;
-  margin-bottom: 1rem;
-}
-
-.text-rotate-sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.text-rotate-word {
-  display: inline-flex;
-}
-
-.text-rotate-lines {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.text-rotate-element {
-  display: inline-block;
-}
-
-.text-rotate-space {
-  white-space: pre;
-}
-
-/* ===== Hero Section with Rotating Text ===== */
+/* ===== Hero Section ===== */
 .hero-section {
   display: flex;
   align-items: center;
@@ -1846,20 +1706,26 @@ button {
   min-width: 300px;
 }
 
-.hero-logo {
-  width: 80%;
-  max-width: 320px;
-  margin-bottom: 24px;
-  height: auto;
+.hero-headline {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--color-text-primary, #ffffff);
+  line-height: 1.1;
+  margin-bottom: 1rem;
 }
-
-
 
 .hero-subtext {
   font-size: 1.125rem;
-  color: #a0a0a0;
+  color: var(--color-text-secondary, #a0a0a0);
   margin-bottom: 24px;
   max-width: 600px;
+}
+
+.button-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 24px;
 }
 
 .hero-image-container {
@@ -1874,10 +1740,58 @@ button {
   max-height: 320px;
   border-radius: 8px;
   object-fit: contain;
-  border: 1px solid #333;
+  border: 1px solid var(--color-border, #333);
 }
 
-/* ===== Responsive Behavior ===== */
+/* ===== Rotating Text Styling ===== */
+.text-rotate {
+  display: flex;
+  flex-wrap: wrap;
+  white-space: pre-wrap;
+  position: relative;
+}
+
+.text-rotate-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.text-rotate-word {
+  display: inline-flex;
+}
+
+.text-rotate-lines {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.text-rotate-element {
+  display: inline-block;
+}
+
+.text-rotate-space {
+  white-space: pre;
+}
+
+/* ===== Highlighted Rotating Word ===== */
+.text-rotate-bg {
+  background-color: var(--color-primary, #007AFF);
+  color: var(--color-background, #ffffff);
+  padding: 0.15em 0.4em;
+  border-radius: 0.25em;
+  display: inline-block;
+  margin-right: 0.2em;
+}
+
+/* ===== Responsive ===== */
 @media (max-width: 768px) {
   .hero-section {
     flex-direction: column;
@@ -1885,12 +1799,4 @@ button {
   .hero-headline {
     font-size: 2.25rem;
   }
-}
-
-/* ===== Button-row spacing ===== */
-.button-row {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 24px;
 }
