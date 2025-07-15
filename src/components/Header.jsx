@@ -42,8 +42,7 @@ const Header = () => {
           <>
             <Link to="/dashboard" className="header__button">{t('header.dashboard', 'Dashboard')}</Link>
             <Link to="/wallet" className="header__button">{t('header.wallet', 'Wallet')}</Link>
-            <Link to="/leaderboard" className="header__button">Leaderboard</Link>
-            {/* ✅ ADD THE PROFILE LINK HERE */}
+
             <Link to="/profile" className="header__button">Profile</Link>
             <button onClick={handleLogout} className="header__button header__button--primary">
               {t('header.logout', 'Logout')}
