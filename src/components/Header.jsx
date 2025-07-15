@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import Logo from '../assets/logo.png';
 
 const Header = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
@@ -22,10 +22,11 @@ const Header = () => {
 
   return (
     <header className="header">
-      <div className="header__left" onClick={() => navigate('/')}>
+      <Link to="/" className="header__left">
         <img src={Logo} alt="Hyper Strategies" className="header__logo" />
         <span className="header__title">Hyper Strategies</span>
-      </div>
+      </Link>
+      
       <div className="header__right">
         <select
           className="header__language-select"
@@ -37,20 +38,23 @@ const Header = () => {
         </select>
 
         {user ? (
+          // --- Logged-In User View ---
           <>
-            <Link to="/dashboard" className="header__button">Dashboard</Link>
-            {/* ✅ ADD THIS WALLET LINK */}
-            <Link to="/wallet" className="header__button">Wallet</Link>
+            <Link to="/dashboard" className="header__button">{t('header.dashboard', 'Dashboard')}</Link>
+            <Link to="/wallet" className="header__button">{t('header.wallet', 'Wallet')}</Link>
+            <Link to="/leaderboard" className="header__button">Leaderboard</Link>
+            {/* ✅ ADD THE PROFILE LINK HERE */}
+            <Link to="/profile" className="header__button">Profile</Link>
             <button onClick={handleLogout} className="header__button header__button--primary">
-              Logout
+              {t('header.logout', 'Logout')}
             </button>
           </>
         ) : (
+          // --- Guest View ---
           <>
-            <Link to="/login" className="header__button">Sign In</Link>
-            <Link to="/register" className="header__button header__button--primary">
-              Register
-            </Link>
+            <Link to="/leaderboard" className="header__button">Leaderboard</Link>
+            <Link to="/login" className="header__button">{t('header.signIn', 'Sign In')}</Link>
+            <Link to="/register" className="header__button header__button--primary">{t('header.register', 'Register')}</Link>
           </>
         )}
       </div>

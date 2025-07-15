@@ -5,7 +5,8 @@ import { Routes, Route } from 'react-router-dom';
 
 // --- Page Components ---
 import Home from './Home';
-import Airdrop from './XPLeaderboard';
+import XPLeaderboard from './XPLeaderboard'; // ✅ Correctly import the renamed component
+import Profile from './Profile';           // ✅ Import the new Profile page
 import SelfServe from './SelfServe';
 import Managed from './Managed';
 import Investor from './Investor';
@@ -26,35 +27,31 @@ const Router = () => {
   return (
     <Routes>
       {/* --- Publicly Accessible Routes --- */}
-      {/* These pages can be viewed by anyone, logged in or not. */}
       <Route path="/" element={<Home />} />
-      <Route path="/XPLeaderboard" element={<Airdrop />} />
+      <Route path="/leaderboard" element={<XPLeaderboard />} /> {/* ✅ Use the correct path and component */}
       <Route path="/self-serve" element={<SelfServe />} />
       <Route path="/managed" element={<Managed />} />
       <Route path="/investor" element={<Investor />} />
       <Route path="/legal" element={<Legal />} />
       <Route path="/faq" element={<FAQ />} />
-
       <Route path="/oauth-success" element={<OAuthSuccess />} />
 
-      {/* --- Guest-Only Routes --- */}
-      {/* These pages are ONLY for logged-out users. */}
-      {/* If a logged-in user tries to visit /login, they will be redirected to /dashboard. */}
-      <Route path="/login" element={<GuestRoute><Login /></GuestRoute>}/>
-      <Route         path="/register"        element={          <GuestRoute>            <Register />          </GuestRoute>        }       />
+      {/* --- Guest-Only Routes (for logged-out users) --- */}
+      <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+      <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
       
-
-      {/* --- Protected Routes --- */}
-      {/* These pages are ONLY for logged-in users. */}
-      {/* If a logged-out user tries to visit /dashboard, they will be redirected to /login. */}
+      {/* --- Protected Routes (for logged-in users) --- */}
       <Route 
         path="/dashboard" 
         element={<ProtectedRoute><Dashboard /></ProtectedRoute>} 
       />
-      {/* ✅ 2. ADD THE NEW PROTECTED ROUTE FOR THE WALLET */}
       <Route 
         path="/wallet" 
         element={<ProtectedRoute><Wallet /></ProtectedRoute>} 
+      />
+      <Route 
+        path="/profile" 
+        element={<ProtectedRoute><Profile /></ProtectedRoute>} 
       />
     </Routes>
   );
