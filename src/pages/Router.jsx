@@ -28,7 +28,7 @@ const Router = () => {
     <Routes>
       {/* --- Publicly Accessible Routes --- */}
       <Route path="/" element={<Home />} />
-      <Route path="/leaderboard" element={<Leaderboard />} /> {/* ✅ Use the correct path and component */}
+      <Route path="/leaderboard" element={<XPLeaderboard />} /> {/* ✅ Use the correct path and component */}
       <Route path="/self-serve" element={<SelfServe />} />
       <Route path="/managed" element={<Managed />} />
       <Route path="/investor" element={<Investor />} />
