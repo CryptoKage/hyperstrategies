@@ -6,6 +6,7 @@ import api from '../api/api';
 import Layout from '../components/Layout';
 import InfoModal from '../components/InfoModal';
 import { useTranslation } from 'react-i18next';
+import { Accordion, AccordionItem } from '../components/Accordion';
 
 const XPLeaderboard = () => {
   const { t } = useTranslation();
@@ -40,28 +41,34 @@ const XPLeaderboard = () => {
     fetchData();
   }, [fetchData]);
 
-  // The text block for content creators to share
+  // This is the text block for content creators to share
   const xpInfoText = `
 🚀 How to Earn XP on HyperStrategies 🚀
 
-- First 1000 Sign-ups: Bonus XP!
-- Successful Referral: Earn XP when your friend invests.
-- Capital Allocation: Get XP for allocating funds to vaults.
+- Early Adopter Bonus: Get up to 25 XP for being one of the first 1000 users to allocate funds!
+- Successful Referral: Earn 50 XP when a friend you refer makes their first vault allocation.
+- Capital Allocation: Earn 1 XP for every $100 you allocate to a vault.
 
 Join with my referral link and get a head start! 👇
-[Your Link Will Be Here]
+[Your Referral Link Here]
   `;
 
+  // This is the full "copy logic"
   const handleCopyClick = () => {
-    // A more personalized message if the user is logged in
+    // If the user is logged in, we personalize the message with their link.
     const shareableText = user 
-      ? xpInfoText.replace('[Your Link Will Be Here]', `https://www.hyper-strategies.com/register?ref=${user.referral_code}`)
-      : xpInfoText.replace('[Your Link Will Be Here]', 'https://www.hyper-strategies.com');
+      ? xpInfoText.replace('[Your Referral Link Here]', `https://www.hyper-strategies.com/register?ref=${user.referral_code}`)
+      : xpInfoText.replace('[Your Referral Link Here]', 'https://www.hyper-strategies.com');
       
+    // Use the browser's Clipboard API to copy the text
     navigator.clipboard.writeText(shareableText.trim());
+    
+    // Provide visual feedback
     setCopySuccess('Copied!');
-    setTimeout(() => setCopySuccess('Copy Info for Sharing'), 2000);
+    setTimeout(() => setCopySuccess('Copy Info for Sharing'), 2000); // Reset after 2 seconds
   };
+
+  const formatAddress = (address) => address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Anonymous';
 
   return (
     <>
@@ -107,9 +114,9 @@ Join with my referral link and get a head start! 👇
                   {leaderboard.map((player, index) => {
                     const isCurrentUser = user && user.username === player.username;
                     return (
-                      <tr key={player.username} className={isCurrentUser ? 'current-user-row' : ''}>
+                      <tr key={player.eth_address || index} className={isCurrentUser ? 'current-user-row' : ''}>
                         <td>{index + 1}</td>
-                        <td>{player.username}</td>
+                        <td>{formatAddress(player.eth_address)}</td>
                         <td>{parseInt(player.xp).toLocaleString()}</td>
                       </tr>
                     );
@@ -126,7 +133,26 @@ Join with my referral link and get a head start! 👇
         onClose={() => setIsXPModalOpen(false)}
         title="How to Earn XP"
       >
-        {/* We pass the copy button in as a child to the modal */}
+        <Accordion>
+          <AccordionItem title="🚀 Early Adopter Bonus">
+            <p>To reward our first supporters, we are offering a one-time XP bonus for the first 1000 users who sign up and make their first vault allocation.</p>
+            <ul className="reward-list">
+              <li><strong>First 150 Users:</strong> 25 XP</li>
+              <li><strong>Users 151-250:</strong> 20 XP</li>
+              <li><strong>Users 251-500:</strong> 10 XP</li>
+              <li><strong>Users 501-1000:</strong> 5 XP</li>
+            </ul>
+            <p className="disclaimer-text">
+              Note: We reserve the right to withhold this bonus from any accounts suspected of violating the spirit of this promotion (e.g., creating multiple accounts).
+            </p>
+          </AccordionItem>
+          <AccordionItem title="Capital Allocated: Dynamic">
+            <p>You earn 1 XP for every $100 of capital allocated to a vault. This is calculated on the total amount of your allocation.</p>
+          </AccordionItem>
+          <AccordionItem title="Successful Referral: 50 XP">
+            <p>You receive 50 XP when a new user, who signed up with your referral code, makes their first vault allocation. This rewards meaningful conversions.</p>
+          </AccordionItem>
+        </Accordion>
         <div className="modal-actions" style={{ marginTop: '24px' }}>
           <button className="btn-primary" onClick={handleCopyClick}>
             {copySuccess}
