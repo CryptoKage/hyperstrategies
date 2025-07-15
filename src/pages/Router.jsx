@@ -5,7 +5,7 @@ import { Routes, Route } from 'react-router-dom';
 
 // --- Page Components ---
 import Home from './Home';
-import Airdrop from './Airdrop';
+import Airdrop from './XPLeaderboard';
 import SelfServe from './SelfServe';
 import Managed from './Managed';
 import Investor from './Investor';
@@ -28,7 +28,7 @@ const Router = () => {
       {/* --- Publicly Accessible Routes --- */}
       {/* These pages can be viewed by anyone, logged in or not. */}
       <Route path="/" element={<Home />} />
-      <Route path="/airdrop" element={<Airdrop />} />
+      <Route path="/XPLeaderboard" element={<Airdrop />} />
       <Route path="/self-serve" element={<SelfServe />} />
       <Route path="/managed" element={<Managed />} />
       <Route path="/investor" element={<Investor />} />

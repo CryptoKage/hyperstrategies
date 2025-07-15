@@ -1,6 +1,6 @@
 {
-  "short_name": "HyperStrat",
-  "name": "Hyper Strategies",
+  "short_name": "Hyper",
+  "name": "HyperStrategies",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#101820",
-  "background_color": "#ffffff"
+  "theme_color": "#040e21",
+  "background_color": "#040e21"
 }

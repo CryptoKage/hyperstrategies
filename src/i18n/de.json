@@ -39,34 +39,29 @@
     "hero": {
       "headline": "Moderner, automatisierter Handel. Für alle.",
       "subtext": "Automatisieren Sie Ihren Handel mit maßgeschneiderten Strategien – einfach zugänglich auf der Hyperliquid-Plattform.",
+          "install_app": "App installieren",
+    "join_community": "COMMUNITY BEITRETEN",
       "cta1": "Am Airdrop teilnehmen",
       "cta2": "Sprechen Sie mit uns"
     },
-    "about": {
-      "title": "Was ist diese Plattform?",
-      "bullets": [
-        "Auf dem Hyperliquid-Protokoll aufgebaut",
-        "Benutzerfreundlicher Strategie-Builder (demnächst verfügbar)",
-        "Verwalteter Fonds für passive Investoren"
-      ]
-    },
-    "cards": {
-      "title": "Wo sehen Sie sich?",
+
+   "cards": {
+      "title": "Entdecken Sie Hyper-Strategies",
       "select": "Diese Option wählen",
       "airdrop": {
-        "title": "Ich möchte nur dabei sein",
-        "text": "Reichen Sie Ihre Adresse ein, um am Airdrop teilzunehmen."
+        "title": "Sammeln Sie XP für die Token-Zuteilung",
+        "text": "XP-Rangliste ansehen"
       },
       "self": {
-        "title": "Ich möchte die Plattform nutzen",
-        "text": "Meine eigenen automatisierten Strategien erstellen und ausführen."
+        "title": "Zugang zur automatisierten Strategie-Engine",
+        "text": "Erstellen und führen Sie Ihre eigenen automatisierten Strategien aus."
       },
       "managed": {
-        "title": "Ich möchte, dass das System für mich handelt",
-        "text": "Vom verwalteten Fonds ohne Einrichtung profitieren."
+        "title": "Zugang zu Vault-Strategien",
+        "text": "Profitieren Sie vom verwalteten Fonds ohne Einrichtungsaufwand."
       },
       "invest": {
-        "title": "Ich bin an einer Investition interessiert",
+        "title": "Ich bin an einer Investition in Hyper-Strategies interessiert",
         "text": "Erfahren Sie mehr über Investitionsmöglichkeiten in das Projekt."
       }
     }

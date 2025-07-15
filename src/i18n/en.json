@@ -39,34 +39,29 @@
     "hero": {
       "headline": "Modern, automated trading. For everyone.",
       "subtext": "Automate your trading with customized strategies — easily accessible on the Hyperliquid platform.",
+          "install_app": "Install App",
+    "join_community": "JOIN THE COMMUNITY",
       "cta1": "Join the Airdrop",
       "cta2": "Speak With Us"
     },
-    "about": {
-      "title": "What is this platform?",
-      "bullets": [
-        "Built on the Hyperliquid protocol",
-        "User-friendly strategy builder (coming soon)",
-        "Managed fund for passive investors"
-      ]
-    },
+    
     "cards": {
-      "title": "Where do you see yourself?",
+      "title": "Explore Hyper-Strategies",
       "select": "Select this option",
       "airdrop": {
-        "title": "I just want to be included",
-        "text": "Submit your address to join the airdrop."
+        "title": "Gain XP for token allocation",
+        "text": "View XP leaderboard"
       },
       "self": {
-        "title": "I want to use the platform",
-        "text": "Build and run my own automated strategies."
+        "title": "Access Automated Stratgy Engine",
+        "text": "Build and run your own automated strategies."
       },
       "managed": {
-        "title": "I want the system to trade for me",
+        "title": "Access Vault Strategys",
         "text": "Benefit from the managed fund without setup."
       },
       "invest": {
-        "title": "I'm interested in investing",
+        "title": "I'm interested in investing in Hyper-Strategies",
         "text": "Learn about investment opportunities in the project."
       }
     }
