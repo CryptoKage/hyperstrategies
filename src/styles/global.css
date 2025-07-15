@@ -2010,3 +2010,26 @@ textarea.input-field { resize: vertical; }
   opacity: 0.8;
   margin-top: 12px;
 }
+
+/* icon hide balance*/
+.btn-icon {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-icon:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.wallet-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}

@@ -9,10 +9,12 @@ import { useAuth } from '../context/AuthContext';
 import VaultModal from '../components/VaultModal';
 import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
+import EyeIcon from '../components/EyeIcon'; // Import the EyeIcon
 
 const Dashboard = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  // ✅ 1. Get the new state and function from our AuthContext
+  const { user, isBalanceHidden, toggleBalanceVisibility } = useAuth();
   const navigate = useNavigate();
   
   const [dashboardData, setDashboardData] = useState(null);
@@ -23,7 +25,6 @@ const Dashboard = () => {
   const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false);
   const [selectedVault, setSelectedVault] = useState(null);
 
-  // This function is now stable and will not cause re-renders.
   const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     try {
@@ -36,9 +37,8 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, []); // The empty dependency array is the key.
+  }, []);
 
-  // This effect runs only once on mount.
   useEffect(() => {
     fetchDashboardData();
   }, [fetchDashboardData]);
@@ -84,12 +84,22 @@ const Dashboard = () => {
         <div className="stats-grid">
             <div className="stat-card">
               <span className="stat-label">{t('dashboard.total_value')}</span>
-              <span className="stat-value">${(dashboardData.totalPortfolioValue || 0).toFixed(2)}</span>
+              {/* ✅ 2. The main toggle button is here */}
+              <div className="stat-main">
+                <span className="stat-value">
+                  {isBalanceHidden ? '******' : `$${(dashboardData.totalPortfolioValue || 0).toFixed(2)}`}
+                </span>
+                <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility">
+                  <EyeIcon isHidden={isBalanceHidden} />
+                </button>
+              </div>
             </div>
             <div className="stat-card">
               <span className="stat-label">{t('dashboard.available_balance')}</span>
               <div className="stat-main">
-                <span className="stat-value">${(dashboardData.availableBalance || 0).toFixed(2)}</span>
+                <span className="stat-value">
+                  {isBalanceHidden ? '******' : `$${(dashboardData.availableBalance || 0).toFixed(2)}`}
+                </span>
                 <button onClick={() => navigate('/wallet')} className="btn-link">{t('dashboard.manage')}</button>
               </div>
             </div>
@@ -100,7 +110,9 @@ const Dashboard = () => {
                   <InfoIcon />
                 </Link>
               </div>
-              <span className="stat-value">${(dashboardData.totalBonusPoints || 0).toFixed(2)}</span>
+              <span className="stat-value">
+                {isBalanceHidden ? '******' : `$${(dashboardData.totalBonusPoints || 0).toFixed(2)}`}
+              </span>
             </div>
         </div>
 
@@ -113,12 +125,13 @@ const Dashboard = () => {
                   <h3>{vault.name}</h3>
                   <div className="vault-stat">
                     <span>{t('dashboard.tradable_capital')}</span>
-                    <span>${parseFloat(vault.tradable_capital).toFixed(2)}</span>
+                    {/* ✅ 3. Conditionally render the values in the vault cards */}
+                    <span>{isBalanceHidden ? '******' : `$${parseFloat(vault.tradable_capital).toFixed(2)}`}</span>
                   </div>
                   <div className="vault-stat">
                     <span>{t('dashboard.pnl')}</span>
                     <span className={parseFloat(vault.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
-                      {parseFloat(vault.pnl) >= 0 ? '+' : ''}${parseFloat(vault.pnl).toFixed(2)}
+                      {isBalanceHidden ? '******' : `${parseFloat(vault.pnl) >= 0 ? '+' : ''}$${parseFloat(vault.pnl).toFixed(2)}`}
                     </span>
                   </div>
                   <div className="vault-actions">
@@ -165,19 +178,24 @@ const Dashboard = () => {
           {renderContent()}
         </div>
       </Layout>
-      <VaultModal
-        isOpen={isAllocateModalOpen}
-        onClose={() => setAllocateModalOpen(false)}
-        vault={selectedVault}
-        availableBalance={dashboardData?.availableBalance || 0}
-        onAllocationSuccess={handleActionSuccess}
-      />
-      <VaultWithdrawModal
-        isOpen={isWithdrawModalOpen}
-        onClose={() => setWithdrawModalOpen(false)}
-        vault={selectedVault}
-        onWithdrawalSuccess={handleActionSuccess}
-      />
+
+      {dashboardData && (
+        <VaultModal
+            isOpen={isAllocateModalOpen}
+            onClose={() => setAllocateModalOpen(false)}
+            vault={selectedVault}
+            availableBalance={dashboardData.availableBalance}
+            onAllocationSuccess={handleActionSuccess}
+        />
+      )}
+      {dashboardData && (
+        <VaultWithdrawModal
+            isOpen={isWithdrawModalOpen}
+            onClose={() => setWithdrawModalOpen(false)}
+            vault={selectedVault}
+            onWithdrawalSuccess={handleActionSuccess}
+        />
+      )}
     </>
   );
 };

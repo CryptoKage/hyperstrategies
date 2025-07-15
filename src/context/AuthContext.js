@@ -7,7 +7,10 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // ⬅️ Add loading guard
+  const [loading, setLoading] = useState(true);
+  
+  // ✅ 1. NEW: State to manage balance visibility
+  const [isBalanceHidden, setIsBalanceHidden] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -21,7 +24,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
       }
     }
-    setLoading(false); // ✅ only set after checking token once
+    setLoading(false);
   }, []);
 
   const login = useCallback((token) => {
@@ -38,8 +41,21 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     setUser(null);
   }, []);
+  
+  // ✅ 2. NEW: Function to toggle the visibility state
+  const toggleBalanceVisibility = useCallback(() => {
+    setIsBalanceHidden(prevState => !prevState);
+  }, []);
 
-  const value = useMemo(() => ({ user, login, logout, loading }), [user, login, logout, loading]);
+  // ✅ 3. NEW: Add the new state and function to the context's value
+  const value = useMemo(() => ({ 
+    user, 
+    loading,
+    isBalanceHidden,
+    toggleBalanceVisibility,
+    login, 
+    logout
+  }), [user, loading, isBalanceHidden, toggleBalanceVisibility, login, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

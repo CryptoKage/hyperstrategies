@@ -5,8 +5,12 @@ import Layout from '../components/Layout';
 import api from '../api/api';
 import WithdrawModal from '../components/WithdrawModal';
 import WithdrawalHistory from '../components/WithdrawalHistory';
+import { useAuth } from '../context/AuthContext';
+import EyeIcon from '../components/EyeIcon';
 
 const Wallet = () => {
+  const { isBalanceHidden, toggleBalanceVisibility } = useAuth();
+  
   const [walletData, setWalletData] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +18,6 @@ const Wallet = () => {
   const [copySuccess, setCopySuccess] = useState('');
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
-  // Your robust, separate data-fetching logic is preserved
   const fetchWalletDetails = useCallback(async () => {
     try {
       const response = await api.get('/user/wallet');
@@ -50,22 +53,21 @@ const Wallet = () => {
     fetchAllData();
   }, [fetchAllData]);
   
-  // ✅ 1. POPULATED: The copy-to-clipboard logic is now complete.
   const handleCopyToClipboard = () => {
     if (walletData?.address) {
       navigator.clipboard.writeText(walletData.address);
       setCopySuccess('Copied!');
-      setTimeout(() => setCopySuccess(''), 2000); // Reset message after 2s
+      setTimeout(() => setCopySuccess(''), 2000);
     }
   };
   
-  // ✅ 2. POPULATED: This now correctly re-fetches all page data.
   const handleWithdrawalQueued = () => {
     fetchAllData();
   };
 
   const renderContent = () => {
     if (loading) {
+      // You could add a more advanced skeleton loader here if desired
       return <h1>Loading Wallet...</h1>;
     }
 
@@ -73,26 +75,36 @@ const Wallet = () => {
       <>
         <div className="wallet-header">
           <h1>Your Wallet</h1>
-          <button onClick={fetchAllData} className="btn-secondary" disabled={loading}>
-            {loading ? 'Refreshing...' : 'Refresh'}
-          </button>
+          <div className="wallet-header-actions">
+            <button onClick={fetchAllData} className="btn-secondary" disabled={loading}>
+              {loading ? 'Refreshing...' : 'Refresh'}
+            </button>
+            <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility">
+              <EyeIcon isHidden={isBalanceHidden} />
+            </button>
+          </div>
         </div>
         
-        {/* Wallet Details Section */}
         <div className="balance-grid">
           {error.wallet ? <p className='error-message'>{error.wallet}</p> : (
             <>
               <div className="balance-card">
                 <span className="balance-label">USDC Balance (On-Chain)</span>
-                <span className="balance-value">{(walletData?.usdcBalance || 0).toFixed(4)}</span>
+                <span className="balance-value">
+                  {isBalanceHidden ? '******' : (walletData?.usdcBalance || 0).toFixed(4)}
+                </span>
               </div>
               <div className="balance-card">
                 <span className="balance-label">ETH Balance (for Gas)</span>
-                <span className="balance-value">{(walletData?.ethBalance || 0).toFixed(6)}</span>
+                <span className="balance-value">
+                  {isBalanceHidden ? '******' : (walletData?.ethBalance || 0).toFixed(6)}
+                </span>
               </div>
               <div className="balance-card">
                 <span className="balance-label">Bonus Points Value</span>
-                <span className="balance-value">${(walletData?.totalBonusPoints || 0).toFixed(2)}</span>
+                <span className="balance-value">
+                  {isBalanceHidden ? '******' : `$${(walletData?.totalBonusPoints || 0).toFixed(2)}`}
+                </span>
               </div>
             </>
           )}
@@ -106,7 +118,6 @@ const Wallet = () => {
           </div>
         </div>
 
-        {/* ✅ 3. POPULATED: The missing Actions section and button. */}
         <div className="actions-section">
           <h2>Actions</h2>
           <div className="actions-grid">
@@ -120,7 +131,6 @@ const Wallet = () => {
           </div>
         </div>
         
-        {/* History Section */}
         {error.history ? <p className='error-message'>{error.history}</p> : 
           <WithdrawalHistory historyData={history} />
         }
