@@ -1,99 +1,96 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/pages/Register.jsx
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../components/Layout';
-import GoogleIcon from '../components/GoogleIcon';
+import InputField from '../components/InputField'; // Assuming you are using this
 
 const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  
+  // State to hold the referral code from the URL
+  const [referralCode, setReferralCode] = useState('');
+  
+  // React Router hook to read URL query parameters
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const backendUrl =
-    process.env.REACT_APP_BACKEND_URL || 'https://hyperstrategies-backend.onrender.com/api';
+  // This effect runs only once when the page first loads
+  useEffect(() => {
+    // Check if the URL has a '?ref=...' parameter
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      setReferralCode(refCode);
+      console.log(`Referral code detected in URL: ${refCode}`);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     try {
-      await axios.post(`${backendUrl}/auth/register`, {
+      // Send the referralCode to the backend along with the other user data
+      await axios.post('/api/auth/register', {
         username,
         email,
         password,
+        referralCode // This will be an empty string if none was found in the URL
       });
+      // On success, guide the user to the login page
       navigate('/login');
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
+      setError(err.response?.data?.error || 'Registration failed.');
     }
-  };
-
-  const handleGoogleLogin = () => {
-    if (!backendUrl) {
-      alert('Backend URL is missing. Please check environment variables.');
-      return;
-    }
-
-    const redirectUrl = `${backendUrl}/auth/google`;
-    console.log('Redirecting to:', redirectUrl);
-    window.location.href = redirectUrl;
   };
 
   return (
     <Layout>
-      <div className="auth-wrapper">{/* ✅ New wrapper for centering */}
-        <div className="auth-container">
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <h2>Create Account</h2>
-            {error && <p className="error-message">{error}</p>}
-
-            <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
+      <div className="auth-container">
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <h2>Create Account</h2>
+          
+          {/* If a referral code is present, display a confirmation message */}
+          {referralCode && (
+            <div className="info-box">
+              <span>You were referred by code: <strong>{referralCode}</strong></span>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <button type="submit" className="btn-primary">Create Account</button>
-          </form>
-
-          <div className="auth-divider"><span>OR</span></div>
-
-          <div className="social-login">
-            <button onClick={handleGoogleLogin} className="btn-google">
-              <GoogleIcon />
-              <span>Sign up with Google</span>
-            </button>
-          </div>
-        </div>
+          )}
+          
+          {error && <p className="error-message">{error}</p>}
+          
+          <InputField
+            label="Username"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <InputField
+            label="Email"
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <InputField
+            label="Password"
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="btn-primary">Create Account</button>
+        </form>
+        <p className="auth-link">
+          Already have an account? <Link to="/login">Sign In</Link>
+        </p>
       </div>
     </Layout>
   );

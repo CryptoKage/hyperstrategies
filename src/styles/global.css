@@ -1,35 +1,53 @@
+/* ==========================================================================
+   Base & Reset Styles
+   ========================================================================== */
+
+/* 1. Universal Box Sizing - This is the most important rule */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. HTML & Body Defaults */
 html, body {
-  background-color: #4b82e7;
-  color: #e4e4e7;
-  height: 100%;
+  height: 100%; /* Ensures the body can fill the full screen height */
   margin: 0;
   padding: 0;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  background-color: #376dd0;
-  color: #e4e4e7;
   font-family: 'Inter', sans-serif;
+  background-color: var(--color-background); /* Use our theme variable */
+  color: var(--color-text-primary); /* Use our theme variable */
+  line-height: 1.5; /* Improves readability */
+}
+
+/* 3. Typography & Link Defaults */
+h1, h2, h3, h4, h5, h6, p, ul, li {
+  margin: 0; /* The main part of the reset */
+  padding: 0;
 }
 
 h1, h2, h3 {
-  color: #ffffff;
+  color: #ffffff; /* This is fine, but you could also use var(--color-text-primary) */
 }
 
 a {
-  color: #00d4ff;
+  color: var(--color-primary); /* Use our theme variable */
   text-decoration: none;
 }
+
 a:hover {
-  color: #00f0ff;
+  text-decoration: underline; /* A common and clear hover effect */
 }
 
+/* 4. Button & Form Defaults */
 button {
   cursor: pointer;
-  font-family: inherit;
+  font-family: inherit; /* Ensures buttons use the same font as the rest of the site */
   font-weight: 500;
+  border: none; /* A good default reset for buttons */
 }
 
 /*.btn-primary {
@@ -176,54 +194,6 @@ button {
     align-items: center; /* Centers the single column */
   }
 }
-
-/* --- General Section Styling --- */
-
-.hero-section,
-.about-section,
-.path-selector-section {
-  max-width: 1024px;
-  margin: 0 auto; /* Centers the content */
-  padding: 60px 24px; /* Consistent padding for top/bottom and sides */
-}
-
-
-/* --- Hero Section --- */
-
-.hero-section {
-  display: flex;
-  flex-wrap: wrap; /* Allows content to stack on smaller screens */
-  align-items: center;
-  gap: 40px; /* Space between the text content and the image */
-}
-
-.hero-content {
-  flex: 1; /* Takes up available space */
-  min-width: 300px; /* Prevents it from getting too squished on mobile */
-}
-
-.hero-logo {
-  width: 80%;
-  max-width: 320px;
-  margin-bottom: 24px;
-  height: auto; /* Maintain aspect ratio */
-}
-
-/* You may already have these, but ensure they match */
-.hero-headline {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 12px;
-  color: #ffffff;
-}
-
-.hero-subtext {
-  font-size: 18px;
-  color: #a0a0a0;
-  margin-bottom: 24px;
-  max-width: 600px;
-}
-
 
 
 
@@ -1676,56 +1646,7 @@ button {
 .info-icon-link:hover {
   color: var(--color-primary);
 }
-/* ===== Hero Section ===== */
-.hero-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4rem 2rem;
-  flex-wrap: wrap;
-}
 
-.hero-content {
-  flex: 1 1 400px;
-  min-width: 300px;
-}
-
-.hero-headline {
-  font-size: 3rem;
-  font-weight: bold;
-  color: var(--color-text-primary, #ffffff);
-  line-height: 1.1;
-  margin-bottom: 1rem;
-}
-
-.hero-subtext {
-  font-size: 1.125rem;
-  color: var(--color-text-secondary, #a0a0a0);
-  margin-bottom: 24px;
-  max-width: 600px;
-}
-
-.button-row {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-top: 24px;
-}
-
-.hero-image-container {
-  flex: 1 1 400px;
-  display: flex;
-  justify-content: center;
-  min-width: 300px;
-}
-
-.hero-image {
-  max-width: 100%;
-  max-height: 320px;
-  border-radius: 8px;
-  object-fit: contain;
-  border: 1px solid var(--color-border, #333);
-}
 
 /* ===== Rotating Text Styling ===== */
 .text-rotate {
@@ -1775,12 +1696,239 @@ button {
   margin-right: 0.2em;
 }
 
-/* ===== Responsive ===== */
+
+
+/* In src/styles/global.css */
+
+.info-box {
+  background-color: rgba(63, 186, 243, 0.1);
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+}
+.auth-link a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+/* In src/styles/global.css */
+
+.profile-container { max-width: 900px; margin: 40px auto; padding: 20px; }
+.profile-container h1 { font-size: 32px; margin-bottom: 32px; }
+.profile-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+.profile-card { background-color: var(--color-surface); padding: 32px; border-radius: 12px; border: 1px solid var(--color-border); }
+.profile-card h3 { margin-top: 0; font-size: 20px; }
+textarea.input-field { resize: vertical; }
+.edit-message { text-align: center; margin-top: 16px; font-weight: 500; }
+.stat-display { margin-bottom: 24px; }
+.stat-display .stat-label { font-size: 14px; color: var(--color-text-secondary); }
+.stat-value-large { font-size: 28px; display: block; font-weight: 600; margin-top: 4px; }
+.referral-code { background-color: var(--color-background); padding: 8px 12px; border-radius: 6px; display: block; margin: 8px 0; font-family: 'Courier New', Courier, monospace; }
+.profile-card .btn-secondary { width: 100%; margin-top: 8px; }
+
+@media (max-width: 768px) {
+  .profile-grid { grid-template-columns: 1fr; }
+}
+
+/* --- XP & Leaderboard Page Styles --- */
+
+.leaderboard-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.leaderboard-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.leaderboard-header h1 { font-size: 32px; margin-bottom: 8px; }
+.leaderboard-header p { font-size: 18px; color: var(--color-text-secondary); }
+
+.infographic-section, .leaderboard-table-section {
+  margin-bottom: 48px;
+}
+
+.infographic-section h3, .leaderboard-table-section h3 {
+  font-size: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.infographic-wrapper {
+  position: relative;
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.infographic-wrapper img {
+  display: block;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.infographic-wrapper:hover img {
+  transform: scale(1.03);
+}
+
+.infographic-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none; /* Allows clicks to go through to the wrapper */
+}
+
+.infographic-wrapper:hover .infographic-overlay {
+  opacity: 1;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th, .leaderboard-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.leaderboard-table th { color: var(--color-text-secondary); }
+.leaderboard-table td:first-child { font-weight: bold; width: 80px; }
+.leaderboard-table td:last-child { text-align: right; font-weight: bold; }
+
+.leaderboard-table tbody tr:hover {
+  background-color: var(--color-surface);
+}
+
+.current-user-row {
+  background-color: rgba(63, 186, 243, 0.1) !important;
+  font-weight: bold;
+}
+
+.share-rank-section {
+  text-align: center;
+  margin-top: 32px;
+}
+
+/* --- Corrected Hero Section Styles --- */
+
+.hero-section {
+  display: grid; /* Use grid for more control */
+  grid-template-columns: 1fr 1.2fr; /* Creates the two columns */
+  align-items: center;
+  gap: 48px;
+  max-width: 1200px;
+  margin: 80px auto; /* Centers the section with top/bottom margin */
+  padding: 0 24px;
+}
+
+.hero-content {
+  /* This container for text doesn't need much styling now */
+  text-align: left;
+}
+
+.hero-headline {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+  margin-bottom: 24px;
+}
+
+.hero-subtext {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  max-width: 450px;
+  margin-bottom: 32px;
+}
+
+.button-row {
+  display: flex;
+  gap: 16px;
+}
+
+/* This is the critical part that fixes the image bug */
+.hero-image-container {
+  border-radius: 12px;
+  overflow: hidden; /* Prevents the image from spilling out */
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  height: 100%;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Fills the container without stretching */
+  display: block; /* Removes any bottom space under the image */
+}
+
+
+/* --- Mobile Responsiveness for Your Existing Hero --- */
 @media (max-width: 768px) {
   .hero-section {
-    flex-direction: column;
+    /* Stack the columns on mobile */
+    grid-template-columns: 1fr;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    gap: 32px;
   }
+
+  .hero-content {
+    /* Center the text on mobile */
+    text-align: center;
+    /* Put the text first on mobile */
+    grid-row: 2; 
+  }
+  
+  .hero-image-container {
+    grid-row: 1;
+  }
+
   .hero-headline {
-    font-size: 2.25rem;
+    font-size: 40px;
   }
+
+  .button-row {
+    justify-content: center;
+  }
+}
+
+/* --- Styles for other homepage sections --- */
+
+.about-section,
+.path-selector-section {
+  max-width: 1024px; /* Or whatever width you prefer */
+  margin: 60px auto; /* Re-applies the centering and vertical spacing */
+  padding: 0 24px;   /* Adds side padding */
 }
