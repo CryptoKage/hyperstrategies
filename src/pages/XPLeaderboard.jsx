@@ -133,24 +133,32 @@ Join with my referral link and get a head start! 👇
         onClose={() => setIsXPModalOpen(false)}
         title="How to Earn XP"
       >
-        <Accordion>
-          <AccordionItem title="🚀 Early Adopter Bonus">
-            <p>To reward our first supporters, we are offering a one-time XP bonus for the first 1000 users who sign up and make their first vault allocation.</p>
+<Accordion>
+          <AccordionItem title="🚀 Early Adopter Sign-Up Bonus (First 500 Users)">
+            <p>A one-time XP bonus is awarded to the first 500 users upon registration to reward our earliest supporters. The bonus is tiered:</p>
             <ul className="reward-list">
-              <li><strong>First 150 Users:</strong> 25 XP</li>
-              <li><strong>Users 151-250:</strong> 20 XP</li>
-              <li><strong>Users 251-500:</strong> 10 XP</li>
-              <li><strong>Users 501-1000:</strong> 5 XP</li>
+              <li><strong>Users 1-100:</strong> 25 XP</li>
+              <li><strong>Users 101-200:</strong> 20 XP</li>
+              <li><strong>Users 201-300:</strong> 15 XP</li>
+              <li><strong>Users 301-400:</strong> 10 XP</li>
+              <li><strong>Users 401-500:</strong> 5 XP</li>
             </ul>
-            <p className="disclaimer-text">
-              Note: We reserve the right to withhold this bonus from any accounts suspected of violating the spirit of this promotion (e.g., creating multiple accounts).
-            </p>
           </AccordionItem>
-          <AccordionItem title="Capital Allocated: Dynamic">
-            <p>You earn 1 XP for every $100 of capital allocated to a vault. This is calculated on the total amount of your allocation.</p>
+          
+          <AccordionItem title="💰 Capital Allocation: 1 XP per $10">
+            <p>You earn XP by putting your capital to work. For every $10 you allocate to any vault (minimum $100 allocation), you will earn 1 XP. An allocation of $1,000 earns you 100 XP.</p>
           </AccordionItem>
-          <AccordionItem title="Successful Referral: 50 XP">
-            <p>You receive 50 XP when a new user, who signed up with your referral code, makes their first vault allocation. This rewards meaningful conversions.</p>
+          
+          <AccordionItem title="🤝 Successful Referral: Dynamic (10%)">
+            <p>When a new user signs up with your referral code and makes their first vault allocation (minimum $100), you, the referrer, will earn XP equal to 10% of their allocated amount. If they allocate $1,000, you get 100 XP.</p>
+          </AccordionItem>
+
+          <AccordionItem title="⏳ Weekly Staking Bonus: Coming Soon">
+            <p>A future feature will reward users with XP for every week they keep their capital allocated in a vault, rewarding long-term commitment.</p>
+          </AccordionItem>
+          
+          <AccordionItem title="💸 Bonus Point Buy-Back: 1-to-1 XP">
+            <p>When the platform buys back your Bonus Points, you will receive an equal amount of XP. A buy-back of 200 Bonus Points also grants you 200 XP.</p>
           </AccordionItem>
         </Accordion>
         <div className="modal-actions" style={{ marginTop: '24px' }}>
