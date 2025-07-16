@@ -8,42 +8,54 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [sweepStatus, setSweepStatus] = useState(''); // Added for manual trigger
+  const [isSweeping, setIsSweeping] = useState(false); // Added for manual trigger
 
-  // Your data fetching logic is correct, just making the dependency array stable.
   const fetchAdminStats = useCallback(async () => {
-    if (!loading) setLoading(true);
+    // Corrected the infinite loop bug by removing [loading] dependency
+    setLoading(true);
     try {
       const response = await api.get('/admin/dashboard-stats');
       setStats(response.data);
       setError('');
     } catch (err) {
       console.error("Failed to fetch admin stats:", err);
-      // Use the error data from the API if it exists
       setError(err.response?.data?.error || "Could not load admin data.");
-      // Also set a default stats object so the UI can render the status lights correctly
       setStats(err.response?.data || { databaseConnected: false, alchemyConnected: false });
     } finally {
       setLoading(false);
     }
-  }, [loading]);
+  }, []); // Empty dependency array makes it stable
 
   useEffect(() => {
     fetchAdminStats();
   }, [fetchAdminStats]);
 
-  // A reusable component for the stat cards
+  const handleTriggerSweep = useCallback(async () => {
+    setIsSweeping(true);
+    setSweepStatus('Triggering job...');
+    try {
+      const response = await api.post('/admin/trigger-sweep');
+      setSweepStatus(response.data.message);
+      // Optionally, refresh stats after a short delay
+      setTimeout(fetchAdminStats, 3000);
+    } catch (err) {
+      setSweepStatus('Failed to trigger job.');
+    } finally {
+      setIsSweeping(false);
+    }
+  }, [fetchAdminStats]);
+
   const StatCard = ({ label, value, currency = false }) => (
     <div className="stat-card">
       <span className="stat-label">{label}</span>
       <span className="stat-value">
         {currency && '$'}
-        {/* Added a check for null/undefined before formatting */}
         {typeof value === 'number' ? value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (value || '0.00')}
       </span>
     </div>
   );
   
-  // A new component for the status lights
   const StatusIndicator = ({ label, isUp }) => (
     <div className="status-indicator">
       <span className={`status-light ${isUp ? 'up' : 'down'}`}></span>
@@ -52,31 +64,42 @@ const AdminDashboard = () => {
   );
   
   const renderContent = () => {
-    if (loading) {
+    if (loading && !stats) {
       return <p>Loading Admin Dashboard...</p>;
     }
-    // We can still render part of the page even if there's an error
     if (error && !stats) {
       return <p className="error-message">{error}</p>;
+    }
+    if (!stats) {
+      return <p>No data available.</p>;
     }
     
     return (
       <>
-        {/* --- The New System Status Bar --- */}
         <div className="system-status-bar">
           <StatusIndicator label="Backend API" isUp={!error} />
           <StatusIndicator label="Database" isUp={stats.databaseConnected} />
           <StatusIndicator label="Alchemy API" isUp={stats.alchemyConnected} />
         </div>
 
-        {error && <p className="error-message">{error}</p>}
+        {error && !loading && <p className="error-message">{error}</p>}
 
         <div className="stats-grid">
           <StatCard label="Total Users" value={stats.userCount} />
           <StatCard label="Total Available Capital" value={stats.totalAvailable} currency />
           <StatCard label="Total Capital in Vaults" value={stats.totalInVaults} currency />
-          {/* --- The New Hot Wallet Balance Card --- */}
           <StatCard label="Hot Wallet Gas (ETH)" value={parseFloat(stats.hotWalletBalance)} />
+        </div>
+
+        <div className="admin-actions-card">
+          <h3>Manual Job Triggers</h3>
+          <p>Manually run a scheduled job. This is useful for immediate processing or testing.</p>
+          <div className="action-button-row">
+            <button className="btn-primary" onClick={handleTriggerSweep} disabled={isSweeping}>
+              {isSweeping ? 'Job Started...' : 'Trigger Allocation Sweep'}
+            </button>
+            {sweepStatus && <span className="action-status">{sweepStatus}</span>}
+          </div>
         </div>
 
         <div className="admin-grid">
@@ -122,7 +145,7 @@ const AdminDashboard = () => {
         <div className="wallet-header">
             <h1>Admin Mission Control</h1>
             <button onClick={fetchAdminStats} className="btn-secondary" disabled={loading}>
-              {loading ? 'Refreshing...' : 'Refresh'}
+              {loading ? 'Refreshing...' : 'Refresh Stats'}
             </button>
         </div>
         {renderContent()}
