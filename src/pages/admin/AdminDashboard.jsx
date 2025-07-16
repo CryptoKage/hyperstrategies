@@ -8,12 +8,14 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [sweepStatus, setSweepStatus] = useState(''); // Added for manual trigger
-  const [isSweeping, setIsSweeping] = useState(false); // Added for manual trigger
+  
+  // State for button actions
+  const [actionMessage, setActionMessage] = useState('');
+  const [isActionLoading, setIsActionLoading] = useState(false);
 
   const fetchAdminStats = useCallback(async () => {
-    // Corrected the infinite loop bug by removing [loading] dependency
-    setLoading(true);
+    // Only set the main loader on the initial fetch
+    if (!stats) setLoading(true);
     try {
       const response = await api.get('/admin/dashboard-stats');
       setStats(response.data);
@@ -25,26 +27,55 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, []); // Empty dependency array makes it stable
+  }, [stats]); // Dependency ensures we can refetch easily
 
   useEffect(() => {
     fetchAdminStats();
   }, [fetchAdminStats]);
 
+  // --- Handlers for Admin Actions ---
   const handleTriggerSweep = useCallback(async () => {
-    setIsSweeping(true);
-    setSweepStatus('Triggering job...');
+    setIsActionLoading(true);
+    setActionMessage('Triggering sweep job...');
     try {
       const response = await api.post('/admin/trigger-sweep');
-      setSweepStatus(response.data.message);
-      // Optionally, refresh stats after a short delay
-      setTimeout(fetchAdminStats, 3000);
+      setActionMessage(response.data.message);
+      setTimeout(fetchAdminStats, 5000); // Refresh stats after 5s to see progress
     } catch (err) {
-      setSweepStatus('Failed to trigger job.');
+      setActionMessage('Failed to trigger sweep job.');
     } finally {
-      setIsSweeping(false);
+      setIsActionLoading(false);
     }
   }, [fetchAdminStats]);
+
+  const handleRetryAll = useCallback(async () => {
+    setIsActionLoading(true);
+    setActionMessage('Re-queueing all failed sweeps...');
+    try {
+      const response = await api.post('/admin/retry-sweeps');
+      setActionMessage(response.data.message);
+      fetchAdminStats(); // Refresh immediately to update the list
+    } catch (err) {
+      setActionMessage('Failed to retry sweeps.');
+    } finally {
+      setIsActionLoading(false);
+    }
+  }, [fetchAdminStats]);
+
+  const handleArchive = useCallback(async (positionId) => {
+    setIsActionLoading(true);
+    setActionMessage(`Archiving position ${positionId}...`);
+    try {
+      const response = await api.post(`/admin/archive-sweep/${positionId}`);
+      setActionMessage(response.data.message);
+      fetchAdminStats();
+    } catch (err) {
+      setActionMessage('Failed to archive sweep.');
+    } finally {
+      setIsActionLoading(false);
+    }
+  }, [fetchAdminStats]);
+
 
   const StatCard = ({ label, value, currency = false }) => (
     <div className="stat-card">
@@ -95,12 +126,39 @@ const AdminDashboard = () => {
           <h3>Manual Job Triggers</h3>
           <p>Manually run a scheduled job. This is useful for immediate processing or testing.</p>
           <div className="action-button-row">
-            <button className="btn-primary" onClick={handleTriggerSweep} disabled={isSweeping}>
-              {isSweeping ? 'Job Started...' : 'Trigger Allocation Sweep'}
+            <button className="btn-primary" onClick={handleTriggerSweep} disabled={isActionLoading}>
+              {isActionLoading ? 'Job Running...' : 'Trigger Allocation Sweep'}
             </button>
-            {sweepStatus && <span className="action-status">{sweepStatus}</span>}
+            {actionMessage && <span className="action-status">{actionMessage}</span>}
           </div>
         </div>
+        
+        {stats.failedSweeps && stats.failedSweeps.length > 0 && (
+          <div className="admin-actions-card warning">
+            <h3>Failed Allocation Sweeps ({stats.failedSweeps.length})</h3>
+            <p>These allocations failed to process automatically. Investigate the cause before retrying.</p>
+            <table className="activity-table">
+              <tbody>
+                {stats.failedSweeps.map(item => (
+                  <tr key={item.position_id}>
+                    <td><strong>{item.username}</strong> - Pos. #{item.position_id}</td>
+                    <td className="amount">${parseFloat(item.tradable_capital).toFixed(2)}</td>
+                    <td className="actions-cell">
+                      <button className="btn-icon" onClick={() => handleArchive(item.position_id)} disabled={isActionLoading} title="Archive/Ignore this sweep">
+                        🗑️
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="action-button-row" style={{marginTop: '16px'}}>
+              <button className="btn-primary" onClick={handleRetryAll} disabled={isActionLoading}>
+                {isActionLoading ? 'Processing...' : 'Retry All Failed'}
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="admin-grid">
           <div className="activity-card">
@@ -118,7 +176,6 @@ const AdminDashboard = () => {
               </table>
             ) : <p>No recent deposits.</p>}
           </div>
-
           <div className="activity-card">
             <h3>Recent Withdrawal Requests</h3>
             {stats.recentWithdrawals && stats.recentWithdrawals.length > 0 ? (
