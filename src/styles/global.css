@@ -2033,3 +2033,80 @@ textarea.input-field { resize: vertical; }
   align-items: center;
   gap: 16px;
 }
+
+/* Admin panel */
+.header__button--admin {
+  background-color: #ef4444; /* A distinct red color */
+  color: white !important;
+  font-weight: bold;
+}
+.header__button--admin:hover {
+  background-color: #dc2626; /* A darker red for hover */
+}
+
+
+.admin-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.admin-container h1 {
+  font-size: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 16px;
+}
+
+/* We can reuse the .stats-grid and .stat-card styles from the main dashboard */
+/* Make the admin stat cards stand out a bit more */
+.admin-container .stat-card {
+  background-color: var(--color-surface); 
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.activity-card {
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--color-border);
+}
+
+.activity-card h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.activity-table td {
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.activity-table tr:last-child td {
+  border-bottom: none;
+}
+
+.activity-table .amount {
+  text-align: right;
+  font-weight: 600;
+}
+
+/* Responsive adjustments for the admin panel */
+@media (max-width: 768px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
