@@ -37,7 +37,7 @@ const Router = () => {
       <Route path="/faq" element={<FAQ />} />
       <Route path="/oauth-success" element={<OAuthSuccess />} />
       {/* ✅ Standardized to the cleaner URL */}
-      <Route path="/leaderboard" element={<XPLeaderboard />} /> 
+      <Route path="/xpleaderboard" element={<XPLeaderboard />} /> 
 
       {/* --- Guest-Only Routes --- */}
       <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
