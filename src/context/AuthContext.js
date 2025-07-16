@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', token);
     try {
       const decoded = jwtDecode(token);
+      console.log('[AuthContext] User state SET. isAdmin status:', decodedUser.isAdmin);
       setUser(decoded.user);
     } catch {
       setUser(null);
