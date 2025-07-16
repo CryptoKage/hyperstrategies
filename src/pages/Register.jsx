@@ -2,49 +2,55 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/api'; // ✅ 1. Import our configured api instance
 import Layout from '../components/Layout';
-import InputField from '../components/InputField'; // Assuming you are using this
+import InputField from '../components/InputField';
 
 const Register = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // For button feedback
   
-  // State to hold the referral code from the URL
   const [referralCode, setReferralCode] = useState('');
-  
-  // React Router hook to read URL query parameters
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  // This effect runs only once when the page first loads
   useEffect(() => {
-    // Check if the URL has a '?ref=...' parameter
     const refCode = searchParams.get('ref');
     if (refCode) {
       setReferralCode(refCode);
-      console.log(`Referral code detected in URL: ${refCode}`);
     }
   }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
 
     try {
-      // Send the referralCode to the backend along with the other user data
-      await axios.post('/api/auth/register', {
+      // ✅ 2. Use our configured 'api' instance instead of the default 'axios'
+      // The path is now just '/auth/register' because the base URL is in api.js
+      await api.post('/auth/register', {
         username,
         email,
         password,
-        referralCode // This will be an empty string if none was found in the URL
+        referralCode
       });
-      // On success, guide the user to the login page
-      navigate('/login');
+      // ✅ 3. On success, navigate to login with a status message
+      navigate('/login?status=registered');
+
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed.');
+      // ✅ 4. Provide specific, helpful error messages to the user
+      if (err.response) {
+        setError(err.response.data.error || 'An unexpected error occurred.');
+      } else {
+        setError('Cannot connect to the server. Please try again later.');
+      }
+      console.error("Registration error:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,7 +60,6 @@ const Register = () => {
         <form className="auth-form" onSubmit={handleSubmit}>
           <h2>Create Account</h2>
           
-          {/* If a referral code is present, display a confirmation message */}
           {referralCode && (
             <div className="info-box">
               <span>You were referred by code: <strong>{referralCode}</strong></span>
@@ -86,7 +91,9 @@ const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" className="btn-primary">Create Account</button>
+          <button type="submit" className="btn-primary" disabled={isLoading}>
+            {isLoading ? 'Creating Account...' : 'Create Account'}
+          </button>
         </form>
         <p className="auth-link">
           Already have an account? <Link to="/login">Sign In</Link>
