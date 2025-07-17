@@ -43,7 +43,7 @@ const Header = () => {
             <Link to="/dashboard" className="header__button">Dashboard</Link>
             <Link to="/wallet" className="header__button">Wallet</Link>
             <Link to="/profile" className="header__button">Profile</Link>
-            <Link to="/leaderboard" className="header__button">Leaderboard</Link>
+            
             
             {/* ✅ NEW: Conditionally render the Admin link */}
             {/* This link will only be rendered if user exists AND user.isAdmin is true */}
@@ -60,7 +60,7 @@ const Header = () => {
         ) : (
           // --- Guest View ---
           <>
-            <Link to="/leaderboard" className="header__button">Leaderboard</Link>
+            
             <Link to="/login" className="header__button">Sign In</Link>
             <Link to="/register" className="header__button header__button--primary">
               Register
