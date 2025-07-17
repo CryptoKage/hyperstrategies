@@ -277,6 +277,18 @@ button {
   margin-top: 24px; /* Space above the button */
 }
 
+
+
+
+/*.auth-form {
+  width: 100%;
+  max-width: 400px;
+  padding: 32px;
+  background-color: #1a1e1b;
+  border: 1px solid #333;
+  border-radius: 12px;
+}
+
 .auth-form h2 {
   text-align: center;
   margin-bottom: 24px;
@@ -2156,4 +2168,3 @@ textarea.input-field { resize: vertical; }
   padding: 8px;
 }
 
-}
