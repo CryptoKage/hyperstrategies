@@ -2112,11 +2112,16 @@ textarea.input-field { resize: vertical; }
 
 /* This wrapper centers the auth box vertically on the page */
 .auth-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: calc(100vh - 80px); /* Full screen height minus the header */
-  padding: 24px;
+  display: flex; /* Establishes a flex container */
+  flex-direction: column; /* Stacks items vertically if needed */
+  align-items: center; /* ✅ This centers content horizontally */
+  justify-content: center; /* ✅ This centers content vertically */
+  
+  /* This ensures the wrapper takes up at least the full height of the screen,
+     minus the approximate height of your header, making vertical centering work. */
+  min-height: calc(100vh - 80px); 
+  
+  padding: 24px; /* Adds some space on mobile */
 }
 
 /* The main container for the form */
