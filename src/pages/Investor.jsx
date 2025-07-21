@@ -12,7 +12,7 @@ const Investor = () => {
         <p style={styles.subtitle}>{t('investor.subtext')}</p>
 
         <a
-          href="https://t.me/hyperstrategies"
+          href="https://x.com/cryptokage"
           target="_blank"
           rel="noopener noreferrer"
           style={styles.button}

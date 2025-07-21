@@ -19,12 +19,12 @@ const Home = () => {
   const { isIOS } = useIsIOS();
   const [showIOSPrompt, setShowIOSPrompt] = useState(false); // ✅ This is now correct
 
-  const rotatingWords = ['EXPERIMENTAL', 'AUTOMATED', 'HEDGEFUND', 'SMART', 'HYPER'];
+  const rotatingWords = ['EXPERIMENTAL', 'AUTOMATED', 'HEDGEFUND', 'EMA', 'HYPER', 'APE'];
 
   const homePageCards = [
     { icon: '🏆', title: t('home.cards.airdrop.title'), description: t('home.cards.airdrop.text'), route: '/xpleaderboard' },
     { icon: '⚙️', title: t('home.cards.self.title'), description: t('home.cards.self.text'), route: '/self-serve' },
-    { icon: '📈', title: t('home.cards.managed.title'), description: t('home.cards.managed.text'), route: '/managed' },
+    { icon: '📈', title: t('home.cards.managed.title'), description: t('home.cards.managed.text'), route: '/login' },
     { icon: '💼', title: t('home.cards.invest.title'), description: t('home.cards.invest.text'), route: '/investor' },
   ];
 
