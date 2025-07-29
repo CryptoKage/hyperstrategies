@@ -1756,6 +1756,64 @@ textarea.input-field { resize: vertical; }
   margin-top: 32px;
 }
 
+/* ======================================== */
+/* ======== New My-Rank Card Styles ======= */
+/* ======================================== */
+
+/* This targets the container for the "Your Rank" card */
+.my-rank-card {
+  background-color: #1a202c; /* A dark, modern background */
+  border: 1px solid #2d3748; /* A subtle border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 24px;
+  margin-bottom: 48px; /* Matches the margin of your other sections */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Style the "Your Rank" heading */
+.my-rank-card h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.25rem; /* 20px */
+  color: #e2e8f0; /* A lighter text color for contrast */
+  text-align: left;
+  border-bottom: none; /* Override the general h3 border for this specific card */
+}
+
+/* This is the container for the two stats (Rank and XP) */
+.my-rank-stats {
+  display: flex;
+  justify-content: space-around; /* Space the items out */
+  gap: 16px; /* Add some space between them if they wrap */
+}
+
+/* This styles each individual stat box */
+.my-rank-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1; /* Allow them to grow and fill the space */
+  padding: 16px;
+  background-color: #2d3748;
+  border-radius: 6px;
+}
+
+/* This styles the label text (e.g., "Rank", "Total XP") */
+.my-rank-stat span:first-child {
+  font-size: 0.875rem; /* 14px */
+  color: #a0aec0; /* A muted color for the label */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+/* This styles the value text (e.g., "#8", "1,234") */
+.my-rank-stat span:last-child {
+  font-size: 1.5rem; /* 24px */
+  font-weight: 700;
+  color: #ffffff;
+}
+
 /* --- Corrected Hero Section Styles --- */
 
 .hero-section {
