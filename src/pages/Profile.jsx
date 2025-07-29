@@ -19,6 +19,12 @@ const Profile = () => {
   
   const [editMessage, setEditMessage] = useState('');
 
+  // --- NEW --- State variables for the referral code form
+  const [customReferralInput, setCustomReferralInput] = useState('');
+  const [isUpdatingReferral, setIsUpdatingReferral] = useState(false);
+  const [referralUpdateMessage, setReferralUpdateMessage] = useState({ type: '', text: '' });
+  const [copySuccessMessage, setCopySuccessMessage] = useState('Copy Referral Link');
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -42,17 +48,49 @@ const Profile = () => {
     try {
       const response = await api.put('/user/profile', { username, bio });
       setEditMessage(response.data.message);
-      
-      // ✅ This is where we would ideally get a new token with the updated name
-      // and call auth.login(newToken) to update the global state instantly.
-      // For now, a page refresh will show the new name in the header.
-      
     } catch (err) {
       setEditMessage(err.response?.data?.error || 'Update failed.');
     }
   };
 
+  // --- NEW --- Handler for updating the referral code
+  const handleUpdateReferralCode = async (e) => {
+    e.preventDefault();
+    setIsUpdatingReferral(true);
+    setReferralUpdateMessage({ type: '', text: '' });
+
+    try {
+      const response = await api.put('/user/referral-code', {
+        desiredCode: customReferralInput,
+      });
+
+      setReferralUpdateMessage({ type: 'success', text: response.data.message });
+      
+      // --- NEW --- Update the profile data in our local state to reflect the change instantly
+      setProfileData(prevData => ({
+        ...prevData,
+        referral_code: response.data.referralCode
+      }));
+      setCustomReferralInput(''); // Clear the input field on success
+
+    } catch (error) {
+      const message = error.response?.data?.message || 'An unexpected error occurred.';
+      setReferralUpdateMessage({ type: 'error', text: message });
+    } finally {
+      setIsUpdatingReferral(false);
+    }
+  };
+
   const referralLink = `https://www.hyper-strategies.com/register?ref=${profileData?.referral_code}`;
+
+  // --- NEW --- A more robust copy handler with user feedback
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(referralLink);
+    setCopySuccessMessage('Copied!');
+    setTimeout(() => {
+      setCopySuccessMessage('Copy Referral Link');
+    }, 2000); // Reset after 2 seconds
+  };
 
   if (isLoading) return <Layout><div className="profile-container"><h1>Loading Profile...</h1></div></Layout>;
   if (error) return <Layout><div className="profile-container"><p className="error-message">{error}</p></div></Layout>;
@@ -63,7 +101,7 @@ const Profile = () => {
         <h1>Your Profile</h1>
         <div className="profile-grid">
           
-          {/* Left Side: Edit Form */}
+          {/* Left Side: Edit Form and New Referral Form */}
           <div className="profile-card">
             <h3>Edit Details</h3>
             <form onSubmit={handleProfileUpdate}>
@@ -96,12 +134,39 @@ const Profile = () => {
             <div className="stat-display">
               <span className="stat-label">Your Referral Code</span>
               <span className="referral-code">{profileData.referral_code}</span>
-              <button onClick={() => navigator.clipboard.writeText(referralLink)} className="btn-secondary">
-                Copy Referral Link
+              <button onClick={handleCopyLink} className="btn-secondary">
+                {copySuccessMessage}
               </button>
             </div>
-          </div>
 
+            {/* --- NEW --- Custom Referral Code Form added here */}
+            <div className="custom-referral-section">
+              <h4>Customize Your Referral Link</h4>
+              <p className="form-description">Create a unique code. Must be 3-15 alphanumeric characters.</p>
+              <form onSubmit={handleUpdateReferralCode} className="referral-update-form">
+                <div className="referral-input-group">
+                  <span className="referral-input-prefix">HS-</span>
+                  <input
+                    type="text"
+                    className="referral-update-input"
+                    placeholder="your-code"
+                    value={customReferralInput}
+                    onChange={(e) => setCustomReferralInput(e.target.value)}
+                    disabled={isUpdatingReferral}
+                  />
+                </div>
+                <button type="submit" className="btn-primary" disabled={isUpdatingReferral || !customReferralInput}>
+                  {isUpdatingReferral ? 'Saving...' : 'Save Code'}
+                </button>
+              </form>
+              {referralUpdateMessage.text && (
+                <p className={`referral-message ${referralUpdateMessage.type}`}>
+                  {referralUpdateMessage.text}
+                </p>
+              )}
+            </div>
+
+          </div>
         </div>
       </div>
     </Layout>

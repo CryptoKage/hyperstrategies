@@ -2246,3 +2246,75 @@ textarea.input-field { resize: vertical; }
 .auth-link a:hover {
   text-decoration: underline;
 }
+
+/* --- Custom Referral Code Form Styles --- */
+.custom-referral-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.custom-referral-section h4 {
+  margin-bottom: 4px;
+}
+
+.form-description {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+}
+
+.referral-update-form {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.referral-input-group {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0 12px;
+  transition: border-color 0.2s;
+}
+
+.referral-input-group:focus-within {
+  border-color: var(--color-primary);
+}
+
+.referral-input-prefix {
+  font-weight: bold;
+  color: var(--color-text-secondary);
+  margin-right: 4px;
+}
+
+.referral-update-input {
+  border: none;
+  background-color: transparent;
+  padding: 12px 0;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  width: 100%;
+}
+
+.referral-update-input:focus {
+  outline: none;
+}
+
+.referral-message {
+  margin-top: 12px;
+  font-weight: 500;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.referral-message.success {
+  color: #38a169; /* Green for success */
+}
+
+.referral-message.error {
+  color: #e53e3e; /* Red for error */
+}
