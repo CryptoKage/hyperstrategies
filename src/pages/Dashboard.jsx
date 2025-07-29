@@ -9,11 +9,11 @@ import { useAuth } from '../context/AuthContext';
 import VaultModal from '../components/VaultModal';
 import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
-import EyeIcon from '../components/EyeIcon'; // Import the EyeIcon
+import EyeIcon from '../components/EyeIcon';
+import CountdownTimer from '../components/CountdownTimer'; // Import the new component
 
 const Dashboard = () => {
   const { t } = useTranslation();
-  // ✅ 1. Get the new state and function from our AuthContext
   const { user, isBalanceHidden, toggleBalanceVisibility } = useAuth();
   const navigate = useNavigate();
   
@@ -25,11 +25,20 @@ const Dashboard = () => {
   const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false);
   const [selectedVault, setSelectedVault] = useState(null);
 
+  const [autoCompoundState, setAutoCompoundState] = useState({});
+
   const fetchDashboardData = useCallback(async () => {
-    setLoading(true);
     try {
       const response = await api.get('/dashboard');
       setDashboardData(response.data);
+      const initialCompoundState = {};
+      // --- ANNOTATION --- We'll get userPositions from the updated API response
+      if (response.data.userPositions) {
+        response.data.userPositions.forEach(p => {
+          initialCompoundState[p.vault_id] = p.auto_compound ?? true;
+        });
+      }
+      setAutoCompoundState(initialCompoundState);
       setError('');
     } catch (err) {
       console.error('[Dashboard] API call failed:', err);
@@ -43,12 +52,24 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
+  const handleToggleAutoCompound = async (vaultId) => {
+    const currentState = autoCompoundState[vaultId];
+    const newState = !currentState;
+    setAutoCompoundState(prevState => ({ ...prevState, [vaultId]: newState }));
+    try {
+      await api.put(`/vaults/positions/${vaultId}/compound`, { autoCompound: newState });
+    } catch (err) {
+      console.error("Failed to update auto-compound setting:", err);
+      setAutoCompoundState(prevState => ({ ...prevState, [vaultId]: currentState }));
+    }
+  };
+
   const handleOpenAllocateModal = (vault) => {
     setSelectedVault(vault);
     setAllocateModalOpen(true);
   };
-  const handleOpenWithdrawModal = (vault) => {
-    setSelectedVault(vault);
+  const handleOpenWithdrawModal = (position) => {
+    setSelectedVault(position);
     setWithdrawModalOpen(true);
   };
   const handleActionSuccess = () => {
@@ -56,10 +77,7 @@ const Dashboard = () => {
   };
 
   const StatCardSkeleton = () => (
-    <div className="stat-card skeleton">
-      <div className="skeleton-text short"></div>
-      <div className="skeleton-text long"></div>
-    </div>
+    <div className="stat-card skeleton"><div className="skeleton-text short"></div><div className="skeleton-text long"></div></div>
   );
 
   const renderContent = () => {
@@ -77,14 +95,14 @@ const Dashboard = () => {
       return <p className="error-message">{error || t('dashboard.no_data')}</p>;
     }
 
-    const investedVaults = dashboardData.vaults.filter(v => parseFloat(v.tradable_capital) > 0);
-    
+    const investedPositions = dashboardData.userPositions || [];
+
     return (
       <>
+        {/* === THIS SECTION IS NOW FILLED IN === */}
         <div className="stats-grid">
             <div className="stat-card">
               <span className="stat-label">{t('dashboard.total_value')}</span>
-              {/* ✅ 2. The main toggle button is here */}
               <div className="stat-main">
                 <span className="stat-value">
                   {isBalanceHidden ? '******' : `$${(dashboardData.totalPortfolioValue || 0).toFixed(2)}`}
@@ -116,38 +134,73 @@ const Dashboard = () => {
             </div>
         </div>
 
-        {investedVaults.length > 0 && (
+        {investedPositions.length > 0 && (
           <>
-            <h2 style={{ marginTop: '48px' }}>{t('dashboard.your_positions')}</h2>
+            <h2 style={{ marginTop: '48px' }}>Your Positions</h2>
             <div className="vaults-grid">
-              {investedVaults.map(vault => (
-                <div key={vault.vault_id} className="vault-card">
-                  <h3>{vault.name}</h3>
-                  <div className="vault-stat">
-                    <span>{t('dashboard.tradable_capital')}</span>
-                    {/* ✅ 3. Conditionally render the values in the vault cards */}
-                    <span>{isBalanceHidden ? '******' : `$${parseFloat(vault.tradable_capital).toFixed(2)}`}</span>
+              {investedPositions.map(position => {
+                const vaultInfo = dashboardData.vaults.find(v => v.vault_id === position.vault_id);
+                if (!vaultInfo) return null;
+
+                const isLocked = position.lock_expires_at && new Date(position.lock_expires_at) > new Date();
+
+                return (
+                  <div key={position.position_id} className="vault-card invested">
+                    <h3>{vaultInfo.name}</h3>
+                    <div className="vault-stat">
+                      <span>Tradable Capital</span>
+                      <span>{isBalanceHidden ? '******' : `$${parseFloat(position.tradable_capital).toFixed(2)}`}</span>
+                    </div>
+                    <div className="vault-stat">
+                      <span>PnL</span>
+                      <span className={parseFloat(position.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
+                        {isBalanceHidden ? '******' : `${parseFloat(position.pnl) >= 0 ? '+' : ''}$${parseFloat(position.pnl).toFixed(2)}`}
+                      </span>
+                    </div>
+
+                    {isLocked && (
+                        <div className="vault-stat lock-info">
+                            <span>Unlocks In</span>
+                            <CountdownTimer expiryTimestamp={position.lock_expires_at} />
+                        </div>
+                    )}
+                    
+                    <div className="auto-compound-toggle">
+                        <label htmlFor={`compound-toggle-${position.vault_id}`}>Auto-Compound Profits</label>
+                        <label className="switch">
+                            <input 
+                                type="checkbox" 
+                                id={`compound-toggle-${position.vault_id}`}
+                                checked={autoCompoundState[position.vault_id] ?? true}
+                                onChange={() => handleToggleAutoCompound(position.vault_id)}
+                            />
+                            <span className="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div className="vault-actions">
+                      <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>Add Funds</button>
+                      <button 
+                        className="btn-secondary" 
+                        onClick={() => handleOpenWithdrawModal(position)}
+                        disabled={isLocked}
+                        title={isLocked ? `This position is locked until ${new Date(position.lock_expires_at).toLocaleDateString()}` : 'Request full withdrawal'}
+                      >
+                        Withdraw
+                      </button>
+                    </div>
                   </div>
-                  <div className="vault-stat">
-                    <span>{t('dashboard.pnl')}</span>
-                    <span className={parseFloat(vault.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
-                      {isBalanceHidden ? '******' : `${parseFloat(vault.pnl) >= 0 ? '+' : ''}$${parseFloat(vault.pnl).toFixed(2)}`}
-                    </span>
-                  </div>
-                  <div className="vault-actions">
-                    <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vault)}>{t('dashboard.add_funds')}</button>
-                    <button className="btn-secondary" onClick={() => handleOpenWithdrawModal(vault)}>{t('dashboard.withdraw')}</button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         )}
 
-        <h2 style={{ marginTop: '48px' }}>{t('dashboard.available_strategies')}</h2>
+        <h2 style={{ marginTop: '48px' }}>Available Strategies</h2>
         <div className="vaults-grid">
+          {/* === THIS SECTION IS NOW FILLED IN === */}
           {dashboardData.vaults.map(vault => {
-            if (investedVaults.find(v => v.vault_id === vault.vault_id)) return null;
+            if (investedPositions.find(p => p.vault_id === vault.vault_id)) return null;
             const isActive = vault.status === 'active';
             return (
               <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'}`}>
@@ -178,13 +231,14 @@ const Dashboard = () => {
           {renderContent()}
         </div>
       </Layout>
-
+      
       {dashboardData && (
         <VaultModal
             isOpen={isAllocateModalOpen}
             onClose={() => setAllocateModalOpen(false)}
             vault={selectedVault}
             availableBalance={dashboardData.availableBalance}
+            userTier={dashboardData.accountTier}
             onAllocationSuccess={handleActionSuccess}
         />
       )}

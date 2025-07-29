@@ -1,96 +1,62 @@
 // src/components/VaultWithdrawModal.jsx
-
 import React, { useState, useEffect } from 'react';
 import api from '../api/api';
-import InputField from './InputField';
 
 const VaultWithdrawModal = ({ isOpen, onClose, vault, onWithdrawalSuccess }) => {
-  const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!isOpen) {
-      setAmount('');
+    if (isOpen) {
       setError('');
       setIsLoading(false);
     }
   }, [isOpen]);
 
-  if (!isOpen || !vault) {
-    return null;
-  }
+  if (!isOpen || !vault) return null;
 
-  // Get the tradable capital from the vault object, defaulting to 0
-  const tradableCapital = parseFloat(vault.tradable_capital) || 0;
-
-  const handleWithdraw = async (e) => {
+  const handleWithdrawRequest = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
-    const withdrawAmount = parseFloat(amount);
-    
-    // Frontend validation
-    if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
-      setError('Please enter a valid amount.');
-      setIsLoading(false);
-      return;
-    }
-    if (withdrawAmount > tradableCapital) {
-      setError('Withdrawal amount exceeds tradable capital in this vault.');
-      setIsLoading(false);
-      return;
-    }
-
     try {
+      // --- NEW --- API call is simpler, no amount needed
       await api.post('/vaults/withdraw', {
         vaultId: vault.vault_id,
-        amount: withdrawAmount,
       });
 
-      onWithdrawalSuccess();
-      onClose();
+      onWithdrawalSuccess(); // This will refetch dashboard data
+      onClose(); // Close the modal on success
 
     } catch (err) {
-      setError(err.response?.data?.error || 'Withdrawal failed.');
+      setError(err.response?.data?.error || 'Withdrawal request failed.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // ✅ 1. ADDED: This function handles the "Max" button click for withdrawal
-  const handleMaxClick = () => {
-    // We set the amount to the full tradable capital available in this vault position
-    setAmount(tradableCapital.toFixed(2).toString());
-  };
+  const tradableCapital = parseFloat(vault.tradable_capital) || 0;
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
         <button onClick={onClose} className="modal-close-btn">×</button>
-        <h2>Withdraw from {vault.name}</h2>
-        <p className="modal-subtitle">Funds will be moved from this vault position back to your main "Available to Allocate" balance.</p>
+        <h2>Request Withdrawal from {vault.name}</h2>
+        <p className="modal-subtitle">
+            This will queue your entire position of <strong>${tradableCapital.toFixed(2)}</strong> for withdrawal.
+        </p>
+        <div className="disclaimer info">
+            <p>Withdrawals are processed manually and may take up to 48 hours. You can track the status on your Wallet page.</p>
+        </div>
         
-        <form onSubmit={handleWithdraw}>
+        <form onSubmit={handleWithdrawRequest}>
           {error && <p className="error-message">{error}</p>}
-          
-          <InputField
-            label={`Amount to Withdraw (Available: $${tradableCapital.toFixed(2)})`}
-            id="withdrawAmount"
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="e.g., 500"
-            required
-            // ✅ 2. ADDED: The onMaxClick prop connects the new handler to the InputField component
-            onMaxClick={handleMaxClick}
-          />
           
           <div className="modal-actions">
             <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
             <button type="submit" className="btn-primary" disabled={isLoading}>
-              {isLoading ? 'Processing...' : 'Confirm Withdrawal'}
+              {isLoading ? 'Submitting...' : 'Confirm Request'}
             </button>
           </div>
         </form>
