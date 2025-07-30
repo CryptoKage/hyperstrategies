@@ -3,7 +3,7 @@
 import React from 'react';
 import Header from './Header';
 // 1. Import our upgraded footer (remember we renamed it to break the cache)
-import MainFooter from './MainFooter'; 
+import Footer from './Footer'; 
 // 2. Import our two new background effect components
 import InteractiveBackground from './InteractiveBackground';
 import PlasmaEffect from './PlasmaEffect';
@@ -26,7 +26,7 @@ const Layout = ({ children }) => {
       </main>
 
       {/* 4. We now use our proper, upgraded footer component */}
-      <MainFooter />
+      <Footer />
     </div>
   );
 };

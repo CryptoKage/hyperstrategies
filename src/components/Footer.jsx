@@ -2,9 +2,10 @@
 
 import React from 'react';
 
-// --- Vercel Build Cache Nudge: Version 2 ---
-import xIconPath from '../assets/x-icon.svg';
-import telegramIconPath from '../assets/telegram.svg';
+// Import your SVG files as React components.
+// Make sure the paths and filenames are correct.
+import { ReactComponent as XIcon } from '../assets/x-icon.svg';
+import { ReactComponent as TelegramIcon } from '../assets/telegram.svg';
 
 const Footer = () => {
   return (
@@ -13,12 +14,12 @@ const Footer = () => {
       
       <div className="footer__socials">
         <span>Follow us:</span>
-        {/* Replace '#' with your actual social media URLs */}
+        {/* Remember to replace '#' with your actual social media URLs */}
         <a href="#" target="_blank" rel="noopener noreferrer" className="social-link" title="Follow us on X">
-          <img src={xIconPath} alt="X Icon" className="social-icon" />
+          <XIcon />
         </a>
         <a href="#" target="_blank" rel="noopener noreferrer" className="social-link" title="Join our Telegram">
-          <img src={telegramIconPath} alt="Telegram Icon" className="social-icon" />
+          <TelegramIcon />
         </a>
       </div>
 
