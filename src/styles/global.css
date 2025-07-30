@@ -2318,3 +2318,42 @@ textarea.input-field { resize: vertical; }
 .referral-message.error {
   color: #e53e3e; /* Red for error */
 }
+
+/* --- Admin Form Styles --- */
+.admin-form {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.admin-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+.admin-form label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+.admin-form input, .admin-form select {
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+}
+.admin-message {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 4px;
+  text-align: center;
+}
+.admin-message.success {
+  background-color: rgba(56, 161, 105, 0.1);
+  color: #38a169;
+}
+.admin-message.error {
+  background-color: rgba(229, 62, 62, 0.1);
+  color: #e53e3e;
+}

@@ -9,12 +9,16 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
-  // State for button actions
   const [actionMessage, setActionMessage] = useState('');
   const [isActionLoading, setIsActionLoading] = useState(false);
 
+  // --- NEW --- State for the Profit Distribution form
+  const [distributeVaultId, setDistributeVaultId] = useState('1');
+  const [distributeProfit, setDistributeProfit] = useState('');
+  const [isDistributing, setIsDistributing] = useState(false);
+  const [distributeMessage, setDistributeMessage] = useState({ type: '', text: '' });
+
   const fetchAdminStats = useCallback(async () => {
-    // Only set the main loader on the initial fetch
     if (!stats) setLoading(true);
     try {
       const response = await api.get('/admin/dashboard-stats');
@@ -27,20 +31,20 @@ const AdminDashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [stats]); // Dependency ensures we can refetch easily
+  }, [stats]);
 
   useEffect(() => {
     fetchAdminStats();
   }, [fetchAdminStats]);
 
-  // --- Handlers for Admin Actions ---
+  // --- Handlers for existing Admin Actions ---
   const handleTriggerSweep = useCallback(async () => {
     setIsActionLoading(true);
     setActionMessage('Triggering sweep job...');
     try {
       const response = await api.post('/admin/trigger-sweep');
       setActionMessage(response.data.message);
-      setTimeout(fetchAdminStats, 5000); // Refresh stats after 5s to see progress
+      setTimeout(fetchAdminStats, 5000);
     } catch (err) {
       setActionMessage('Failed to trigger sweep job.');
     } finally {
@@ -54,7 +58,7 @@ const AdminDashboard = () => {
     try {
       const response = await api.post('/admin/retry-sweeps');
       setActionMessage(response.data.message);
-      fetchAdminStats(); // Refresh immediately to update the list
+      fetchAdminStats();
     } catch (err) {
       setActionMessage('Failed to retry sweeps.');
     } finally {
@@ -76,6 +80,27 @@ const AdminDashboard = () => {
     }
   }, [fetchAdminStats]);
 
+  // --- NEW --- Handler for the Profit Distribution form submission
+  const handleDistributeProfit = async (e) => {
+    e.preventDefault();
+    setIsDistributing(true);
+    setDistributeMessage({ type: '', text: '' });
+
+    try {
+      const response = await api.post('/admin/distribute-profit', {
+        vault_id: parseInt(distributeVaultId, 10),
+        total_profit_amount: distributeProfit,
+      });
+      setDistributeMessage({ type: 'success', text: response.data.message });
+      setDistributeProfit('');
+      fetchAdminStats();
+    } catch (err) {
+      const message = err.response?.data?.message || 'An unexpected error occurred.';
+      setDistributeMessage({ type: 'error', text: message });
+    } finally {
+      setIsDistributing(false);
+    }
+  };
 
   const StatCard = ({ label, value, currency = false }) => (
     <div className="stat-card">
@@ -95,15 +120,9 @@ const AdminDashboard = () => {
   );
   
   const renderContent = () => {
-    if (loading && !stats) {
-      return <p>Loading Admin Dashboard...</p>;
-    }
-    if (error && !stats) {
-      return <p className="error-message">{error}</p>;
-    }
-    if (!stats) {
-      return <p>No data available.</p>;
-    }
+    if (loading && !stats) return <p>Loading Admin Dashboard...</p>;
+    if (error && !stats) return <p className="error-message">{error}</p>;
+    if (!stats) return <p>No data available.</p>;
     
     return (
       <>
@@ -120,6 +139,47 @@ const AdminDashboard = () => {
           <StatCard label="Total Available Capital" value={stats.totalAvailable} currency />
           <StatCard label="Total Capital in Vaults" value={stats.totalInVaults} currency />
           <StatCard label="Hot Wallet Gas (ETH)" value={parseFloat(stats.hotWalletBalance)} />
+        </div>
+
+        {/* --- THIS IS THE NEW CARD WE ARE ADDING --- */}
+        <div className="admin-actions-card">
+          <h3>Distribute Vault Profits</h3>
+          <p>Manually trigger profit distribution for a vault after returning profits to the harvest wallet.</p>
+          <form onSubmit={handleDistributeProfit} className="admin-form">
+            <div className="form-group">
+              <label htmlFor="vault-select">Select Vault</label>
+              <select 
+                id="vault-select" 
+                value={distributeVaultId}
+                onChange={(e) => setDistributeVaultId(e.target.value)}
+                disabled={isDistributing}
+              >
+                <option value="1">Core1 Discretionary</option>
+                <option value="2">ApeCoin Dual EMA</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="profit-amount">Total Profit Amount (USDC)</label>
+              <input
+                id="profit-amount"
+                type="number"
+                step="0.01"
+                placeholder="e.g., 10000.00"
+                value={distributeProfit}
+                onChange={(e) => setDistributeProfit(e.target.value)}
+                disabled={isDistributing}
+                required
+              />
+            </div>
+            <button type="submit" className="btn-primary" disabled={isDistributing || !distributeProfit}>
+              {isDistributing ? 'Distributing...' : 'Distribute Profits'}
+            </button>
+          </form>
+          {distributeMessage.text && (
+            <p className={`admin-message ${distributeMessage.type}`}>
+              {distributeMessage.text}
+            </p>
+          )}
         </div>
 
         <div className="admin-actions-card">
