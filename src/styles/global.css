@@ -161,58 +161,6 @@ button {
   background-color: #040e21; 
 }
 
-/* --- Updated Footer Styles (Light Theme) --- */
-.footer {
-  background-color: #ffffff; /* Your existing light background */
-  border-top: 1px solid #ddd;
-  padding: 24px;
-  font-size: 14px;
-  color: #666; /* Your existing text color */
-  margin-top: 40px;
-
-  /* NEW: Flexbox layout for better alignment */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.footer__contact {
-  margin-bottom: 16px;
-}
-
-.footer__socials {
-  display: flex;
-  align-items: center;
-  gap: 16px; /* Space between "Follow us:" text and icons */
-  margin-bottom: 16px;
-}
-
-.social-icon {
-  width: 24px;
-  height: 24px;
-  /* We can't change the color with 'fill' anymore when using <img>. 
-     The color will be whatever is in the original SVG file.
-     We can add effects like a subtle opacity change on hover. */
-  transition: opacity 0.2s;
-}
-
-.social-link:hover .social-icon {
-  opacity: 0.7; /* Make the icon slightly transparent on hover */
-}
-
-.footer__disclaimer {
-  font-size: 12px;
-  color: #888; /* Slightly lighter than the main text */
-  margin-top: 16px;
-  border-top: 1px solid #eee; /* A lighter border for the disclaimer */
-  padding-top: 16px;
-  width: 100%;
-  max-width: 600px;
-}
-
-
 
 /* --- About Section --- */
 
@@ -2623,4 +2571,65 @@ textarea.input-field { resize: vertical; }
   /* Ensure link-buttons have the same vertical alignment */
   display: inline-flex;
   align-items: center;
+}
+
+/* ==========================================================================
+   MAIN FOOTER STYLES (Consolidated)
+   ========================================================================== */
+
+.footer {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  margin-top: 60px;
+  text-align: center;
+  
+  /* Appearance */
+  background-color: var(--color-surface); /* Matches your dark theme */
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.footer__contact {
+  margin-bottom: 16px;
+}
+
+.footer__socials {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.social-link {
+  color: var(--color-text-secondary);
+  transition: color 0.2s;
+}
+
+.social-link:hover {
+  color: var(--color-primary);
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+  transition: opacity 0.2s;
+}
+
+.social-link:hover .social-icon {
+  opacity: 0.8;
+}
+
+.footer__disclaimer {
+  font-size: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  width: 100%;
+  max-width: 600px;
+  opacity: 0.7;
 }
