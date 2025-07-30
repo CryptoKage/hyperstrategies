@@ -195,19 +195,17 @@ button {
   margin-bottom: 16px;
 }
 
-.social-link {
-  color: #666; /* Match your default footer text color */
-  transition: color 0.2s;
-}
-
-.social-link:hover {
-  color: #007bff; /* A standard blue for hover, or use your var(--color-primary) if you have one */
-}
-
-.social-link svg {
+.social-icon {
   width: 24px;
   height: 24px;
-  fill: currentColor; /* The icon will inherit the link's color */
+  /* We can't change the color with 'fill' anymore when using <img>. 
+     The color will be whatever is in the original SVG file.
+     We can add effects like a subtle opacity change on hover. */
+  transition: opacity 0.2s;
+}
+
+.social-link:hover .social-icon {
+  opacity: 0.7; /* Make the icon slightly transparent on hover */
 }
 
 .footer__disclaimer {
