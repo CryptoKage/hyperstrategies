@@ -182,6 +182,31 @@ const AdminDashboard = () => {
           )}
         </div>
 
+        {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
+          <div className="admin-actions-card warning">
+            <h3>Pending Vault Withdrawals ({stats.pendingVaultWithdrawals.length})</h3>
+            <p>ACTION REQUIRED: These positions need to be unwound on the trading desk. Once funds are returned, the withdrawal processor job will credit the users.</p>
+            <table className="activity-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Description</th>
+                  <th className="amount">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.pendingVaultWithdrawals.map(item => (
+                  <tr key={item.activity_id}>
+                    <td><strong>{item.username}</strong></td>
+                    <td>{item.description}</td>
+                    <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
         <div className="admin-actions-card">
           <h3>Manual Job Triggers</h3>
           <p>Manually run a scheduled job. This is useful for immediate processing or testing.</p>
