@@ -18,12 +18,13 @@ import Wallet from './Wallet';
 import OAuthSuccess from './OAuthSuccess';
 import FAQ from './FAQ';
 import AdminDashboard from './admin/AdminDashboard';
-// The import for AdminRoute is removed from here as it's a guard, not a page.
+// --- NEW --- Import our new User Detail Page component
+import UserDetailPage from './admin/UserDetailPage';
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
 import GuestRoute from '../components/GuestRoute';
-import AdminRoute from '../components/AdminRoute'; // This is the correct place for it.
+import AdminRoute from '../components/AdminRoute';
 
 const Router = () => {
   return (
@@ -36,7 +37,6 @@ const Router = () => {
       <Route path="/legal" element={<Legal />} />
       <Route path="/faq" element={<FAQ />} />
       <Route path="/oauth-success" element={<OAuthSuccess />} />
-      {/* ✅ Standardized to the cleaner URL */}
       <Route path="/xpleaderboard" element={<XPLeaderboard />} /> 
 
       {/* --- Guest-Only Routes --- */}
@@ -49,9 +49,15 @@ const Router = () => {
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           
       {/* --- ADMIN-ONLY Protected Routes --- */}
+      {/* --- ANNOTATION --- I've standardized the main admin route to just /admin for simplicity */}
       <Route 
-        path="/admin/dashboard" 
+        path="/admin" 
         element={<AdminRoute><AdminDashboard /></AdminRoute>} 
+      />
+      {/* --- NEW --- This is the new route for the user detail page */}
+      <Route
+        path="/admin/user/:userId"
+        element={<AdminRoute><UserDetailPage /></AdminRoute>}
       />
     </Routes>
   );

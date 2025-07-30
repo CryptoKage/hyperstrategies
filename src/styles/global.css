@@ -2422,3 +2422,28 @@ textarea.input-field { resize: vertical; }
   background-color: var(--color-surface);
 }
 
+/* --- Admin User Detail Page Styles --- */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+.details-grid > div {
+  display: flex;
+  flex-direction: column;
+}
+.details-grid > div > span {
+  font-size: 1.1rem;
+}
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.status-badge.status-active { background-color: #3b82f6; color: white; }
+.status-badge.status-in_trade { background-color: #22c55e; color: white; }
+.status-badge.status-pending { background-color: #f59e0b; color: white; }
+.status-badge.status-failed { background-color: #ef4444; color: white; }
+
