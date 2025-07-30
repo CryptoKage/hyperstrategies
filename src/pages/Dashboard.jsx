@@ -11,6 +11,13 @@ import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
 import CountdownTimer from '../components/CountdownTimer';
+import coreVaultBg from '../assets/core.svg';
+import apecoinVaultBg from '../assets/apecoin.svg';
+
+const vaultImageMap = {
+  'core.svg': coreVaultBg,
+  'apecoin.svg': apecoinVaultBg,
+};
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -130,7 +137,9 @@ const Dashboard = () => {
                 const isLocked = position.lock_expires_at && new Date(position.lock_expires_at) > new Date();
                 
                 // --- THIS IS THE NEW VAULT IMAGE LOGIC ---
-                const cardStyle = vaultInfo.image_url ? { backgroundImage: `url(${vaultInfo.image_url})` } : {};
+                const cardStyle = vaultInfo.image_url && vaultImageMap[vaultInfo.image_url]
+                  ? { backgroundImage: `url(${vaultImageMap[vaultInfo.image_url]})` } 
+                  : {};
 
                 return (
                   <div key={position.position_id} className="vault-card invested with-bg" style={cardStyle}>
@@ -181,7 +190,9 @@ const Dashboard = () => {
             const isActive = vault.status === 'active';
             
             // --- THIS IS THE NEW VAULT IMAGE LOGIC ---
-            const cardStyle = vault.image_url ? { backgroundImage: `url(${vault.image_url})` } : {};
+            const cardStyle = vault.image_url && vaultImageMap[vault.image_url]
+              ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` } 
+              : {};
 
             return (
               <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
