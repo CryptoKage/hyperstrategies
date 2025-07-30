@@ -2634,30 +2634,49 @@ textarea.input-field { resize: vertical; }
   opacity: 0.7;
 }
 
-/* --- Interactive Background Styles --- */
+/* --- Interactive Background Styles (Corrected) --- */
+
+/* This is the main wrapper for the hero section on Home.jsx */
+.hero-section-wrapper {
+  position: relative; /* Creates the positioning context */
+  background-color: var(--color-background);
+  /* The padding is now part of this wrapper */
+  padding: 80px 24px;
+}
+
+/* The background component itself */
 .interactive-background {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1; /* Sits behind the content */
-  overflow: hidden; /* Prevents scrollbars from animation */
+  z-index: 1; /* Sits behind the content */
+  overflow: hidden;
 }
 
-.hero-section-wrapper {
-  position: relative; /* Creates the positioning context */
-  background-color: var(--color-background);
-  padding: 80px 24px;
+/* We need to make the content sit on top of the background */
+.hero-section {
+    position: relative;
+    z-index: 2;
 }
 
-/* Make the hero image float */
+/* --- REVERTING THE CHART IMAGE --- */
+/* Restore the original, solid look of the chart image */
 .hero-image-container {
-  /* Remove the border and hard edges */
-  border: none;
-  box-shadow: none;
-  /* Make it semi-transparent */
-  opacity: 0.3;
-  /* You can add a CSS filter for a cool effect */
-  filter: saturate(0) brightness(1.5);
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  height: 100%;
+  /* Remove the transparency effects */
+  opacity: 1;
+  filter: none;
+}
+
+/* --- Mobile Fix for the Wrapper --- */
+@media (max-width: 768px) {
+  .hero-section-wrapper {
+    padding: 40px 16px;
+  }
 }
