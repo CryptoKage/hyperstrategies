@@ -111,7 +111,7 @@ const Profile = () => {
             </div>
             
             {/* 3. MODIFIED: The XP display is now a clickable Link. */}
-            <Link to="/leaderboard" className="stat-display xp-link">
+            <Link to="/xpleaderboard" className="stat-display xp-link">
               <span className="stat-label">Your XP</span>
               <span className="stat-value-large">{profileData.xp} XP</span>
               <span className="link-indicator">→</span>
