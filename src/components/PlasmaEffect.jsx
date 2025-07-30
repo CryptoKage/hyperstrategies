@@ -1,7 +1,7 @@
 // src/components/PlasmaEffect.jsx
 
 import React, { useRef, useEffect } from 'react';
-import { SimplexNoise } from 'simplex-noise';
+import  SimplexNoise  from 'simplex-noise';
 
 const PlasmaEffect = () => {
   const canvasRef = useRef(null);
