@@ -2633,3 +2633,31 @@ textarea.input-field { resize: vertical; }
   max-width: 600px;
   opacity: 0.7;
 }
+
+/* --- Interactive Background Styles --- */
+.interactive-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Sits behind the content */
+  overflow: hidden; /* Prevents scrollbars from animation */
+}
+
+.hero-section-wrapper {
+  position: relative; /* Creates the positioning context */
+  background-color: var(--color-background);
+  padding: 80px 24px;
+}
+
+/* Make the hero image float */
+.hero-image-container {
+  /* Remove the border and hard edges */
+  border: none;
+  box-shadow: none;
+  /* Make it semi-transparent */
+  opacity: 0.3;
+  /* You can add a CSS filter for a cool effect */
+  filter: saturate(0) brightness(1.5);
+}
