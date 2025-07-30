@@ -333,19 +333,24 @@ const AdminDashboard = () => {
     );
   };
 
-  return (
-    <Layout>
-      <div className="admin-container">
-        <div className="wallet-header">
-            <h1>Admin Mission Control</h1>
-            <button onClick={fetchAdminStats} className="btn-secondary" disabled={loading}>
-              {loading ? 'Refreshing...' : 'Refresh Stats'}
-            </button>
+return (
+  <Layout>
+    <div className="admin-container">
+      <div className="admin-header"> {/* The class name is now admin-header */}
+        <h1>Admin Mission Control</h1>
+        <div className="admin-header-actions"> {/* Buttons are wrapped */}
+          <button onClick={fetchAdminStats} className="btn-secondary btn-sm" disabled={loading}>
+            {loading ? 'Refreshing...' : 'Refresh Stats'}
+          </button>
+          <Link to="/admin/financials" className="btn-primary btn-sm">
+            Financials & Auditing
+          </Link>
         </div>
-        {renderContent()}
       </div>
-    </Layout>
-  );
+      {renderContent()}
+    </div>
+  </Layout>
+);
 };
 
 export default AdminDashboard;

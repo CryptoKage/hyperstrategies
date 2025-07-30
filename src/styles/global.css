@@ -2525,3 +2525,102 @@ textarea.input-field { resize: vertical; }
 .status-badge.status-pending { background-color: #f59e0b; color: white; }
 .status-badge.status-failed { background-color: #ef4444; color: white; }
 
+/* --- Vault Card Background Image Styles --- */
+.vault-card.with-bg {
+  position: relative; /* Required for the overlay to position correctly */
+  background-size: cover;
+  background-position: center;
+  color: #ffffff; /* Make text white for better contrast on images */
+  overflow: hidden; /* Keeps the overlay within the card's rounded corners */
+}
+
+.vault-card.with-bg .card-overlay {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(4, 14, 33, 0.7); /* A dark blue overlay that matches your theme */
+  z-index: 1; /* Sits on top of the background image */
+  transition: background-color 0.3s;
+}
+
+.vault-card.with-bg:hover .card-overlay {
+  background-color: rgba(4, 14, 33, 0.5); /* Make it slightly more transparent on hover */
+}
+
+.vault-card.with-bg .card-content {
+  position: relative; /* Ensures the content sits on top of the overlay */
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Make content fill the card */
+}
+
+/* Ensure text inside the card with a background is always readable */
+.vault-card.with-bg h3,
+.vault-card.with-bg span,
+.vault-card.with-bg p {
+  color: #ffffff !important;
+}
+
+/* --- Admin Financials Page & Pagination Styles --- */
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* Makes table scrollable on small screens */
+}
+
+.admin-table-link {
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.admin-table-link:hover {
+  text-decoration: underline;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.page-indicator {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.pagination-controls .btn-secondary {
+  width: auto; /* Override the default 100% width for buttons */
+}
+
+/* --- Admin Header Action Bar Styles --- */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 16px;
+}
+
+.admin-header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* A new modifier class for smaller buttons */
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 14px;
+  /* Ensure link-buttons have the same vertical alignment */
+  display: inline-flex;
+  align-items: center;
+}

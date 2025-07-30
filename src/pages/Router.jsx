@@ -18,6 +18,7 @@ import Wallet from './Wallet';
 import OAuthSuccess from './OAuthSuccess';
 import FAQ from './FAQ';
 import AdminDashboard from './admin/AdminDashboard';
+import FinancialsPage from './admin/FinancialsPage';
 // --- NEW --- Import our new User Detail Page component
 import UserDetailPage from './admin/UserDetailPage';
 
@@ -59,6 +60,10 @@ const Router = () => {
         path="/admin/user/:userId"
         element={<AdminRoute><UserDetailPage /></AdminRoute>}
       />
+      <Route
+  path="/admin/financials"
+  element={<AdminRoute><FinancialsPage /></AdminRoute>}
+/>
     </Routes>
   );
 };

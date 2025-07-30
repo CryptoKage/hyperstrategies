@@ -10,7 +10,7 @@ import VaultModal from '../components/VaultModal';
 import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
-import CountdownTimer from '../components/CountdownTimer'; // Import the new component
+import CountdownTimer from '../components/CountdownTimer';
 
 const Dashboard = () => {
   const { t } = useTranslation();
@@ -32,7 +32,6 @@ const Dashboard = () => {
       const response = await api.get('/dashboard');
       setDashboardData(response.data);
       const initialCompoundState = {};
-      // --- ANNOTATION --- We'll get userPositions from the updated API response
       if (response.data.userPositions) {
         response.data.userPositions.forEach(p => {
           initialCompoundState[p.vault_id] = p.auto_compound ?? true;
@@ -84,9 +83,7 @@ const Dashboard = () => {
     if (loading) {
       return (
         <div className="stats-grid">
-          <StatCardSkeleton />
-          <StatCardSkeleton />
-          <StatCardSkeleton />
+          <StatCardSkeleton /> <StatCardSkeleton /> <StatCardSkeleton />
         </div>
       );
     }
@@ -99,38 +96,27 @@ const Dashboard = () => {
 
     return (
       <>
-        {/* === THIS SECTION IS NOW FILLED IN === */}
         <div className="stats-grid">
             <div className="stat-card">
               <span className="stat-label">{t('dashboard.total_value')}</span>
               <div className="stat-main">
-                <span className="stat-value">
-                  {isBalanceHidden ? '******' : `$${(dashboardData.totalPortfolioValue || 0).toFixed(2)}`}
-                </span>
-                <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility">
-                  <EyeIcon isHidden={isBalanceHidden} />
-                </button>
+                <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.totalPortfolioValue || 0).toFixed(2)}`}</span>
+                <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
               </div>
             </div>
             <div className="stat-card">
               <span className="stat-label">{t('dashboard.available_balance')}</span>
               <div className="stat-main">
-                <span className="stat-value">
-                  {isBalanceHidden ? '******' : `$${(dashboardData.availableBalance || 0).toFixed(2)}`}
-                </span>
+                <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.availableBalance || 0).toFixed(2)}`}</span>
                 <button onClick={() => navigate('/wallet')} className="btn-link">{t('dashboard.manage')}</button>
               </div>
             </div>
             <div className="stat-card">
               <div className="stat-label-with-icon">
                 <span className="stat-label">{t('dashboard.bonus_points')}</span>
-                <Link to="/faq" className="info-icon-link" title={t('faq.q1_title')}>
-                  <InfoIcon />
-                </Link>
+                <Link to="/faq" className="info-icon-link" title={t('faq.q1_title')}><InfoIcon /></Link>
               </div>
-              <span className="stat-value">
-                {isBalanceHidden ? '******' : `$${(dashboardData.totalBonusPoints || 0).toFixed(2)}`}
-              </span>
+              <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.totalBonusPoints || 0).toFixed(2)}`}</span>
             </div>
         </div>
 
@@ -141,53 +127,45 @@ const Dashboard = () => {
               {investedPositions.map(position => {
                 const vaultInfo = dashboardData.vaults.find(v => v.vault_id === position.vault_id);
                 if (!vaultInfo) return null;
-
                 const isLocked = position.lock_expires_at && new Date(position.lock_expires_at) > new Date();
+                
+                // --- THIS IS THE NEW VAULT IMAGE LOGIC ---
+                const cardStyle = vaultInfo.image_url ? { backgroundImage: `url(${vaultInfo.image_url})` } : {};
 
                 return (
-                  <div key={position.position_id} className="vault-card invested">
-                    <h3>{vaultInfo.name}</h3>
-                    <div className="vault-stat">
-                      <span>Tradable Capital</span>
-                      <span>{isBalanceHidden ? '******' : `$${parseFloat(position.tradable_capital).toFixed(2)}`}</span>
-                    </div>
-                    <div className="vault-stat">
-                      <span>PnL</span>
-                      <span className={parseFloat(position.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
-                        {isBalanceHidden ? '******' : `${parseFloat(position.pnl) >= 0 ? '+' : ''}$${parseFloat(position.pnl).toFixed(2)}`}
-                      </span>
-                    </div>
-
-                    {isLocked && (
-                        <div className="vault-stat lock-info">
-                            <span>Unlocks In</span>
-                            <CountdownTimer expiryTimestamp={position.lock_expires_at} />
-                        </div>
-                    )}
-                    
-                    <div className="auto-compound-toggle">
-                        <label htmlFor={`compound-toggle-${position.vault_id}`}>Auto-Compound Profits</label>
-                        <label className="switch">
-                            <input 
-                                type="checkbox" 
-                                id={`compound-toggle-${position.vault_id}`}
-                                checked={autoCompoundState[position.vault_id] ?? true}
-                                onChange={() => handleToggleAutoCompound(position.vault_id)}
-                            />
-                            <span className="slider round"></span>
-                        </label>
-                    </div>
-
-                    <div className="vault-actions">
-                      <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>Add Funds</button>
-                      <button 
-                        className="btn-secondary" 
-                        onClick={() => handleOpenWithdrawModal(position)}
-                        disabled={isLocked}
-                        title={isLocked ? `This position is locked until ${new Date(position.lock_expires_at).toLocaleDateString()}` : 'Request full withdrawal'}
-                      >
-                        Withdraw
-                      </button>
+                  <div key={position.position_id} className="vault-card invested with-bg" style={cardStyle}>
+                    <div className="card-overlay"></div>
+                    <div className="card-content">
+                      <h3>{vaultInfo.name}</h3>
+                      <div className="vault-stat">
+                        <span>Tradable Capital</span>
+                        <span>{isBalanceHidden ? '******' : `$${parseFloat(position.tradable_capital).toFixed(2)}`}</span>
+                      </div>
+                      <div className="vault-stat">
+                        <span>PnL</span>
+                        <span className={parseFloat(position.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
+                          {isBalanceHidden ? '******' : `${parseFloat(position.pnl) >= 0 ? '+' : ''}$${parseFloat(position.pnl).toFixed(2)}`}
+                        </span>
+                      </div>
+                      {isLocked && (
+                          <div className="vault-stat lock-info">
+                              <span>Unlocks In</span>
+                              <CountdownTimer expiryTimestamp={position.lock_expires_at} />
+                          </div>
+                      )}
+                      <div className="auto-compound-toggle">
+                          <label htmlFor={`compound-toggle-${position.vault_id}`}>Auto-Compound Profits</label>
+                          <label className="switch">
+                              <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} />
+                              <span className="slider round"></span>
+                          </label>
+                      </div>
+                      <div className="vault-actions">
+                        <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>Add Funds</button>
+                        <button className="btn-secondary" onClick={() => handleOpenWithdrawModal(position)} disabled={isLocked} title={isLocked ? `This position is locked until ${new Date(position.lock_expires_at).toLocaleDateString()}` : 'Request full withdrawal'}>
+                          Withdraw
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -198,22 +176,28 @@ const Dashboard = () => {
 
         <h2 style={{ marginTop: '48px' }}>Available Strategies</h2>
         <div className="vaults-grid">
-          {/* === THIS SECTION IS NOW FILLED IN === */}
           {dashboardData.vaults.map(vault => {
             if (investedPositions.find(p => p.vault_id === vault.vault_id)) return null;
             const isActive = vault.status === 'active';
+            
+            // --- THIS IS THE NEW VAULT IMAGE LOGIC ---
+            const cardStyle = vault.image_url ? { backgroundImage: `url(${vault.image_url})` } : {};
+
             return (
-              <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'}`}>
-                <h3>{vault.name}</h3>
-                <p className="cta-text">{vault.description}</p>
-                <div className="vault-actions">
-                  {isActive ? (
-                    <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
-                      {t('dashboard.allocate_funds')}
-                    </button>
-                  ) : (
-                    <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
-                  )}
+              <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
+                <div className="card-overlay"></div>
+                <div className="card-content">
+                  <h3>{vault.name}</h3>
+                  <p className="cta-text">{vault.description}</p>
+                  <div className="vault-actions">
+                    {isActive ? (
+                      <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
+                        {t('dashboard.allocate_funds')}
+                      </button>
+                    ) : (
+                      <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
+                    )}
+                  </div>
                 </div>
               </div>
             );
@@ -233,22 +217,10 @@ const Dashboard = () => {
       </Layout>
       
       {dashboardData && (
-        <VaultModal
-            isOpen={isAllocateModalOpen}
-            onClose={() => setAllocateModalOpen(false)}
-            vault={selectedVault}
-            availableBalance={dashboardData.availableBalance}
-            userTier={dashboardData.accountTier}
-            onAllocationSuccess={handleActionSuccess}
-        />
+        <VaultModal isOpen={isAllocateModalOpen} onClose={() => setAllocateModalOpen(false)} vault={selectedVault} availableBalance={dashboardData.availableBalance} userTier={dashboardData.accountTier} onAllocationSuccess={handleActionSuccess} />
       )}
       {dashboardData && (
-        <VaultWithdrawModal
-            isOpen={isWithdrawModalOpen}
-            onClose={() => setWithdrawModalOpen(false)}
-            vault={selectedVault}
-            onWithdrawalSuccess={handleActionSuccess}
-        />
+        <VaultWithdrawModal isOpen={isWithdrawModalOpen} onClose={() => setWithdrawModalOpen(false)} vault={selectedVault} onWithdrawalSuccess={handleActionSuccess} />
       )}
     </>
   );
