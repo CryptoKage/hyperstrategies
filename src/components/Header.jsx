@@ -9,7 +9,7 @@ import Logo from '../assets/logo.png';
 const Header = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { user, logout } = useAuth(); // We get the full user object from the context
+  const { user, logout } = useAuth();
 
   const changeLanguage = (e) => {
     i18n.changeLanguage(e.target.value);
@@ -38,17 +38,15 @@ const Header = () => {
         </select>
 
         {user ? (
-          // --- Logged-In User View ---
           <>
             <Link to="/dashboard" className="header__button">Dashboard</Link>
             <Link to="/wallet" className="header__button">Wallet</Link>
             <Link to="/profile" className="header__button">Profile</Link>
             
-            
-            {/* ✅ NEW: Conditionally render the Admin link */}
-            {/* This link will only be rendered if user exists AND user.isAdmin is true */}
             {user.isAdmin && (
-              <Link to="/admin/dashboard" className="header__button header__button--admin">
+              // --- THIS IS THE FIX ---
+              // The path is now simply "/admin"
+              <Link to="/admin" className="header__button header__button--admin">
                 Admin
               </Link>
             )}
@@ -58,9 +56,7 @@ const Header = () => {
             </button>
           </>
         ) : (
-          // --- Guest View ---
           <>
-            
             <Link to="/login" className="header__button">Sign In</Link>
             <Link to="/register" className="header__button header__button--primary">
               Register

@@ -167,19 +167,57 @@ button {
   background-color: #040e21; 
 }
 
+/* --- Updated Footer Styles (Light Theme) --- */
 .footer {
-  background-color: #ffffff; /* Or a dark color to match your theme */
+  background-color: #ffffff; /* Your existing light background */
   border-top: 1px solid #ddd;
-  text-align: center;
   padding: 24px;
   font-size: 14px;
-  color: #666;
+  color: #666; /* Your existing text color */
   margin-top: 40px;
+
+  /* NEW: Flexbox layout for better alignment */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.footer__contact {
+  margin-bottom: 16px;
+}
+
+.footer__socials {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Space between "Follow us:" text and icons */
+  margin-bottom: 16px;
+}
+
+.social-link {
+  color: #666; /* Match your default footer text color */
+  transition: color 0.2s;
+}
+
+.social-link:hover {
+  color: #007bff; /* A standard blue for hover, or use your var(--color-primary) if you have one */
+}
+
+.social-link svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor; /* The icon will inherit the link's color */
 }
 
 .footer__disclaimer {
   font-size: 12px;
-  margin-top: 8px;
+  color: #888; /* Slightly lighter than the main text */
+  margin-top: 16px;
+  border-top: 1px solid #eee; /* A lighter border for the disclaimer */
+  padding-top: 16px;
+  width: 100%;
+  max-width: 600px;
 }
 
 @media (max-width: 768px) {
