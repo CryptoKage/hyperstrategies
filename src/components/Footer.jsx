@@ -2,20 +2,26 @@
 
 import React from 'react';
 
-// --- IMPORTING .PNG FILES ---
-import xIconPath from '../assets/x-icon.png';
-import telegramIconPath from '../assets/telegram-icon.png';
+// NO IMPORTS for the icons are needed here.
 
 const Footer = () => {
   return (
     <footer className="footer">
-      <div className="footer__contact">...</div>
+      <div className="footer__contact">Contact: info@hyperstrategies.xyz</div>
+      
       <div className="footer__socials">
         <span>Follow us:</span>
-        <a href="#"><img src={xIconPath} alt="X Icon" className="social-icon" /></a>
-        <a href="#"><img src={telegramIconPath} alt="Telegram Icon" className="social-icon" /></a>
+        {/* Replace '#' with your actual social media URLs */}
+        <a href="#" target="_blank" rel="noopener noreferrer" className="social-link" title="Follow us on X">
+          {/* We now use a direct, absolute path to the public folder */}
+          <img src="/icons/x-icon.png" alt="X Icon" className="social-icon" />
+        </a>
+        <a href="#" target="_blank" rel="noopener noreferrer" className="social-link" title="Join our Telegram">
+          <img src="/icons/telegram-icon.png" alt="Telegram Icon" className="social-icon" />
+        </a>
       </div>
-      <div className="footer__disclaimer">...</div>
+
+      <div className="footer__disclaimer">This is not financial advice. Use at your own risk.</div>
     </footer>
   );
 };
