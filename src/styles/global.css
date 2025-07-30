@@ -1927,13 +1927,6 @@ textarea.input-field { resize: vertical; }
 
 /* --- Styles for other homepage sections --- */
 
-.about-section,
-.path-selector-section {
-  max-width: 1024px; /* Or whatever width you prefer */
-  margin: 60px auto; /* Re-applies the centering and vertical spacing */
-  padding: 0 24px;   /* Adds side padding */
-}
-
 /* In global.css */
 
 .how-to-earn-section {
@@ -2699,4 +2692,109 @@ textarea.input-field { resize: vertical; }
   /* This is the magic for the soft fade effect at the top */
   mask-image: linear-gradient(to top, white 50%, transparent 100%);
   -webkit-mask-image: linear-gradient(to top, white 50%, transparent 100%);
+}
+
+/* ==========================================================================
+   GLOBAL LAYOUT, BACKGROUNDS, & FOOTER (Consolidated)
+   ========================================================================== */
+
+/* --- 1. Main Layout & Stacking --- */
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* This solid color is a FALLBACK if animations don't load */
+  background-color: var(--color-background); 
+}
+
+.main-content {
+  flex: 1;
+  position: relative; /* Establishes a stacking context */
+  z-index: 1;
+  /* All main content areas are transparent by default */
+  background-color: transparent;
+}
+
+/* --- 2. Animated Backgrounds --- */
+.interactive-background, .plasma-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+.interactive-background {
+  z-index: -2; /* Sits just behind content */
+}
+
+.plasma-background {
+  z-index: -3; /* Sits behind everything */
+  opacity: 0.6; /* A bit more visible */
+  mask-image: linear-gradient(to top, black 40%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
+}
+
+/* --- 3. Page Container Transparency --- */
+/* This is the key fix: make all page containers transparent */
+.dashboard-container,
+.wallet-container,
+.profile-container,
+.admin-container,
+.faq-container,
+.leaderboard-container,
+.hero-section-wrapper {
+  background-color: transparent;
+}
+
+/* --- 4. Homepage Card Section --- */
+.path-selector-section {
+  background-color: transparent;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+/* --- 5. Footer --- */
+.footer {
+  position: relative;
+  z-index: 1; /* Ensure footer is on top of backgrounds */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  margin-top: 60px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  border-top: 1px solid var(--color-border);
+  background: linear-gradient(to top, var(--color-background) 50%, transparent);
+}
+
+.footer__socials {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 16px 0;
+}
+
+.social-link {
+  color: var(--color-text-secondary);
+  transition: color 0.2s;
+}
+.social-link:hover {
+  color: var(--color-primary);
+}
+.social-icon {
+  width: 24px;
+  height: 24px;
+}
+.footer__disclaimer {
+  font-size: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  width: 100%;
+  max-width: 600px;
+  opacity: 0.7;
 }
