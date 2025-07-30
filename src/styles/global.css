@@ -108,12 +108,6 @@ button {
   line-height: 1.8;
 }
 
-.card-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
 
 .card {
   flex: 1 1 220px;
@@ -217,21 +211,6 @@ button {
   width: 100%;
   max-width: 600px;
 }
-
-@media (max-width: 768px) {
-  .hero-headline {
-    font-size: 28px; /* Make text smaller on mobile */
-  }
-
-  /* Make the card grid stack into a single column on mobile */
-  .card-grid {
-    display: flex;
-    flex-direction: column; /* Stacks them vertically */
-    align-items: center; /* Centers the single column */
-  }
-}
-
-
 
 
 
