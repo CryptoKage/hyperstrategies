@@ -12,6 +12,12 @@ const AdminDashboard = () => {
   const [actionMessage, setActionMessage] = useState('');
   const [isActionLoading, setIsActionLoading] = useState(false);
 
+    const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const navigate = useNavigate();
+
   // --- NEW --- State for the Profit Distribution form
   const [distributeVaultId, setDistributeVaultId] = useState('1');
   const [distributeProfit, setDistributeProfit] = useState('');
@@ -118,6 +124,21 @@ const AdminDashboard = () => {
       <span>{label}</span>
     </div>
   );
+
+    const handleSearch = async (e) => {
+    e.preventDefault();
+    if (searchQuery.length < 3) return;
+    setIsSearching(true);
+    try {
+      const response = await api.get(`/admin/users/search?query=${searchQuery}`);
+      setSearchResults(response.data);
+    } catch (err) {
+      console.error("Search failed:", err);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
   
   const renderContent = () => {
     if (loading && !stats) return <p>Loading Admin Dashboard...</p>;
@@ -139,6 +160,36 @@ const AdminDashboard = () => {
           <StatCard label="Total Available Capital" value={stats.totalAvailable} currency />
           <StatCard label="Total Capital in Vaults" value={stats.totalInVaults} currency />
           <StatCard label="Hot Wallet Gas (ETH)" value={parseFloat(stats.hotWalletBalance)} />
+        </div>
+
+                <div className="admin-actions-card">
+          <h3>User Lookup</h3>
+          <p>Search for a user by their username, email, or wallet address.</p>
+          <form onSubmit={handleSearch} className="admin-form">
+            <div className="form-group">
+              <input
+                type="text"
+                placeholder="Enter search term (3+ characters)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="btn-primary" disabled={isSearching || searchQuery.length < 3}>
+              {isSearching ? 'Searching...' : 'Search'}
+            </button>
+          </form>
+          {searchResults.length > 0 && (
+            <div className="search-results">
+              <h4>Search Results:</h4>
+              <ul className="results-list">
+                {searchResults.map(user => (
+                  <li key={user.user_id} onClick={() => navigate(`/admin/user/${user.user_id}`)}>
+                    <strong>{user.username}</strong> ({user.email})
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* --- THIS IS THE NEW CARD WE ARE ADDING --- */}
