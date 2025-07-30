@@ -38,8 +38,6 @@ a {
   text-decoration: none;
 }
 
-
-
 a:hover {
   text-decoration: underline; /* A common and clear hover effect */
 }
@@ -155,6 +153,13 @@ button {
   line-height: 1.6;
 }
 
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* This color will now be applied from your logo! */
+  background-color: #040e21; 
+}
 
 
 /* --- About Section --- */
@@ -805,7 +810,16 @@ button {
 /* ==========================
    Responsive Support
 ========================== */
+@media (max-width: 768px) {
+  .auth-container {
+    margin: 2rem 1rem;
+    padding: 2rem;
+  } 
 
+  .auth-form h2 {
+    font-size: 1.5rem;
+  }
+}
 
 @media (max-width: 480px) {
   .btn-google {
@@ -1362,6 +1376,126 @@ button {
   50% { opacity: 0.5; }
 }
 
+/* ==========================================================================
+   MOBILE & RESPONSIVE STYLES
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+  /* --- 1. General Layout & Typography --- */
+  
+  /* Reduce padding on main containers for more space */
+  .dashboard-container, .wallet-container, .profile-container, .admin-container, .faq-container, .leaderboard-container {
+    padding: 20px 16px;
+    margin-top: 24px;
+  }
+  
+  /* Make headings slightly smaller on mobile */
+  h1, .dashboard-container h1, .wallet-header h1 {
+    font-size: 28px !important; /* Use !important to override more specific rules if needed */
+  }
+
+  h2, .dashboard-container h2, .actions-section h2, .history-container h2 {
+    font-size: 20px !important;
+  }
+  
+  /* --- 2. Header Fixes --- */
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 0; /* Reset gap for vertical stacking */
+  }
+  
+  .header__right {
+    width: 100%;
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  
+  .header__button, .header__language-select {
+    padding: 8px 12px;
+    font-size: 0.875rem;
+  }
+
+  .header__title {
+    display: none; /* Hide text title to save space, logo remains */
+  }
+
+  /* --- 3. Grid & Layout Fixes --- */
+
+  /* Make all major grids stack into a single column */
+  .stats-grid,
+  .vaults-grid,
+  .balance-grid,
+  .actions-grid,
+  .profile-grid,
+  .admin-grid,
+  .hero-section {
+    grid-template-columns: 1fr;
+  }
+
+  /* Your existing front page card grid fix */
+  .card-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  .card-grid .card {
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%; /* Ensure the card doesn't try to be 100% wide */
+    max-width: 320px; /* Set a reasonable max-width */
+  }
+  /* --- 4. Modal & Form Fixes --- */
+
+  .modal-content {
+    width: 90vw;
+    padding: 24px 16px;
+    max-height: 85vh; /* Prevent modal from being taller than the screen */
+    overflow-y: auto; /* Allow the whole modal to scroll if content is too long */
+  }
+  
+  /* This is the fix for your vault/withdrawal deposit box */
+  .referral-update-form,
+  .investment-breakdown {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  /* --- 5. Page-Specific Fixes --- */
+  
+  /* Wallet Page: Make history table scrollable */
+  .history-table, .activity-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap; /* Prevents long text from wrapping and breaking layout */
+  }
+
+  /* Profile Page: Fix account tier display */
+  .stat-display, .tier-display, .xp-link {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .stat-value-large {
+    margin-top: 4px;
+  }
+  .xp-link .link-indicator {
+    display: none; /* Hide the arrow on mobile to save space */
+  }
+
+  /* Front page hero section stacking order */
+  .hero-content { text-align: center; grid-row: 2; }
+  .hero-image-container { grid-row: 1; }
+  .hero-headline { font-size: 36px; }
+  .button-row { justify-content: center; }
+}
+
+
 
 /* In global.css */
 
@@ -1548,7 +1682,9 @@ textarea.input-field { resize: vertical; }
 .referral-code { background-color: var(--color-background); padding: 8px 12px; border-radius: 6px; display: block; margin: 8px 0; font-family: 'Courier New', Courier, monospace; }
 .profile-card .btn-secondary { width: 100%; margin-top: 8px; }
 
-
+@media (max-width: 768px) {
+  .profile-grid { grid-template-columns: 1fr; }
+}
 
 /* --- XP & Leaderboard Page Styles --- */
 
@@ -1760,7 +1896,34 @@ textarea.input-field { resize: vertical; }
 
 
 /* --- Mobile Responsiveness for Your Existing Hero --- */
+@media (max-width: 768px) {
+  .hero-section {
+    /* Stack the columns on mobile */
+    grid-template-columns: 1fr;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    gap: 32px;
+  }
 
+  .hero-content {
+    /* Center the text on mobile */
+    text-align: center;
+    /* Put the text first on mobile */
+    grid-row: 2; 
+  }
+  
+  .hero-image-container {
+    grid-row: 1;
+  }
+
+  .hero-headline {
+    font-size: 40px;
+  }
+
+  .button-row {
+    justify-content: center;
+  }
+}
 
 /* --- Styles for other homepage sections --- */
 
@@ -1942,6 +2105,12 @@ textarea.input-field { resize: vertical; }
   font-weight: 600;
 }
 
+/* Responsive adjustments for the admin panel */
+@media (max-width: 768px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
 /* admin additions */
 .system-status-bar {
   display: flex;
@@ -2404,6 +2573,87 @@ textarea.input-field { resize: vertical; }
   align-items: center;
 }
 
+/* ==========================================================================
+   MAIN FOOTER STYLES (Consolidated)
+   ========================================================================== */
+
+.footer {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  margin-top: 60px;
+  text-align: center;
+  
+  /* Appearance */
+  background-color: var(--color-surface); /* Matches your dark theme */
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.footer__contact {
+  margin-bottom: 16px;
+}
+
+.footer__socials {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.social-link {
+  color: var(--color-text-secondary);
+  transition: color 0.2s;
+}
+
+.social-link:hover {
+  color: var(--color-primary);
+}
+
+.social-icon {
+  width: 24px;
+  height: 24px;
+  transition: opacity 0.2s;
+}
+
+.social-link:hover .social-icon {
+  opacity: 0.8;
+}
+
+.footer__disclaimer {
+  font-size: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  width: 100%;
+  max-width: 600px;
+  opacity: 0.7;
+}
+
+/* --- Interactive Background Styles (Corrected) --- */
+
+/* This is the main wrapper for the hero section on Home.jsx */
+.hero-section-wrapper {
+  position: relative; /* Creates the positioning context */
+  background-color: var(--color-background);
+  /* The padding is now part of this wrapper */
+  padding: 80px 24px;
+}
+
+/* The background component itself */
+.interactive-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Sits behind the content */
+  overflow: hidden;
+}
 
 /* We need to make the content sit on top of the background */
 .hero-section {
@@ -2424,158 +2674,29 @@ textarea.input-field { resize: vertical; }
   filter: none;
 }
 
-
-/* ==========================================================================
-   FINAL BACKGROUND & TRANSPARENCY FIXES
-   ========================================================================== */
-
-
-
-/* --- 2. Fix Homepage Card Section --- */
-/* Make the entire section transparent to show the network behind it */
-.path-selector-section {
-  background-color: transparent;
-  padding-top: 60px;
-  padding-bottom: 60px;
-}
-/* The individual cards will still have their solid background, creating a floating effect */
-.card-section__wrapper {
-  background-color: transparent;
+/* --- Mobile Fix for the Wrapper --- */
+@media (max-width: 768px) {
+  .hero-section-wrapper {
+    padding: 40px 16px;
+  }
 }
 
-/* ==========================================================================
-   GLOBAL LAYOUT & ANIMATED BACKGROUNDS (Consolidated)
-   ========================================================================== */
-
-.layout-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--color-background); /* A solid fallback background */
-}
-
-.main-content {
-  flex: 1;
-  position: relative; /* Creates stacking context for content */
-  z-index: 1;
-  background-color: transparent; /* Allows backgrounds to show through */
-}
-
+/* --- Global Background Effects Styles --- */
 .interactive-background, .plasma-background {
-  position: fixed;
+  position: fixed; /* Fixed positioning keeps it in place during scroll */
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  pointer-events: none;
-}
-
-.interactive-background {
-  z-index: -2; /* Sits just behind the main content */
+  pointer-events: none; /* User clicks go through it */
+  z-index: -1; /* Sits behind all other content */
 }
 
 .plasma-background {
-  z-index: -3; /* Sits behind everything */
-  opacity: 0.5;
-  mask-image: linear-gradient(to top, black 50%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
-}
-
-/* --- Homepage Specific Styles --- */
-.hero-section-wrapper {
-  position: relative;
-  padding: 80px 24px;
-}
-
-.path-selector-section {
-  background-color: transparent; /* Allows background to show through */
-}
-
-/* --- Footer Styles --- */
-.footer {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 24px;
-  text-align: center;
-  margin-top: 60px;
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  border-top: 1px solid var(--color-border);
-  /* The semi-transparent gradient background */
-  background: linear-gradient(to top, rgba(4, 14, 33, 1) 50%, rgba(4, 14, 33, 0));
-}
-.footer__socials {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin: 16px 0;
-}
-.social-link {
-  color: var(--color-text-secondary);
-  transition: color 0.2s;
-}
-.social-link:hover {
-  color: var(--color-primary);
-}
-.social-icon {
-  width: 24px;
-  height: 24px;
-}
-.footer__disclaimer {
-  font-size: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
-  width: 100%;
-  max-width: 600px;
-  opacity: 0.7;
-}
-
-/* ==========================================================================
-   MOBILE & RESPONSIVE STYLES (Consolidated)
-   ========================================================================== */
-
-@media (max-width: 768px) {
-
-  /* General Layout & Typography */
-  .dashboard-container, .wallet-container, .profile-container, .admin-container, .faq-container, .leaderboard-container {
-    padding: 20px 16px;
-    margin-top: 24px;
-  }
-  h1, .dashboard-container h1, .wallet-header h1 { font-size: 28px !important; }
-  h2, .dashboard-container h2, .actions-section h2, .history-container h2 { font-size: 20px !important; }
+  z-index: -2; /* Sits even further behind the network */
+  opacity: 0.5; /* Tone it down a bit so it's not distracting */
   
-  /* Header Fixes */
-  .header { flex-direction: column; align-items: flex-start; padding: 16px; gap: 0; }
-  .header__right { width: 100%; margin-top: 16px; display: flex; flex-wrap: wrap; justify-content: flex-start; gap: 8px; }
-  .header__button, .header__language-select { padding: 8px 12px; font-size: 0.875rem; }
-  .header__title { display: none; }
-
-  /* Grid & Layout Fixes */
-  .stats-grid, .vaults-grid, .balance-grid, .actions-grid, .profile-grid, .admin-grid, .hero-section {
-    grid-template-columns: 1fr;
-  }
-  .card-grid { flex-direction: column; align-items: center; }
-  /* This is the fix for your homepage card centering */
-  .card-grid .card { margin-left: auto; margin-right: auto; width: 90%; max-width: 320px; }
-  
-  /* Modal & Form Fixes */
-  .modal-content { width: 90vw; padding: 24px 16px; max-height: 85vh; overflow-y: auto; }
-  .referral-update-form, .investment-breakdown { flex-direction: column; align-items: stretch; gap: 12px; }
-  
-  /* Page-Specific Fixes */
-  .history-table, .activity-table { display: block; overflow-x: auto; white-space: nowrap; }
-  .stat-display, .tier-display, .xp-link { flex-direction: column; align-items: flex-start; }
-  .stat-value-large { margin-top: 4px; }
-  .xp-link .link-indicator { display: none; }
-
-  /* Hero Section */
-  .hero-section-wrapper { padding: 40px 16px; }
-  .hero-content { text-align: center; grid-row: 2; }
-  .hero-image-container { grid-row: 1; }
-  .hero-headline { font-size: 36px !important; }
-  .button-row { justify-content: center; }
+  /* This is the magic for the soft fade effect at the top */
+  mask-image: linear-gradient(to top, white 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, white 50%, transparent 100%);
 }
