@@ -153,13 +153,6 @@ button {
   line-height: 1.6;
 }
 
-.layout-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  /* This color will now be applied from your logo! */
-  background-color: #040e21; 
-}
 
 
 /* --- About Section --- */
@@ -181,12 +174,6 @@ button {
 
 /* --- Card Section (for CardSection.jsx) --- */
 
-/* This styles the wrapper div inside the CardSection component */
-.card-section__wrapper {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
 
 /* We'll override the default card styles for the dark theme */
 .card {
@@ -2573,66 +2560,6 @@ textarea.input-field { resize: vertical; }
   align-items: center;
 }
 
-/* ==========================================================================
-   MAIN FOOTER STYLES (Consolidated)
-   ========================================================================== */
-
-.footer {
-  /* Layout */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px 24px;
-  margin-top: 60px;
-  text-align: center;
-  
-  /* Appearance */
-  background-color: var(--color-surface); /* Matches your dark theme */
-  border-top: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  font-size: 14px;
-}
-
-.footer__contact {
-  margin-bottom: 16px;
-}
-
-.footer__socials {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.social-link {
-  color: var(--color-text-secondary);
-  transition: color 0.2s;
-}
-
-.social-link:hover {
-  color: var(--color-primary);
-}
-
-.social-icon {
-  width: 24px;
-  height: 24px;
-  transition: opacity 0.2s;
-}
-
-.social-link:hover .social-icon {
-  opacity: 0.7;
-}
-
-.footer__disclaimer {
-  font-size: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--color-border);
-  width: 100%;
-  max-width: 600px;
-  opacity: 0.7;
-}
 
 /* --- Interactive Background Styles (Corrected) --- */
 
@@ -2704,20 +2631,9 @@ textarea.input-field { resize: vertical; }
 /* --- Global Layout & Background Styles --- */
 
 /* This is the main application wrapper from Layout.jsx */
-.layout-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  /* Crucially, the main background is now transparent 
-     so our animated backgrounds can be seen through it. */
-  background-color: transparent; 
-}
 
-/* This makes the main content area grow to fill available space,
-   pushing the footer down to the bottom of the screen. */
-.main-content {
-  flex: 1;
-}
+
+
 
 /* The background components */
 .interactive-background, .plasma-background {
@@ -2735,4 +2651,48 @@ textarea.input-field { resize: vertical; }
   opacity: 0.5;
   mask-image: linear-gradient(to top, black 50%, transparent 100%);
   -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+}
+
+/* ==========================================================================
+   FINAL BACKGROUND & TRANSPARENCY FIXES
+   ========================================================================== */
+
+/* --- 1. Reveal the Plasma Effect --- */
+/* Target the main wrapper and make its background transparent */
+.layout-wrapper {
+  background-color: transparent !important;
+}
+/* Ensure the solid background color is on the content, not the wrapper */
+.main-content {
+  
+  background-color: var(--color-background);
+}
+
+
+/* --- 2. Fix Homepage Card Section --- */
+/* Make the entire section transparent to show the network behind it */
+.path-selector-section {
+  background-color: transparent;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+/* The individual cards will still have their solid background, creating a floating effect */
+.card-section__wrapper {
+  background-color: transparent;
+}
+
+
+/* --- 3. Fix the Footer --- */
+.footer {
+  /* Make the footer background a semi-transparent gradient */
+  background: linear-gradient(to top, var(--color-background) 50%, transparent);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  /* Add more padding for better spacing */
+  padding: 48px 24px;
+}
+
+/* Add more space between social icons */
+.footer__socials {
+  gap: 24px;
 }
