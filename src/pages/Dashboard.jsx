@@ -11,12 +11,17 @@ import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
 import CountdownTimer from '../components/CountdownTimer';
-import coreVaultBg from '../assets/core.svg';
-import apecoinVaultBg from '../assets/apecoin.svg';
 
+// --- THE FIX ---
+// Import the .png files. This is the proven, working method.
+import coreVaultBg from '../assets/core.png';
+import apecoinVaultBg from '../assets/apecoin.png'; // Make sure you have this file
+
+// The map now uses the correct .png filenames.
+// This must match what's in your database.
 const vaultImageMap = {
-  'core.svg': coreVaultBg,
-  'apecoin.svg': apecoinVaultBg,
+  'core.png': coreVaultBg,
+  'apecoin.png': apecoinVaultBg,
 };
 
 const Dashboard = () => {
@@ -136,7 +141,6 @@ const Dashboard = () => {
                 if (!vaultInfo) return null;
                 const isLocked = position.lock_expires_at && new Date(position.lock_expires_at) > new Date();
                 
-                // --- THIS IS THE NEW VAULT IMAGE LOGIC ---
                 const cardStyle = vaultInfo.image_url && vaultImageMap[vaultInfo.image_url]
                   ? { backgroundImage: `url(${vaultImageMap[vaultInfo.image_url]})` } 
                   : {};
@@ -189,7 +193,6 @@ const Dashboard = () => {
             if (investedPositions.find(p => p.vault_id === vault.vault_id)) return null;
             const isActive = vault.status === 'active';
             
-            // --- THIS IS THE NEW VAULT IMAGE LOGIC ---
             const cardStyle = vault.image_url && vaultImageMap[vault.image_url]
               ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` } 
               : {};
