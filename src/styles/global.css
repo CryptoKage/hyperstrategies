@@ -2680,3 +2680,59 @@ textarea.input-field { resize: vertical; }
     padding: 40px 16px;
   }
 }
+
+/* --- Global Background Effects Styles --- */
+.interactive-background, .plasma-background {
+  position: fixed; /* Fixed positioning keeps it in place during scroll */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; /* User clicks go through it */
+  z-index: -1; /* Sits behind all other content */
+}
+
+.plasma-background {
+  z-index: -2; /* Sits even further behind the network */
+  opacity: 0.5; /* Tone it down a bit so it's not distracting */
+  
+  /* This is the magic for the soft fade effect at the top */
+  mask-image: linear-gradient(to top, white 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, white 50%, transparent 100%);
+}
+
+/* --- Global Layout & Background Styles --- */
+
+/* This is the main application wrapper from Layout.jsx */
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* Crucially, the main background is now transparent 
+     so our animated backgrounds can be seen through it. */
+  background-color: transparent; 
+}
+
+/* This makes the main content area grow to fill available space,
+   pushing the footer down to the bottom of the screen. */
+.main-content {
+  flex: 1;
+}
+
+/* The background components */
+.interactive-background, .plasma-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -2; /* Sits behind everything */
+}
+
+.plasma-background {
+  z-index: -3; /* Sits even further behind the network */
+  opacity: 0.5;
+  mask-image: linear-gradient(to top, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);
+}

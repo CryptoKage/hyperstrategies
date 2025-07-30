@@ -2,47 +2,33 @@
 
 import React from 'react';
 import Header from './Header';
+// 1. Import our upgraded footer (remember we renamed it to break the cache)
+import MainFooter from './MainFooter'; 
+// 2. Import our two new background effect components
+import InteractiveBackground from './InteractiveBackground';
+import PlasmaEffect from './PlasmaEffect';
 
 const Layout = ({ children }) => {
-
   return (
-    // Use className instead of inline style
+    // The main wrapper for the entire application
     <div className="layout-wrapper">
+      
+      {/* 3. The background effects are placed here, at the top level */}
+      {/* They will sit behind all other content on every page */}
+      <PlasmaEffect />
+      <InteractiveBackground />
+      
       <Header />
-      <main style={styles.main}>{children}</main>
+      
+      {/* The 'main' element is where your page-specific content will render */}
+      <main className="main-content">
+        {children}
+      </main>
 
-      {/* Footer */}
-      <footer style={styles.footer}>
-        <p style={styles.text}>© Hyper Strategies 2025</p>
-        <a href="/legal" style={styles.link}>Legal Notice</a>
-      </footer>
+      {/* 4. We now use our proper, upgraded footer component */}
+      <MainFooter />
     </div>
   );
-};
-
-// Keep the other styles, just remove the 'wrapper' property from it
-const styles = {
-  main: {
-    flex: 1,
-  },
-  footer: {
-    padding: '24px',
-    textAlign: 'center',
-    borderTop: '1px solid #1a2e24',
-    backgroundColor: '#0e1a14', // We can leave this for now or move it too
-  },
-  text: {
-    margin: '0',
-    color: '#999',
-    fontSize: '14px',
-  },
-  link: {
-    display: 'block',
-    marginTop: '8px',
-    fontSize: '14px',
-    color: '#3fbaf3',
-    textDecoration: 'none',
-  },
 };
 
 export default Layout;
