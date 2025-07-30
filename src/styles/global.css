@@ -2357,3 +2357,46 @@ textarea.input-field { resize: vertical; }
   background-color: rgba(229, 62, 62, 0.1);
   color: #e53e3e;
 }
+
+/* --- Updated Profile Page Styles --- */
+
+.stat-display {
+  /* This ensures our new cards have the same base style */
+  border-bottom: 1px solid var(--color-border);
+  padding: 16px 0;
+}
+
+.tier-display {
+  background-color: var(--color-surface-light);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border-bottom: none; /* Remove border for self-contained card */
+}
+
+.tier-value {
+  color: var(--color-primary); /* Highlight the tier value */
+}
+
+.xp-link {
+  display: flex; /* Make the whole area a flex container */
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none; /* Remove underline from link */
+  color: inherit; /* Inherit default text color */
+  transition: background-color 0.2s;
+}
+
+.xp-link:hover {
+  background-color: var(--color-surface);
+}
+
+.link-indicator {
+  font-size: 1.5rem;
+  color: var(--color-text-secondary);
+  transition: transform 0.2s;
+}
+
+.xp-link:hover .link-indicator {
+  transform: translateX(5px);
+}
