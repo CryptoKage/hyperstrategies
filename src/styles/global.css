@@ -1453,59 +1453,117 @@ button {
    MOBILE & RESPONSIVE STYLES
    ========================================================================== */
 
-/* We'll use 768px as our breakpoint. This targets most tablets and all phones. */
 @media (max-width: 768px) {
 
   /* --- 1. General Layout & Typography --- */
   
-  /* Reduce padding on the main containers for more space */
-  .dashboard-container, .wallet-container {
+  /* Reduce padding on main containers for more space */
+  .dashboard-container, .wallet-container, .profile-container, .admin-container, .faq-container, .leaderboard-container {
     padding: 20px 16px;
     margin-top: 24px;
   }
-
- 
-
+  
   /* Make headings slightly smaller on mobile */
-  .dashboard-container h1, .wallet-header h1 {
-    font-size: 28px;
+  h1, .dashboard-container h1, .wallet-header h1 {
+    font-size: 28px !important; /* Use !important to override more specific rules if needed */
   }
 
-  .dashboard-container h2, .actions-section h2, .history-container h2 {
-    font-size: 20px;
+  h2, .dashboard-container h2, .actions-section h2, .history-container h2 {
+    font-size: 20px !important;
   }
   
-  /* --- 2. Header Adjustments --- */
-  .header__title {
-    display: none; /* Hide the "Hyper Strategies" text to save space */
-  }
+  /* --- 2. Header Fixes --- */
 
   .header {
-    padding: 12px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 0; /* Reset gap for vertical stacking */
+  }
+  
+  .header__right {
+    width: 100%;
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  
+  .header__button, .header__language-select {
+    padding: 8px 12px;
+    font-size: 0.875rem;
   }
 
+  .header__title {
+    display: none; /* Hide text title to save space, logo remains */
+  }
 
-  /* --- 3. Grid Adjustments --- */
+  /* --- 3. Grid & Layout Fixes --- */
 
-  /* Make all our grids stack into a single column on mobile */
+  /* Make all major grids stack into a single column */
   .stats-grid,
   .vaults-grid,
   .balance-grid,
-  .actions-grid {
-    grid-template-columns: 1fr; /* This is the magic rule */
+  .actions-grid,
+  .profile-grid,
+  .admin-grid,
+  .hero-section {
+    grid-template-columns: 1fr;
   }
 
+  /* Your existing front page card grid fix */
+  .card-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* --- 4. Modal & Form Fixes --- */
 
-  /* --- 4. Font and Button Sizes --- */
-  .stat-value {
-    font-size: 24px;
+  .modal-content {
+    width: 90vw;
+    padding: 24px 16px;
+    max-height: 85vh; /* Prevent modal from being taller than the screen */
+    overflow-y: auto; /* Allow the whole modal to scroll if content is too long */
+  }
+  
+  /* This is the fix for your vault/withdrawal deposit box */
+  .referral-update-form,
+  .investment-breakdown {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  /* --- 5. Page-Specific Fixes --- */
+  
+  /* Wallet Page: Make history table scrollable */
+  .history-table, .activity-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap; /* Prevents long text from wrapping and breaking layout */
   }
 
-  .btn-large {
-    padding: 14px 24px;
-    font-size: 16px;
+  /* Profile Page: Fix account tier display */
+  .stat-display, .tier-display, .xp-link {
+    flex-direction: column;
+    align-items: flex-start;
   }
+  .stat-value-large {
+    margin-top: 4px;
+  }
+  .xp-link .link-indicator {
+    display: none; /* Hide the arrow on mobile to save space */
+  }
+
+  /* Front page hero section stacking order */
+  .hero-content { text-align: center; grid-row: 2; }
+  .hero-image-container { grid-row: 1; }
+  .hero-headline { font-size: 36px; }
+  .button-row { justify-content: center; }
 }
+
+
 
 /* In global.css */
 
