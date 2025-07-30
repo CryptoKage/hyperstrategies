@@ -38,6 +38,16 @@ a {
   text-decoration: none;
 }
 
+/* --- Global Container Transparency Fix --- */
+.dashboard-container,
+.wallet-container,
+.profile-container,
+.admin-container,
+.faq-container,
+.leaderboard-container {
+  background-color: transparent;
+}
+
 a:hover {
   text-decoration: underline; /* A common and clear hover effect */
 }
