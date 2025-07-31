@@ -274,9 +274,11 @@
       "invest": {
         "title": "Become a Strategic Partner",
         "text": "Learn about our token and pre-sale opportunities"
-      },
-    
+      }
+    }
+  },
 
+    
   "faq_page": {
     "title": "Frequently Asked Questions",
     "q1_title": "What are Bonus Points?",
@@ -311,7 +313,6 @@
     "save_code_button": "Save Code"
   }
 }
-  }
-}
+  
 
 
