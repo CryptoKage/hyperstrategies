@@ -1,19 +1,21 @@
 // src/components/VaultModal.jsx
+
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // --- NEW --- for linking to GitBook
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // 1. Import useTranslation
 import api from '../api/api';
 import InputField from './InputField';
-import InfoIcon from './InfoIcon'; // --- NEW --- for the info icon
+import InfoIcon from './InfoIcon';
 
 const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllocationSuccess }) => {
+  const { t } = useTranslation(); // 2. Initialize the t function
+  
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [riskAcknowledged, setRiskAcknowledged] = useState(false);
-  // --- NEW --- State for the Terms & Conditions checkbox
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  // --- NEW --- Calculate fee based on the user's tier
   const getFeePercentageForTier = (tier) => {
     switch (tier) {
       case 4: return 0.14;
@@ -32,7 +34,7 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
       setError('');
       setIsLoading(false);
       setRiskAcknowledged(false);
-      setTermsAccepted(false); // Reset on close
+      setTermsAccepted(false);
     }
   }, [isOpen]);
 
@@ -40,18 +42,17 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
 
   const handleAllocate = async (e) => {
     e.preventDefault();
-    // ... (rest of handleAllocate logic remains the same)
     setIsLoading(true);
     setError('');
 
     const allocationAmount = parseFloat(amount);
     if (isNaN(allocationAmount) || allocationAmount <= 0) {
-      setError('Please enter a valid amount.');
+      setError(t('vault_modal.error_nan'));
       setIsLoading(false);
       return;
     }
     if (allocationAmount > availableBalance) {
-      setError('Allocation exceeds your available balance.');
+      setError(t('vault_modal.error_insufficient'));
       setIsLoading(false);
       return;
     }
@@ -64,7 +65,7 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
       onAllocationSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.error || 'Allocation failed. Please try again.');
+      setError(err.response?.data?.error || t('vault_modal.error_failed'));
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +76,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
   };
 
   const needsWarning = vault.risk_level === 'high' || vault.risk_level === 'extreme';
-  // --- NEW --- Submit button is disabled if T&C not accepted
   const isSubmitDisabled = isLoading || (needsWarning && !riskAcknowledged) || !termsAccepted;
 
   return (
@@ -83,18 +83,17 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
       <div className="modal-content">
         <button onClick={onClose} className="modal-close-btn">×</button>
         <div className="modal-header-with-icon">
-            <h2>Allocate Funds to {vault.name}</h2>
-            {/* --- NEW --- Link to the FAQ/GitBook section */}
+            <h2>{t('vault_modal.title', { vaultName: vault.name })}</h2>
             <Link to="/fees" target="_blank" rel="noopener noreferrer" className="info-icon-link">
                 <InfoIcon />
             </Link>
         </div>
-        <p className="modal-subtitle">Your funds will be split based on your Account Tier.</p>
+        <p className="modal-subtitle">{t('vault_modal.subtitle')}</p>
         
         <form onSubmit={handleAllocate}>
           {error && <p className="error-message">{error}</p>}
           <InputField
-            label={`Amount to Allocate (Available: $${(availableBalance || 0).toFixed(2)} USDC)`}
+            label={t('vault_modal.allocate_label', { amount: (availableBalance || 0).toFixed(2) })}
             id="investAmount"
             type="number"
             value={amount}
@@ -104,37 +103,36 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
             onMaxClick={handleMaxClick}
           />
           <div className="investment-breakdown">
-            <h4>Allocation Breakdown (Tier {userTier}):</h4>
+            <h4>{t('vault_modal.breakdown_title', { tier: userTier })}</h4>
             <div className="breakdown-row">
-              <span>Tradable Capital ({(1 - feePercentage) * 100}%):</span>
+              <span>{t('vault_modal.tradable_capital_breakdown', { percentage: Math.round((1 - feePercentage) * 100) })}</span>
               <span className="breakdown-value">${tradableCapital.toFixed(2)}</span>
             </div>
             <div className="breakdown-row">
-              <span>Bonus Points Credit ({feePercentage * 100}%):</span>
+              <span>{t('vault_modal.bonus_points_breakdown', { percentage: Math.round(feePercentage * 100) })}</span>
               <span className="breakdown-value">${bonusPoints.toFixed(2)}</span>
             </div>
           </div>
           
-          {/* Risk warning logic remains the same */}
           {needsWarning && (
             <div className="acknowledgement-box">
               <input type="checkbox" id="risk-ack" checked={riskAcknowledged} onChange={(e) => setRiskAcknowledged(e.target.checked)} />
-              <label htmlFor="risk-ack">I acknowledge and accept the risks associated with this strategy.</label>
+              <label htmlFor="risk-ack">{t('vault_modal.risk_ack')}</label>
             </div>
           )}
 
-          {/* --- NEW --- Terms and Conditions Checkbox */}
           <div className="acknowledgement-box">
             <input type="checkbox" id="terms-ack" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />
             <label htmlFor="terms-ack">
-              I have read and agree to the <a href="/codex/legal-nexus/disclaimer-and-terms" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>.
+              {t('vault_modal.terms_ack')}{' '}
+              <a href="/fees" target="_blank" rel="noopener noreferrer">{t('vault_modal.terms_link')}</a>.
             </label>
           </div>
 
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
+            <button type="button" onClick={onClose} className="btn-secondary">{t('vault_modal.cancel')}</button>
             <button type="submit" className="btn-primary" disabled={isSubmitDisabled}>
-              {isLoading ? 'Processing...' : 'Confirm Allocation'}
+              {isLoading ? t('vault_modal.processing') : t('vault_modal.confirm_allocation')}
             </button>
           </div>
         </form>

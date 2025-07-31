@@ -11,14 +11,9 @@ import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
 import CountdownTimer from '../components/CountdownTimer';
-
-// --- THE FIX ---
-// Import the .png files. This is the proven, working method.
 import coreVaultBg from '../assets/core.png';
-import apecoinVaultBg from '../assets/apecoin.png'; // Make sure you have this file
+import apecoinVaultBg from '../assets/apecoin.png';
 
-// The map now uses the correct .png filenames.
-// This must match what's in your database.
 const vaultImageMap = {
   'core.png': coreVaultBg,
   'apecoin.png': apecoinVaultBg,
@@ -134,7 +129,7 @@ const Dashboard = () => {
 
         {investedPositions.length > 0 && (
           <>
-            <h2 style={{ marginTop: '48px' }}>Your Positions</h2>
+            <h2 style={{ marginTop: '48px' }}>{t('dashboard.your_positions')}</h2>
             <div className="vaults-grid">
               {investedPositions.map(position => {
                 const vaultInfo = dashboardData.vaults.find(v => v.vault_id === position.vault_id);
@@ -151,32 +146,37 @@ const Dashboard = () => {
                     <div className="card-content">
                       <h3>{vaultInfo.name}</h3>
                       <div className="vault-stat">
-                        <span>Tradable Capital</span>
+                        <span>{t('dashboard.tradable_capital')}</span>
                         <span>{isBalanceHidden ? '******' : `$${parseFloat(position.tradable_capital).toFixed(2)}`}</span>
                       </div>
                       <div className="vault-stat">
-                        <span>PnL</span>
+                        <span>{t('dashboard.pnl')}</span>
                         <span className={parseFloat(position.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
                           {isBalanceHidden ? '******' : `${parseFloat(position.pnl) >= 0 ? '+' : ''}$${parseFloat(position.pnl).toFixed(2)}`}
                         </span>
                       </div>
                       {isLocked && (
                           <div className="vault-stat lock-info">
-                              <span>Unlocks In</span>
+                              <span>{t('dashboard.unlocks_in')}</span>
                               <CountdownTimer expiryTimestamp={position.lock_expires_at} />
                           </div>
                       )}
                       <div className="auto-compound-toggle">
-                          <label htmlFor={`compound-toggle-${position.vault_id}`}>Auto-Compound Profits</label>
+                          <label htmlFor={`compound-toggle-${position.vault_id}`}>{t('dashboard.auto_compound')}</label>
                           <label className="switch">
                               <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} />
                               <span className="slider round"></span>
                           </label>
                       </div>
                       <div className="vault-actions">
-                        <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>Add Funds</button>
-                        <button className="btn-secondary" onClick={() => handleOpenWithdrawModal(position)} disabled={isLocked} title={isLocked ? `This position is locked until ${new Date(position.lock_expires_at).toLocaleDateString()}` : 'Request full withdrawal'}>
-                          Withdraw
+                        <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
+                        <button 
+                          className="btn-secondary" 
+                          onClick={() => handleOpenWithdrawModal(position)}
+                          disabled={isLocked}
+                          title={isLocked ? t('dashboard.locked_tooltip', { date: new Date(position.lock_expires_at).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
+                        >
+                          {t('dashboard.withdraw')}
                         </button>
                       </div>
                     </div>
@@ -187,7 +187,7 @@ const Dashboard = () => {
           </>
         )}
 
-        <h2 style={{ marginTop: '48px' }}>Available Strategies</h2>
+        <h2 style={{ marginTop: '48px' }}>{t('dashboard.available_strategies')}</h2>
         <div className="vaults-grid">
           {dashboardData.vaults.map(vault => {
             if (investedPositions.find(p => p.vault_id === vault.vault_id)) return null;

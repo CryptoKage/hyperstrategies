@@ -1,6 +1,7 @@
 // src/pages/Wallet.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import api from '../api/api';
 import WithdrawModal from '../components/WithdrawModal';
@@ -9,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import EyeIcon from '../components/EyeIcon';
 
 const Wallet = () => {
+  const { t } = useTranslation();
   const { isBalanceHidden, toggleBalanceVisibility } = useAuth();
   
   const [walletData, setWalletData] = useState(null);
@@ -25,9 +27,9 @@ const Wallet = () => {
       setError(prev => ({ ...prev, wallet: null }));
     } catch (err) {
       console.error("Wallet Details Fetch Error:", err);
-      setError(prev => ({ ...prev, wallet: 'Could not load wallet balances.' }));
+      setError(prev => ({ ...prev, wallet: t('wallet.error_wallet') }));
     }
-  }, []);
+  }, [t]);
 
   const fetchHistory = useCallback(async () => {
     try {
@@ -36,9 +38,9 @@ const Wallet = () => {
       setError(prev => ({ ...prev, history: null }));
     } catch (err) {
       console.error("History Fetch Error:", err);
-      setError(prev => ({ ...prev, history: 'Could not load withdrawal history.' }));
+      setError(prev => ({ ...prev, history: t('wallet.error_history') }));
     }
-  }, []);
+  }, [t]);
 
   const fetchAllData = useCallback(async () => {
     setLoading(true);
@@ -56,7 +58,7 @@ const Wallet = () => {
   const handleCopyToClipboard = () => {
     if (walletData?.address) {
       navigator.clipboard.writeText(walletData.address);
-      setCopySuccess('Copied!');
+      setCopySuccess(t('wallet.copied'));
       setTimeout(() => setCopySuccess(''), 2000);
     }
   };
@@ -67,17 +69,18 @@ const Wallet = () => {
 
   const renderContent = () => {
     if (loading) {
-      // You could add a more advanced skeleton loader here if desired
-      return <h1>Loading Wallet...</h1>;
+      return <h1>{t('wallet.loading')}</h1>;
     }
+
+    const apeBalanceUsd = (walletData?.apeBalance || 0) * (walletData?.apePrice || 0);
 
     return (
       <>
         <div className="wallet-header">
-          <h1>Your Wallet</h1>
+          <h1>{t('wallet.title')}</h1>
           <div className="wallet-header-actions">
             <button onClick={fetchAllData} className="btn-secondary" disabled={loading}>
-              {loading ? 'Refreshing...' : 'Refresh'}
+              {loading ? t('wallet.refreshing') : t('wallet.refresh')}
             </button>
             <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility">
               <EyeIcon isHidden={isBalanceHidden} />
@@ -89,19 +92,24 @@ const Wallet = () => {
           {error.wallet ? <p className='error-message'>{error.wallet}</p> : (
             <>
               <div className="balance-card">
-                <span className="balance-label">USDC Balance (On-Chain)</span>
+                <span className="balance-label">{t('wallet.balance_usdc')}</span>
                 <span className="balance-value">
                   {isBalanceHidden ? '******' : (walletData?.usdcBalance || 0).toFixed(4)}
                 </span>
               </div>
               <div className="balance-card">
-                <span className="balance-label">ETH Balance (for Gas)</span>
+                <span className="balance-label">{t('wallet.balance_ape')}</span>
                 <span className="balance-value">
-                  {isBalanceHidden ? '******' : (walletData?.ethBalance || 0).toFixed(6)}
+                  {isBalanceHidden ? '******' : (walletData?.apeBalance || 0).toFixed(4)}
                 </span>
+                {!isBalanceHidden && (
+                  <span className="balance-sub-value">
+                    {t('wallet.usd_value', { amount: apeBalanceUsd.toFixed(2) })}
+                  </span>
+                )}
               </div>
               <div className="balance-card">
-                <span className="balance-label">Bonus Points Value</span>
+                <span className="balance-label">{t('wallet.balance_bonus')}</span>
                 <span className="balance-value">
                   {isBalanceHidden ? '******' : `$${(walletData?.totalBonusPoints || 0).toFixed(2)}`}
                 </span>
@@ -110,22 +118,22 @@ const Wallet = () => {
           )}
         </div>
         <div className="address-section">
-          <h2>Your Deposit Address</h2>
-          <p className="address-subtext">Send USDC (Mainnet) to this address to fund your account.</p>
+          <h2>{t('wallet.deposit_address_title')}</h2>
+          <p className="address-subtext">{t('wallet.deposit_address_subtitle')}</p>
           <div className="address-box">
-            <span className="eth-address">{walletData?.address || 'Loading...'}</span>
-            <button onClick={handleCopyToClipboard} className="btn-copy">{copySuccess || 'Copy'}</button>
+            <span className="eth-address">{walletData?.address || t('wallet.address_loading')}</span>
+            <button onClick={handleCopyToClipboard} className="btn-copy">{copySuccess || t('wallet.copy')}</button>
           </div>
         </div>
 
         <div className="actions-section">
-          <h2>Actions</h2>
+          <h2>{t('wallet.actions_title')}</h2>
           <div className="actions-grid">
             <div className="action-card">
-              <h3>Withdraw Funds</h3>
-              <p>Queue a withdrawal of your available USDC to an external wallet.</p>
+              <h3>{t('wallet.withdraw_funds_title')}</h3>
+              <p>{t('wallet.withdraw_funds_subtitle')}</p>
               <button onClick={() => setIsWithdrawModalOpen(true)} className="btn-primary" disabled={!walletData}>
-                Start Withdrawal
+                {t('wallet.start_withdrawal')}
               </button>
             </div>
           </div>
@@ -145,7 +153,6 @@ const Wallet = () => {
           {renderContent()}
         </div>
       </Layout>
-
       {walletData && (
         <WithdrawModal
           isOpen={isWithdrawModalOpen}

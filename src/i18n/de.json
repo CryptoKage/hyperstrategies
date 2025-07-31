@@ -1,140 +1,285 @@
 {
-  "airdrop": {
-    "headline": "Nehmen Sie am Hyper Strategies Airdrop teil",
-    "subtext": "Dieser Airdrop ist für frühe Community-Mitglieder, die Unterstützung zeigen und dabei bleiben möchten. Alles, was Sie brauchen, ist Interesse – und eine Metamask-Wallet.",
-    "requirementsTitle": "Was Sie benötigen",
-    "bullets": [
-      "Einen Telegram-Account",
-      "Eine Metamask-Wallet (Browser-Erweiterung)",
-      "1 Minute zur Anmeldung"
-    ],
-    "browserWallet": "Browser-Wallet (Hot Wallet)",
-    "hardwareWallet": "Hardware-Wallet",
-    "metamaskText": "Sicher, einfach zu installieren – perfekt für eine schnelle Anmeldung.",
-    "ledgerText": "Optional – verwenden Sie Ledger für eine langfristig sichere Aufbewahrung.",
-    "joinTelegram": "Treten Sie der Telegram-Community bei",
-    "submitWallet": "Wallet für Airdrop einreichen"
-  },
-  "selfserve": {
-    "headline": "Nutzen Sie automatisierten Handel auf Ihre Weise",
-    "subtext": "Führen Sie Ihre eigenen Algorithmen mit voller Kontrolle über Parameter und Risikomanagement aus.",
-    "callout": "Zugang zu 17 Handelsstrategien, keine Programmierkenntnisse erforderlich",
-    "comingSoon": "Demnächst verfügbar – Treten Sie unserer Community bei, um frühen Zugang zu erhalten"
-  },
-  "managed": {
-    "headline": "Lassen Sie unser System für Sie handeln",
-    "subtext": "Eine professionell verwaltete Strategie, die automatisch Trades in Ihrem Namen ausführt. Entwickelt für passive Investoren, die Einfachheit und langfristiges Wachstum schätzen.",
-    "point1": "Ein Low-burn-MVP ist bereits in Bewegung",
-    "point2": "Zugang zu echten automatisierten Strategien",
-    "point3": "Starke Erzählung mit $FORGE-Nutzen",
-    "point4": "Potenzial für Pre-Token-Exposure",
-    "cta": "Treten Sie Telegram bei"
-  },
-  "investor": {
-    "headline": "Investieren Sie in Hyper Strategies",
-    "subtext": "Wir suchen strategische Unterstützer, die mit unserer Vision von zugänglichem, automatisiertem Krypto-Handel übereinstimmen. Wenn Sie ein Pre-Seed-Investor, VC oder Frühphasen-Fonds sind – lassen Sie uns reden.",
-    "cta": "Kontakt aufnehmen"
-  },
-  "home": {
-    "hero": {
-      "headline": "Moderner, automatisierter Handel. Für alle.",
-      "subtext": "Automatisieren Sie Ihren Handel mit maßgeschneiderten Strategien – einfach zugänglich auf der Hyperliquid-Plattform.",
-          "install_app": "App installieren",
-    "join_community": "COMMUNITY BEITRETEN",
-      "cta1": "Am Airdrop teilnehmen",
-      "cta2": "Sprechen Sie mit uns"
-    },
-
-   "cards": {
-      "title": "Entdecken Sie Hyper-Strategies",
-      "select": "Diese Option wählen",
-      "airdrop": {
-        "title": "Sammeln Sie XP für die Token-Zuteilung",
-        "text": "XP-Rangliste ansehen"
-      },
-      "self": {
-        "title": "Zugang zur automatisierten Strategie-Engine",
-        "text": "Erstellen und führen Sie Ihre eigenen automatisierten Strategien aus."
-      },
-      "managed": {
-        "title": "Zugang zu Vault-Strategien",
-        "text": "Profitieren Sie vom verwalteten Fonds ohne Einrichtungsaufwand."
-      },
-      "invest": {
-        "title": "Ich bin an einer Investition in Hyper-Strategies interessiert",
-        "text": "Erfahren Sie mehr über Investitionsmöglichkeiten in das Projekt."
-      }
-    }
-  },
-  "legal": {
-    "title": "Impressum",
-    "company": "Hyper Strategies Ltd.",
-    "address": "Registrierung in Bearbeitung",
-    "email": "E-Mail: erokage2@gmail.com",
-    "disclaimerTitle": "Haftungsausschluss",
-    "disclaimer1": "Die Inhalte auf dieser Website dienen nur zu Informationszwecken und stellen keine Finanzberatung oder eine Aufforderung zur Investition dar.",
-    "disclaimer2": "Der Handel mit Kryptowährungen birgt erhebliche Risiken. Die bisherige Wertentwicklung ist kein Hinweis auf zukünftige Ergebnisse.",
-    "disclaimer3": "Benutzer sind allein für ihre Anlageentscheidungen verantwortlich. Hyper Strategies haftet nicht für etwaige Verluste.",
-    "rightsTitle": "Urheberrecht und Rechte",
-    "rights": "© 2025 Hyper Strategies. Alle Rechte vorbehalten. Alle Inhalte auf dieser Website sind urheberrechtlich geschützt."
-  },
-  "header": {
-    "dashboard": "Dashboard",
-    "wallet": "Wallet",
-    "logout": "Abmelden",
-    "signIn": "Anmelden",
-    "register": "Registrieren"
+  "common": {
+    "max": "Max"
   },
   "dashboard": {
-    "welcome": "Willkommen zurück, {{username}}!",
-    "loading": "Lade Dashboard...",
-    "error": "Dashboard-Daten konnten nicht geladen werden.",
-    "no_data": "Keine Daten verfügbar.",
-    "total_value": "Gesamter Portfoliowert",
-    "available_balance": "Verfügbar zum Zuweisen",
-    "bonus_points": "Wert der Bonuspunkte",
+    "welcome": "Willkommen zurück, {{username}}",
+    "no_data": "Dashboard-Daten konnten nicht geladen werden.",
+    "total_value": "Portfolio-Gesamtwert",
+    "available_balance": "Verfügbar zur Zuweisung",
     "manage": "Verwalten",
-    "your_positions": "Ihre Positionen",
+    "bonus_points": "Wert der Bonuspunkte",
+    "your_positions": "Deine Positionen",
     "tradable_capital": "Handelbares Kapital",
-    "pnl": "Unrealisierter G&V",
-    "add_funds": "Mittel hinzufügen",
-    "withdraw": "Abheben",
+    "pnl": "PnL",
+    "unlocks_in": "Freischaltung in",
+    "auto_compound": "Gewinne automatisch reinvestieren",
+    "add_funds": "Guthaben einzahlen",
+    "withdraw": "Guthaben auszahlen",
+    "locked_tooltip": "Diese Position ist bis zum {{date}} gesperrt.",
+    "unlocked_tooltip": "Vollständige Auszahlung anfordern",
     "available_strategies": "Verfügbare Strategien",
     "allocate_funds": "Mittel zuweisen",
-    "coming_soon": "Demnächst verfügbar",
-    "new_user_title": "Bereit loszulegen?",
-    "new_user_text": "Ihr erster Schritt ist die Einzahlung von Mitteln auf Ihr Konto. Gehen Sie zu Ihrer Wallet, um Ihre eindeutige Einzahlungsadresse zu finden.",
-    "go_to_wallet": "Zur Wallet gehen"
+    "coming_soon": "Demnächst verfügbar"
+  },
+  "vault_modal": {
+    "title": "Mittel dem Vault \"{{vaultName}}\" zuweisen",
+    "subtitle": "Deine Mittel werden basierend auf deiner Kontostufe aufgeteilt.",
+    "allocate_label": "Zuzuweisender Betrag (Verfügbar: ${{amount}} USDC)",
+    "breakdown_title": "Aufschlüsselung der Zuweisung (Stufe {{tier}}):",
+    "tradable_capital_breakdown": "Handelbares Kapital ({{percentage}}%):",
+    "bonus_points_breakdown": "Gutschrift aus Bonuspunkten ({{percentage}}%):",
+    "risk_ack": "Ich bestätige und akzeptiere die mit dieser Strategie verbundenen Risiken.",
+    "terms_ack": "Ich habe die",
+    "terms_link": "Allgemeinen Geschäftsbedingungen",
+    "cancel": "Abbrechen",
+    "confirm_allocation": "Zuweisung bestätigen",
+    "processing": "Wird verarbeitet...",
+    "error_nan": "Bitte gib einen gültigen Betrag ein.",
+    "error_insufficient": "Der Zuweisungsbetrag übersteigt dein verfügbares Guthaben.",
+    "error_failed": "Zuweisung fehlgeschlagen. Bitte versuche es erneut."
+  },
+  "vault_withdraw_modal": {
+    "title": "Auszahlung aus dem Vault \"{{vaultName}}\" anfordern",
+    "subtitle": "Hiermit wird deine gesamte Position von <strong>${{amount}}</strong> zur Auszahlung vorgemerkt.",
+    "disclaimer": "Auszahlungen werden manuell bearbeitet und können bis zu 48 Stunden dauern. Du kannst den Status auf deiner Wallet-Seite verfolgen.",
+    "cancel": "Abbrechen",
+    "confirm_request": "Anfrage bestätigen",
+    "submitting": "Wird übermittelt...",
+    "error_failed": "Auszahlungsanfrage fehlgeschlagen."
   },
   "wallet": {
-    "title": "Ihre Wallet",
-    "loading": "Lade Wallet...",
+    "loading": "Wallet wird geladen...",
+    "title": "Deine Wallet",
+    "refreshing": "Wird aktualisiert...",
     "refresh": "Aktualisieren",
-    "refreshing": "Aktualisiere...",
-    "usdc_balance": "USDC-Guthaben (On-Chain)",
-    "eth_balance": "ETH-Guthaben (für Gas)",
-    "deposit_address_title": "Ihre Einzahlungsadresse",
-    "deposit_address_text": "Senden Sie USDC (Mainnet) an diese Adresse, um Ihr Konto aufzuladen.",
+    "balance_usdc": "USDC-Guthaben (On-Chain)",
+    "balance_eth": "ETH-Guthaben (für Gas-Gebühren)",
+    "balance_bonus": "Wert der Bonuspunkte",
+    "deposit_address_title": "Deine Einzahlungsadresse",
+    "deposit_address_subtitle": "Sende USDC (Mainnet) an diese Adresse, um dein Konto aufzuladen.",
+    "address_loading": "Wird geladen...",
     "copy": "Kopieren",
     "copied": "Kopiert!",
     "actions_title": "Aktionen",
-    "withdraw_title": "Mittel abheben",
-    "withdraw_text": "Eine Auszahlung Ihres verfügbaren USDC an eine externe Wallet in die Warteschlange stellen.",
+    "withdraw_funds_title": "Guthaben auszahlen",
+    "withdraw_funds_subtitle": "Beantrage eine Auszahlung deiner verfügbaren USDC an eine externe Wallet.",
     "start_withdrawal": "Auszahlung starten",
-    "history_title": "Auszahlungsverlauf",
-    "history_none": "Sie haben keinen Auszahlungsverlauf."
+    "error_wallet": "Wallet-Guthaben konnten nicht geladen werden.",
+    "error_history": "Auszahlungsverlauf konnte nicht geladen werden."
   },
-  "modals": {
+  "withdraw_modal": {
+    "title": "USDC auszahlen",
+    "subtitle": "Gib die Zieladresse und den Betrag ein. Auszahlungen werden aus Sicherheitsgründen stapelweise verarbeitet und können einige Minuten dauern.",
+    "destination_label": "Ziel-ETH-Adresse",
+    "amount_label": "Auszahlungsbetrag (Verfügbar: {{balance}} USDC)",
     "cancel": "Abbrechen",
-    "processing": "Verarbeite..."
+    "queue_withdrawal": "Auszahlung beantragen",
+    "queueing": "Auszahlung wird beantragt...",
+    "error_address": "Bitte gib eine gültige Ethereum-Adresse ein.",
+    "error_nan": "Bitte gib einen gültigen Betrag ein.",
+    "error_insufficient": "Auszahlungsbetrag übersteigt dein USDC-Guthaben.",
+    "error_failed": "Auszahlung fehlgeschlagen. Bitte versuche es erneut."
   },
-  "faq": {
+  "register_page": {
+    "title": "Konto erstellen",
+    "referred_by": "Du wurdest über den Code <strong>{{code}}</strong> geworben",
+    "username_label": "Benutzername",
+    "email_label": "E-Mail-Adresse",
+    "password_label": "Passwort",
+    "button_creating": "Konto wird erstellt...",
+    "button_create": "Konto erstellen",
+    "divider": "ODER",
+    "google_signup": "Mit Google registrieren",
+    "login_prompt": "Du hast bereits ein Konto?",
+    "login_link": "Anmelden",
+    "error_unexpected": "Ein unerwarteter Fehler ist aufgetreten.",
+    "error_server": "Verbindung zum Server konnte nicht hergestellt werden. Bitte versuche es später erneut."
+  },
+  "login_page": {
+    "title": "Anmelden",
+    "success_message": "Registrierung erfolgreich! Bitte melde dich an.",
+    "error_failed": "Anmeldung fehlgeschlagen. Bitte überprüfe deine Anmeldedaten.",
+    "email_label": "E-Mail-Adresse",
+    "password_label": "Passwort",
+    "button_signing_in": "Anmeldung läuft...",
+    "button_signin": "Anmelden",
+    "divider": "ODER",
+    "google_signin": "Mit Google anmelden",
+    "register_prompt": "Du hast noch kein Konto?",
+    "register_link": "Registrieren"
+  },
+  "fees_page": {
+    "title": "Plattform-Stufen & Gebühren",
+    "intro": "Unser System ist darauf ausgelegt, Engagement und langfristige Teilnahme durch Kontostufen, XP und eine dynamische Gebührenstruktur zu belohnen.",
+    "nav_tiers": "Kontostufen",
+    "nav_fees": "Vault-Gebühren",
+    "nav_xp": "XP verdienen",
+    "nav_faq": "FAQ ansehen",
+
+"tiers_title": "Kontostufen (begrenzt auf Stufe 4)",
+    "tiers_subtitle": "Deine Kontostufe wird durch deine gesamten XP bestimmt. Höhere Stufen schalten erhebliche Vorteile bei ausgewählten Vaults frei.",
+    "table_header_tier": "Stufe",
+    "table_header_xp": "Benötigte XP",
+    "table_header_benefits": "Wichtigste Vorteile",
+    "tier1_xp": "0 - 749 XP",
+    "tier1_benefit": "Standardzugang",
+    "tier2_xp": "750 - 1.499 XP",
+    "tier2_benefit": "-2% Rabatt auf Einzahlungsgebühr des Core Vault",
+    "tier3_xp": "1.500 - 2.999 XP",
+    "tier3_benefit": "-4% Rabatt auf Einzahlungsgebühr des Core Vault",
+    "tier4_xp": "3.000+ XP",
+    "tier4_benefit": "-6% Einzahlungsgebühr (Core) & -10% Performancegebühr (ApeCoin)",
+
+    "fees_title": "Erklärung der Vault-Gebühren",
+    "fees_subtitle": "Jeder Vault hat eine einzigartige, auf seine Strategie zugeschnittene Gebührenstruktur. Die Gebühren werden für den Plattformbetrieb, die Liquiditätsbereitstellung und die zukünftige Entwicklung verwendet.",
+    "core_vault_title": "Core Vault (Vault 1)",
+    "core_vault_desc_1": "<strong>Einzahlungsgebühr:</strong> <strong>20% (wird mit der Stufe reduziert)</strong>. Der volle Gebührenbetrag wird deinem Guthaben an Bonuspunkten gutgeschrieben.",
+    "core_vault_desc_2": "<strong>Performancegebühr:</strong> Pauschal <strong>20%</strong>, die nur auf erwirtschaftete Gewinne erhoben wird.",
+    "core_vault_desc_3": "<strong>Sperrfrist:</strong> 1 Monat für jedes neu zugewiesene Kapital.",
+    "ape_vault_title": "ApeCoin EMA Vault (Vault 2)",
+    "ape_vault_desc_1": "<strong>Einzahlungsgebühr:</strong> Pauschal <strong>10%</strong> (nicht von der Stufe beeinflusst). Wird als Bonuspunkte gutgeschrieben.",
+    "ape_vault_desc_2": "<strong>Performancegebühr:</strong> <strong>40% (wird mit der Stufe reduziert)</strong>. Diese Gebühr wird für Nutzer der Stufe 4+ auf 30% reduziert.",
+    "ape_vault_desc_3": "<strong>Sperrfrist:</strong> Keine. Das Kapital ist liquide.",
+    
+    "xp_title": "Wie du XP verdienst",
+    "xp_subtitle": "XP ist das Maß für deinen Beitrag zum Ökosystem. Sieh deinen Rang auf der <1>XP-Bestenliste</1>.",
+    "xp_rule_1_title": "Kapitalzuweisung:",
+    "xp_rule_1_desc": "Verdiene 1 XP für jede $10 Kapital, die du einem Vault zuweist.",
+    "xp_rule_2_title": "Zeit-Bonus (Time-Staked):",
+    "xp_rule_2_desc": "Verdiene täglich XP basierend auf dem Kapital, das du aktiv in Vaults hast.",
+    "xp_rule_3_title": "Erfolgreiche Empfehlungen:",
+    "xp_rule_3_desc": "Verdiene Bonus-XP, wenn ein von dir geworbener Nutzer seine erste Kapitalzuweisung tätigt.",
+    "xp_rule_4_title": "Rückkauf von Bonuspunkten:",
+    "xp_rule_4_desc": "Verdiene <strong>0,1 XP</strong> für jeden Bonuspunkt, den die Plattform von dir zurückkauft."
+  },
+
+  
+  "xp_leaderboard": {
+    "title": "XP & Bestenliste",
+    "subtitle": "Verdiene XP durch deine Teilnahme am Ökosystem und steige in den Rängen auf!",
+    "how_to_earn_button": "Wie man XP verdient",
+    "my_rank_title": "Dein Rang",
+    "rank": "Rang",
+    "total_xp": "Gesamt-XP",
+    "top_users_title": "Top 25 Nutzer",
+    "loading": "Bestenliste wird geladen...",
+    "table_user": "Nutzer",
+    "modal_title": "Wie man XP verdient",
+    "copy_button": "Info zum Teilen kopieren",
+    "copied_button": "Kopiert!",
+
+    "accordion_title_signup": "🚀 Anmeldebonus für Early Adopter (Erste 500 Nutzer)",
+    "accordion_desc_signup": "Ein einmaliger XP-Bonus wird an die ersten 500 Nutzer bei der Registrierung vergeben, um unsere frühesten Unterstützer zu belohnen. Der Bonus ist gestaffelt:",
+    "signup_tier_1": "<strong>Nutzer 1-100:</strong> 25 XP",
+    "signup_tier_2": "<strong>Nutzer 101-200:</strong> 20 XP",
+    "signup_tier_3": "<strong>Nutzer 201-300:</strong> 15 XP",
+    "signup_tier_4": "<strong>Nutzer 301-400:</strong> 10 XP",
+    "signup_tier_5": "<strong>Nutzer 401-500:</strong> 5 XP",
+    
+    "accordion_title_allocation": "💰 Kapitalzuweisung: 1 XP pro $10",
+    "accordion_desc_allocation": "Du verdienst XP, indem du dein Kapital arbeiten lässt. Für jede $10, die du einem Vault zuweist (mindestens $100 Zuweisung), erhältst du 1 XP. Eine Zuweisung von $1.000 bringt dir 100 XP.",
+
+    "accordion_title_referral": "🤝 Erfolgreiche Empfehlung: Dynamisch (10%)",
+    "accordion_desc_referral": "Wenn sich ein neuer Nutzer mit deinem Empfehlungscode anmeldet und seine erste Vault-Zuweisung tätigt (mindestens $100), erhältst du als Werbender XP in Höhe von 10% des zugewiesenen Betrags. Weist er $1.000 zu, bekommst du 100 XP.",
+
+    "accordion_title_staking": "⏳ Wöchentlicher Staking-Bonus: Demnächst verfügbar",
+    "accordion_desc_staking": "Eine zukünftige Funktion wird Nutzer mit XP für jede Woche belohnen, in der sie ihr Kapital in einem Vault gebunden halten, um langfristiges Engagement zu fördern.",
+
+    "accordion_title_buyback": "💸 Rückkauf von Bonuspunkten: 1 zu 0,1 XP",
+    "accordion_desc_buyback": "Wenn die Plattform deine Bonuspunkte zurückkauft, erhältst du XP in Höhe von 10% des Wertes. Ein Rückkauf von 200 Bonuspunkten gewährt dir 20 XP."
+  },
+
+  "add_to_home_screen": {
+    "title": "HyperStrategies App installieren",
+    "subtitle": "Für das beste Erlebnis, füge unsere App zu deinem Home-Bildschirm hinzu.",
+    "step1": "1. Tippe unten auf das <strong>Teilen</strong>-Symbol.",
+    "step2": "2. Scrolle nach unten und tippe auf <strong>„Zum Home-Bildschirm hinzufügen“</strong>."
+  },
+
+  "oauth_success": {
+    "logging_in": "Anmeldung läuft..."
+  },
+
+  "card_section": {
+    "select_button": "Auswählen"
+  },
+
+  "legal": {
+    "title": "Impressum & Rechtliche Hinweise",
+    "company": "HyperStrategies Inc.",
+    "address": "123 Blockchain Avenue, Suite 404, Metropolis",
+    "email": "E-Mail: info@hyperstrategies.xyz",
+    "disclaimerTitle": "Haftungsausschluss",
+    "disclaimer1": "Die auf dieser Webseite bereitgestellten Informationen stellen keine Anlageberatung, Finanzberatung, Handelsberatung oder irgendeine andere Art von Beratung dar, und Sie sollten keinen der Inhalte der Webseite als solche behandeln. HyperStrategies empfiehlt nicht, dass eine Kryptowährung von Ihnen gekauft, verkauft oder gehalten werden sollte.",
+    "disclaimer2": "Führen Sie Ihre eigene sorgfältige Prüfung (Due Diligence) durch und konsultieren Sie Ihren Finanzberater, bevor Sie Anlageentscheidungen treffen. Durch den Kauf oder die Interaktion mit unseren Dienstleistungen stimmen Sie zu, dass Sie kein Wertpapier oder keine Anlage erwerben und halten das Team für alle Verluste oder Steuern, die Ihnen entstehen könnten, schad- und klaglos.",
+    "disclaimer3": "Der Handel mit und die Investition in digitale Vermögenswerte sind hochspekulativ und mit vielen Risiken verbunden. Die Analysen / Statistiken auf der Webseite dienen nur zu Informationszwecken und sollten nicht als Anlageberatung behandelt werden.",
+    "rightsTitle": "Urheberrecht",
+    "rights": "Alle Rechte vorbehalten. Die auf dieser Webseite veröffentlichten Inhalte und Werke unterliegen dem Urheberrecht der geltenden Rechtsordnung."
+  },
+
+  "home": {
+    "rotating_words": [
+      "AUTOMATISIERT",
+      "HEDGEFUND",
+      "HYPER"
+    ],
+    "hero": {
+      "subtext": "Automatisierte Handelslösungen, kuratierte Krypto-Vaults.",
+      "join_community": "Tritt der Community bei",
+      "install_app": "App installieren"
+    },
+    "cards": {
+      "title": "Entdecke die Hyper-Strategien",
+      "airdrop": {
+        "title": "Erhalte XP für Kapitalzuweisungen",
+        "text": "XP-Bestenliste ansehen"
+      },
+      "self": {
+        "title": "Zugriff auf die automatisierte Strategie-Engine",
+        "text": "Erstelle und nutze deine eigenen Strategien"
+      },
+      "managed": {
+        "title": "Investiere in verwaltete Vaults",
+        "text": "Zahle ein und lass unsere Systeme für dich handeln"
+      },
+      "invest": {
+        "title": "Werde ein strategischer Partner",
+        "text": "Erfahre mehr über unseren Token und Pre-Sale-Möglichkeiten"
+      }
+    },
+    
+  "faq_page": {
     "title": "Häufig gestellte Fragen",
     "q1_title": "Was sind Bonuspunkte?",
-    "q1_answer": "Bonuspunkte sind unsere Art, Benutzer zu belohnen, die Kapital in unsere Vaults einlegen. Wenn Sie Geld in einen Vault einzahlen, werden 20 % dieses Kapitals in Bonuspunkte umgewandelt, die im Verhältnis 1:1 zu USDC bewertet werden. Diese 20 % helfen, die Betriebs- und Entwicklungskosten der Plattform zu decken, sodass wir einen besseren Service für Sie aufbauen können.",
-    "q2_title": "Kann ich meine Bonuspunkte abheben?",
-    "q2_answer": "Bonuspunkte können nicht direkt abgehoben werden. Sie repräsentieren Ihren Beitrag zur Plattform. Im Laufe der Zeit, wenn unsere Plattform Einnahmen aus Performancegebühren erzielt, werden wir einen Teil dieser Einnahmen verwenden, um Bonuspunkte von den Benutzern zurückzukaufen. Dieser Prozess wandelt Ihre Bonuspunkte wieder in USDC um, die dann Ihrem Hauptguthaben 'Verfügbar zum Zuweisen' hinzugefügt werden.",
-    "q3_title": "Wie werden Vault-Auszahlungen verarbeitet?",
-    "q3_answer": "Wenn Sie Geld aus einem Vault abheben, verschieben Sie Ihr 'Handelbares Kapital' zurück in Ihr Hauptguthaben 'Verfügbar zum Zuweisen'. Dies ist eine interne Überweisung und erfolgt in der Regel sofort. Um Geld von der Plattform auf eine externe Wallet abzuheben, müssen Sie die Funktion 'Mittel abheben' auf der Wallet-Seite verwenden."
+    "q1_answer": "Bonuspunkte sind unsere Art, Nutzer zu belohnen, die Kapital in unsere Vaults einzahlen. Wenn du Geld in einen Vault einzahlst, wird ein Teil dieses Kapitals in Bonuspunkte umgewandelt, die im Verhältnis 1:1 zu USDC bewertet werden. Dies hilft, die Betriebs- und Entwicklungskosten der Plattform zu decken, sodass wir einen besseren Service für dich aufbauen können.",
+    "q2_title": "Kann ich meine Bonuspunkte auszahlen lassen?",
+    "q2_answer": "Bonuspunkte sind nicht direkt auszahlbar. Sie repräsentieren deinen Beitrag zur Plattform. Im Laufe der Zeit, wenn unsere Plattform Einnahmen aus Performancegebühren erzielt, werden wir einen Teil dieser Einnahmen verwenden, um Bonuspunkte von Nutzern \"zurückzukaufen\". Dieser Prozess wandelt deine Bonuspunkte wieder in USDC um, die dann deinem Hauptguthaben \"Verfügbar zur Zuweisung\" hinzugefügt werden.",
+    "q3_title": "Wie werden Auszahlungen aus Vaults bearbeitet?",
+    "q3_answer": "Wenn du eine Auszahlung aus einem Vault beantragst, wird eine Anfrage erstellt, um dein \"handelbares Kapital\" zurück auf dein Hauptguthaben \"Verfügbar zur Zuweisung\" zu verschieben. Dieser Vorgang kann bis zu 48 Stunden dauern. Um Geld von der Plattform auf eine externe Wallet abzuheben, musst du die Funktion \"Guthaben auszahlen\" auf der Wallet-Seite verwenden, nachdem deine Vault-Auszahlung bearbeitet wurde."
+  },
+
+  "profile_page": {
+    "loading": "Profil wird geladen...",
+    "error_load": "Profil konnte nicht geladen werden.",
+    "error_update": "Aktualisierung fehlgeschlagen.",
+    "error_unexpected": "Ein unerwarteter Fehler ist aufgetreten.",
+    "title": "Dein Profil",
+    "edit_details_title": "Daten bearbeiten",
+    "username_label": "Benutzername",
+    "save_changes_button": "Änderungen speichern",
+    "stats_referrals_title": "Statistiken & Empfehlungen",
+    "account_tier_label": "Kontostufe",
+    "tier_prefix": "Stufe {{tier}}",
+    "xp_label": "Deine XP",
+    "referral_code_label": "Dein Empfehlungscode",
+    "copy_link_button": "Empfehlungslink kopieren",
+    "copied_button": "Kopiert!",
+    "customize_link_title": "Personalisiere deinen Empfehlungslink",
+    "customize_link_subtitle": "Erstelle einen einzigartigen Code. Er muss aus 3-15 alphanumerischen Zeichen bestehen.",
+    "placeholder_your_code": "dein-code",
+    "saving_button": "Wird gespeichert...",
+    "save_code_button": "Code speichern"
   }
+}
 }

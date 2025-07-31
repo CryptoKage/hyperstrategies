@@ -1,11 +1,13 @@
 // src/components/RotatingText.jsx
-import React, { forwardRef, useState, useEffect, useMemo } from 'react';
+
+import React, { forwardRef, useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import './RotatingText.css'; // contains your provided rotating text CSS
+import './RotatingText.css';
 
 const RotatingText = forwardRef(({
   texts = [],
   mainClassName = 'text-rotate',
+  loop = true, // We'll keep the loop prop for flexibility
   staggerFrom = 'last',
   initial = { y: '100%', opacity: 0 },
   animate = { y: '0%', opacity: 1 },
@@ -15,18 +17,45 @@ const RotatingText = forwardRef(({
   rotationInterval = 2500,
 }, ref) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // --- NEW --- We use a ref to track the number of loops completed.
+  // A ref is like a state variable that doesn't cause re-renders when it changes.
+  const loopsCompleted = useRef(0);
+
   const chars = useMemo(
     () => Array.from(texts[currentIndex] || ''),
     [texts, currentIndex]
   );
 
-  // Cycle through texts at interval
   useEffect(() => {
+    if (texts.length <= 1) return;
+
     const id = setInterval(() => {
-      setCurrentIndex(i => (i + 1) % texts.length);
+      setCurrentIndex(prevIndex => {
+        const nextIndex = prevIndex + 1;
+
+        // --- NEW LOGIC ---
+        // The core of the "cycle twice, then stop" feature.
+        if (loop === 'twice') {
+          // Check if we just completed a full loop
+          if (nextIndex % texts.length === 0) {
+            loopsCompleted.current += 1;
+          }
+
+          // If we have completed 2 loops and are about to show the last word again...
+          if (loopsCompleted.current >= 2 && nextIndex % texts.length === texts.length - 1) {
+            clearInterval(id); // Stop the animation timer.
+            return nextIndex % texts.length; // Set the index to the last word.
+          }
+        }
+        
+        // This is the original looping logic.
+        return nextIndex % texts.length;
+      });
     }, rotationInterval);
+
     return () => clearInterval(id);
-  }, [texts, rotationInterval]);
+  }, [texts, rotationInterval, loop]);
 
   return (
     <motion.span className={mainClassName}>

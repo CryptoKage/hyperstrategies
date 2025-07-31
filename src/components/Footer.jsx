@@ -1,15 +1,17 @@
 // src/components/Footer.jsx
 
 import React from 'react';
-
-// No imports are needed for icons in the public folder
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <footer className="footer">
-          
+      {/* Contact info removed as per your last file version */}
+      
       <div className="footer__socials">
-        <span>Follow us:</span>
+        <span>{t('footer.follow_us')}</span>
         <a href="https://x.com/hyperstrats" target="_blank" rel="noopener noreferrer" className="social-link" title="Follow us on X">
           <img src="/icons/x-icon-black.svg" alt="X Icon" className="social-icon" />
         </a>
@@ -18,13 +20,10 @@ const Footer = () => {
         </a>
       </div>
 
-      {/* --- NEW Legal Links Section --- */}
       <div className="footer__legal">
-        {/* Replace '#' with your actual GitBook URL when you have it */}
-        <a href="#" target="_blank" rel="noopener noreferrer">Documentation</a>
+        <a href="#" target="_blank" rel="noopener noreferrer">{t('footer.documentation')}</a>
         <span className="separator">|</span>
-        {/* Replace '#' with your actual T&Cs URL when you have it */}
-        <a href="#" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
+        <a href="#" target="_blank" rel="noopener noreferrer">{t('footer.terms')}</a>
       </div>
     </footer>
   );

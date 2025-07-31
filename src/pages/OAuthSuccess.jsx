@@ -1,9 +1,12 @@
 // src/pages/OAuthSuccess.jsx
+
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 
 const OAuthSuccess = () => {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -18,10 +21,8 @@ const OAuthSuccess = () => {
       }
 
       console.log('✅ Received token from Google OAuth:', token);
-
       login(token);
-
-      // Add delay to allow login to complete if needed
+      
       setTimeout(() => {
         navigate('/dashboard');
       }, 500);
@@ -32,7 +33,7 @@ const OAuthSuccess = () => {
     }
   }, [login, navigate]);
 
-  return <p>Logging you in...</p>;
+  return <p>{t('oauth_success.logging_in')}</p>;
 };
 
 export default OAuthSuccess;

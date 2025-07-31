@@ -8,6 +8,7 @@ const AccordionItem = ({ title, children }) => {
   return (
     <div className="accordion-item">
       <button className="accordion-title" onClick={() => setIsOpen(!isOpen)}>
+        {/* The '+' and '−' symbols are universal and don't need translation */}
         <span>{isOpen ? '−' : '+'}</span> {title}
       </button>
       {isOpen && <div className="accordion-content">{children}</div>}

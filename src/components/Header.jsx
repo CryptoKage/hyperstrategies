@@ -23,43 +23,37 @@ const Header = () => {
   return (
     <header className="header">
       <Link to="/" className="header__left">
-        <img src={Logo} alt="Hyper Strategies" className="header__logo" />
+        <img src={Logo} alt={t('header.alt_logo')} className="header__logo" />
         <span className="header__title">Hyper Strategies</span>
       </Link>
       
       <div className="header__right">
-        <select
-          className="header__language-select"
-          onChange={changeLanguage}
-          value={i18n.language}
-        >
+        <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
           <option value="en">EN</option>
           <option value="de">DE</option>
         </select>
 
         {user ? (
           <>
-            <Link to="/dashboard" className="header__button">Dashboard</Link>
-            <Link to="/wallet" className="header__button">Wallet</Link>
-            <Link to="/profile" className="header__button">Profile</Link>
+            <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
+            <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
+            <Link to="/profile" className="header__button">{t('header.profile')}</Link>
             
             {user.isAdmin && (
-              // --- THIS IS THE FIX ---
-              // The path is now simply "/admin"
               <Link to="/admin" className="header__button header__button--admin">
-                Admin
+                {t('header.admin')}
               </Link>
             )}
 
             <button onClick={handleLogout} className="header__button header__button--primary">
-              Logout
+              {t('header.logout')}
             </button>
           </>
         ) : (
           <>
-            <Link to="/login" className="header__button">Sign In</Link>
+            <Link to="/login" className="header__button">{t('header.signin')}</Link>
             <Link to="/register" className="header__button header__button--primary">
-              Register
+              {t('header.register')}
             </Link>
           </>
         )}

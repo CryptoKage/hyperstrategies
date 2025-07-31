@@ -1,18 +1,20 @@
 // src/components/InputField.jsx
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const InputField = ({ label, id, type = 'text', value, onChange, placeholder, required = false, onMaxClick = null }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="input-group">
       <div className="input-label-wrapper">
         <label htmlFor={id} className="input-label">
           {label}
         </label>
-        {/* The "Max" button only appears if an onMaxClick function is provided */}
         {onMaxClick && (
           <button type="button" onClick={onMaxClick} className="btn-max">
-            Max
+            {t('common.max')} 
           </button>
         )}
       </div>

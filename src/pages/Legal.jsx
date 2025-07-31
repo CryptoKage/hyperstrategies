@@ -1,3 +1,5 @@
+// src/pages/Legal.jsx
+
 import React from 'react';
 import Layout from '../components/Layout';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +28,7 @@ const Legal = () => {
   );
 };
 
+// The styles object remains unchanged
 const styles = {
   container: {
     maxWidth: '800px',

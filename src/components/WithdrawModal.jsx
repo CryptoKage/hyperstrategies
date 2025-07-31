@@ -1,17 +1,19 @@
 // src/components/WithdrawModal.jsx
 
 import React, { useState, useEffect } from 'react';
-import { isAddress } from 'ethers'; // The correct ethers v6 import
+import { isAddress } from 'ethers';
+import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
 
 const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => {
+  const { t } = useTranslation();
+  
   const [amount, setAmount] = useState('');
   const [address, setAddress] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // This effect resets the form every time the modal is closed.
   useEffect(() => {
     if (!isOpen) {
       setAmount('');
@@ -22,43 +24,38 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
   }, [isOpen]);
 
   if (!isOpen) {
-    return null; // Don't render anything if the modal is not open
+    return null;
   }
 
   const handleWithdraw = async (e) => {
     e.preventDefault();
     setError('');
 
-    // --- Frontend Validation ---
     if (!isAddress(address)) {
-      setError('Please enter a valid Ethereum address.');
+      setError(t('withdraw_modal.error_address'));
       return;
     }
     const withdrawAmount = parseFloat(amount);
     if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
-      setError('Please enter a valid amount.');
+      setError(t('withdraw_modal.error_nan'));
       return;
     }
     if (withdrawAmount > usdcBalance) {
-      setError('Withdrawal amount exceeds your USDC balance.');
+      setError(t('withdraw_modal.error_insufficient'));
       return;
     }
     
     setIsLoading(true);
     try {
-      // Call the backend API to queue the withdrawal
       await api.post('/withdraw', {
         token: 'USDC',
         amount: withdrawAmount,
         toAddress: address,
       });
-
-      // On success, notify the parent component and close the modal
       onWithdrawalQueued();
       onClose();
-
     } catch (err) {
-      setError(err.response?.data?.message || 'Withdrawal failed. Please try again.');
+      setError(err.response?.data?.message || t('withdraw_modal.error_failed'));
     } finally {
       setIsLoading(false);
     }
@@ -68,14 +65,14 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
     <div className="modal-overlay">
       <div className="modal-content">
         <button onClick={onClose} className="modal-close-btn">×</button>
-        <h2>Withdraw USDC</h2>
-        <p className="modal-subtitle">Enter the destination address and amount. Withdrawals are processed in batches and may take several minutes for security.</p>
+        <h2>{t('withdraw_modal.title')}</h2>
+        <p className="modal-subtitle">{t('withdraw_modal.subtitle')}</p>
         
         <form onSubmit={handleWithdraw}>
           {error && <p className="error-message">{error}</p>}
           
           <InputField
-            label="Destination ETH Address"
+            label={t('withdraw_modal.destination_label')}
             id="withdrawAddress"
             type="text"
             value={address}
@@ -84,7 +81,7 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
             required
           />
           <InputField
-            label={`Amount to Withdraw (Available: ${usdcBalance.toFixed(4)} USDC)`}
+            label={t('withdraw_modal.amount_label', { balance: usdcBalance.toFixed(4) })}
             id="withdrawAmount"
             type="number"
             value={amount}
@@ -94,9 +91,9 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
           />
           
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
+            <button type="button" onClick={onClose} className="btn-secondary">{t('withdraw_modal.cancel')}</button>
             <button type="submit" className="btn-primary" disabled={isLoading}>
-              {isLoading ? 'Queueing...' : 'Queue Withdrawal'}
+              {isLoading ? t('withdraw_modal.queueing') : t('withdraw_modal.queue_withdrawal')}
             </button>
           </div>
         </form>

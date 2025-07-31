@@ -2838,3 +2838,18 @@ textarea.input-field { resize: vertical; }
   color: var(--color-text-primary);
   border-color: var(--color-primary);
 }
+.success-message {
+  color: #38a169; /* Green */
+  background-color: rgba(56, 161, 105, 0.1);
+  border: 1px solid #38a169;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.balance-sub-value {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}

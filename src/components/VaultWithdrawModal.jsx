@@ -1,8 +1,12 @@
 // src/components/VaultWithdrawModal.jsx
+
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next'; // 1. Import useTranslation
 import api from '../api/api';
 
 const VaultWithdrawModal = ({ isOpen, onClose, vault, onWithdrawalSuccess }) => {
+  const { t } = useTranslation(); // 2. Initialize the t function
+  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -21,16 +25,15 @@ const VaultWithdrawModal = ({ isOpen, onClose, vault, onWithdrawalSuccess }) => 
     setError('');
 
     try {
-      // --- NEW --- API call is simpler, no amount needed
       await api.post('/vaults/withdraw', {
         vaultId: vault.vault_id,
       });
 
-      onWithdrawalSuccess(); // This will refetch dashboard data
-      onClose(); // Close the modal on success
+      onWithdrawalSuccess();
+      onClose();
 
     } catch (err) {
-      setError(err.response?.data?.error || 'Withdrawal request failed.');
+      setError(err.response?.data?.error || t('vault_withdraw_modal.error_failed'));
     } finally {
       setIsLoading(false);
     }
@@ -42,21 +45,22 @@ const VaultWithdrawModal = ({ isOpen, onClose, vault, onWithdrawalSuccess }) => 
     <div className="modal-overlay">
       <div className="modal-content">
         <button onClick={onClose} className="modal-close-btn">×</button>
-        <h2>Request Withdrawal from {vault.name}</h2>
-        <p className="modal-subtitle">
-            This will queue your entire position of <strong>${tradableCapital.toFixed(2)}</strong> for withdrawal.
-        </p>
+        <h2>{t('vault_withdraw_modal.title', { vaultName: vault.name || 'this vault' })}</h2>
+        <p
+          className="modal-subtitle"
+          dangerouslySetInnerHTML={{ __html: t('vault_withdraw_modal.subtitle', { amount: tradableCapital.toFixed(2) }) }}
+        />
         <div className="disclaimer info">
-            <p>Withdrawals are processed manually and may take up to 48 hours. You can track the status on your Wallet page.</p>
+            <p>{t('vault_withdraw_modal.disclaimer')}</p>
         </div>
         
         <form onSubmit={handleWithdrawRequest}>
           {error && <p className="error-message">{error}</p>}
           
           <div className="modal-actions">
-            <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
+            <button type="button" onClick={onClose} className="btn-secondary">{t('vault_withdraw_modal.cancel')}</button>
             <button type="submit" className="btn-primary" disabled={isLoading}>
-              {isLoading ? 'Submitting...' : 'Confirm Request'}
+              {isLoading ? t('vault_withdraw_modal.submitting') : t('vault_withdraw_modal.confirm_request')}
             </button>
           </div>
         </form>

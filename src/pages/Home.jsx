@@ -11,7 +11,6 @@ import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
 import Layout from '../components/Layout';
 import CardSection from '../components/CardSection';
 import ChartImage from '../assets/chart-placeholder.png';
-// --- 1. Import our new background component ---
 import InteractiveBackground from '../components/InteractiveBackground';
 
 const Home = () => {
@@ -21,8 +20,8 @@ const Home = () => {
   const { isIOS } = useIsIOS();
   const [showIOSPrompt, setShowIOSPrompt] = useState(false);
 
-  const rotatingWords = ['AUTOMATED', 'HEDGEFUND', 'EMA', 'HYPER', 'APE'];
-
+  // --- MODIFIED --- Load rotating words and cards from the translation file
+  const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
   const homePageCards = [
     { icon: '🏆', title: t('home.cards.airdrop.title'), description: t('home.cards.airdrop.text'), route: '/xpleaderboard' },
     { icon: '⚙️', title: t('home.cards.self.title'), description: t('home.cards.self.text'), route: '/self-serve' },
@@ -33,12 +32,8 @@ const Home = () => {
   return (
     <>
       <Layout>
-        {/* --- 2. Create the new wrapper for the entire hero section --- */}
         <div className="hero-section-wrapper">
-          {/* The background component sits inside the wrapper */}
           <InteractiveBackground />
-          
-          {/* Your existing hero section is now inside the wrapper */}
           <section className="hero-section">
             <div className="hero-content">
               <h1 className="hero-headline">
@@ -47,7 +42,7 @@ const Home = () => {
                   mainClassName="text-rotate-bg"
                   staggerFrom="last"
                   rotationInterval={2500}
-                  loop={false}
+                  loop={'twice'}
                 />
                 -STRATEGIES
               </h1>
@@ -76,7 +71,6 @@ const Home = () => {
           </section>
         </div>
 
-        {/* --- 3. Your card section now sits outside the hero wrapper --- */}
         <section className="path-selector-section">
           <h2>{t('home.cards.title')}</h2>
           <CardSection cards={homePageCards} />

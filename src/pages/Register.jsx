@@ -2,12 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next'; // 1. Import
 import api from '../api/api';
 import Layout from '../components/Layout';
 import InputField from '../components/InputField';
 import GoogleIcon from '../components/GoogleIcon';
 
 const Register = () => {
+  const { t } = useTranslation(); // 2. Initialize
+  
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,18 +34,13 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      await api.post('/auth/register', {
-        username,
-        email,
-        password,
-        referralCode
-      });
+      await api.post('/auth/register', { username, email, password, referralCode });
       navigate('/login?status=registered');
     } catch (err) {
       if (err.response) {
-        setError(err.response.data.error || 'An unexpected error occurred.');
+        setError(err.response.data.error || t('register_page.error_unexpected'));
       } else {
-        setError('Cannot connect to the server. Please try again later.');
+        setError(t('register_page.error_server'));
       }
     } finally {
       setIsLoading(false);
@@ -55,42 +53,42 @@ const Register = () => {
 
   return (
     <Layout>
-      {/* ✅ THIS IS THE FIX: The outer wrapper centers the content box */}
       <div className="auth-wrapper">
         <div className="auth-container">
           <form className="auth-form" onSubmit={handleSubmit}>
-            <h2>Create Account</h2>
+            <h2>{t('register_page.title')}</h2>
             
             {referralCode && (
               <div className="info-box">
-                <span>You were referred by code: <strong>{referralCode}</strong></span>
+                <span dangerouslySetInnerHTML={{ __html: t('register_page.referred_by', { code: referralCode }) }} />
               </div>
             )}
             
             {error && <p className="error-message">{error}</p>}
             
-            <InputField label="Username" id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-            <InputField label="Email" id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            <InputField label="Password" id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <InputField label={t('register_page.username_label')} id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            <InputField label={t('register_page.email_label')} id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <InputField label={t('register_page.password_label')} id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             
             <button type="submit" className="btn-primary" disabled={isLoading}>
-              {isLoading ? 'Creating Account...' : 'Create Account'}
+              {isLoading ? t('register_page.button_creating') : t('register_page.button_create')}
             </button>
           </form>
 
           <div className="auth-divider">
-            <span>OR</span>
+            <span>{t('register_page.divider')}</span>
           </div>
 
           <div className="social-login">
             <button onClick={handleGoogleLogin} className="btn-google">
               <GoogleIcon />
-              <span>Sign up with Google</span>
+              <span>{t('register_page.google_signup')}</span>
             </button>
           </div>
 
           <p className="auth-link">
-            Already have an account? <Link to="/login">Sign In</Link>
+            {t('register_page.login_prompt')}{' '}
+            <Link to="/login">{t('register_page.login_link')}</Link>
           </p>
         </div>
       </div>

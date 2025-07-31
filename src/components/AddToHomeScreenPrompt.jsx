@@ -1,18 +1,22 @@
 // src/components/AddToHomeScreenPrompt.jsx
+
 import React from 'react';
-import ShareIcon from './ShareIcon'; // We will create this small icon component next
+import { useTranslation } from 'react-i18next';
+import ShareIcon from './ShareIcon';
 
 const AddToHomeScreenPrompt = ({ onClose }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="ios-prompt-overlay">
       <div className="ios-prompt-content">
         <button onClick={onClose} className="ios-prompt-close">×</button>
-        <h3>Install HyperStrategies App</h3>
-        <p>For the best experience, add our app to your home screen.</p>
+        <h3>{t('add_to_home_screen.title')}</h3>
+        <p>{t('add_to_home_screen.subtitle')}</p>
         <div className="ios-instructions">
-          <p>1. Tap the <strong>Share</strong> icon below.</p>
+          <p dangerouslySetInnerHTML={{ __html: t('add_to_home_screen.step1') }} />
           <ShareIcon />
-          <p>2. Scroll down and tap <strong>"Add to Home Screen"</strong>.</p>
+          <p dangerouslySetInnerHTML={{ __html: t('add_to_home_screen.step2') }} />
         </div>
       </div>
     </div>

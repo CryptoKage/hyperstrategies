@@ -16,7 +16,12 @@ const XPLeaderboard = () => {
   const [myRank, setMyRank] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isXPModalOpen, setIsXPModalOpen] = useState(false);
-  const [copySuccess, setCopySuccess] = useState('Copy Info for Sharing');
+  const [copySuccess, setCopySuccess] = useState('');
+
+  // Set initial button text from translation file
+  useEffect(() => {
+    setCopySuccess(t('xp_leaderboard.copy_button'));
+  }, [t]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -41,8 +46,10 @@ const XPLeaderboard = () => {
     fetchData();
   }, [fetchData]);
 
-  // This is the text block for content creators to share
-  const xpInfoText = `
+  const handleCopyClick = () => {
+    // Note: For simplicity, this shareable text block remains in English.
+    // It can be internationalized later if needed by building it from translated parts.
+    const xpInfoText = `
 🚀 How to Earn XP on HyperStrategies 🚀
 
 - Early Adopter Bonus: Get up to 25 XP for being one of the first 1000 users to allocate funds!
@@ -53,19 +60,14 @@ Join with my referral link and get a head start! 👇
 [Your Referral Link Here]
   `;
 
-  // This is the full "copy logic"
-  const handleCopyClick = () => {
-    // If the user is logged in, we personalize the message with their link.
     const shareableText = user 
       ? xpInfoText.replace('[Your Referral Link Here]', `https://www.hyper-strategies.com/register?ref=${user.referral_code}`)
       : xpInfoText.replace('[Your Referral Link Here]', 'https://www.hyper-strategies.com');
       
-    // Use the browser's Clipboard API to copy the text
     navigator.clipboard.writeText(shareableText.trim());
     
-    // Provide visual feedback
-    setCopySuccess('Copied!');
-    setTimeout(() => setCopySuccess('Copy Info for Sharing'), 2000); // Reset after 2 seconds
+    setCopySuccess(t('xp_leaderboard.copied_button'));
+    setTimeout(() => setCopySuccess(t('xp_leaderboard.copy_button')), 2000);
   };
 
   const formatAddress = (address) => address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Anonymous';
@@ -75,26 +77,26 @@ Join with my referral link and get a head start! 👇
       <Layout>
         <div className="leaderboard-container">
           <div className="leaderboard-header">
-            <h1>XP & Leaderboard</h1>
-            <p>Earn XP by participating in the ecosystem and climb the ranks!</p>
+            <h1>{t('xp_leaderboard.title')}</h1>
+            <p>{t('xp_leaderboard.subtitle')}</p>
           </div>
           
           <div className="how-to-earn-section">
             <button className="btn-outline" onClick={() => setIsXPModalOpen(true)}>
-              How to Earn XP
+              {t('xp_leaderboard.how_to_earn_button')}
             </button>
           </div>
           
           {user && myRank && (
             <div className="my-rank-card">
-              <h3>Your Rank</h3>
+              <h3>{t('xp_leaderboard.my_rank_title')}</h3>
               <div className="my-rank-stats">
                 <div className="my-rank-stat">
-                  <span>Rank</span>
+                  <span>{t('xp_leaderboard.rank')}</span>
                   <span>#{myRank.rank}</span>
                 </div>
                 <div className="my-rank-stat">
-                  <span>Total XP</span>
+                  <span>{t('xp_leaderboard.total_xp')}</span>
                   <span>{parseInt(myRank.xp).toLocaleString()}</span>
                 </div>
               </div>
@@ -102,13 +104,17 @@ Join with my referral link and get a head start! 👇
           )}
           
           <div className="leaderboard-table-section">
-            <h3>Top 25 Users</h3>
+            <h3>{t('xp_leaderboard.top_users_title')}</h3>
             {loading ? (
-              <p>Loading leaderboard...</p>
+              <p>{t('xp_leaderboard.loading')}</p>
             ) : (
               <table className="leaderboard-table">
                 <thead>
-                  <tr><th>Rank</th><th>User</th><th>XP</th></tr>
+                  <tr>
+                    <th>{t('xp_leaderboard.rank')}</th>
+                    <th>{t('xp_leaderboard.table_user')}</th>
+                    <th>XP</th>
+                  </tr>
                 </thead>
                 <tbody>
                   {leaderboard.map((player, index) => {
@@ -131,34 +137,34 @@ Join with my referral link and get a head start! 👇
       <InfoModal
         isOpen={isXPModalOpen}
         onClose={() => setIsXPModalOpen(false)}
-        title="How to Earn XP"
+        title={t('xp_leaderboard.modal_title')}
       >
-<Accordion>
-          <AccordionItem title="🚀 Early Adopter Sign-Up Bonus (First 500 Users)">
-            <p>A one-time XP bonus is awarded to the first 500 users upon registration to reward our earliest supporters. The bonus is tiered:</p>
+        <Accordion>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_signup')}>
+            <p>{t('xp_leaderboard.accordion_desc_signup')}</p>
             <ul className="reward-list">
-              <li><strong>Users 1-100:</strong> 25 XP</li>
-              <li><strong>Users 101-200:</strong> 20 XP</li>
-              <li><strong>Users 201-300:</strong> 15 XP</li>
-              <li><strong>Users 301-400:</strong> 10 XP</li>
-              <li><strong>Users 401-500:</strong> 5 XP</li>
+              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_1') }} />
+              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_2') }} />
+              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_3') }} />
+              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_4') }} />
+              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_5') }} />
             </ul>
           </AccordionItem>
           
-          <AccordionItem title="💰 Capital Allocation: 1 XP per $10">
-            <p>You earn XP by putting your capital to work. For every $10 you allocate to any vault (minimum $100 allocation), you will earn 1 XP. An allocation of $1,000 earns you 100 XP.</p>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_allocation')}>
+            <p>{t('xp_leaderboard.accordion_desc_allocation')}</p>
           </AccordionItem>
           
-          <AccordionItem title="🤝 Successful Referral: Dynamic (10%)">
-            <p>When a new user signs up with your referral code and makes their first vault allocation (minimum $100), you, the referrer, will earn XP equal to 10% of their allocated amount. If they allocate $1,000, you get 100 XP.</p>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_referral')}>
+            <p>{t('xp_leaderboard.accordion_desc_referral')}</p>
           </AccordionItem>
 
-          <AccordionItem title="⏳ Weekly Staking Bonus: Coming Soon">
-            <p>A future feature will reward users with XP for every week they keep their capital allocated in a vault, rewarding long-term commitment.</p>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_staking')}>
+            <p>{t('xp_leaderboard.accordion_desc_staking')}</p>
           </AccordionItem>
           
-          <AccordionItem title="💸 Bonus Point Buy-Back: 1-to-1 XP">
-            <p>When the platform buys back your Bonus Points, you will receive an equal amount of XP. A buy-back of 200 Bonus Points also grants you 200 XP.</p>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_buyback')}>
+            <p>{t('xp_leaderboard.accordion_desc_buyback')}</p>
           </AccordionItem>
         </Accordion>
         <div className="modal-actions" style={{ marginTop: '24px' }}>

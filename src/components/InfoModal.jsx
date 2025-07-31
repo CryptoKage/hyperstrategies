@@ -2,7 +2,8 @@
 
 import React from 'react';
 
-// This is now a simple, generic modal for displaying any information.
+// This component is purely presentational. It doesn't need the 't' function itself,
+// as the translated title and children will be passed in as props from the parent.
 const InfoModal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
 
@@ -10,9 +11,7 @@ const InfoModal = ({ isOpen, onClose, title, children }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} className="modal-close-btn">×</button>
-        {/* The title is passed in as a prop */}
         <h2>{title}</h2>
-        {/* The body of the modal is passed in as children */}
         <div className="info-modal-body">
           {children}
         </div>

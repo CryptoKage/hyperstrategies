@@ -2,12 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import api from '../api/api'; // ✅ 1. Import our configured api instance
+import { useTranslation } from 'react-i18next'; // 1. Import
+import api from '../api/api';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import GoogleIcon from '../components/GoogleIcon';
+import InputField from '../components/InputField'; // For consistency
 
 const Login = () => {
+  const { t } = useTranslation(); // 2. Initialize
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,12 +22,11 @@ const Login = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // ✅ 2. This effect checks for the success message from the registration page
   useEffect(() => {
     if (searchParams.get('status') === 'registered') {
-      setSuccessMessage('Registration successful! Please sign in.');
+      setSuccessMessage(t('login_page.success_message'));
     }
-  }, [searchParams]);
+  }, [searchParams, t]); // Add t to dependency array
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,24 +35,17 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // ✅ 3. Use our configured 'api' instance for the login call
-      const response = await api.post('/auth/login', {
-        email,
-        password,
-      });
-
-      login(response.data.token); // This sets the user state
-      navigate('/dashboard'); // Navigate on success
-
+      const response = await api.post('/auth/login', { email, password });
+      login(response.data.token);
+      navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.error || t('login_page.error_failed'));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleGoogleLogin = () => {
-    // We get the base URL directly from our configured api instance
     window.location.href = `${api.defaults.baseURL}/auth/google`;
   };
 
@@ -58,46 +54,45 @@ const Login = () => {
       <div className="auth-wrapper">
         <div className="auth-container">
           <form className="auth-form" onSubmit={handleSubmit}>
-            <h2>Sign In</h2>
+            <h2>{t('login_page.title')}</h2>
             {successMessage && <p className="success-message">{successMessage}</p>}
             {error && <p className="error-message">{error}</p>}
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
+            
+            <InputField 
+              label={t('login_page.email_label')} 
+              id="email" 
+              type="email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              required 
+            />
+            <InputField 
+              label={t('login_page.password_label')} 
+              id="password" 
+              type="password" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)} 
+              required 
+            />
+            
             <button type="submit" className="btn-primary" disabled={isLoading}>
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? t('login_page.button_signing_in') : t('login_page.button_signin')}
             </button>
           </form>
 
-          <div className="auth-divider"><span>OR</span></div>
+          <div className="auth-divider">
+            <span>{t('login_page.divider')}</span>
+          </div>
 
           <div className="social-login">
             <button onClick={handleGoogleLogin} className="btn-google">
               <GoogleIcon />
-              <span>Sign in with Google</span>
+              <span>{t('login_page.google_signin')}</span>
             </button>
           </div>
            <p className="auth-link">
-             Don't have an account? <Link to="/register">Register</Link>
+             {t('login_page.register_prompt')}{' '}
+             <Link to="/register">{t('login_page.register_link')}</Link>
            </p>
         </div>
       </div>

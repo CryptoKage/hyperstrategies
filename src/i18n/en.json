@@ -1,140 +1,300 @@
 {
-  "airdrop": {
-    "headline": "Be Part of the Hyper Strategies Airdrop",
-    "subtext": "This airdrop is for early community members who want to show support and stay involved. All you need is interest — and a Metamask wallet.",
-    "requirementsTitle": "What You Need",
-    "bullets": [
-      "A Telegram account",
-      "A Metamask wallet (browser extension)",
-      "1 minute to sign up"
-    ],
-    "browserWallet": "Browser wallet (Hot wallet)",
-    "hardwareWallet": "Hardware wallet",
-    "metamaskText": "Secure, easy to install — perfect for quick signup.",
-    "ledgerText": "Optional — use Ledger for long-term secure storage.",
-    "joinTelegram": "Join the Telegram Community",
-    "submitWallet": "Submit Wallet for Airdrop"
+    "common": {
+    "max": "Max"
   },
-  "selfserve": {
-    "headline": "Use Automated Trading Your Way",
-    "subtext": "Run your own algorithms with full control over parameters and risk management.",
-    "callout": "Access to 17 trading strategies, no coding required",
-    "comingSoon": "Coming Soon — Join our community for early access"
-  },
-  "managed": {
-    "headline": "Let our system trade for you",
-    "subtext": "A professionally managed strategy that automatically executes trades on your behalf. Designed for passive investors who value simplicity and long-term growth.",
-    "point1": "Low-burn MVP already in motion",
-    "point2": "Access to real automated strategies",
-    "point3": "Strong narrative with $FORGE utility",
-    "point4": "Pre-token exposure potential",
-    "cta": "Join the Telegram"
-  },
-  "investor": {
-    "headline": "Invest in Hyper Strategies",
-    "subtext": "We’re seeking strategic backers aligned with our vision of accessible, automated crypto investing. If you’re a pre-seed investor, VC, or early-stage fund — let’s talk.",
-    "cta": "Get in contact"
-  },
-  "home": {
-    "hero": {
-      "headline": "Modern, automated trading. For everyone.",
-      "subtext": "Automated Trading Soultion, Currated Crypto Vaults",
-          "install_app": "Install App",
-    "join_community": "JOIN THE COMMUNITY",
-      "cta1": "Join the Airdrop",
-      "cta2": "Speak With Us"
-    },
-    
-    "cards": {
-      "title": "Explore Hyper-Strategies",
-      "select": "Select this option",
-      "airdrop": {
-        "title": "Gain XP for token allocation",
-        "text": "View XP leaderboard"
-      },
-      "self": {
-        "title": "Access Automated Stratgy Engine",
-        "text": "Build and run your own automated strategies."
-      },
-      "managed": {
-        "title": "Access Vault Strategys",
-        "text": "Benefit from the managed fund without setup."
-      },
-      "invest": {
-        "title": "I'm interested in investing in Hyper-Strategies",
-        "text": "Learn about investment opportunities in the project."
-      }
-    }
-  },
-  "legal": {
-    "title": "Legal Notice",
-    "company": "Hyper Strategies Ltd.",
-    "address": "Registration in progress",
-    "email": "Email: erokage2@gmail.com",
-    "disclaimerTitle": "Disclaimer",
-    "disclaimer1": "The content on this website is for informational purposes only and does not constitute financial advice or a solicitation to invest.",
-    "disclaimer2": "Cryptocurrency trading involves substantial risk. Past performance is not indicative of future results.",
-    "disclaimer3": "Users are solely responsible for their investment decisions. Hyper Strategies is not liable for any losses.",
-    "rightsTitle": "Copyright and Rights",
-    "rights": "© 2025 Hyper Strategies. All rights reserved. All content on this site is protected under intellectual property law."
-  },
-  "header": {
-    "dashboard": "Dashboard",
-    "wallet": "Wallet",
-    "logout": "Logout",
-    "signIn": "Sign In",
-    "register": "Register"
-  },
+
   "dashboard": {
-    "welcome": "Welcome back, {{username}}!",
-    "loading": "Loading Dashboard...",
-    "error": "Could not fetch dashboard data.",
-    "no_data": "No data available.",
+    "welcome": "Welcome back, {{username}}",
+    "no_data": "Could not fetch dashboard data.",
     "total_value": "Total Portfolio Value",
     "available_balance": "Available to Allocate",
-    "bonus_points": "Bonus Points Value",
     "manage": "Manage",
+    "bonus_points": "Bonus Points Value",
     "your_positions": "Your Positions",
     "tradable_capital": "Tradable Capital",
-    "pnl": "Unrealized P&L",
+    "pnl": "PnL",
+    "unlocks_in": "Unlocks In",
+    "auto_compound": "Auto-Compound Profits",
     "add_funds": "Add Funds",
     "withdraw": "Withdraw",
+    "locked_tooltip": "This position is locked until {{date}}",
+    "unlocked_tooltip": "Request full withdrawal",
     "available_strategies": "Available Strategies",
     "allocate_funds": "Allocate Funds",
-    "coming_soon": "Coming Soon",
-    "new_user_title": "Ready to Get Started?",
-    "new_user_text": "Your first step is to fund your account. Go to your wallet to find your unique deposit address.",
-    "go_to_wallet": "Go to Wallet"
+    "coming_soon": "Coming Soon"
   },
+  "vault_modal": {
+    "title": "Allocate Funds to {{vaultName}}",
+    "subtitle": "Your funds will be split based on your Account Tier.",
+    "allocate_label": "Amount to Allocate (Available: ${{amount}} USDC)",
+    "breakdown_title": "Allocation Breakdown (Tier {{tier}}):",
+    "tradable_capital_breakdown": "Tradable Capital ({{percentage}}%):",
+    "bonus_points_breakdown": "Bonus Points Credit ({{percentage}}%):",
+    "risk_ack": "I acknowledge and accept the risks associated with this strategy.",
+    "terms_ack": "I have read and agree to the",
+    "terms_link": "Terms & Conditions",
+    "cancel": "Cancel",
+    "confirm_allocation": "Confirm Allocation",
+    "processing": "Processing...",
+    "error_nan": "Please enter a valid amount.",
+    "error_insufficient": "Allocation exceeds your available balance.",
+    "error_failed": "Allocation failed. Please try again."
+  },
+  "vault_withdraw_modal": {
+    "title": "Request Withdrawal from {{vaultName}}",
+    "subtitle": "This will queue your entire position of <strong>${{amount}}</strong> for withdrawal.",
+    "disclaimer": "Withdrawals are processed manually and may take up to 48 hours. You can track the status on your Wallet page.",
+    "cancel": "Cancel",
+    "confirm_request": "Confirm Request",
+    "submitting": "Submitting...",
+    "error_failed": "Withdrawal request failed."
+  },
+  
   "wallet": {
-    "title": "Your Wallet",
     "loading": "Loading Wallet...",
-    "refresh": "Refresh",
+    "title": "Your Wallet",
     "refreshing": "Refreshing...",
-    "usdc_balance": "USDC Balance (On-Chain)",
-    "eth_balance": "ETH Balance (for Gas)",
+    "refresh": "Refresh",
+    "balance_usdc": "USDC Balance (On-Chain)",
+    "balance_eth": "ETH Balance (for Gas)",
+    "balance_bonus": "Bonus Points Value",
     "deposit_address_title": "Your Deposit Address",
-    "deposit_address_text": "Send USDC (Mainnet) to this address to fund your account.",
+    "deposit_address_subtitle": "Send USDC (Mainnet) to this address to fund your account.",
+    "address_loading": "Loading...",
     "copy": "Copy",
     "copied": "Copied!",
     "actions_title": "Actions",
-    "withdraw_title": "Withdraw Funds",
-    "withdraw_text": "Queue a withdrawal of your available USDC to an external wallet.",
+    "withdraw_funds_title": "Withdraw Funds",
+    "withdraw_funds_subtitle": "Queue a withdrawal of your available USDC to an external wallet.",
     "start_withdrawal": "Start Withdrawal",
-    "history_title": "Withdrawal History",
-    "history_none": "You have no withdrawal history."
+    "error_wallet": "Could not load wallet balances.",
+    "error_history": "Could not load withdrawal history."
   },
-  "modals": {
+
+  "withdraw_modal": {
+    "title": "Withdraw USDC",
+    "subtitle": "Enter the destination address and amount. Withdrawals are processed in batches and may take several minutes for security.",
+    "destination_label": "Destination ETH Address",
+    "amount_label": "Amount to Withdraw (Available: {{balance}} USDC)",
     "cancel": "Cancel",
-    "processing": "Processing..."
+    "queue_withdrawal": "Queue Withdrawal",
+    "queueing": "Queueing...",
+    "error_address": "Please enter a valid Ethereum address.",
+    "error_nan": "Please enter a valid amount.",
+    "error_insufficient": "Withdrawal amount exceeds your USDC balance.",
+    "error_failed": "Withdrawal failed. Please try again."
   },
-  "faq": {
+
+  "register_page": {
+    "title": "Create Account",
+    "referred_by": "You were referred by code: <strong>{{code}}</strong>",
+    "username_label": "Username",
+    "email_label": "Email",
+    "password_label": "Password",
+    "button_creating": "Creating Account...",
+    "button_create": "Create Account",
+    "divider": "OR",
+    "google_signup": "Sign up with Google",
+    "login_prompt": "Already have an account?",
+    "login_link": "Sign In",
+    "error_unexpected": "An unexpected error occurred.",
+    "error_server": "Cannot connect to the server. Please try again later."
+  },
+
+"login_page": {
+    "title": "Sign In",
+    "success_message": "Registration successful! Please sign in.",
+    "error_failed": "Login failed. Please check your credentials.",
+    "email_label": "Email",
+    "password_label": "Password",
+    "button_signing_in": "Signing In...",
+    "button_signin": "Sign In",
+    "divider": "OR",
+    "google_signin": "Sign in with Google",
+    "register_prompt": "Don't have an account?",
+    "register_link": "Register"
+  },
+
+
+  "fees_page": {
+    "title": "Platform Tiers & Fees",
+    "intro": "Our system is designed to reward participation and long-term commitment through Account Tiers, XP, and a dynamic fee structure.",
+    "nav_tiers": "Account Tiers",
+    "nav_fees": "Vault Fees",
+    "nav_xp": "Earning XP",
+    "nav_faq": "View FAQ",
+    
+    "tiers_title": "Account Tiers (Capped at Tier 4)",
+    "tiers_subtitle": "Your Account Tier is determined by your total XP. Higher tiers unlock significant benefits on select vaults.",
+    "table_header_tier": "Tier",
+    "table_header_xp": "XP Required",
+    "table_header_benefits": "Key Benefits",
+    "tier1_xp": "0 - 749 XP",
+    "tier1_benefit": "Standard Access",
+    "tier2_xp": "750 - 1,499 XP",
+    "tier2_benefit": "-2% Deposit Fee Discount on Core Vault",
+    "tier3_xp": "1,500 - 2,999 XP",
+    "tier3_benefit": "-4% Deposit Fee Discount on Core Vault",
+    "tier4_xp": "3,000+ XP",
+    "tier4_benefit": "-6% Deposit Fee (Core) & -10% Performance Fee (ApeCoin)",
+
+    "fees_title": "Vault Fees Explained",
+    "fees_subtitle": "Each vault has a unique fee structure tailored to its strategy. Fees are split between platform operations, liquidity provision, and future development.",
+    "core_vault_title": "Core Vault (Vault 1)",
+    "core_vault_desc_1": "<strong>Deposit Fee:</strong> <strong>20% (Reduces with Tier)</strong>. The full fee amount is credited to your Bonus Points balance.",
+    "core_vault_desc_2": "<strong>Performance Fee:</strong> Flat <strong>20%</strong> charged only on generated profits.",
+    "core_vault_desc_3": "<strong>Lock-in Period:</strong> 1 month on all new capital allocated.",
+    "ape_vault_title": "ApeCoin EMA Vault (Vault 2)",
+    "ape_vault_desc_1": "<strong>Deposit Fee:</strong> Flat <strong>10%</strong> (Not affected by Tier). Credited as Bonus Points.",
+    "ape_vault_desc_2": "<strong>Performance Fee:</strong> <strong>40% (Reduces with Tier)</strong>. This fee is reduced to 30% for Tier 4+ users.",
+    "ape_vault_desc_3": "<strong>Lock-in Period:</strong> None. Capital is liquid.",
+    
+    "xp_title": "How to Earn XP",
+    "xp_subtitle": "XP is your measure of contribution to the ecosystem. See your rank on the <1>XP Leaderboard</1>.",
+    "xp_rule_1_title": "Capital Allocation:",
+    "xp_rule_1_desc": "Earn 1 XP for every $10 of capital allocated to any vault.",
+    "xp_rule_2_title": "Time-Staked Bonus:",
+    "xp_rule_2_desc": "Earn daily XP based on the amount of capital you have active in vaults.",
+    "xp_rule_3_title": "Successful Referrals:",
+    "xp_rule_3_desc": "Earn bonus XP when a user you refer makes their first capital allocation.",
+    "xp_rule_4_title": "Bonus Point Buy-Back:",
+    "xp_rule_4_desc": "Earn <strong>0.1 XP</strong> for every 1 Bonus Point the platform buys back from you."
+  },
+
+  
+  "xp_leaderboard": {
+    "title": "XP & Leaderboard",
+    "subtitle": "Earn XP by participating in the ecosystem and climb the ranks!",
+    "how_to_earn_button": "How to Earn XP",
+    "my_rank_title": "Your Rank",
+    "rank": "Rank",
+    "total_xp": "Total XP",
+    "top_users_title": "Top 25 Users",
+    "loading": "Loading leaderboard...",
+    "table_user": "User",
+    "modal_title": "How to Earn XP",
+    "copy_button": "Copy Info for Sharing",
+    "copied_button": "Copied!",
+
+    "accordion_title_signup": "🚀 Early Adopter Sign-Up Bonus (First 500 Users)",
+    "accordion_desc_signup": "A one-time XP bonus is awarded to the first 500 users upon registration to reward our earliest supporters. The bonus is tiered:",
+    "signup_tier_1": "<strong>Users 1-100:</strong> 25 XP",
+    "signup_tier_2": "<strong>Users 101-200:</strong> 20 XP",
+    "signup_tier_3": "<strong>Users 201-300:</strong> 15 XP",
+    "signup_tier_4": "<strong>Users 301-400:</strong> 10 XP",
+    "signup_tier_5": "<strong>Users 401-500:</strong> 5 XP",
+    
+    "accordion_title_allocation": "💰 Capital Allocation: 1 XP per $10",
+    "accordion_desc_allocation": "You earn XP by putting your capital to work. For every $10 you allocate to any vault (minimum $100 allocation), you will earn 1 XP. An allocation of $1,000 earns you 100 XP.",
+
+    "accordion_title_referral": "🤝 Successful Referral: Dynamic (10%)",
+    "accordion_desc_referral": "When a new user signs up with your referral code and makes their first vault allocation (minimum $100), you, the referrer, will earn XP equal to 10% of their allocated amount. If they allocate $1,000, you get 100 XP.",
+
+    "accordion_title_staking": "⏳ Weekly Staking Bonus: Coming Soon",
+    "accordion_desc_staking": "A future feature will reward users with XP for every week they keep their capital allocated in a vault, rewarding long-term commitment.",
+
+    "accordion_title_buyback": "💸 Bonus Point Buy-Back: 1-to-0.1 XP",
+    "accordion_desc_buyback": "When the platform buys back your Bonus Points, you will receive XP equal to 10% of the value. A buy-back of 200 Bonus Points grants you 20 XP."
+  },
+
+  
+
+  "add_to_home_screen": {
+    "title": "Install HyperStrategies App",
+    "subtitle": "For the best experience, add our app to your home screen.",
+    "step1": "1. Tap the <strong>Share</strong> icon below.",
+    "step2": "2. Scroll down and tap <strong>\"Add to Home Screen\"</strong>."
+  },
+
+  "oauth_success": {
+    "logging_in": "Logging you in..."
+  },
+
+  "card_section": {
+    "select_button": "Select"
+  },
+
+
+  "legal": {
+    "title": "Legal Notice & Imprint",
+    "company": "HyperStrategies Inc.",
+    "address": "123 Blockchain Avenue, Suite 404, Metropolis",
+    "email": "Email: info@hyperstrategies.xyz",
+    "disclaimerTitle": "Disclaimer",
+    "disclaimer1": "The information provided on this website does not constitute investment advice, financial advice, trading advice, or any other sort of advice and you should not treat any of the website's content as such. HyperStrategies does not recommend that any cryptocurrency should be bought, sold, or held by you.",
+    "disclaimer2": "Do conduct your own due diligence and consult your financial advisor before making any investment decisions. By purchasing or interacting with our services, you agree that you are not purchasing a security or investment and you agree to hold the team harmless and not liable for any losses or taxes you may incur.",
+    "disclaimer3": "Trading and investing in digital assets is highly speculative and comes with many risks. The analysis / stats on the website are for informational purposes and should not be treated as investment advice.",
+    "rightsTitle": "Copyright",
+    "rights": "All rights reserved. The content and works published on this website are governed by the copyright laws of the operating jurisdiction."
+  },
+
+
+  "home": {
+    "rotating_words": [
+      "AUTOMATED",
+      "HEDGEFUND",
+      "HYPER"
+    ],
+    "hero": {
+      "subtext": "Automated Trading Solutions, Curated Crypto Vaults.",
+      "join_community": "Join the Community",
+      "install_app": "Install App"
+    },
+    "cards": {
+      "title": "Explore Hyper-Strategies",
+      "airdrop": {
+        "title": "Gain XP for Token Allocation",
+        "text": "View XP leaderboard"
+      },
+      "self": {
+        "title": "Access Automated Strategy Engine",
+        "text": "Build and deploy your own strategies"
+      },
+      "managed": {
+        "title": "Invest in Managed Vaults",
+        "text": "Deposit and let our systems trade for you"
+      },
+      "invest": {
+        "title": "Become a Strategic Partner",
+        "text": "Learn about our token and pre-sale opportunities"
+      },
+    
+
+  "faq_page": {
     "title": "Frequently Asked Questions",
     "q1_title": "What are Bonus Points?",
-    "q1_answer": "Bonus Points are our way of rewarding users who allocate capital to our vaults. When you allocate funds to a vault, 20% of that capital is converted into Bonus Points, valued at a 1:1 ratio with USDC. This 20% helps cover the platform's operational and development costs, allowing us to build a better service for you.",
+    "q1_answer": "Bonus Points are our way of rewarding users who allocate capital to our vaults. When you allocate funds to a vault, a portion of that capital is converted into Bonus Points, valued at a 1:1 ratio with USDC. This helps cover the platform's operational and development costs, allowing us to build a better service for you.",
     "q2_title": "Can I withdraw my Bonus Points?",
-    "q2_answer": "Bonus Points are not directly withdrawable. They represent your contribution to the platform. Over time, as our platform generates revenue from performance fees, we will use a portion of that revenue to 'buy back' Bonus Points from users. This process converts your Bonus Points back into USDC, which is then added to your main 'Available to Allocate' balance.",
+    "q2_answer": "Bonus Points are not directly withdrawable. They represent your contribution to the platform. Over time, as our platform generates revenue from performance fees, we will use a portion of that revenue to \"buy back\" Bonus Points from users. This process converts your Bonus Points back into USDC, which is then added to your main \"Available to Allocate\" balance.",
     "q3_title": "How are vault withdrawals processed?",
-    "q3_answer": "When you withdraw funds from a vault, you are moving your 'Tradable Capital' back to your main 'Available to Allocate' balance. This is an internal transfer and is typically instant. To withdraw funds from the platform to an external wallet, you must use the 'Withdraw Funds' feature on the Wallet page."
+    "q3_answer": "When you request a withdrawal from a vault, a request is created to move your \"Tradable Capital\" back to your main \"Available to Allocate\" balance. This process can take up to 48 hours to complete. To withdraw funds from the platform to an external wallet, you must use the \"Withdraw Funds\" feature on the Wallet page after your vault withdrawal has been processed."
+  },
+
+
+  "profile_page": {
+    "loading": "Loading Profile...",
+    "error_load": "Could not load profile.",
+    "error_update": "Update failed.",
+    "error_unexpected": "An unexpected error occurred.",
+    "title": "Your Profile",
+    "edit_details_title": "Edit Details",
+    "username_label": "Username",
+    "save_changes_button": "Save Changes",
+    "stats_referrals_title": "Stats & Referrals",
+    "account_tier_label": "Account Tier",
+    "tier_prefix": "Tier {{tier}}",
+    "xp_label": "Your XP",
+    "referral_code_label": "Your Referral Code",
+    "copy_link_button": "Copy Referral Link",
+    "copied_button": "Copied!",
+    "customize_link_title": "Customize Your Referral Link",
+    "customize_link_subtitle": "Create a unique code. Must be 3-15 alphanumeric characters.",
+    "placeholder_your_code": "your-code",
+    "saving_button": "Saving...",
+    "save_code_button": "Save Code"
   }
 }
+  }
+}
+
+
