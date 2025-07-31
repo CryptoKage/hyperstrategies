@@ -85,7 +85,7 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
         <div className="modal-header-with-icon">
             <h2>Allocate Funds to {vault.name}</h2>
             {/* --- NEW --- Link to the FAQ/GitBook section */}
-            <Link to="/codex/core-offerings/withdrawal-logic" target="_blank" rel="noopener noreferrer" className="info-icon-link">
+            <Link to="/fees" target="_blank" rel="noopener noreferrer" className="info-icon-link">
                 <InfoIcon />
             </Link>
         </div>

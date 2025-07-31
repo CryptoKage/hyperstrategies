@@ -19,8 +19,8 @@ import OAuthSuccess from './OAuthSuccess';
 import FAQ from './FAQ';
 import AdminDashboard from './admin/AdminDashboard';
 import FinancialsPage from './admin/FinancialsPage';
-// --- NEW --- Import our new User Detail Page component
 import UserDetailPage from './admin/UserDetailPage';
+import FeeStructure from './FeeStructure';
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -39,6 +39,7 @@ const Router = () => {
       <Route path="/faq" element={<FAQ />} />
       <Route path="/oauth-success" element={<OAuthSuccess />} />
       <Route path="/xpleaderboard" element={<XPLeaderboard />} /> 
+      <Route path="/fees" element={<FeeStructure />} />
 
       {/* --- Guest-Only Routes --- */}
       <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
