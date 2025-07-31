@@ -2785,3 +2785,56 @@ textarea.input-field { resize: vertical; }
   font-size: 1.1rem;
   margin-bottom: 4px;
 }
+
+.fee-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.fee-card h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--color-primary);
+}
+.fee-card ul {
+  list-style: none;
+  padding-left: 0;
+}
+.fee-card li {
+  padding: 8px 0;
+  color: var(--color-text-secondary);
+}
+
+/* --- Jump-To Navigation Styles --- */
+.jump-nav {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  background-color: var(--color-surface);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  margin-bottom: 48px;
+  
+  /* Sticky position */
+  position: sticky;
+  top: 20px; /* Adjust as needed */
+  z-index: 900;
+}
+.jump-nav button, .jump-nav a {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.jump-nav button:hover, .jump-nav a:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+}
