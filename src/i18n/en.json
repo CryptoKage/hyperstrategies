@@ -273,26 +273,27 @@
       "install_app": "Install App"
     },
     "cards": {
-      "title": "Explore Hyper-Strategies",
-      "airdrop": {
-        "title": "Gain XP for Token Allocation",
-        "text": "View XP leaderboard"
-      },
-      "self": {
-        "title": "Coming Soon: Build and deploy your own automated strategies.",
-        "text": "Coming Soon"
-      },
-      "managed": {
-        "title": "Invest in Managed Vaults",
-        "text": "Deposit and let our systems trade for you"
-      },
-      "invest": {
-        "title": "Learn more about Hyper-Strategies",
-        "text": "Visit Gitbook"
-      }
-    }
+  "title": "Explore Hyper-Strategies",
+  "airdrop": {
+    "title": "Gain XP for Token Allocation",
+    "text": "View XP leaderboard"
   },
-
+  "self": {
+    "title": "Strategy Builder Engine",
+    "text": "Coming Soon: Build and deploy your own automated strategies.",
+    "button": "Coming Soon"
+  },
+  "managed": {
+    "title": "Invest in Managed Vaults",
+    "text": "Deposit and let our systems trade for you"
+  },
+  "investor": {
+    "title": "Hyper Strategies Info",
+    "text": "Learn about Hyper-Strategies from our Gitbook.",
+    "button": "Learn More"
+  }
+}
+  },
     
   "faq_page": {
     "title": "Frequently Asked Questions",
