@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
       <PlasmaEffect />
       <InteractiveBackground />
       <Header />
-      <main className="main-content"> {/* Ensure this class is here */}
+      <main className="main-content"> 
         {children}
       </main>
       <Footer />

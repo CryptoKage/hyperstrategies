@@ -2653,3 +2653,58 @@ textarea.input-field { resize: vertical; }
   max-width: 600px;
   opacity: 0.7;
 }
+
+/* ==========================================================================
+   GLOBAL BACKGROUND & LAYOUT OVERRIDE FIX
+   ========================================================================== */
+
+/* 1. Set up the main wrapper as the layering context */
+.layout-wrapper {
+  position: relative; /* Establishes stacking context */
+  z-index: 0;
+  background-color: var(--color-background); /* Solid fallback color */
+}
+
+/* 2. Position the background effects */
+.interactive-background, .plasma-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; /* Clicks go through */
+}
+
+.interactive-background {
+  z-index: -2; /* Sits just behind content */
+}
+
+.plasma-background {
+  z-index: -3; /* Sits behind everything */
+  opacity: 0.6;
+  mask-image: linear-gradient(to top, black 40%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
+}
+
+/* 3. Make the main content area transparent */
+/* This is the KEY FIX that will reveal the backgrounds on all pages */
+.main-content {
+  position: relative; /* Ensure it has its own stacking context */
+  z-index: 1; /* Place it on top of the backgrounds */
+  background-color: transparent;
+}
+
+/* 4. Explicitly make page containers transparent */
+/* This overrides any specific background colors they might have. */
+.dashboard-container,
+.wallet-container,
+.profile-container,
+.admin-container,
+.faq-container,
+.leaderboard-container,
+.hero-section-wrapper,
+.path-selector-section,
+.auth-wrapper {
+  background-color: transparent !important; /* Force transparency */
+}
+
