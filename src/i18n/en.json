@@ -1,7 +1,22 @@
 {
     "common": {
     "max": "Max"
+  
+   },
+  "header": {
+    "dashboard": "Dashboard",
+    "wallet": "Wallet",
+    "profile": "Profile",
+    "admin": "Admin",
+    "logout": "Logout",
+    "signin": "Sign In",
+    "register": "Register",
+    "alt_logo": "Hyper Strategies Logo"
   },
+  "footer": {
+    "follow_us": "Follow us:",
+    "documentation": "Documentation",
+    "terms": "Terms & Conditions"},
 
   "dashboard": {
     "welcome": "Welcome back, {{username}}",
