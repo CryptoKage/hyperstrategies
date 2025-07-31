@@ -7,8 +7,7 @@ import React from 'react';
 const Footer = () => {
   return (
     <footer className="footer">
-      <div className="footer__contact">Contact: info@hyperstrategies.xyz</div>
-      
+          
       <div className="footer__socials">
         <span>Follow us:</span>
         <a href="https://x.com/hyperstrats" target="_blank" rel="noopener noreferrer" className="social-link" title="Follow us on X">
