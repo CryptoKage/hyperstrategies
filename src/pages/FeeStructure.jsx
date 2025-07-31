@@ -3,8 +3,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
+import { useTranslation, Trans } from 'react-i18next';
 
 const FeeStructure = () => {
+   const { t } = useTranslation();
   // Helper function for smooth scrolling
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
