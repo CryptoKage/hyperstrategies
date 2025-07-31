@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-// NO IMPORTS for the icons are needed here.
+// No imports are needed for icons in the public folder
 
 const Footer = () => {
   return (
@@ -11,17 +11,22 @@ const Footer = () => {
       
       <div className="footer__socials">
         <span>Follow us:</span>
-        {/* Replace '#' with your actual social media URLs */}
-        <a href="#" target="_blank" rel="noopener noreferrer" className="social-link" title="Follow us on X">
-          {/* We now use a direct, absolute path to the public folder */}
-          <img src="/icons/x-icon.png" alt="X Icon" className="social-icon" />
+        <a href="https://x.com/hyperstrats" target="_blank" rel="noopener noreferrer" className="social-link" title="Follow us on X">
+          <img src="/icons/x-icon-black.svg" alt="X Icon" className="social-icon" />
         </a>
-        <a href="#" target="_blank" rel="noopener noreferrer" className="social-link" title="Join our Telegram">
-          <img src="/icons/telegram-icon.png" alt="Telegram Icon" className="social-icon" />
+        <a href="https://t.me/hyperstrategies" target="_blank" rel="noopener noreferrer" className="social-link" title="Join our Telegram">
+          <img src="/icons/telegram-icon.svg" alt="Telegram Icon" className="social-icon" />
         </a>
       </div>
 
-      <div className="footer__disclaimer">This is not financial advice. Use at your own risk.</div>
+      {/* --- NEW Legal Links Section --- */}
+      <div className="footer__legal">
+        {/* Replace '#' with your actual GitBook URL when you have it */}
+        <a href="#" target="_blank" rel="noopener noreferrer">Documentation</a>
+        <span className="separator">|</span>
+        {/* Replace '#' with your actual T&Cs URL when you have it */}
+        <a href="#" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
+      </div>
     </footer>
   );
 };

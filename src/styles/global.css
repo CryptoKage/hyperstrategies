@@ -2613,47 +2613,69 @@ textarea.input-field { resize: vertical; }
 /* --- 5. Footer --- */
 .footer {
   position: relative;
-  z-index: 1; /* Ensure footer is on top of backgrounds */
+  z-index: 10; /* Ensure footer is on top of everything */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 48px 24px;
-  text-align: center;
-  margin-top: 60px;
+  padding: 32px 24px;
+  margin-top: auto; /* Pushes footer to the bottom of the content */
+  
+  /* --- KEY CHANGE --- */
+  /* Make the background solid, just like the header */
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+
   color: var(--color-text-secondary);
   font-size: 14px;
-  border-top: 1px solid var(--color-border);
-  background: linear-gradient(to top, var(--color-background) 50%, transparent);
+}
+
+.footer__contact {
+  margin-bottom: 16px;
 }
 
 .footer__socials {
   display: flex;
   align-items: center;
   gap: 24px;
-  margin: 16px 0;
+  margin-bottom: 16px;
 }
 
 .social-link {
   color: var(--color-text-secondary);
-  transition: color 0.2s;
+  transition: opacity 0.2s;
 }
 .social-link:hover {
-  color: var(--color-primary);
+  opacity: 0.8;
 }
+
 .social-icon {
   width: 24px;
   height: 24px;
-}
-.footer__disclaimer {
-  font-size: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
-  width: 100%;
-  max-width: 600px;
-  opacity: 0.7;
+  /* Since the background is dark, we might need to invert the color of the black SVG */
+  filter: invert(1); 
 }
 
+/* --- NEW --- Styles for the legal links */
+.footer__legal {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+  font-size: 12px;
+}
+.footer__legal a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+.footer__legal a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+.footer__legal .separator {
+  color: var(--color-border);
+}
 /* ==========================================================================
    GLOBAL BACKGROUND & LAYOUT OVERRIDE FIX
    ========================================================================== */
