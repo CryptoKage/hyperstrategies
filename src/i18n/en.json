@@ -83,7 +83,9 @@
     "withdraw_funds_subtitle": "Queue a withdrawal of your available USDC to an external wallet.",
     "start_withdrawal": "Start Withdrawal",
     "error_wallet": "Could not load wallet balances.",
-    "error_history": "Could not load withdrawal history."
+    "error_history": "Could not load withdrawal history.",
+      "balance_ape": "APE Balance",
+  "usd_value": "~${{amount}} USD" 
   },
 
   "withdraw_modal": {

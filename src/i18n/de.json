@@ -66,7 +66,9 @@
     "withdraw_funds_subtitle": "Beantrage eine Auszahlung deiner verfügbaren USDC an eine externe Wallet.",
     "start_withdrawal": "Auszahlung starten",
     "error_wallet": "Wallet-Guthaben konnten nicht geladen werden.",
-    "error_history": "Auszahlungsverlauf konnte nicht geladen werden."
+    "error_history": "Auszahlungsverlauf konnte nicht geladen werden.",
+      "balance_ape": "APE Balance",
+  "usd_value": "~${{amount}} USD" 
   },
   "withdraw_modal": {
     "title": "USDC auszahlen",
