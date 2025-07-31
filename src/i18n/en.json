@@ -87,6 +87,20 @@
       "balance_ape": "APE Balance",
   "usd_value": "~${{amount}} USD" 
   },
+  
+  "withdrawal_history": {
+    "title": "Withdrawal History",
+    "no_history": "You have no withdrawal history.",
+    "date": "Date",
+    "amount": "Amount",
+    "token": "Token",
+    "to_address": "To Address",
+    "status": "Status",
+    "transaction": "Transaction",
+    "view_on_etherscan": "View on Etherscan",
+    "failed_tooltip": "This transaction failed. Our team has been notified. Please contact support if the issue persists."
+  },
+
 
   "withdraw_modal": {
     "title": "Withdraw USDC",
@@ -101,6 +115,7 @@
     "error_insufficient": "Withdrawal amount exceeds your USDC balance.",
     "error_failed": "Withdrawal failed. Please try again."
   },
+
 
   "register_page": {
     "title": "Create Account",

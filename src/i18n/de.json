@@ -70,6 +70,19 @@
       "balance_ape": "APE Balance",
   "usd_value": "~${{amount}} USD" 
   },
+  "withdrawal_history": {
+    "title": "Auszugshistorie",
+    "no_history": "Sie haben keine Auszugshistorie.",
+    "date": "Datum",
+    "amount": "Betrag",
+    "token": "Token",
+    "to_address": "An Adresse",
+    "status": "Status",
+    "transaction": "Transaktion",
+    "view_on_etherscan": "Auf Etherscan ansehen",
+    "failed_tooltip": "Diese Transaktion ist fehlgeschlagen. Unser Team wurde benachrichtigt. Bitte kontaktieren Sie den Support, wenn das Problem weiterhin besteht."
+  },
+
   "withdraw_modal": {
     "title": "USDC auszahlen",
     "subtitle": "Gib die Zieladresse und den Betrag ein. Auszahlungen werden aus Sicherheitsgründen stapelweise verarbeitet und können einige Minuten dauern.",
