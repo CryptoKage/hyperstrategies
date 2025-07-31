@@ -22,11 +22,36 @@ const Home = () => {
 
   // --- MODIFIED --- Load rotating words and cards from the translation file
   const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
-  const homePageCards = [
-    { icon: '🏆', title: t('home.cards.airdrop.title'), description: t('home.cards.airdrop.text'), route: '/xpleaderboard' },
-    { icon: '⚙️', title: t('home.cards.self.title'), description: t('home.cards.self.text'), route: '/self-serve' },
-    { icon: '📈', title: t('home.cards.managed.title'), description: t('home.cards.managed.text'), route: '/login' },
-    { icon: '💼', title: t('home.cards.invest.title'), description: t('home.cards.invest.text'), route: '/investor' },
+const homePageCards = [
+    { 
+      icon: '🏆', 
+      title: t('home.cards.airdrop.title'), 
+      description: t('home.cards.airdrop.text'), 
+      route: '/xpleaderboard',
+      buttonText: t('card_section.select_button')
+    },
+    { 
+      icon: '⚙️', 
+      title: t('home.cards.self.title'), 
+      description: t('home.cards.self.text'), 
+      type: 'coming_soon',
+      buttonText: t('home.cards.self.button')
+    },
+    { 
+      icon: '📈', 
+      title: t('home.cards.managed.title'), 
+      description: t('home.cards.managed.text'), 
+      route: '/login',
+      buttonText: t('card_section.select_button')
+    },
+    { 
+      icon: '💼', 
+      title: t('home.cards.investor.title'), 
+      description: t('home.cards.investor.text'), 
+      type: 'link',
+      url: '#', // Replace with your GitBook URL
+      buttonText: t('home.cards.investor.button')
+    },
   ];
 
   return (

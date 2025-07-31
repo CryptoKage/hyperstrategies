@@ -279,16 +279,16 @@
         "text": "View XP leaderboard"
       },
       "self": {
-        "title": "Access Automated Strategy Engine",
-        "text": "Build and deploy your own strategies"
+        "title": "Coming Soon: Build and deploy your own automated strategies.",
+        "text": "Coming Soon"
       },
       "managed": {
         "title": "Invest in Managed Vaults",
         "text": "Deposit and let our systems trade for you"
       },
       "invest": {
-        "title": "Become a Strategic Partner",
-        "text": "Learn about our token and pre-sale opportunities"
+        "title": "Learn more about Hyper-Strategies",
+        "text": "Visit Gitbook"
       }
     }
   },
