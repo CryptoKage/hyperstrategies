@@ -8,17 +8,15 @@ const CardSection = ({ cards }) => {
 
   const handleCardClick = (card) => {
     if (card.type === 'link') {
-      // Open external links in a new tab
       window.open(card.url, '_blank', 'noopener,noreferrer');
     } else if (card.route) {
-      // Navigate to internal routes
       navigate(card.route);
     }
-    // Do nothing if it's a 'coming_soon' card
   };
 
   return (
-    <section className="card-section">
+    // --- MODIFIED --- Added the class "card-grid" here
+    <section className="card-grid"> 
       <div className="card-section__wrapper">
         {cards.map((card, idx) => (
           <div 

@@ -1364,10 +1364,15 @@ button {
   }
 
   /* Your existing front page card grid fix */
-  .card-grid {
+  .card-grid .card-section__wrapper {
+    /* On mobile, we switch from grid to flex for simpler centering */
+    display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 20px; /* Keep the vertical space between cards */
   }
+
+  
   .card-grid .card {
     margin-left: auto;
     margin-right: auto;
