@@ -286,6 +286,16 @@ button {
   margin-bottom: 20px;
 } */
 
+.dashboard-container,
+.wallet-container,
+.profile-container,
+.admin-container,
+.faq-container,
+.leaderboard-container,
+.hero-section-wrapper {
+  background-color: transparent;
+}
+
 .header {
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
@@ -2637,16 +2647,14 @@ textarea.input-field { resize: vertical; }
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* This solid color is a FALLBACK if animations don't load */
-  background-color: var(--color-background); 
+  background-color: #040e21; 
 }
 
 .main-content {
   flex: 1;
-  position: relative; /* Establishes a stacking context */
-  z-index: 1;
-  /* All main content areas are transparent by default */
-  background-color: transparent;
+  position: relative;
+  z-index: 1; /* Elevates content above backgrounds */
+  background-color: transparent; /* Makes content area see-through */
 }
 
 /* --- 2. Animated Backgrounds --- */
@@ -2672,15 +2680,7 @@ textarea.input-field { resize: vertical; }
 
 /* --- 3. Page Container Transparency --- */
 /* This is the key fix: make all page containers transparent */
-.dashboard-container,
-.wallet-container,
-.profile-container,
-.admin-container,
-.faq-container,
-.leaderboard-container,
-.hero-section-wrapper {
-  background-color: transparent;
-}
+
 
 /* --- 4. Homepage Card Section --- */
 .path-selector-section {
