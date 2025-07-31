@@ -11,12 +11,17 @@ import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
 import CountdownTimer from '../components/CountdownTimer';
+
+// --- UPDATED --- Import all three image assets
 import coreVaultBg from '../assets/core.png';
 import apecoinVaultBg from '../assets/apecoin.png';
+import pantherVaultBg from '../assets/panther-swarm.jpg'; // The new .jpg image
 
+// --- UPDATED --- The map now includes the new image
 const vaultImageMap = {
   'core.png': coreVaultBg,
   'apecoin.png': apecoinVaultBg,
+  'panther-swarm.jpg': pantherVaultBg,
 };
 
 const Dashboard = () => {
@@ -96,7 +101,7 @@ const Dashboard = () => {
     }
     
     if (error || !dashboardData) {
-      return <p className="error-message">{error || t('dashboard.no_data')}</p>;
+      return <p className="error-message">{t('dashboard.no_data')}</p>;
     }
 
     const investedPositions = dashboardData.userPositions || [];
