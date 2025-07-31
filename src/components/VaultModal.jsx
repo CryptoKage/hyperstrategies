@@ -16,7 +16,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
   const [riskAcknowledged, setRiskAcknowledged] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  // --- NEW --- A more robust, centralized fee calculation function
   const calculateFees = (vaultData, tier) => {
     if (!vaultData) return { finalFee: 0.20, tradable: 0, bonus: 0 };
 
@@ -25,7 +24,7 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
 
     if (vaultData.is_fee_tier_based) {
       const discount = (tier - 1) * 0.02;
-      finalFee = Math.max(0.10, baseFee - discount); // Enforce 10% minimum
+      finalFee = Math.max(0.10, baseFee - discount);
     }
     
     const allocationAmount = parseFloat(amount) || 0;
@@ -39,7 +38,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
     };
   };
   
-  // --- Use the new function to get our values ---
   const { finalFeePercentage, tradableCapital, bonusPoints } = calculateFees(vault, userTier);
 
   useEffect(() => {
@@ -54,11 +52,48 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
 
   if (!isOpen || !vault) return null;
 
-  const handleAllocate = async (e) => { /* ... (This function remains unchanged) ... */ };
-  const handleMaxClick = () => { setAmount((availableBalance || 0).toFixed(2).toString()); };
+  const handleAllocate = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    const allocationAmount = parseFloat(amount);
+    if (isNaN(allocationAmount) || allocationAmount <= 0) {
+      setError(t('vault_modal.error_nan'));
+      setIsLoading(false);
+      return;
+    }
+    if (allocationAmount > availableBalance) {
+      setError(t('vault_modal.error_insufficient'));
+      setIsLoading(false);
+      return;
+    }
+    try {
+      await api.post('/vaults/invest', {
+        vaultId: vault.vault_id,
+        amount: allocationAmount,
+      });
+      onAllocationSuccess();
+      onClose();
+    } catch (err) {
+      setError(err.response?.data?.error || t('vault_modal.error_failed'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const handleMaxClick = () => {
+    setAmount((availableBalance || 0).toFixed(2).toString());
+  };
 
   const needsWarning = vault.risk_level === 'high' || vault.risk_level === 'extreme';
-  const isSubmitDisabled = isLoading || (needsWarning && !riskAcknowledged) || !termsAccepted;
+  
+  // --- THIS IS THE UPGRADED LOGIC ---
+  const isSubmitDisabled = 
+    isLoading || 
+    !amount || // Disabled if amount is empty
+    parseFloat(amount) <= 0 || // Disabled if amount is not a positive number
+    (needsWarning && !riskAcknowledged) || 
+    !termsAccepted;
 
   return (
     <div className="modal-overlay">
@@ -83,7 +118,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
             onMaxClick={handleMaxClick}
           />
           
-          {/* --- MODIFIED --- The breakdown is now fully dynamic */}
           <div className="investment-breakdown">
             <h4>{t('vault_modal.breakdown_title', { tier: userTier })}</h4>
             <div className="breakdown-row">
@@ -96,7 +130,20 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
             </div>
           </div>
           
-          {/* ... (Risk and Terms sections are unchanged) ... */}
+          {needsWarning && (
+            <div className="acknowledgement-box">
+              <input type="checkbox" id="risk-ack" checked={riskAcknowledged} onChange={(e) => setRiskAcknowledged(e.target.checked)} />
+              <label htmlFor="risk-ack">{t('vault_modal.risk_ack')}</label>
+            </div>
+          )}
+
+          <div className="acknowledgement-box">
+            <input type="checkbox" id="terms-ack" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />
+            <label htmlFor="terms-ack">
+              {t('vault_modal.terms_ack')}{' '}
+              <a href="/fees" target="_blank" rel="noopener noreferrer">{t('vault_modal.terms_link')}</a>.
+            </label>
+          </div>
 
           <div className="modal-actions">
             <button type="button" onClick={onClose} className="btn-secondary">{t('vault_modal.cancel')}</button>
