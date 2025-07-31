@@ -8,7 +8,7 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 import './styles/global.css';
 import Router from './pages/Router';
-import './i11n'; // Make sure this is imported to initialize i18next
+import './i18n'; // Make sure this is imported to initialize i18next
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
