@@ -20,30 +20,87 @@ const TreasuryPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // State for the buy-back form
+  const [buybackAmount, setBuybackAmount] = useState('');
+  const [isBuyingBack, setIsBuyingBack] = useState(false);
+  const [buybackMessage, setBuybackMessage] = useState({ type: '', text: '' });
+
   const fetchReport = useCallback(async () => {
-    setLoading(true);
+    // Keep the main loader only on initial load
+    if (!report) setLoading(true);
     try {
       const response = await api.get('/admin/treasury-report');
       setReport(response.data);
-    } catch (err) { // This is the corrected line
+    } catch (err) {
       setError('Failed to fetch treasury report.');
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [report]); // Depend on report to allow re-fetching without full page load
 
   useEffect(() => {
     fetchReport();
   }, [fetchReport]);
+  
+  const handleBuyback = async (e) => {
+    e.preventDefault();
+    setIsBuyingBack(true);
+    setBuybackMessage({ type: '', text: '' });
+    try {
+      const response = await api.post('/admin/buyback-points', {
+        buybackAmountUSD: buybackAmount,
+      });
+      setBuybackMessage({ type: 'success', text: response.data.message });
+      setBuybackAmount(''); // Clear input
+      fetchReport(); // Refresh the report to see updated balances
+    } catch (err) {
+      setBuybackMessage({ type: 'error', text: err.response?.data?.message || 'An unexpected error occurred.' });
+    } finally {
+      setIsBuyingBack(false);
+    }
+  };
 
   const renderContent = () => {
     if (loading) return <p>Loading Treasury Report...</p>;
     if (error) return <p className="error-message">{error}</p>;
     if (!report) return <p>No data available.</p>;
 
+    const availableForBuyback = (report.ledgers.COMMUNITY_GROWTH_INCENTIVES || 0) + (report.ledgers.DEPOSIT_FEES_BUYBACK || 0);
+
     return (
       <>
+        <div className="admin-actions-card">
+          <h3>Bonus Point Buy-Back</h3>
+          <p>Use funds from the Community Growth & Buyback ledgers to buy back Bonus Points from users. This will credit their main balance with USDC and award them XP.</p>
+          <div className="stat-card" style={{ marginBottom: '24px' }}>
+            <span className="stat-label">Funds Available for Buy-Back</span>
+            <span className="stat-value">${availableForBuyback.toFixed(2)}</span>
+          </div>
+          <form onSubmit={handleBuyback} className="admin-form">
+            <div className="form-group">
+              <label htmlFor="buyback-amount">Amount to Use (USDC)</label>
+              <input
+                id="buyback-amount"
+                type="number"
+                step="0.01"
+                placeholder="e.g., 500.00"
+                value={buybackAmount}
+                onChange={(e) => setBuybackAmount(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="btn-primary" disabled={isBuyingBack || !buybackAmount || parseFloat(buybackAmount) <= 0 || parseFloat(buybackAmount) > availableForBuyback}>
+              {isBuyingBack ? 'Processing...' : 'Execute Buy-Back'}
+            </button>
+          </form>
+          {buybackMessage.text && (
+            <p className={`admin-message ${buybackMessage.type}`}>
+              {buybackMessage.text}
+            </p>
+          )}
+        </div>
+
         <h2>Platform Revenue Totals</h2>
         <div className="stats-grid">
           <StatCard label="Total From Deposit Fees" value={report.revenue.depositFees} />
