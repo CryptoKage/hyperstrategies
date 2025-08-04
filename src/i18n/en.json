@@ -13,10 +13,13 @@
     "register": "Register",
     "alt_logo": "Hyper Strategies Logo"
   },
-  "footer": {
-    "follow_us": "Follow us:",
-    "documentation": "Documentation",
-    "terms": "Terms & Conditions"},
+ "footer": {
+  "follow_us": "Follow us:",
+  "documentation": "Docs",
+  "user_guide": "User Guide",
+  "terms": "Terms & Conditions",
+  "terms_link": "Legal"
+},
 
   "dashboard": {
     "welcome": "Welcome back, {{username}}",

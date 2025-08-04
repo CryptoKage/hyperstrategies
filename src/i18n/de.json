@@ -2,6 +2,15 @@
   "common": {
     "max": "Max"
   },
+
+  "footer": {
+  "follow_us": "Folge uns:",
+  "documentation": "Doks",
+  "user_guide": "Anleitung",
+  "terms": "AGB",
+  "terms_link": "Rechtliches"
+},
+
   "dashboard": {
     "welcome": "Willkommen zurück, {{username}}",
     "no_data": "Dashboard-Daten konnten nicht geladen werden.",
