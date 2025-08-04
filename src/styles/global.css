@@ -3003,7 +3003,7 @@ textarea.input-field { resize: vertical; }
   .header__right--mobile {
     display: block;
   }
-}
+
 
 .header {
     display: grid;
@@ -3053,4 +3053,5 @@ textarea.input-field { resize: vertical; }
 }
 .mobile-menu__close-btn:hover {
   color: var(--color-text-primary);
+}
 }
