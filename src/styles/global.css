@@ -2928,3 +2928,9 @@ textarea.input-field { resize: vertical; }
   background-color: rgba(239, 68, 68, 0.1);
   border-color: #ef4444;
 }
+
+.stats-grid-small {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
