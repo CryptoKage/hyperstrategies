@@ -15,7 +15,7 @@ const Footer = () => {
           <img src="/icons/x-icon.png" alt="X Icon" className="social-icon" />
         </a>
         <a href="https://t.me/hyperstrategies" target="_blank" rel="noopener noreferrer" className="social-link" title="Join our Telegram">
-          <img src="/icons/telegram-icon.png" alt="Telegram Icon" className="social-icon" />
+          <img src="/icons/telegram-logo.png" alt="Telegram Icon" className="social-icon" />
         </a>
       </div>
 
