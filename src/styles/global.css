@@ -3004,3 +3004,19 @@ textarea.input-field { resize: vertical; }
     display: block;
   }
 }
+
+.mobile-menu__close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  font-size: 36px; /* A large, easy-to-tap X */
+  line-height: 1;
+  padding: 8px;
+  cursor: pointer;
+}
+.mobile-menu__close-btn:hover {
+  color: var(--color-text-primary);
+}
