@@ -348,6 +348,9 @@ return (
            <Link to="/admin/treasury" className="btn-primary btn-sm">
             Treasury Report
           </Link>
+          <Link to="/admin/vaults" className="btn-primary btn-sm">
+    Vault Management
+  </Link>
         </div>
       </div>
       {renderContent()}

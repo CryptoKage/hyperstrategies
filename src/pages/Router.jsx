@@ -23,6 +23,7 @@ import AdminDashboard from './admin/AdminDashboard';
 import FinancialsPage from './admin/FinancialsPage';
 import UserDetailPage from './admin/UserDetailPage';
 import TreasuryPage from './admin/TreasuryPage';
+import VaultManagementPage from './admin/VaultManagmentPage';
 
 
 // --- Guard Components ---
@@ -71,6 +72,10 @@ const Router = () => {
       <Route  
         path="/admin/treasury"
         element={<AdminRoute><TreasuryPage /></AdminRoute>}
+      />
+      <Route
+        path="/admin/vaults"
+        element={<AdminRoute><VaultManagementPage /></AdminRoute>}
       />
     </Routes>
   );
