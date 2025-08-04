@@ -165,47 +165,6 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* --- THIS IS THE NEW CARD WE ARE ADDING --- */}
-        <div className="admin-actions-card">
-          <h3>Distribute Vault Profits</h3>
-          <p>Manually trigger profit distribution for a vault after returning profits to the harvest wallet.</p>
-          <form onSubmit={handleDistributeProfit} className="admin-form">
-            <div className="form-group">
-              <label htmlFor="vault-select">Select Vault</label>
-              <select 
-                id="vault-select" 
-                value={distributeVaultId}
-                onChange={(e) => setDistributeVaultId(e.target.value)}
-                disabled={isDistributing}
-              >
-                <option value="1">Core1 Discretionary</option>
-                <option value="2">ApeCoin Dual EMA</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="profit-amount">Total Profit Amount (USDC)</label>
-              <input
-                id="profit-amount"
-                type="number"
-                step="0.01"
-                placeholder="e.g., 10000.00"
-                value={distributeProfit}
-                onChange={(e) => setDistributeProfit(e.target.value)}
-                disabled={isDistributing}
-                required
-              />
-            </div>
-            <button type="submit" className="btn-primary" disabled={isDistributing || !distributeProfit}>
-              {isDistributing ? 'Distributing...' : 'Distribute Profits'}
-            </button>
-          </form>
-          {distributeMessage.text && (
-            <p className={`admin-message ${distributeMessage.type}`}>
-              {distributeMessage.text}
-            </p>
-          )}
-        </div>
-
         {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
           <div className="admin-actions-card warning">
             <h3>Pending Vault Withdrawals ({stats.pendingVaultWithdrawals.length})</h3>
