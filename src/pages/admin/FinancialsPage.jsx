@@ -4,97 +4,150 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
-import Pagination from '../../components/Pagination'; // We will create this component next
+import Pagination from '../../components/Pagination';
 
 const FinancialsPage = () => {
-  const [deposits, setDeposits] = useState([]);
-  const [loading, setLoading] =useState(true);
+  // --- NEW --- State to manage the active tab
+  const [activeTab, setActiveTab] = useState('deposits'); // 'deposits' or 'positions'
+
+  const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  const fetchDeposits = useCallback(async () => {
+  // --- NEW --- A single, flexible fetch function
+  const fetchData = useCallback(async () => {
     setLoading(true);
+    setError('');
+    setTableData([]); // Clear previous data
+
     try {
-      // Pass the current page to the API
-      const response = await api.get(`/admin/deposits?page=${currentPage}`);
-      setDeposits(response.data.deposits);
-      setTotalPages(response.data.totalPages);
+      let endpoint = '';
+      if (activeTab === 'deposits') {
+        endpoint = `/admin/deposits?page=${currentPage}`;
+      } else if (activeTab === 'positions') {
+        endpoint = `/admin/vault-positions?page=${currentPage}`;
+      }
+
+      if (endpoint) {
+        const response = await api.get(endpoint);
+        if (activeTab === 'deposits') {
+          setTableData(response.data.deposits);
+          setTotalPages(response.data.totalPages);
+        } else if (activeTab === 'positions') {
+          setTableData(response.data.positions);
+          setTotalPages(response.data.totalPages);
+        }
+      }
     } catch (err) {
-      setError('Failed to fetch deposit data.');
+      setError(`Failed to fetch ${activeTab} data.`);
     } finally {
       setLoading(false);
     }
-  }, [currentPage]); // Refetch when currentPage changes
+  }, [activeTab, currentPage]); // Refetch when tab or page changes
 
   useEffect(() => {
-    fetchDeposits();
-  }, [fetchDeposits]);
+    fetchData();
+  }, [fetchData]);
+  
+  // Reset to page 1 when switching tabs
+  const handleTabChange = (tabName) => {
+    setActiveTab(tabName);
+    setCurrentPage(1);
+  };
 
   const formatAddress = (address) => address ? `${address.slice(0, 10)}...${address.slice(-8)}` : 'N/A';
+
+  // --- NEW --- Render functions for each table's content
+  const renderDepositsTable = () => (
+    <table className="activity-table">
+      <thead>
+        <tr>
+          <th>Date</th><th>User</th><th>Amount</th><th>Tx Hash</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.map(deposit => (
+          <tr key={deposit.id}>
+            <td>{new Date(deposit.detected_at).toLocaleString()}</td>
+            <td><Link to={`/admin/user/${deposit.user_id}`} className="admin-table-link">{deposit.username}</Link></td>
+            <td className="amount">${parseFloat(deposit.amount).toFixed(2)}</td>
+            <td><a href={`https://etherscan.io/tx/${deposit.tx_hash}`} target="_blank" rel="noopener noreferrer" className="etherscan-link">{formatAddress(deposit.tx_hash)}</a></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  const renderPositionsTable = () => (
+    <table className="activity-table">
+      <thead>
+        <tr>
+          <th>User</th><th>Vault</th><th>Capital</th><th>Status</th><th>Unlock Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tableData.map(pos => (
+          <tr key={pos.position_id}>
+            <td><Link to={`/admin/user/${pos.user_id}`} className="admin-table-link">{pos.username}</Link></td>
+            <td>{pos.vault_name}</td>
+            <td className="amount">${parseFloat(pos.tradable_capital).toFixed(2)}</td>
+            <td><span className={`status-badge status-${pos.status}`}>{pos.status}</span></td>
+            <td>{pos.lock_expires_at ? new Date(pos.lock_expires_at).toLocaleDateString() : 'N/A'}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 
   return (
     <Layout>
       <div className="admin-container">
-        <div className="wallet-header">
+        <div className="admin-header">
           <h1>Financial Auditing</h1>
-          <Link to="/admin" className="btn-secondary">← Back to Mission Control</Link>
+          <Link to="/admin" className="btn-secondary btn-sm">← Back to Mission Control</Link>
         </div>
 
-        {/* We can add tabs here later */}
         <div className="admin-card">
-          <h3>All Platform Deposits</h3>
-          {loading && <p>Loading deposits...</p>}
-          {error && <p className="error-message">{error}</p>}
-          
-          {!loading && !error && (
-            <>
-              <div className="table-responsive">
-                <table className="activity-table">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>User</th>
-                      <th>Email</th>
-                      <th>Amount</th>
-                      <th>Tx Hash</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {deposits.map(deposit => (
-                      <tr key={deposit.id}>
-                        <td>{new Date(deposit.detected_at).toLocaleString()}</td>
-                        <td>
-                          <Link to={`/admin/user/${deposit.user_id}`} className="admin-table-link">
-                            {deposit.username}
-                          </Link>
-                        </td>
-                        <td>{deposit.email}</td>
-                        <td className="amount">${parseFloat(deposit.amount).toFixed(2)}</td>
-                        <td>
-                          <a 
-                            href={`https://etherscan.io/tx/${deposit.tx_hash}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="etherscan-link"
-                          >
-                            {formatAddress(deposit.tx_hash)}
-                          </a>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <Pagination 
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </>
-          )}
+          {/* --- NEW --- Tab Navigation */}
+          <div className="tabs">
+            <button 
+              className={`tab-button ${activeTab === 'deposits' ? 'active' : ''}`}
+              onClick={() => handleTabChange('deposits')}
+            >
+              Deposits
+            </button>
+            <button 
+              className={`tab-button ${activeTab === 'positions' ? 'active' : ''}`}
+              onClick={() => handleTabChange('positions')}
+            >
+              Vault Positions
+            </button>
+          </div>
+
+          <div className="tab-content">
+            {loading && <p>Loading data...</p>}
+            {error && <p className="error-message">{error}</p>}
+            
+            {!loading && !error && tableData.length > 0 && (
+              <>
+                <div className="table-responsive-wrapper">
+                  {activeTab === 'deposits' && renderDepositsTable()}
+                  {activeTab === 'positions' && renderPositionsTable()}
+                </div>
+                <Pagination 
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setCurrentPage}
+                />
+              </>
+            )}
+            {!loading && !error && tableData.length === 0 && (
+              <p>No {activeTab} found.</p>
+            )}
+          </div>
         </div>
       </div>
     </Layout>

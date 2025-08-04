@@ -2397,6 +2397,34 @@ textarea.input-field { resize: vertical; }
   font-weight: 500;
 }
 
+/* --- Admin Tabs Styles --- */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 24px;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  top: 1px; /* Aligns the bottom border with the container's border */
+}
+
+.tab-button.active {
+  color: var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
+}
+
+/*.tab-content {
+   This space is intentionally left for the content update to come later (i.e borders and styling)
+}/*
+
 /* This is the key for long text */
 .detail-item .address-span {
   font-family: 'Courier New', Courier, monospace;
