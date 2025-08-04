@@ -10,12 +10,23 @@ const UserDetailPage = () => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // State specifically for bonus points
+  const [bonusPoints, setBonusPoints] = useState(0);
 
   const fetchUserDetails = useCallback(async () => {
     setLoading(true);
+    setError('');
     try {
-      const response = await api.get(`/admin/users/${userId}`);
-      setUserData(response.data);
+      // We now fetch the main user details and their bonus points in parallel for speed
+      const [userResponse, bonusPointsResponse] = await Promise.all([
+        api.get(`/admin/users/${userId}`),
+        api.get(`/admin/users/${userId}/bonus-points`) // This is the new, small endpoint
+      ]);
+      
+      setUserData(userResponse.data);
+      setBonusPoints(bonusPointsResponse.data.totalBonusPoints);
+
     } catch (err) {
       setError('Failed to fetch user details.');
       console.error(err);
@@ -45,17 +56,14 @@ const UserDetailPage = () => {
   return (
     <Layout>
       <div className="admin-container">
-        <div className="admin-header"> {/* Changed class to admin-header for consistency */}
+        <div className="admin-header">
           <h1>User Profile: {details.username}</h1>
           <Link to="/admin" className="btn-secondary btn-sm">← Back to Mission Control</Link>
         </div>
 
         <div className="admin-grid">
-          {/* User Details Card */}
           <div className="admin-card">
             <h3>Account Details</h3>
-            
-            {/* --- THIS IS THE CORRECTED JSX --- */}
             <div className="details-grid">
               <div className="detail-item">
                 <strong>User ID:</strong>
@@ -82,13 +90,16 @@ const UserDetailPage = () => {
                 <span>${parseFloat(details.balance).toFixed(2)}</span>
               </div>
               <div className="detail-item">
+                <strong>Bonus Points:</strong>
+                <span>${parseFloat(bonusPoints).toFixed(2)}</span>
+              </div>
+              <div className="detail-item">
                 <strong>Referral:</strong>
                 <span>{details.referral_code}</span>
               </div>
             </div>
           </div>
 
-          {/* Vault Positions Card */}
           <div className="admin-card">
             <h3>Vault Positions ({positions.length})</h3>
             {positions.length > 0 ? (
@@ -96,10 +107,7 @@ const UserDetailPage = () => {
                 <table className="activity-table">
                   <thead>
                     <tr>
-                      <th>Vault ID</th>
-                      <th>Capital</th>
-                      <th>Status</th>
-                      <th>Unlock Date</th>
+                      <th>Vault ID</th><th>Capital</th><th>Status</th><th>Unlock Date</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -118,7 +126,6 @@ const UserDetailPage = () => {
           </div>
         </div>
 
-        {/* Activity Log Card */}
         <div className="admin-card">
           <h3>Recent Activity (Last 50)</h3>
           {activity.length > 0 ? (
@@ -126,10 +133,7 @@ const UserDetailPage = () => {
               <table className="activity-table">
                  <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                    <th className="amount">Amount</th>
+                    <th>Date</th><th>Type</th><th>Description</th><th className="amount">Amount</th>
                   </tr>
                 </thead>
                 <tbody>
