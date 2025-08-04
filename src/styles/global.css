@@ -3005,6 +3005,40 @@ textarea.input-field { resize: vertical; }
   }
 }
 
+.header {
+    display: grid;
+    /* Creates 3 columns: left space, center logo, right hamburger */
+    grid-template-columns: 1fr auto 1fr; 
+    align-items: center;
+    padding: 12px 16px;
+  }
+  
+  /* Place the logo in the center column */
+  .header__left {
+    grid-column: 2 / 3;
+    justify-self: center; /* Center the logo horizontally */
+  }
+
+  .header__title {
+    display: none;
+  }
+  
+  /* Hide the desktop nav */
+  .header__right--desktop {
+    display: none;
+  }
+  
+  /* Show the mobile container and place it in the right column */
+  .header__right--mobile {
+    display: block;
+    grid-column: 3 / 4;
+    justify-self: end; /* Align the hamburger button to the far right */
+  }
+
+  .hamburger-button {
+    display: inline-flex;
+  }
+
 .mobile-menu__close-btn {
   position: absolute;
   top: 16px;
