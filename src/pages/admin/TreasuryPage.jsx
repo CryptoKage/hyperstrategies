@@ -20,13 +20,11 @@ const TreasuryPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // State for the buy-back form
   const [buybackAmount, setBuybackAmount] = useState('');
   const [isBuyingBack, setIsBuyingBack] = useState(false);
   const [buybackMessage, setBuybackMessage] = useState({ type: '', text: '' });
 
   const fetchReport = useCallback(async () => {
-    // Keep the main loader only on initial load
     if (!report) setLoading(true);
     try {
       const response = await api.get('/admin/treasury-report');
@@ -37,7 +35,7 @@ const TreasuryPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [report]); // Depend on report to allow re-fetching without full page load
+  }, [report]);
 
   useEffect(() => {
     fetchReport();
@@ -52,8 +50,8 @@ const TreasuryPage = () => {
         buybackAmountUSD: buybackAmount,
       });
       setBuybackMessage({ type: 'success', text: response.data.message });
-      setBuybackAmount(''); // Clear input
-      fetchReport(); // Refresh the report to see updated balances
+      setBuybackAmount('');
+      fetchReport();
     } catch (err) {
       setBuybackMessage({ type: 'error', text: err.response?.data?.message || 'An unexpected error occurred.' });
     } finally {
@@ -66,7 +64,11 @@ const TreasuryPage = () => {
     if (error) return <p className="error-message">{error}</p>;
     if (!report) return <p>No data available.</p>;
 
-    const availableForBuyback = (report.ledgers.COMMUNITY_GROWTH_INCENTIVES || 0) + (report.ledgers.DEPOSIT_FEES_BUYBACK || 0);
+    // --- THE FIX ---
+    // Safely calculate available funds using optional chaining (?.)
+    const availableForBuyback = 
+      (report.ledgers?.COMMUNITY_GROWTH_INCENTIVES || 0) + 
+      (report.ledgers?.DEPOSIT_FEES_BUYBACK || 0);
 
     return (
       <>
@@ -103,41 +105,41 @@ const TreasuryPage = () => {
 
         <h2>Platform Revenue Totals</h2>
         <div className="stats-grid">
-          <StatCard label="Total From Deposit Fees" value={report.revenue.depositFees} />
-          <StatCard label="Total From Performance Fees" value={report.revenue.performanceFees} />
-          <StatCard label="Grand Total Revenue" value={report.revenue.total} variant="highlight" />
+          <StatCard label="Total From Deposit Fees" value={report.revenue?.depositFees || 0} />
+          <StatCard label="Total From Performance Fees" value={report.revenue?.performanceFees || 0} />
+          <StatCard label="Grand Total Revenue" value={report.revenue?.total || 0} variant="highlight" />
         </div>
 
         <h2 style={{ marginTop: '48px' }}>Deposit Fee Allocation</h2>
         <p className="admin-subtitle">Breakdown of how Deposit Fee revenue is allocated for TGE and growth.</p>
         <div className="stats-grid-small">
-          <StatCard label="Initial LP Seeding (1%)" value={report.ledgers.DEPOSIT_FEES_LP_SEEDING || 0} />
-          <StatCard label="LP Farming Rewards (15%)" value={report.ledgers.DEPOSIT_FEES_LP_REWARDS || 0} />
-          <StatCard label="Team & Advisors (25%)" value={report.ledgers.DEPOSIT_FEES_TEAM || 0} />
-          <StatCard label="Treasury & Growth (20%)" value={report.ledgers.DEPOSIT_FEES_TREASURY || 0} />
-          <StatCard label="Community Reserve (20%)" value={report.ledgers.DEPOSIT_FEES_COMMUNITY || 0} />
-          <StatCard label="Buyback Mechanic (10%)" value={report.ledgers.DEPOSIT_FEES_BUYBACK || 0} />
-          <StatCard label="Strategic Reserve (9%)" value={report.ledgers.DEPOSIT_FEES_STRATEGIC || 0} />
+          <StatCard label="Initial LP Seeding (1%)" value={report.ledgers?.DEPOSIT_FEES_LP_SEEDING || 0} />
+          <StatCard label="LP Farming Rewards (15%)" value={report.ledgers?.DEPOSIT_FEES_LP_REWARDS || 0} />
+          <StatCard label="Team & Advisors (25%)" value={report.ledgers?.DEPOSIT_FEES_TEAM || 0} />
+          <StatCard label="Treasury & Growth (20%)" value={report.ledgers?.DEPOSIT_FEES_TREASURY || 0} />
+          <StatCard label="Community Reserve (20%)" value={report.ledgers?.DEPOSIT_FEES_COMMUNITY || 0} />
+          <StatCard label="Buyback Mechanic (10%)" value={report.ledgers?.DEPOSIT_FEES_BUYBACK || 0} />
+          <StatCard label="Strategic Reserve (9%)" value={report.ledgers?.DEPOSIT_FEES_STRATEGIC || 0} />
         </div>
 
         <h2 style={{ marginTop: '48px' }}>Performance Fee Allocation</h2>
         <p className="admin-subtitle">Breakdown of how ongoing Performance Fee revenue is allocated.</p>
         <div className="stats-grid">
-          <StatCard label="Treasury & Foundation (60%)" value={report.ledgers.TREASURY_FOUNDATION || 0} />
-          <StatCard label="Operations & Dev (25%)" value={report.ledgers.OPERATIONS_DEVELOPMENT || 0} />
-          <StatCard label="Trading Team Bonus (10%)" value={report.ledgers.TRADING_TEAM_BONUS || 0} />
-          <StatCard label="Community Growth / Buybacks (5%)" value={report.ledgers.COMMUNITY_GROWTH_INCENTIVES || 0} />
+          <StatCard label="Treasury & Foundation (60%)" value={report.ledgers?.TREASURY_FOUNDATION || 0} />
+          <StatCard label="Operations & Dev (25%)" value={report.ledgers?.OPERATIONS_DEVELOPMENT || 0} />
+          <StatCard label="Trading Team Bonus (10%)" value={report.ledgers?.TRADING_TEAM_BONUS || 0} />
+          <StatCard label="Community Growth / Buybacks (5%)" value={report.ledgers?.COMMUNITY_GROWTH_INCENTIVES || 0} />
         </div>
 
         <h2 style={{ marginTop: '48px' }}>Platform Liabilities</h2>
         <div className="stats-grid">
-          <StatCard label="User Capital in Vaults" value={report.liabilities.userCapitalInVaults} note="Total user funds currently under management." variant="warning" />
-          <StatCard label="Outstanding Bonus Points" value={report.liabilities.bonusPoints} note="Represents a future liability to be bought back." variant="warning" />
+          <StatCard label="User Capital in Vaults" value={report.liabilities?.userCapitalInVaults || 0} note="Total user funds currently under management." variant="warning" />
+          <StatCard label="Outstanding Bonus Points" value={report.liabilities?.bonusPoints || 0} note="Represents a future liability to be bought back." variant="warning" />
         </div>
 
         <h2 style={{ marginTop: '48px' }}>Summary</h2>
         <div className="stats-grid">
-           <StatCard label="Net Position" value={report.netPosition} note="Total Revenue minus Bonus Point Liability. A measure of platform profitability before operational costs." variant={report.netPosition >= 0 ? 'highlight' : 'warning'} />
+           <StatCard label="Net Position" value={report.netPosition || 0} note="Total Revenue minus Bonus Point Liability. A measure of platform profitability before operational costs." variant={(report.netPosition || 0) >= 0 ? 'highlight' : 'warning'} />
         </div>
       </>
     );
@@ -150,7 +152,6 @@ const TreasuryPage = () => {
           <h1>Treasury & Business Report</h1>
           <Link to="/admin" className="btn-secondary btn-sm">← Back to Mission Control</Link>
         </div>
-        
         <div className="admin-card">
           {renderContent()}
         </div>
