@@ -17,10 +17,13 @@ import Dashboard from './Dashboard';
 import Wallet from './Wallet';
 import OAuthSuccess from './OAuthSuccess';
 import FAQ from './FAQ';
+import FeeStructure from './FeeStructure';
+
 import AdminDashboard from './admin/AdminDashboard';
 import FinancialsPage from './admin/FinancialsPage';
 import UserDetailPage from './admin/UserDetailPage';
-import FeeStructure from './FeeStructure';
+import TreasuryPage from './admin/TreasuryPage';
+
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -62,9 +65,13 @@ const Router = () => {
         element={<AdminRoute><UserDetailPage /></AdminRoute>}
       />
       <Route
-  path="/admin/financials"
-  element={<AdminRoute><FinancialsPage /></AdminRoute>}
-/>
+        path="/admin/financials"  
+        element={<AdminRoute><FinancialsPage /></AdminRoute>}
+      />
+      <Route  
+        path="/admin/treasury"
+        element={<AdminRoute><TreasuryPage /></AdminRoute>}
+      />
     </Routes>
   );
 };

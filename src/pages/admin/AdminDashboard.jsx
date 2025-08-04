@@ -345,6 +345,9 @@ return (
           <Link to="/admin/financials" className="btn-primary btn-sm">
             Financials & Auditing
           </Link>
+           <Link to="/admin/treasury" className="btn-primary btn-sm">
+            Treasury Report
+          </Link>
         </div>
       </div>
       {renderContent()}

@@ -2910,3 +2910,21 @@ textarea.input-field { resize: vertical; }
   color: var(--color-text-secondary);
   margin-top: 4px;
 }
+
+/* --- Treasury Page Styles --- */
+.stat-card .stat-note {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+.stat-card.highlight {
+  background-color: rgba(56, 161, 105, 0.1);
+  border-color: #38a169;
+}
+
+.stat-card.warning {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+}
