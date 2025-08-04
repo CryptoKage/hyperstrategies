@@ -34,11 +34,10 @@ const VaultManagementPage = () => {
   useEffect(() => {
     const fetchVaults = async () => {
       try {
-        // We'll use the public dashboard API to get the list of vaults
         const response = await api.get('/dashboard'); 
         setVaults(response.data.vaults);
         if (response.data.vaults.length > 0) {
-          setSelectedVaultId(response.data.vaults[0].vault_id); // Default to the first vault
+          setSelectedVaultId(response.data.vaults[0].vault_id);
         }
       } catch (err) {
         setError('Could not fetch list of vaults.');
@@ -75,7 +74,8 @@ const VaultManagementPage = () => {
     try {
       const response = await api.post(`/admin/vaults/${selectedVaultId}/update-pnl`, { pnlPercentage: pnlInput });
       setPnlMessage({ type: 'success', text: response.data.message });
-      fetchVaultDetails(); // Refresh data on success
+      setPnlInput(''); // Clear input on success
+      fetchVaultDetails();
     } catch(err) {
       setPnlMessage({ type: 'error', text: err.response?.data?.message || 'Update failed.' });
     } finally {
@@ -91,7 +91,8 @@ const VaultManagementPage = () => {
     try {
         const response = await api.post('/admin/distribute-profit', { vault_id: selectedVaultId, total_profit_amount: profitInput });
         setDistributeMessage({ type: 'success', text: response.data.message });
-        fetchVaultDetails(); // Refresh data on success
+        setProfitInput(''); // Clear input on success
+        fetchVaultDetails();
     } catch (err) {
         setDistributeMessage({ type: 'error', text: err.response?.data?.message || 'Distribution failed.' });
     } finally {
@@ -126,6 +127,7 @@ const VaultManagementPage = () => {
                 <StatCard label="Total Capital in Vault" value={`$${(vaultData.stats.totalCapital || 0).toFixed(2)}`} />
                 <StatCard label="Total Unrealized PnL" value={`$${(vaultData.stats.totalPnl || 0).toFixed(2)}`} />
                 <StatCard label="Participant Count" value={vaultData.stats.participantCount} />
+                <StatCard label="Current Displayed PnL" value={`${(vaultData.stats.currentPnlPercentage || 0).toFixed(2)}%`} />
             </div>
 
             <div className="admin-grid">

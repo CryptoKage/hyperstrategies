@@ -19,12 +19,6 @@ const AdminDashboard = () => {
 
   const navigate = useNavigate();
 
-  // --- NEW --- State for the Profit Distribution form
-  const [distributeVaultId, setDistributeVaultId] = useState('1');
-  const [distributeProfit, setDistributeProfit] = useState('');
-  const [isDistributing, setIsDistributing] = useState(false);
-  const [distributeMessage, setDistributeMessage] = useState({ type: '', text: '' });
-
   const fetchAdminStats = useCallback(async () => {
     if (!stats) setLoading(true);
     try {
@@ -86,28 +80,6 @@ const AdminDashboard = () => {
       setIsActionLoading(false);
     }
   }, [fetchAdminStats]);
-
-  // --- NEW --- Handler for the Profit Distribution form submission
-  const handleDistributeProfit = async (e) => {
-    e.preventDefault();
-    setIsDistributing(true);
-    setDistributeMessage({ type: '', text: '' });
-
-    try {
-      const response = await api.post('/admin/distribute-profit', {
-        vault_id: parseInt(distributeVaultId, 10),
-        total_profit_amount: distributeProfit,
-      });
-      setDistributeMessage({ type: 'success', text: response.data.message });
-      setDistributeProfit('');
-      fetchAdminStats();
-    } catch (err) {
-      const message = err.response?.data?.message || 'An unexpected error occurred.';
-      setDistributeMessage({ type: 'error', text: message });
-    } finally {
-      setIsDistributing(false);
-    }
-  };
 
   const StatCard = ({ label, value, currency = false }) => (
     <div className="stat-card">
