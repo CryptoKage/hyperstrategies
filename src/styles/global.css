@@ -2944,3 +2944,63 @@ textarea.input-field { resize: vertical; }
 .text-positive { color: #4ade80; }
 .text-negative { color: #ef4444; }
 
+/* ==========================================================================
+   HEADER RESPONSIVE & HAMBURGER MENU
+   ========================================================================== */
+
+/* By default, the mobile menu is hidden */
+.header__right--mobile {
+  display: none;
+}
+.hamburger-button {
+  background: none;
+  border: none;
+  color: var(--color-text-primary);
+  padding: 8px;
+}
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(4, 14, 33, 0.95);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.mobile-menu-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.mobile-menu__link, .mobile-menu__button {
+  color: var(--color-text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  background: none;
+  border: none;
+}
+.mobile-menu__language-select-wrapper {
+  margin-top: 48px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 24px;
+}
+
+@media (max-width: 900px) { /* A slightly larger breakpoint for headers */
+  
+  /* Hide the desktop menu */
+  .header__right--desktop {
+    display: none;
+  }
+  
+  /* Show the mobile hamburger button */
+  .header__right--mobile {
+    display: block;
+  }
+}
