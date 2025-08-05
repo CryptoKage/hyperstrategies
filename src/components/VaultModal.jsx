@@ -82,8 +82,8 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
   };
   
   const handleMaxClick = () => {
-    setAmount((availableBalance || 0).toFixed(2).toString());
-  };
+    setAmount((availableBalance || 0).toString());
+};
 
   const needsWarning = vault.risk_level === 'high' || vault.risk_level === 'extreme';
   
