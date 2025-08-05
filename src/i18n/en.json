@@ -14,11 +14,17 @@
     "alt_logo": "Hyper Strategies Logo"
   },
  "footer": {
+
   "follow_us": "Follow us:",
+
   "documentation": "Docs",
+
   "user_guide": "User Guide",
+
   "terms": "Terms & Conditions",
+
   "terms_link": "Legal"
+
 },
 
   "dashboard": {
@@ -77,7 +83,7 @@
     "balance_eth": "ETH Balance (for Gas)",
     "balance_bonus": "Bonus Points Value",
     "deposit_address_title": "Your Deposit Address",
-    "deposit_address_subtitle": "Send USDC (Mainnet) to this address to fund your account.",
+    "deposit_address_subtitle": "Send USDC (ERC20) to this address to fund your account.",
     "address_loading": "Loading...",
     "copy": "Copy",
     "copied": "Copied!",
@@ -181,7 +187,7 @@
     "core_vault_desc_3": "<strong>Lock-in Period:</strong> 1 month on all new capital allocated.",
     "ape_vault_title": "ApeCoin EMA Vault (Vault 2)",
     "ape_vault_desc_1": "<strong>Deposit Fee:</strong> Flat <strong>10%</strong> (Not affected by Tier). Credited as Bonus Points.",
-    "ape_vault_desc_2": "<strong>Performance Fee:</strong> <strong>40% (Reduces with Tier)</strong>. This fee is reduced to 30% for Tier 4+ users.",
+    "ape_vault_desc_2": "<strong>Performance Fee:</strong> <strong>40% (Reduces with Tier)</strong>. This fee is reduced by 2,5% for every additional Tier.",
     "ape_vault_desc_3": "<strong>Lock-in Period:</strong> None. Capital is liquid.",
     
     "xp_title": "How to Earn XP",
@@ -193,7 +199,7 @@
     "xp_rule_3_title": "Successful Referrals:",
     "xp_rule_3_desc": "Earn bonus XP when a user you refer makes their first capital allocation.",
     "xp_rule_4_title": "Bonus Point Buy-Back:",
-    "xp_rule_4_desc": "Earn <strong>0.1 XP</strong> for every 1 Bonus Point the platform buys back from you."
+    "xp_rule_4_desc": "Earn <strong>1 XP</strong> for every 10 Bonus Points the platform buys back from you."
   },
 
   
@@ -219,16 +225,16 @@
     "signup_tier_4": "<strong>Users 301-400:</strong> 10 XP",
     "signup_tier_5": "<strong>Users 401-500:</strong> 5 XP",
     
-    "accordion_title_allocation": "💰 Capital Allocation: 1 XP per $10",
+    "accordion_title_allocation": "💰 Capital Allocation: $10-to-1 XP",
     "accordion_desc_allocation": "You earn XP by putting your capital to work. For every $10 you allocate to any vault (minimum $100 allocation), you will earn 1 XP. An allocation of $1,000 earns you 100 XP.",
 
     "accordion_title_referral": "🤝 Successful Referral: Dynamic (10%)",
-    "accordion_desc_referral": "When a new user signs up with your referral code and makes their first vault allocation (minimum $100), you, the referrer, will earn XP equal to 10% of their allocated amount. If they allocate $1,000, you get 100 XP.",
+    "accordion_desc_referral": "Whenever a user signs up with your referral code and makes a vault allocation (minimum $100), you, the referrer, will earn XP equal to 10% of their allocated amount <strong>EVERY TIME</strong>. If they allocate $1,000, you get 100 XP.",
 
     "accordion_title_staking": "⏳ Weekly Staking Bonus: Coming Soon",
     "accordion_desc_staking": "A future feature will reward users with XP for every week they keep their capital allocated in a vault, rewarding long-term commitment.",
 
-    "accordion_title_buyback": "💸 Bonus Point Buy-Back: 1-to-0.1 XP",
+    "accordion_title_buyback": "💸 Bonus Point Buy-Back: 10-to-1 XP",
     "accordion_desc_buyback": "When the platform buys back your Bonus Points, you will receive XP equal to 10% of the value. A buy-back of 200 Bonus Points grants you 20 XP."
   },
 
@@ -305,7 +311,7 @@
     "q2_title": "Can I withdraw my Bonus Points?",
     "q2_answer": "Bonus Points are not directly withdrawable. They represent your contribution to the platform. Over time, as our platform generates revenue from performance fees, we will use a portion of that revenue to \"buy back\" Bonus Points from users. This process converts your Bonus Points back into USDC, which is then added to your main \"Available to Allocate\" balance.",
     "q3_title": "How are vault withdrawals processed?",
-    "q3_answer": "When you request a withdrawal from a vault, a request is created to move your \"Tradable Capital\" back to your main \"Available to Allocate\" balance. This process can take up to 48 hours to complete. To withdraw funds from the platform to an external wallet, you must use the \"Withdraw Funds\" feature on the Wallet page after your vault withdrawal has been processed."
+    "q3_answer": "When you request a withdrawal from a vault, a request is created to move your \"Tradable Capital\" back to your main \"Available to Allocate\" balance. This process can take a minimum of 48 hours to complete. To withdraw funds from the platform to an external wallet, you must use the \"Withdraw Funds\" feature on the Wallet page after your vault withdrawal has been processed."
   },
 
 
