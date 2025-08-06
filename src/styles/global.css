@@ -3055,3 +3055,20 @@ textarea.input-field { resize: vertical; }
   color: var(--color-text-primary);
 }
 }
+
+/* PnL Colour stats*/
+
+.stat-sub-value {
+  font-size: 0.9em;
+  opacity: 0.8;
+  margin-top: 4px;
+}
+
+.stat-pnl-positive {
+  color: var(--color-positive); /* Or your theme's green color */
+}
+
+.stat-pnl-negative {
+  color: var(--color-negative); /* Or your theme's red color */
+}
+

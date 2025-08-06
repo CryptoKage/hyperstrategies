@@ -12,12 +12,10 @@ import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
 import CountdownTimer from '../components/CountdownTimer';
 
-// --- UPDATED --- Import all three image assets
 import coreVaultBg from '../assets/core.png';
 import apecoinVaultBg from '../assets/apecoin.png';
-import pantherVaultBg from '../assets/panther-swarm.jpg'; // The new .jpg image
+import pantherVaultBg from '../assets/panther-swarm.jpg';
 
-// --- UPDATED --- The map now includes the new image
 const vaultImageMap = {
   'core.png': coreVaultBg,
   'apecoin.png': apecoinVaultBg,
@@ -41,6 +39,7 @@ const Dashboard = () => {
 
   const fetchDashboardData = useCallback(async () => {
     try {
+      // The backend now sends totalCapitalInVaults and totalUnrealizedPnl
       const response = await api.get('/dashboard');
       setDashboardData(response.data);
       const initialCompoundState = {};
@@ -109,48 +108,51 @@ const Dashboard = () => {
     return (
       <>
         <div className="stats-grid">
-<div className="stat-card">
-  <span className="stat-label">{t('dashboard.total_value')}</span>
-  <div className="stat-main">
-    <span className="stat-value">
-      {isBalanceHidden 
-        ? '******' 
-        : `$${(
-            (dashboardData.totalCapitalInVaults || 0) + 
-            (dashboardData.totalBonusPoints || 0) + 
-            (dashboardData.availableBalance || 0)
-          ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-      }
-    </span>
-    <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
-  </div>
-  {/* --- NEW SUB-VALUE FOR UNREALIZED TOTAL --- */}
-  <span className="stat-sub-value">
-    Unrealized: {isBalanceHidden 
-      ? '******' 
-      : `$${(
-          (dashboardData.totalCapitalInVaults || 0) + 
-          (dashboardData.totalBonusPoints || 0) + 
-          (dashboardData.availableBalance || 0) +
-          (dashboardData.totalUnrealizedPnl || 0)
-        ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-    }
-  </span>
-</div>
-            <div className="stat-card">
-              <span className="stat-label">{t('dashboard.available_balance')}</span>
-              <div className="stat-main">
-                <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.availableBalance || 0).toFixed(2)}`}</span>
-                <button onClick={() => navigate('/wallet')} className="btn-link">{t('dashboard.manage')}</button>
-              </div>
+          {/* --- THIS IS THE UPDATED CARD --- */}
+          <div className="stat-card">
+            <span className="stat-label">{t('dashboard.total_value')}</span>
+            <div className="stat-main">
+              <span className="stat-value">
+                {isBalanceHidden 
+                  ? '******' 
+                  : `$${(
+                      (dashboardData.totalCapitalInVaults || 0) + 
+                      (dashboardData.totalBonusPoints || 0) + 
+                      (dashboardData.availableBalance || 0)
+                    ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                }
+              </span>
+              <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
             </div>
-            <div className="stat-card">
-              <div className="stat-label-with-icon">
-                <span className="stat-label">{t('dashboard.bonus_points')}</span>
-                <Link to="/faq" className="info-icon-link" title={t('faq.q1_title')}><InfoIcon /></Link>
-              </div>
-              <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.totalBonusPoints || 0).toFixed(2)}`}</span>
+            {/* The new sub-value span with cleaner logic and conditional coloring */}
+            <span 
+              className={`stat-sub-value ${
+                (dashboardData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'
+              }`}
+            >
+              Unrealized PnL: {isBalanceHidden 
+                ? '******' 
+                : `${((dashboardData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(dashboardData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+              }
+            </span>
+          </div>
+
+          <div className="stat-card">
+            <span className="stat-label">{t('dashboard.available_balance')}</span>
+            <div className="stat-main">
+              {/* Also use toLocaleString here for consistency */}
+              <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+              <button onClick={() => navigate('/wallet')} className="btn-link">{t('dashboard.manage')}</button>
             </div>
+          </div>
+          <div className="stat-card">
+            <div className="stat-label-with-icon">
+              <span className="stat-label">{t('dashboard.bonus_points')}</span>
+              <Link to="/faq" className="info-icon-link" title={t('faq.q1_title')}><InfoIcon /></Link>
+            </div>
+            {/* Also use toLocaleString here for consistency */}
+            <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.totalBonusPoints || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+          </div>
         </div>
 
         {investedPositions.length > 0 && (
@@ -173,12 +175,12 @@ const Dashboard = () => {
                       <h3>{vaultInfo.name}</h3>
                       <div className="vault-stat">
                         <span>{t('dashboard.tradable_capital')}</span>
-                        <span>{isBalanceHidden ? '******' : `$${parseFloat(position.tradable_capital).toFixed(2)}`}</span>
+                        <span>{isBalanceHidden ? '******' : `$${parseFloat(position.tradable_capital).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
                       </div>
                       <div className="vault-stat">
                         <span>{t('dashboard.pnl')}</span>
                         <span className={parseFloat(position.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
-                          {isBalanceHidden ? '******' : `${parseFloat(position.pnl) >= 0 ? '+' : ''}$${parseFloat(position.pnl).toFixed(2)}`}
+                          {isBalanceHidden ? '******' : `${parseFloat(position.pnl) >= 0 ? '+' : ''}$${parseFloat(position.pnl).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                         </span>
                       </div>
                       {isLocked && (
