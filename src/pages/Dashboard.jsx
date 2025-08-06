@@ -109,13 +109,34 @@ const Dashboard = () => {
     return (
       <>
         <div className="stats-grid">
-            <div className="stat-card">
-              <span className="stat-label">{t('dashboard.total_value')}</span>
-              <div className="stat-main">
-                <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.totalPortfolioValue || 0).toFixed(2)}`}</span>
-                <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
-              </div>
-            </div>
+<div className="stat-card">
+  <span className="stat-label">{t('dashboard.total_value')}</span>
+  <div className="stat-main">
+    <span className="stat-value">
+      {isBalanceHidden 
+        ? '******' 
+        : `$${(
+            (dashboardData.totalCapitalInVaults || 0) + 
+            (dashboardData.totalBonusPoints || 0) + 
+            (dashboardData.availableBalance || 0)
+          ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      }
+    </span>
+    <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
+  </div>
+  {/* --- NEW SUB-VALUE FOR UNREALIZED TOTAL --- */}
+  <span className="stat-sub-value">
+    Unrealized: {isBalanceHidden 
+      ? '******' 
+      : `$${(
+          (dashboardData.totalCapitalInVaults || 0) + 
+          (dashboardData.totalBonusPoints || 0) + 
+          (dashboardData.availableBalance || 0) +
+          (dashboardData.totalUnrealizedPnl || 0)
+        ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    }
+  </span>
+</div>
             <div className="stat-card">
               <span className="stat-label">{t('dashboard.available_balance')}</span>
               <div className="stat-main">
