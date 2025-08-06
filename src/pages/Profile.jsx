@@ -1,5 +1,3 @@
-// src/pages/Profile.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import InputField from '../components/InputField';
 import XpHistoryList from '../components/XpHistoryList';
+import UserBadges from '../components/UserBadges';
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -36,7 +35,6 @@ const Profile = () => {
         setProfileData(response.data);
         setUsername(response.data.username);
       } catch (err) {
-        // --- FIX: Added the missing curly braces here ---
         setError(t('profile_page.error_load'));
       } finally {
         setIsLoading(false);
@@ -101,6 +99,7 @@ const Profile = () => {
               <button type="submit" className="btn-primary">{t('profile_page.save_changes_button')}</button>
               {editMessage && <p className="edit-message">{editMessage}</p>}
             </form>
+            <UserBadges tags={profileData?.tags} />
           </div>
 
           <div className="profile-card">
@@ -154,6 +153,10 @@ const Profile = () => {
               )}
             </div>
           </div>
+          
+          <div className="profile-card">
+            <XpHistoryList />
+          </div>
 
           <div className="profile-card">
             <h3>{t('profile_page.syndicate_title')}</h3>
@@ -168,10 +171,6 @@ const Profile = () => {
             >
               {t('profile_page.learn_more_button')}
             </a>
-          </div>
-          
-          <div className="profile-card">
-            <XpHistoryList />
           </div>
 
         </div>

@@ -306,6 +306,8 @@
   },
 
   "profile_page": {
+    "xp_rate_label": "Staking EP-Rate",
+    "xp_rate_per_day": "Tag",
     "history_title": "XP History",
     "history_loading": "Loading XP History...",
     "history_empty": "No XP transactions found. Earn XP by keeping capital in vaults!",

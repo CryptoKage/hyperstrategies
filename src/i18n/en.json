@@ -326,6 +326,8 @@
 
 
   "profile_page": {
+    "xp_rate_label": "Staking XP Rate",
+    "xp_rate_per_day": "day",
     "loading": "Loading Profile...",
     "error_load": "Could not load profile.",
     "error_update": "Update failed.",
