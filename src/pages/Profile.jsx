@@ -2,14 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'; // 1. Import
+import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import InputField from '../components/InputField';
+import XpHistoryList from '../components/XpHistoryList';
 
 const Profile = () => {
-  const { t } = useTranslation(); // 2. Initialize
+  const { t } = useTranslation();
   const { user, login } = useAuth();
   
   const [profileData, setProfileData] = useState(null);
@@ -25,7 +26,6 @@ const Profile = () => {
   const [copySuccessMessage, setCopySuccessMessage] = useState('');
 
   useEffect(() => {
-    // Set initial button text from translation file
     setCopySuccessMessage(t('profile_page.copy_link_button'));
   }, [t]);
 
@@ -110,7 +110,9 @@ const Profile = () => {
             
             <Link to="/xpleaderboard" className="stat-display xp-link">
               <span className="stat-label">{t('profile_page.xp_label')}</span>
-              <span className="stat-value-large">{profileData.xp} XP</span>
+              <span className="stat-value-large">
+                {(parseFloat(profileData.xp) || 0).toFixed(2)} XP
+              </span>
               <span className="link-indicator">→</span>
             </Link>
 
@@ -146,7 +148,27 @@ const Profile = () => {
               )}
             </div>
           </div>
+
+          <div className="profile-card">
+            <h3>{t('profile_page.syndicate_title')}</h3>
+            <p className="form-description">
+              {t('profile_page.syndicate_description')}
+            </p>
+            <a 
+              href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="btn-primary"
+            >
+              {t('profile_page.learn_more_button')}
+            </a>
+          </div>
+
+        
+        <div className="profile-card full-width-card">
+          <XpHistoryList />
         </div>
+       </div>         
       </div>
     </Layout>
   );

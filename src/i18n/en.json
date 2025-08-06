@@ -345,7 +345,13 @@
     "customize_link_subtitle": "Create a unique code. Must be 3-15 alphanumeric characters.",
     "placeholder_your_code": "your-code",
     "saving_button": "Saving...",
-    "save_code_button": "Save Code"
+    "save_code_button": "Save Code",
+    "syndicate_title": "Syndicate Referrals",
+    "syndicate_description": "Join forces with a community to earn shared referral rewards. Coming soon.",
+    "learn_more_button": "Learn More",
+    "history_title": "XP History",
+    "history_loading": "Loading XP History...",
+    "history_empty": "No XP transactions found. Earn XP by keeping capital in vaults!"
   }
 }
   

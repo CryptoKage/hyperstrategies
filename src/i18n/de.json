@@ -306,6 +306,9 @@
   },
 
   "profile_page": {
+    "history_title": "XP History",
+    "history_loading": "Loading XP History...",
+    "history_empty": "No XP transactions found. Earn XP by keeping capital in vaults!",
     "loading": "Profil wird geladen...",
     "error_load": "Profil konnte nicht geladen werden.",
     "error_update": "Aktualisierung fehlgeschlagen.",
@@ -325,7 +328,10 @@
     "customize_link_subtitle": "Erstelle einen einzigartigen Code. Er muss aus 3-15 alphanumerischen Zeichen bestehen.",
     "placeholder_your_code": "dein-Code",
     "saving_button": "Wird gespeichert...",
-    "save_code_button": "Code speichern"
+    "save_code_button": "Code speichern",
+      "syndicate_title": "Syndikat-Empfehlungen",
+    "syndicate_description": "Schließen Sie sich mit einer Community zusammen, um gemeinsame Empfehlungsprämien zu verdienen. Demnächst verfügbar.",
+    "learn_more_button": "Mehr erfahren"
   }
 }
 

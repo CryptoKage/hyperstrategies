@@ -3163,3 +3163,51 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+/* ---  XP History list --- */
+
+.xp-history-container {
+  width: 100%;
+}
+
+.xp-history-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 1rem;
+  max-height: 400px; /* Give it a max height to prevent long lists */
+  overflow-y: auto;   /* Add a scrollbar if the list is long */
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.history-description {
+  flex-grow: 1;
+  font-size: 0.95em;
+}
+
+.history-xp {
+  font-weight: 600;
+  white-space: nowrap; /* Prevent the XP amount from wrapping */
+}
+
+.history-date {
+  font-size: 0.8em;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
