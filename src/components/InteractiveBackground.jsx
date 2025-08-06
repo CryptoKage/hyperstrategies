@@ -2,11 +2,14 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
-// A simple hook to get window dimensions and handle resizing
+// --- FIX 1: Make the hook server-side-rendering (SSR) safe ---
+// This hook now safely handles cases where `window` is not defined.
 const useWindowSize = () => {
-  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
+  const [size, setSize] = useState([0, 0]); // Default to 0,0 on the server
   useEffect(() => {
+    // This code only runs on the client, where `window` exists.
     const handleResize = () => setSize([window.innerWidth, window.innerHeight]);
+    handleResize(); // Set initial size
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -14,10 +17,18 @@ const useWindowSize = () => {
 };
 
 const InteractiveBackground = () => {
-  const [points, setPoints] = useState([]);
-  const [lines, setLines] = useState([]);
   const [width, height] = useWindowSize();
   const containerRef = useRef(null);
+
+  // --- FIX 2: Use `useRef` for all animation data to prevent re-renders ---
+  const pointsRef = useRef([]);
+  const linesRef = useRef([]);
+  const pointElementsRef = useRef([]);
+  const lineElementsRef = useRef([]);
+
+  // --- FIX 3: Use a single state to trigger the initial render ---
+  // We only need to render the SVG elements ONCE. After that, we manipulate them directly.
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const generateNetwork = useCallback(() => {
     if (!containerRef.current) return;
@@ -25,87 +36,112 @@ const InteractiveBackground = () => {
     const containerWidth = containerRef.current.offsetWidth;
     const containerHeight = containerRef.current.offsetHeight;
     
-    // Adjust point density based on screen size
     const numPoints = Math.floor((containerWidth * containerHeight) / 15000);
-    const connectionDistance = 120; // How close points need to be to connect
+    const connectionDistance = 120;
 
-    // Generate random points (nodes)
-    const newPoints = Array.from({ length: numPoints }, () => ({
+    // Generate points and store them in the ref, NOT state.
+    pointsRef.current = Array.from({ length: numPoints }, () => ({
       x: Math.random() * containerWidth,
       y: Math.random() * containerHeight,
-      // Add velocity for subtle movement
       vx: (Math.random() - 0.5) * 0.3,
       vy: (Math.random() - 0.5) * 0.3,
     }));
-    setPoints(newPoints);
 
-    // Generate lines (edges) based on proximity
+    // Generate lines and store them in the ref, NOT state.
     const newLines = [];
-    for (let i = 0; i < newPoints.length; i++) {
-      for (let j = i + 1; j < newPoints.length; j++) {
-        const p1 = newPoints[i];
-        const p2 = newPoints[j];
+    for (let i = 0; i < pointsRef.current.length; i++) {
+      for (let j = i + 1; j < pointsRef.current.length; j++) {
+        const p1 = pointsRef.current[i];
+        const p2 = pointsRef.current[j];
         const distance = Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
         if (distance < connectionDistance) {
           newLines.push({
-            p1: i,
-            p2: j,
-            opacity: 1 - distance / connectionDistance, // Lines are fainter the longer they are
+            p1_index: i, // Store indices instead of object references
+            p2_index: j,
+            opacity: 1 - distance / connectionDistance,
           });
         }
       }
     }
-    setLines(newLines);
+    linesRef.current = newLines;
+
+    // Trigger the one-time render
+    setIsInitialized(true);
   }, []);
 
   // Regenerate network on resize
   useEffect(() => {
-    generateNetwork();
+    // Debounce resize to prevent rapid regeneration
+    const timeoutId = setTimeout(() => generateNetwork(), 500);
+    return () => clearTimeout(timeoutId);
   }, [width, height, generateNetwork]);
   
-  // Animation loop
+  // --- FIX 4: The new, high-performance animation loop ---
   useEffect(() => {
+    if (!isInitialized) return; // Don't start animating until the network is generated
+
     let animationFrameId;
     const animate = () => {
-      setPoints(currentPoints => {
-        if (!containerRef.current) return currentPoints;
-        const containerWidth = containerRef.current.offsetWidth;
-        const containerHeight = containerRef.current.offsetHeight;
+      if (!containerRef.current) return;
+      const containerWidth = containerRef.current.offsetWidth;
+      const containerHeight = containerRef.current.offsetHeight;
 
-        return currentPoints.map(p => {
-          let newX = p.x + p.vx;
-          let newY = p.y + p.vy;
+      // Update point positions in the ref
+      pointsRef.current.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
 
-          // Bounce off the walls
-          if (newX < 0 || newX > containerWidth) p.vx *= -1;
-          if (newY < 0 || newY > containerHeight) p.vy *= -1;
-          
-          return { ...p, x: newX, y: newY };
-        });
+        if (p.x < 0 || p.x > containerWidth) p.vx *= -1;
+        if (p.y < 0 || p.y > containerHeight) p.vy *= -1;
+
+        // Directly manipulate the DOM element attributes, bypassing React's render cycle
+        const pointElement = pointElementsRef.current[i];
+        if (pointElement) {
+          pointElement.setAttribute('cx', p.x);
+          pointElement.setAttribute('cy', p.y);
+        }
       });
+      
+      // Update line positions by reading from the updated points ref
+      linesRef.current.forEach((line, i) => {
+        const p1 = pointsRef.current[line.p1_index];
+        const p2 = pointsRef.current[line.p2_index];
+        const lineElement = lineElementsRef.current[i];
+        if (lineElement && p1 && p2) {
+          lineElement.setAttribute('x1', p1.x);
+          lineElement.setAttribute('y1', p1.y);
+          lineElement.setAttribute('x2', p2.x);
+          lineElement.setAttribute('y2', p2.y);
+        }
+      });
+
       animationFrameId = requestAnimationFrame(animate);
     };
     animate();
     return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+  }, [isInitialized]);
 
   return (
     <div ref={containerRef} className="interactive-background">
       <svg width="100%" height="100%">
-        {lines.map((line, i) => (
+        {/* --- FIX 5: Render based on the refs and populate the element refs --- */}
+        {/* This JSX now only runs ONCE when isInitialized becomes true. */}
+        {isInitialized && linesRef.current.map((line, i) => (
           <line
             key={i}
-            x1={points[line.p1]?.x}
-            y1={points[line.p1]?.y}
-            x2={points[line.p2]?.x}
-            y2={points[line.p2]?.y}
+            ref={el => lineElementsRef.current[i] = el} // Store the DOM element
+            x1={pointsRef.current[line.p1_index]?.x}
+            y1={pointsRef.current[line.p1_index]?.y}
+            x2={pointsRef.current[line.p2_index]?.x}
+            y2={pointsRef.current[line.p2_index]?.y}
             stroke="var(--color-border)"
             strokeOpacity={line.opacity}
           />
         ))}
-        {points.map((point, i) => (
+        {isInitialized && pointsRef.current.map((point, i) => (
           <circle
             key={i}
+            ref={el => pointElementsRef.current[i] = el} // Store the DOM element
             cx={point.x}
             cy={point.y}
             r="2"
