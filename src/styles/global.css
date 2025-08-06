@@ -3058,17 +3058,35 @@ textarea.input-field { resize: vertical; }
 
 /* PnL Colour stats*/
 
+
+/* This targets the container for the label and info icon */
+.label-with-icon {
+  display: flex;
+  align-items: center; /* This vertically centers the text and the icon */
+  gap: 8px; /* This adds a nice space between them */
+  margin-bottom: 4px; /* A little space above the main value */
+}
+
+/* This targets the new wrapper for the main value and sub-text */
+.balance-value-group {
+  display: flex;
+  flex-direction: column; /* THIS IS THE KEY: It stacks items vertically */
+  align-items: flex-start; /* This aligns them to the left */
+}
+
+/* We already had this, but let's ensure it's there */
 .stat-sub-value {
   font-size: 0.9em;
   opacity: 0.8;
-  margin-top: 4px;
+  margin-top: 4px; /* A little space below the main value */
 }
 
+/* These are for the green/red PnL text */
 .stat-pnl-positive {
-  color: var(--color-positive); /* Or your theme's green color */
+  color: var(--color-positive, #4caf50); /* Uses your theme color or a fallback green */
 }
 
 .stat-pnl-negative {
-  color: var(--color-negative); /* Or your theme's red color */
+  color: var(--color-negative, #f44336); /* Uses your theme color or a fallback red */
 }
 
