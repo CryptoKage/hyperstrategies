@@ -28,6 +28,8 @@
 },
 
   "dashboard": {
+    "saving": "Saving...",
+    "auto_compound_tooltip": "Learn more about auto-compounding",
     "unrealized_pnl": "Unrealized PnL",
     "welcome": "Welcome back, {{username}}",
     "no_data": "Could not fetch dashboard data.",

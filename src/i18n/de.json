@@ -34,6 +34,8 @@
     "pnl": "PnL",
     "unlocks_in": "Freischaltung in",
     "auto_compound": "Gewinne automatisch reinvestieren",
+    "saving": "Speichern...",
+    "auto_compound_tooltip": "Erfahren Sie mehr über Auto-Compounding",
     "add_funds": "Guthaben einzahlen",
     "withdraw": "Guthaben auszahlen",
     "locked_tooltip": "Diese Position ist bis zum {{date}} gesperrt.",
