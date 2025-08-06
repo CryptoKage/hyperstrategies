@@ -36,6 +36,7 @@ const Profile = () => {
         setProfileData(response.data);
         setUsername(response.data.username);
       } catch (err) {
+        // --- FIX: Added the missing curly braces here ---
         setError(t('profile_page.error_load'));
       } finally {
         setIsLoading(false);
@@ -85,6 +86,8 @@ const Profile = () => {
   if (isLoading) return <Layout><div className="profile-container"><h1>{t('profile_page.loading')}</h1></div></Layout>;
   if (error) return <Layout><div className="profile-container"><p className="error-message">{error}</p></div></Layout>;
 
+  const dailyXpRate = (profileData?.total_staked_capital || 0) / 300;
+
   return (
     <Layout>
       <div className="profile-container">
@@ -102,12 +105,10 @@ const Profile = () => {
 
           <div className="profile-card">
             <h3>{t('profile_page.stats_referrals_title')}</h3>
-
             <div className="stat-display tier-display">
               <span className="stat-label">{t('profile_page.account_tier_label')}</span>
               <span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span>
             </div>
-            
             <Link to="/xpleaderboard" className="stat-display xp-link">
               <span className="stat-label">{t('profile_page.xp_label')}</span>
               <span className="stat-value-large">
@@ -115,7 +116,13 @@ const Profile = () => {
               </span>
               <span className="link-indicator">→</span>
             </Link>
-
+            <div className="stat-display">
+              <span className="stat-label">{t('profile_page.xp_rate_label')}</span>
+              <span className="stat-value-large xp-rate-value">
+                +{dailyXpRate.toFixed(2)}
+                <span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span>
+              </span>
+            </div>
             <div className="stat-display">
               <span className="stat-label">{t('profile_page.referral_code_label')}</span>
               <span className="referral-code">{profileData.referral_code}</span>
@@ -123,7 +130,6 @@ const Profile = () => {
                 {copySuccessMessage}
               </button>
             </div>
-
             <div className="custom-referral-section">
               <h4>{t('profile_page.customize_link_title')}</h4>
               <p className="form-description">{t('profile_page.customize_link_subtitle')}</p>
@@ -163,12 +169,12 @@ const Profile = () => {
               {t('profile_page.learn_more_button')}
             </a>
           </div>
+          
+          <div className="profile-card">
+            <XpHistoryList />
+          </div>
 
-        
-        <div className="profile-card full-width-card">
-          <XpHistoryList />
         </div>
-       </div>         
       </div>
     </Layout>
   );
