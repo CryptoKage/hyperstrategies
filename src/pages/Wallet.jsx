@@ -1,6 +1,8 @@
 // src/pages/Wallet.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
+// --- FIX 1: Import Link and InfoIcon ---
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import api from '../api/api';
@@ -8,6 +10,9 @@ import WithdrawModal from '../components/WithdrawModal';
 import WithdrawalHistory from '../components/WithdrawalHistory';
 import { useAuth } from '../context/AuthContext';
 import EyeIcon from '../components/EyeIcon';
+// --- We also need the InfoIcon component ---
+import InfoIcon from '../components/InfoIcon';
+
 
 const Wallet = () => {
   const { t } = useTranslation();
@@ -72,8 +77,6 @@ const Wallet = () => {
       return <h1>{t('wallet.loading')}</h1>;
     }
 
-    const apeBalanceUsd = (walletData?.apeBalance || 0) * (walletData?.apePrice || 0);
-
     return (
       <>
         <div className="wallet-header">
@@ -88,53 +91,68 @@ const Wallet = () => {
           </div>
         </div>
         
- <div className="balance-grid">
-  {error.wallet ? <p className='error-message'>{error.wallet}</p> : !walletData ? null : (
-    <>
-      {/* Card 1: Total Portfolio Value (Platform-wide) */}
-      <div className="balance-card">
-        <span className="balance-label">Total Portfolio Value</span>
-        <span className="balance-value">
-          {isBalanceHidden 
-            ? '******' 
-            : `$${(
-                (walletData.totalCapitalInVaults || 0) + 
-                (walletData.totalBonusPoints || 0) + 
-                (walletData.availableBalance || 0)
-              ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-          }
-        </span>
-        <span 
-          className={`stat-sub-value ${
-            (walletData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'
-          }`}
-        >
-          Unrealized PnL: {isBalanceHidden 
-            ? '******' 
-            : `${((walletData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(walletData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-          }
-        </span>
-      </div>
+        {/* --- THIS ENTIRE GRID IS REPLACED WITH THE CORRECTED STRUCTURE --- */}
+        <div className="balance-grid">
+          {error.wallet ? <p className='error-message'>{error.wallet}</p> : !walletData ? null : (
+            <>
+              {/* Card 1: Total Portfolio Value */}
+              <div className="balance-card">
+                <span className="balance-label">Total Portfolio Value</span>
+                {/* --- FIX 2: Group the value and sub-text in a div to stack them --- */}
+                <div className="balance-value-group">
+                  <span className="balance-value">
+                    {isBalanceHidden 
+                      ? '******' 
+                      : `$${(
+                          (walletData.totalCapitalInVaults || 0) + 
+                          (walletData.totalBonusPoints || 0) + 
+                          (walletData.availableBalance || 0)
+                        ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                    }
+                  </span>
+                  <span 
+                    className={`stat-sub-value ${
+                      (walletData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'
+                    }`}
+                  >
+                    Unrealized PnL: {isBalanceHidden 
+                      ? '******' 
+                      : `${((walletData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(walletData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                    }
+                  </span>
+                </div>
+              </div>
 
-      {/* Card 2: Available Balance (For Investing/Withdrawing) */}
-      <div className="balance-card">
-        <span className="balance-label">Available Balance</span>
-        <span className="balance-value">
-          {isBalanceHidden ? '******' : `$${(walletData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-        </span>
-        <span className="balance-sub-value">Ready to invest or withdraw</span>
-      </div>
+              {/* Card 2: Available Balance */}
+              <div className="balance-card">
+                <span className="balance-label">Available Balance</span>
+                <div className="balance-value-group">
+                  <span className="balance-value">
+                    {isBalanceHidden ? '******' : `$${(walletData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  </span>
+                  <span className="stat-sub-value">Ready to invest or withdraw</span>
+                </div>
+              </div>
 
-      {/* Card 3: Bonus Points Value */}
-      <div className="balance-card">
-        <span className="balance-label">Bonus Points Value</span>
-        <span className="balance-value">
-          {isBalanceHidden ? '******' : `$${(walletData.totalBonusPoints || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-        </span>
-      </div>
-    </>
-  )}
-</div>
+              {/* Card 3: Bonus Points Value */}
+              <div className="balance-card">
+                {/* --- FIX 3: Add a container for the label and icon --- */}
+                <div className="label-with-icon">
+                  <span className="balance-label">Bonus Points Value</span>
+                  <Link to="/faq" className="info-icon-link" title={"Learn about Bonus Points"}>
+                    <InfoIcon />
+                  </Link>
+                </div>
+                <div className="balance-value-group">
+                  <span className="balance-value">
+                    {isBalanceHidden ? '******' : `$${(walletData.totalBonusPoints || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                  </span>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
         <div className="address-section">
           <h2>{t('wallet.deposit_address_title')}</h2>
           <p className="address-subtext">{t('wallet.deposit_address_subtitle')}</p>
@@ -175,7 +193,8 @@ const Wallet = () => {
         <WithdrawModal
           isOpen={isWithdrawModalOpen}
           onClose={() => setIsWithdrawModalOpen(false)}
-          usdcBalance={walletData.usdcBalance}
+          /* Important: The withdraw modal might need updating if it relies on old props */
+          usdcBalance={walletData.availableBalance}
           onWithdrawalQueued={handleWithdrawalQueued}
         />
       )}
