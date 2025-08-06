@@ -174,6 +174,8 @@ const Dashboard = () => {
                 if (!vaultInfo) return null;
                 const isLocked = position.lock_expires_at && new Date(position.lock_expires_at) > new Date();
                 
+                const isUpdating = isUpdatingCompound[position.vault_id];
+
                 const cardStyle = vaultInfo.image_url && vaultImageMap[vaultInfo.image_url]
                   ? { backgroundImage: `url(${vaultImageMap[vaultInfo.image_url]})` } 
                   : {};
