@@ -77,7 +77,7 @@ const Wallet = () => {
       return <h1>{t('wallet.loading')}</h1>;
     }
 
-    return (
+   return (
       <>
         <div className="wallet-header">
           <h1>{t('wallet.title')}</h1>
@@ -91,30 +91,22 @@ const Wallet = () => {
           </div>
         </div>
         
-        {/* --- THIS ENTIRE GRID IS REPLACED WITH THE CORRECTED STRUCTURE --- */}
         <div className="balance-grid">
           {error.wallet ? <p className='error-message'>{error.wallet}</p> : !walletData ? null : (
             <>
               {/* Card 1: Total Portfolio Value */}
               <div className="balance-card">
-                <span className="balance-label">Total Portfolio Value</span>
-                {/* --- FIX 2: Group the value and sub-text in a div to stack them --- */}
+                <div className="label-with-icon">
+                  <span className="balance-label">Total Portfolio Value</span>
+                </div>
                 <div className="balance-value-group">
                   <span className="balance-value">
                     {isBalanceHidden 
                       ? '******' 
-                      : `$${(
-                          (walletData.totalCapitalInVaults || 0) + 
-                          (walletData.totalBonusPoints || 0) + 
-                          (walletData.availableBalance || 0)
-                        ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                      : `$${((walletData.totalCapitalInVaults || 0) + (walletData.totalBonusPoints || 0) + (walletData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                     }
                   </span>
-                  <span 
-                    className={`stat-sub-value ${
-                      (walletData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'
-                    }`}
-                  >
+                  <span className={`stat-sub-value ${ (walletData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative' }`}>
                     Unrealized PnL: {isBalanceHidden 
                       ? '******' 
                       : `${((walletData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(walletData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -125,7 +117,9 @@ const Wallet = () => {
 
               {/* Card 2: Available Balance */}
               <div className="balance-card">
-                <span className="balance-label">Available Balance</span>
+                <div className="label-with-icon">
+                  <span className="balance-label">Available Balance</span>
+                </div>
                 <div className="balance-value-group">
                   <span className="balance-value">
                     {isBalanceHidden ? '******' : `$${(walletData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
@@ -136,7 +130,6 @@ const Wallet = () => {
 
               {/* Card 3: Bonus Points Value */}
               <div className="balance-card">
-                {/* --- FIX 3: Add a container for the label and icon --- */}
                 <div className="label-with-icon">
                   <span className="balance-label">Bonus Points Value</span>
                   <Link to="/faq" className="info-icon-link" title={"Learn about Bonus Points"}>
