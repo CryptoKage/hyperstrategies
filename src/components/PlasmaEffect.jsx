@@ -1,74 +1,102 @@
 // src/components/PlasmaEffect.jsx
 
 import React, { useRef, useEffect } from 'react';
-// --- THE FIX ---
-// We import the factory function 'createNoise3D' from the library.
 import { createNoise3D } from 'simplex-noise';
 
+// --- OPTIMIZATION 1: Define constants outside the component ---
+// This prevents them from being redefined on every render.
+const SCALING_FACTOR = 8; // Render at 1/8th resolution. Higher number = better performance.
+const primaryColor = { r: 63, g: 186, b: 243 };
+const secondaryColor = { r: 4, g: 14, b: 33 };
+const noiseScale = 0.005;
+const timeScale = 0.0005;
+
 const PlasmaEffect = () => {
-  const canvasRef = useRef(null);
+  const mainCanvasRef = useRef(null);
+  
+  // --- OPTIMIZATION 2: Use refs for everything that doesn't trigger a re-render ---
+  const offscreenCanvasRef = useRef(document.createElement('canvas'));
+  const imageDataRef = useRef(null);
+  const simplexRef = useRef(createNoise3D());
+  const animationFrameIdRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    
-    // --- THE FIX ---
-    // We call the factory function to get our noise generator.
-    const simplex = createNoise3D(); 
+    const mainCanvas = mainCanvasRef.current;
+    const mainCtx = mainCanvas.getContext('2d', { alpha: false }); // alpha: false can be faster
 
-    let animationFrameId;
+    const offscreenCanvas = offscreenCanvasRef.current;
+    const offscreenCtx = offscreenCanvas.getContext('2d');
+    
     let time = 0;
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      // Let's make it cover a bit more of the screen for a better effect
-      canvas.height = window.innerHeight * 0.6; 
+      // Set the size of the main, visible canvas
+      mainCanvas.width = window.innerWidth;
+      mainCanvas.height = window.innerHeight * 0.6;
+      
+      // Set the size of the small, off-screen canvas
+      offscreenCanvas.width = mainCanvas.width / SCALING_FACTOR;
+      offscreenCanvas.height = mainCanvas.height / SCALING_FACTOR;
+      
+      // --- OPTIMIZATION 3: Allocate image data ONLY ONCE during resize ---
+      imageDataRef.current = offscreenCtx.createImageData(offscreenCanvas.width, offscreenCanvas.height);
     };
 
-    const primaryColor = { r: 63, g: 186, b: 243 };
-    const secondaryColor = { r: 4, g: 14, b: 33 };
-
     const animate = () => {
-      const imageData = ctx.createImageData(canvas.width, canvas.height);
+      const imageData = imageDataRef.current;
+      if (!imageData) { // Safety check
+        animationFrameIdRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      
       const data = imageData.data;
-      const noiseScale = 0.005;
-      const timeScale = 0.0005;
+      const simplex = simplexRef.current;
 
-      for (let y = 0; y < canvas.height; y++) {
-        for (let x = 0; x < canvas.width; x++) {
-          const index = (y * canvas.width + x) * 4;
-          // --- THE FIX ---
-          // The function is now just called as simplex(), not simplex.noise3D()
+      // --- OPTIMIZATION 4: Loop over the SMALL canvas size ---
+      // This loop now runs (SCALING_FACTOR * SCALING_FACTOR) times less.
+      // e.g., for a scaling factor of 8, this is 64x fewer calculations!
+      for (let y = 0; y < offscreenCanvas.height; y++) {
+        for (let x = 0; x < offscreenCanvas.width; x++) {
+          const index = (y * offscreenCanvas.width + x) * 4;
           const noise = simplex(x * noiseScale, y * noiseScale, time * timeScale);
           const t = (noise + 1) / 2;
           
-          const r = secondaryColor.r + t * (primaryColor.r - secondaryColor.r);
-          const g = secondaryColor.g + t * (primaryColor.g - secondaryColor.g);
-          const b = secondaryColor.b + t * (primaryColor.b - secondaryColor.b);
-          
-          data[index] = r;
-          data[index + 1] = g;
-          data[index + 2] = b;
+          data[index] = secondaryColor.r + t * (primaryColor.r - secondaryColor.r);
+          data[index + 1] = secondaryColor.g + t * (primaryColor.g - secondaryColor.g);
+          data[index + 2] = secondaryColor.b + t * (primaryColor.b - secondaryColor.b);
           data[index + 3] = 255;
         }
       }
 
-      ctx.putImageData(imageData, 0, 0);
+      // 1. Draw the low-res plasma onto the small off-screen canvas
+      offscreenCtx.putImageData(imageData, 0, 0);
+
+      // 2. Draw the small canvas onto the large one, letting the GPU handle scaling
+      mainCtx.imageSmoothingEnabled = true; // Optional: for a softer look
+      mainCtx.drawImage(offscreenCanvas, 0, 0, mainCanvas.width, mainCanvas.height);
+      
       time++;
-      animationFrameId = requestAnimationFrame(animate);
+      animationFrameIdRef.current = requestAnimationFrame(animate);
     };
     
     resizeCanvas();
     animate();
 
-    window.addEventListener('resize', resizeCanvas);
+    // --- OPTIMIZATION 5: Debounce resize handler for better responsiveness ---
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(resizeCanvas, 200);
+    };
+
+    window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameIdRef.current);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="plasma-background" />;
+  return <canvas ref={mainCanvasRef} className="plasma-background" />;
 };
 
 export default PlasmaEffect;
