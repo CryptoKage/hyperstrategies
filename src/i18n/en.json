@@ -28,6 +28,7 @@
 },
 
   "dashboard": {
+    "unrealized_pnl": "Unrealized PnL",
     "welcome": "Welcome back, {{username}}",
     "no_data": "Could not fetch dashboard data.",
     "total_value": "Total Portfolio Value",
@@ -94,7 +95,13 @@
     "error_wallet": "Could not load wallet balances.",
     "error_history": "Could not load withdrawal history.",
       "balance_ape": "APE Balance",
-  "usd_value": "~${{amount}} USD" 
+  "usd_value": "~${{amount}} USD" ,
+    "total_portfolio_value": "Total Portfolio Value",
+    "unrealized_pnl": "Unrealized PnL",
+    "available_balance_card": "Available Balance",
+    "ready_to_invest": "Ready to invest or withdraw",
+    "bonus_points_value": "Bonus Points Value"
+  
   },
   
   "withdrawal_history": {

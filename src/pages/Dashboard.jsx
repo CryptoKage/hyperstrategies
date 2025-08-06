@@ -130,7 +130,7 @@ const Dashboard = () => {
                 (dashboardData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'
               }`}
             >
-              Unrealized PnL: {isBalanceHidden 
+               {t('dashboard.unrealized_pnl')}: {isBalanceHidden 
                 ? '******' 
                 : `${((dashboardData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(dashboardData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
               }

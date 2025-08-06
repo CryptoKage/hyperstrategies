@@ -10,6 +10,7 @@
   "terms_link": "Rechtliches"
 },
   "dashboard": {
+    "unrealized_pnl": "Nicht realisierter G/V",
     "welcome": "Willkommen zurück, {{username}}",
     "no_data": "Dashboard-Daten konnten nicht geladen werden.",
     "total_value": "Portfolio-Gesamtwert",
@@ -75,7 +76,13 @@
     "error_wallet": "Wallet-Guthaben konnten nicht geladen werden.",
     "error_history": "Auszahlungsverlauf konnte nicht geladen werden.",
       "balance_ape": "APE-Guthaben",
-  "usd_value": "~${{amount}} USD" 
+  "usd_value": "~${{amount}} USD" ,
+    "total_portfolio_value": "Gesamter Portfoliowert",
+    "unrealized_pnl": "Nicht realisierter G/V",
+    "available_balance_card": "Verfügbares Guthaben",
+    "ready_to_invest": "Bereit zum Investieren oder Abheben",
+    "bonus_points_value": "Wert der Bonuspunkte"
+  
   },
   "withdrawal_history": {
     "title": "Auszahlungshistorie",

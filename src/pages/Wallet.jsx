@@ -1,7 +1,6 @@
 // src/pages/Wallet.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-// --- FIX 1: Import Link and InfoIcon ---
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
@@ -10,9 +9,7 @@ import WithdrawModal from '../components/WithdrawModal';
 import WithdrawalHistory from '../components/WithdrawalHistory';
 import { useAuth } from '../context/AuthContext';
 import EyeIcon from '../components/EyeIcon';
-// --- We also need the InfoIcon component ---
 import InfoIcon from '../components/InfoIcon';
-
 
 const Wallet = () => {
   const { t } = useTranslation();
@@ -77,7 +74,7 @@ const Wallet = () => {
       return <h1>{t('wallet.loading')}</h1>;
     }
 
-   return (
+    return (
       <>
         <div className="wallet-header">
           <h1>{t('wallet.title')}</h1>
@@ -97,7 +94,7 @@ const Wallet = () => {
               {/* Card 1: Total Portfolio Value */}
               <div className="balance-card">
                 <div className="label-with-icon">
-                  <span className="balance-label">Total Portfolio Value</span>
+                  <span className="balance-label">{t('wallet.total_portfolio_value')}</span>
                 </div>
                 <div className="balance-value-group">
                   <span className="balance-value">
@@ -107,7 +104,7 @@ const Wallet = () => {
                     }
                   </span>
                   <span className={`stat-sub-value ${ (walletData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative' }`}>
-                    Unrealized PnL: {isBalanceHidden 
+                    {t('wallet.unrealized_pnl')}: {isBalanceHidden 
                       ? '******' 
                       : `${((walletData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(walletData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                     }
@@ -118,21 +115,21 @@ const Wallet = () => {
               {/* Card 2: Available Balance */}
               <div className="balance-card">
                 <div className="label-with-icon">
-                  <span className="balance-label">Available Balance</span>
+                  <span className="balance-label">{t('wallet.available_balance_card')}</span>
                 </div>
                 <div className="balance-value-group">
                   <span className="balance-value">
                     {isBalanceHidden ? '******' : `$${(walletData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                   </span>
-                  <span className="stat-sub-value">Ready to invest or withdraw</span>
+                  <span className="stat-sub-value">{t('wallet.ready_to_invest')}</span>
                 </div>
               </div>
 
               {/* Card 3: Bonus Points Value */}
               <div className="balance-card">
                 <div className="label-with-icon">
-                  <span className="balance-label">Bonus Points Value</span>
-                  <Link to="/faq" className="info-icon-link" title={"Learn about Bonus Points"}>
+                  <span className="balance-label">{t('wallet.bonus_points_value')}</span>
+                  <Link to="/faq" className="info-icon-link" title={t('faq.q1_title')}>
                     <InfoIcon />
                   </Link>
                 </div>
@@ -186,7 +183,6 @@ const Wallet = () => {
         <WithdrawModal
           isOpen={isWithdrawModalOpen}
           onClose={() => setIsWithdrawModalOpen(false)}
-          /* Important: The withdraw modal might need updating if it relies on old props */
           usdcBalance={walletData.availableBalance}
           onWithdrawalQueued={handleWithdrawalQueued}
         />
