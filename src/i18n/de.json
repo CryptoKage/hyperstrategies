@@ -2,6 +2,18 @@
   "common": {
     "max": "Max"
   },
+
+  "header": {
+  "dashboard": "Dashboard",
+  "wallet": "Wallet",
+  "profile": "Profil",
+  "admin": "Admin",
+  "logout": "Abmelden",
+  "signin": "Anmelden",
+  "register": "Registrieren",
+  "alt_logo": "Hyper-Strategies Logo"
+},
+
   "footer": {
   "follow_us": "Folge uns:",
   "documentation": "Doks",

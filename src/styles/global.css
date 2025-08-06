@@ -3090,3 +3090,76 @@ textarea.input-field { resize: vertical; }
   color: var(--color-negative, #f44336); /* Uses your theme color or a fallback red */
 }
 
+/* reinvest button */
+
+.auto-compound-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* This is the new container for the text and info icon */
+.auto-compound-toggle .label-group {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between text and icon */
+}
+
+/* Base styles for the switch container */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;  /* Larger width */
+  height: 28px; /* Larger height */
+}
+
+/* Hide the default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider is the main visible part of the toggle */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #333; /* Off state color */
+  transition: .4s;
+}
+
+/* The white circle that moves */
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px; /* Larger circle */
+  width: 20px;  /* Larger circle */
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+/* When the checkbox is checked, change the background color */
+input:checked + .slider {
+  background-color: var(--color-primary);
+}
+
+/* When checked, move the white circle to the right */
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* Rounded corners for the slider */
+.slider.round {
+  border-radius: 28px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}

@@ -36,6 +36,8 @@ const Dashboard = () => {
   const [selectedVault, setSelectedVault] = useState(null);
 
   const [autoCompoundState, setAutoCompoundState] = useState({});
+   const [isUpdatingCompound, setIsUpdatingCompound] = useState({});
+
 
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -62,15 +64,23 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
-  const handleToggleAutoCompound = async (vaultId) => {
+    const handleToggleAutoCompound = async (vaultId) => {
     const currentState = autoCompoundState[vaultId];
     const newState = !currentState;
+
+    // Set "saving" state for this specific vault
+    setIsUpdatingCompound(prev => ({ ...prev, [vaultId]: true }));
     setAutoCompoundState(prevState => ({ ...prevState, [vaultId]: newState }));
+
     try {
       await api.put(`/vaults/positions/${vaultId}/compound`, { autoCompound: newState });
     } catch (err) {
       console.error("Failed to update auto-compound setting:", err);
+      // Revert on failure
       setAutoCompoundState(prevState => ({ ...prevState, [vaultId]: currentState }));
+    } finally {
+      // Always remove "saving" state when done
+      setIsUpdatingCompound(prev => ({ ...prev, [vaultId]: false }));
     }
   };
 
@@ -190,12 +200,26 @@ const Dashboard = () => {
                           </div>
                       )}
                       <div className="auto-compound-toggle">
-                          <label htmlFor={`compound-toggle-${position.vault_id}`}>{t('dashboard.auto_compound')}</label>
-                          <label className="switch">
-                              <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} />
-                              <span className="slider round"></span>
+                        <div className="label-group">
+                          <label htmlFor={`compound-toggle-${position.vault_id}`}>
+                            {isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}
                           </label>
+                          <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}>
+                            <InfoIcon />
+                          </Link>
+                        </div>
+                        <label className="switch">
+                          <input 
+                            type="checkbox" 
+                            id={`compound-toggle-${position.vault_id}`} 
+                            checked={autoCompoundState[position.vault_id] ?? true} 
+                            onChange={() => handleToggleAutoCompound(position.vault_id)}
+                            disabled={isUpdating} // Disable while saving
+                          />
+                          <span className="slider round"></span>
+                        </label>
                       </div>
+
                       <div className="vault-actions">
                         <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
                         <button 
