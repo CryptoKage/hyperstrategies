@@ -23,7 +23,7 @@ import AdminDashboard from './admin/AdminDashboard';
 import FinancialsPage from './admin/FinancialsPage';
 import UserDetailPage from './admin/UserDetailPage';
 import TreasuryPage from './admin/TreasuryPage';
-import VaultManagementPage from './admin/VaultManagmentPage';
+import VaultManagementPage from './admin/VaultManagementPage';
 
 
 // --- Guard Components ---
