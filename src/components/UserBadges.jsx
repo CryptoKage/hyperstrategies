@@ -3,7 +3,9 @@ import React from 'react';
 // A simple dictionary to map tag names to display text and styles
 const tagStyles = {
   'early_supporter': { text: 'Early Supporter', style: 'badge-gold' },
-  'hip_hop_syndicate': { text: 'Hip-Hop Syndicate', style: 'badge-purple' },
+  'hip_hop_syndicate': { text: 'Hip-Hop Syndicate', style: 'badge-hiphop' }, // Changed to its own style
+  'shadwmf_syndicate': { text: 'ShadwMF', style: 'badge-shadw' },
+  'purrtardos_syndicate': { text: 'Purrtardos', style: 'badge-princess' },
   // Add more tags here as you create them
 };
 
