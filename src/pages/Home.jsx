@@ -95,10 +95,6 @@ const homePageCards = [
           </section>
         </div>
 
-        <section className="path-selector-section">
-          <h2>{t('home.cards.title')}</h2>
-          <CardSection cards={homePageCards} />
-        </section>
       </Layout>
       
       {showIOSPrompt && <AddToHomeScreenPrompt onClose={() => setShowIOSPrompt(false)} />}
