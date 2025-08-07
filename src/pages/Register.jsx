@@ -29,23 +29,33 @@ const Register = () => {
   }, [searchParams]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
+  e.preventDefault();
+  setError('');
+  setIsLoading(true);
 
-    try {
-      await api.post('/auth/register', { username, email, password, referralCode });
-      navigate('/login?status=registered');
-    } catch (err) {
-      if (err.response) {
-        setError(err.response.data.error || t('register_page.error_unexpected'));
+  try {
+    await api.post('/auth/register', { username, email, password, referralCode });
+    navigate('/login?status=registered');
+  } catch (err) {
+    // --- THIS IS THE NEW ERROR HANDLING LOGIC ---
+    if (err.response && err.response.data) {
+      if (err.response.data.errors) {
+        // Handle validation errors from express-validator
+        const firstError = err.response.data.errors[0];
+        setError(firstError.msg); // Display the helpful message from the backend
+      } else if (err.response.data.error) {
+        // Handle other custom errors (like "email already exists")
+        setError(err.response.data.error);
       } else {
-        setError(t('register_page.error_server'));
+        setError(t('register_page.error_unexpected'));
       }
-    } finally {
-      setIsLoading(false);
+    } else {
+      setError(t('register_page.error_server'));
     }
-  };
+  } finally {
+    setIsLoading(false);
+  }
+};
   
   const handleGoogleLogin = () => {
     window.location.href = `${api.defaults.baseURL}/auth/google`;
