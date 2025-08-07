@@ -279,6 +279,7 @@
   },
 
 
+  
   "home": {
     "rotating_words": [
       "AUTOMATED",
@@ -292,32 +293,31 @@
       "install_app": "Install App"
     },
     "cards": {
-  "title": "Explore Hyper-Strategies",
-  "airdrop": {
-    "title": "XP LEADERBOARD",
-    "text": "Gain XP for Token Allocation",
-    "button":"View Leaderboard"
-  },
-  "self": {
-    "title": "Strategy Builder Engine",
-    "text": "Coming Soon: Build and deploy your own automated strategies.",
-    "button": "Coming Soon"
-  },
-  "managed": {
-    "title": "Invest in Managed Vaults",
-    "text": "Deposit and let our systems trade for you",
-    "button": "Sign In"
-  },
-  "investor": {
-    "title": "Hyper Strategies Info",
-    "text": "Learn about Hyper-Strategies from our Gitbook.",
-    "button": "Learn More"
+      "title": "Explore Hyper-Strategies",
+      "airdrop": {
+        "title": "XP LEADERBOARD",
+        "text": "Gain XP for Token Allocation"
+      },
+      "self": {
+        "title": "Strategy Builder Engine",
+        "text": "Coming Soon: Build and deploy your own automated strategies.",
+        "button": "Coming Soon"
+      },
+      "managed": {
+        "title": "Invest in Managed Vaults",
+        "text": "Deposit and let our systems trade for you"
+      },
+      "investor": {
+        "title": "Hyper Strategies Info",
+        "text": "Learn about Hyper-Strategies from our Gitbook.",
+        "button": "Learn More"
+      }
+    
   },
   "card_section": {
     "view_leaderboard": "View Leaderboard",
     "invest_now": "Invest Now"
   }
-}
   },
     
   "faq_page": {
