@@ -3276,3 +3276,41 @@ input:checked + .slider:before {
   text-shadow: 0 0 3px rgba(255,255,255,0.8);
 }
 
+.path-selector-section h2 {
+  text-align: center;
+  font-size: 28px; /* A good size for a section title */
+  margin-bottom: 48px; /* More space below the title */
+}
+
+/* 2. Target the grid container specifically within the path-selector-section */
+/* This is the KEY FIX for the desktop layout */
+.path-selector-section .card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  max-width: 1200px; /* Give the grid a max width */
+  margin: 0 auto; /* Center the grid container itself */
+}
+
+/* 3. Target the cards specifically within this section */
+/* This ensures we don't affect other cards on the site */
+.path-selector-section .card {
+  background-color: var(--color-surface); /* Use the standard card background */
+  text-align: left; /* Re-align text to the left for a cleaner look */
+  max-width: none; /* Remove the max-width that was forcing stacking */
+  width: 100%; /* Allow the card to fill the grid cell */
+}
+
+/* 4. Target the card content for better alignment */
+.path-selector-section .card__content {
+  text-align: left;
+}
+
+.path-selector-section .card__icon {
+  text-align: left;
+  font-size: 28px;
+}
+
+.path-selector-section .card__footer {
+  text-align: center; /* Center the button within the card */
+}
