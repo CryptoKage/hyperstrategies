@@ -11,10 +11,15 @@ import ChartImage from '../assets/chart-placeholder.png';
 import InteractiveBackground from '../components/InteractiveBackground';
 
 const Home = () => {
-  const { t } = useTranslation();
+  // Correctly get both 't' and 'ready' from the hook
+  const { t, ready } = useTranslation();
+  
+  // Now, place the check immediately after
   if (!ready) {
-  return null; // Or a loading spinner
-}
+    return null; // Or a loading spinner
+  }
+
+  // The rest of your component's code
   const navigate = useNavigate();
   const { promptInstall, canInstall, isAppInstalled } = useInstallPrompt();
   const { isIOS } = useIsIOS();
