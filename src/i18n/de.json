@@ -278,19 +278,23 @@
       "title": "Entdecke Hyper-Strategies",
       "airdrop": {
         "title": "Erhalte XP für Kapitaleinzahlungen",
-        "text": "XP-Rangliste ansehen"
+        "text": "",
+        "button": "XP-Rangliste ansehen"
       },
       "self": {
         "title": "Zugriff auf die automatisierte Strategie-Engine",
-        "text": "Erstelle und nutze deine eigenen Strategien"
+        "text": "Erstelle und nutze deine eigenen Strategien",
+        "button": "coming soon"
       },
       "managed": {
         "title": "Investiere in verwaltete Vaults",
-        "text": "Zahle ein und lass unsere Systeme für dich handeln"
+        "text": "Zahle ein und lass unsere Systeme für dich handeln",
+        "button": "anmelden"
       },
       "invest": {
         "title": "Werde ein strategischer Partner",
-        "text": "Erfahre mehr über unseren Token und Pre-Sale-Möglichkeiten"
+        "text": "Erfahre mehr über unseren Token und Pre-Sale-Möglichkeiten",
+        "button": "investieren"
       },
        "card_section": {
     "view_leaderboard": "Rangliste ansehen",

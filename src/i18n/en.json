@@ -294,8 +294,9 @@
     "cards": {
   "title": "Explore Hyper-Strategies",
   "airdrop": {
-    "title": "Gain XP for Token Allocation",
-    "text": "View XP leaderboard"
+    "title": "XP LEADERBOARD",
+    "text": "Gain XP for Token Allocation",
+    "button":"View Leaderboard"
   },
   "self": {
     "title": "Strategy Builder Engine",
@@ -304,7 +305,8 @@
   },
   "managed": {
     "title": "Invest in Managed Vaults",
-    "text": "Deposit and let our systems trade for you"
+    "text": "Deposit and let our systems trade for you",
+    "button": "Sign In"
   },
   "investor": {
     "title": "Hyper Strategies Info",
