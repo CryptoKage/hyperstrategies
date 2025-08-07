@@ -11,30 +11,33 @@ import ChartImage from '../assets/chart-placeholder.png';
 import InteractiveBackground from '../components/InteractiveBackground';
 
 const Home = () => {
-  // Correctly get both 't' and 'ready' from the hook
+  // --- THIS IS THE FIX ---
+  // 1. Call ALL hooks unconditionally at the top of the component.
   const { t, ready } = useTranslation();
-  
-  // Now, place the check immediately after
-  if (!ready) {
-    return null; // Or a loading spinner
-  }
-
-  // The rest of your component's code
   const navigate = useNavigate();
   const { promptInstall, canInstall, isAppInstalled } = useInstallPrompt();
   const { isIOS } = useIsIOS();
   const [showIOSPrompt, setShowIOSPrompt] = useState(false);
+  
+  // 2. Perform the conditional check AFTER all hooks have been called.
+  if (!ready) {
+    return (
+      <Layout>
+        <div>Loading...</div> {/* Or a proper loading spinner component */}
+      </Layout>
+    );
+  }
 
+  // The rest of your component's code can now safely assume the hooks are initialized.
   const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
-
-  // --- THIS ARRAY NOW USES YOUR ORIGINAL TEXT ---
+  
   const homePageCards = [
     { 
       icon: '🏆', 
       title: t('home.cards.airdrop.title'), 
       description: t('home.cards.airdrop.text'), 
       route: '/xpleaderboard',
-      buttonText: t('card_section.view_leaderboard') // A more specific key
+      buttonText: t('card_section.view_leaderboard')
     },
     { 
       icon: '⚙️', 
@@ -47,15 +50,15 @@ const Home = () => {
       icon: '📈', 
       title: t('home.cards.managed.title'), 
       description: t('home.cards.managed.text'), 
-      route: '/login', // Leads to login, then dashboard with vaults
-      buttonText: t('card_section.invest_now') // A more specific key
+      route: '/login',
+      buttonText: t('card_section.invest_now')
     },
     { 
       icon: '💼', 
       title: t('home.cards.investor.title'), 
       description: t('home.cards.investor.text'), 
       type: 'link',
-      url: 'https://hyper-strategies.gitbook.io/hyper-strategies-docs/', // Added your docs link
+      url: 'https://hyper-strategies.gitbook.io/hyper-strategies-docs/',
       buttonText: t('home.cards.investor.button')
     },
   ];
