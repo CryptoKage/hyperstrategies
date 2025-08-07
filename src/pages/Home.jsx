@@ -9,7 +9,6 @@ import useIsIOS from '../hooks/useIsIOS';
 import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
 
 import Layout from '../components/Layout';
-import CardSection from '../components/CardSection';
 import ChartImage from '../assets/chart-placeholder.png';
 import InteractiveBackground from '../components/InteractiveBackground';
 
