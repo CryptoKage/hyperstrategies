@@ -2,25 +2,23 @@
   "common": {
     "max": "Max"
   },
-
   "header": {
-  "dashboard": "Dashboard",
-  "wallet": "Wallet",
-  "profile": "Profil",
-  "admin": "Admin",
-  "logout": "Abmelden",
-  "signin": "Anmelden",
-  "register": "Registrieren",
-  "alt_logo": "Hyper-Strategies Logo"
-},
-
+    "dashboard": "Dashboard",
+    "wallet": "Wallet",
+    "profile": "Profil",
+    "admin": "Admin",
+    "logout": "Abmelden",
+    "signin": "Anmelden",
+    "register": "Registrieren",
+    "alt_logo": "Hyper-Strategies Logo"
+  },
   "footer": {
-  "follow_us": "Folge uns:",
-  "documentation": "Doks",
-  "user_guide": "Anleitung",
-  "terms": "AGB",
-  "terms_link": "Rechtliches"
-},
+    "follow_us": "Folge uns:",
+    "documentation": "Doks",
+    "user_guide": "Anleitung",
+    "terms": "AGB",
+    "terms_link": "Rechtliches"
+  },
   "dashboard": {
     "unrealized_pnl": "Nicht realisierter G/V",
     "welcome": "Willkommen zurück, {{username}}",
@@ -89,14 +87,13 @@
     "start_withdrawal": "Auszahlung starten",
     "error_wallet": "Wallet-Guthaben konnten nicht geladen werden.",
     "error_history": "Auszahlungsverlauf konnte nicht geladen werden.",
-      "balance_ape": "APE-Guthaben",
-  "usd_value": "~${{amount}} USD" ,
+    "balance_ape": "APE-Guthaben",
+    "usd_value": "~${{amount}} USD",
     "total_portfolio_value": "Gesamter Portfoliowert",
     "unrealized_pnl": "Nicht realisierter G/V",
     "available_balance_card": "Verfügbares Guthaben",
     "ready_to_invest": "Bereit zum Investieren oder Abheben",
     "bonus_points_value": "Wert der Bonuspunkte"
-  
   },
   "withdrawal_history": {
     "title": "Auszahlungshistorie",
@@ -110,7 +107,6 @@
     "view_on_etherscan": "Auf Etherscan ansehen",
     "failed_tooltip": "Diese Transaktion ist fehlgeschlagen. Unser Team wurde benachrichtigt. Bitte kontaktieren Sie den Support, wenn das Problem weiterhin besteht."
   },
-
   "withdraw_modal": {
     "title": "USDC auszahlen",
     "subtitle": "Gib die Zieladresse und den Betrag ein. Auszahlungen werden aus Sicherheitsgründen stapelweise verarbeitet und können einige Minuten dauern.",
@@ -159,8 +155,7 @@
     "nav_fees": "Vault-Gebühren",
     "nav_xp": "XP verdienen",
     "nav_faq": "FAQ ansehen",
-
-"tiers_title": "Stufen (begrenzt auf Stufe 4)",
+    "tiers_title": "Stufen (begrenzt auf Stufe 4)",
     "tiers_subtitle": "Deine Kontostufe wird durch deine gesamten XP bestimmt. Höhere Stufen schalten erhebliche Vorteile bei ausgewählten Vaults frei.",
     "table_header_tier": "Stufe",
     "table_header_xp": "Benötigte XP",
@@ -173,7 +168,6 @@
     "tier3_benefit": "-4% Einzahlungsgebühr (Core) & -5% Performancegebühr (ApeCoin)",
     "tier4_xp": "3.000+ XP",
     "tier4_benefit": "-6% Einzahlungsgebühr (Core) & -7,5% Performancegebühr (ApeCoin)",
-
     "fees_title": "Erklärung der Vault-Gebühren",
     "fees_subtitle": "Jeder Vault hat eine einzigartige, auf seine Strategie zugeschnittene Gebührenstruktur. Die Gebühren werden für den Plattformbetrieb, die Liquiditätsbereitstellung und die zukünftige Entwicklung verwendet.",
     "core_vault_title": "Core Vault (Vault 1)",
@@ -184,7 +178,6 @@
     "ape_vault_desc_1": "<strong>Einzahlungsgebühr:</strong> Pauschal <strong>10%</strong> (nicht von der Stufe beeinflusst). Wird als Bonuspunkte gutgeschrieben.",
     "ape_vault_desc_2": "<strong>Performancegebühr:</strong> <strong>40% (wird mit der Stufe reduziert)</strong>. Diese Gebühr wird für jede zusätliche Stufe um 2,5% reduziert.",
     "ape_vault_desc_3": "<strong>Sperrfrist:</strong> Keine. Das Kapital ist liquide.",
-    
     "xp_title": "Wie du XP verdienst",
     "xp_subtitle": "XP ist das Maß für deinen Beitrag zum Ökosystem. Sieh deinen Rang auf der <1>XP-Bestenliste</1>.",
     "xp_rule_1_title": "Kapitaleinzahlung:",
@@ -196,8 +189,6 @@
     "xp_rule_4_title": "Rückvergütung der Bonuspunkte:",
     "xp_rule_4_desc": "Verdiene für alle <strong>10 Bonuspunkte 1 XP</strong> , bei jeder Rückvergütung."
   },
-
-  
   "xp_leaderboard": {
     "title": "XP & Bestenliste",
     "subtitle": "Verdiene XP durch deine Teilnahme am Ökosystem und steige in den Stufen auf!",
@@ -211,7 +202,6 @@
     "modal_title": "Wie man XP verdient",
     "copy_button": "Info zum Teilen kopieren",
     "copied_button": "Kopiert!",
-
     "accordion_title_signup": "🚀 Anmeldebonus für Early Adopter (Erste 500 Nutzer)",
     "accordion_desc_signup": "Ein einmaliger XP-Bonus wird an die ersten 500 Nutzer bei der Registrierung vergeben, um unsere frühesten Unterstützer zu belohnen. Der Bonus ist gestaffelt:",
     "signup_tier_1": "<strong>Nutzer 1-100:</strong> 25 XP",
@@ -219,35 +209,24 @@
     "signup_tier_3": "<strong>Nutzer 201-300:</strong> 15 XP",
     "signup_tier_4": "<strong>Nutzer 301-400:</strong> 10 XP",
     "signup_tier_5": "<strong>Nutzer 401-500:</strong> 5 XP",
-    
     "accordion_title_allocation": "💰 Kapitaleinzahlung: $10 gibt 1 XP",
     "accordion_desc_allocation": "Du verdienst XP, indem du dein Kapital arbeiten lässt. Für jede $10, die du einem Vault zuweist (mindestens $100 Zuweisung), erhältst du 1 XP. Eine Zuweisung von $1.000 bringt dir 100 XP.",
-
     "accordion_title_referral": "🤝 Erfolgreicher Referral: Dynamisch (10%)",
     "accordion_desc_referral": "Wenn sich ein Nutzer mit deinem Einladungscode anmeldet und eine Vault-Einzahlung tätigt (mindestens $100), erhältst du als Werbender XP in Höhe von 10% der Einzahlung <strong>JEDES MAL</strong>. Weist er $1.000 zu, bekommst du 100 XP.",
-
     "accordion_title_staking": "⏳ Wöchentlicher Staking-Bonus: Demnächst verfügbar",
     "accordion_desc_staking": "Eine zukünftige Funktion wird Nutzer mit XP für jede Woche belohnen, in der sie ihr Kapital in einem Vault gebunden halten, um langfristiges Engagement zu fördern.",
-
     "accordion_title_buyback": "💸 Rückvergütung von Bonuspunkten: 10 zu 1 XP",
     "accordion_desc_buyback": "Wenn die Plattform deine Bonuspunkte rückvergütet, erhältst du XP in Höhe von 10% des Wertes. Eine Rückvergütung von 200 Bonuspunkten gewährt dir 20 XP."
   },
-
   "add_to_home_screen": {
     "title": "Hyper-Strategies App installieren",
     "subtitle": "Für das beste Erlebnis, füge unsere App zu deinem Home-Bildschirm hinzu.",
     "step1": "1. Tippe unten auf das <strong>Teilen</strong>-Symbol.",
     "step2": "2. Scrolle nach unten und tippe auf <strong>„Zum Home-Bildschirm hinzufügen“</strong>."
   },
-
   "oauth_success": {
     "logging_in": "Anmeldung läuft..."
   },
-
-  "card_section": {
-    "select_button": "Auswählen"
-  },
-
   "legal": {
     "title": "Impressum & Rechtliche Hinweise",
     "company": "HyperStrategies Inc.",
@@ -260,13 +239,11 @@
     "rightsTitle": "Urheberrecht",
     "rights": "Alle Rechte vorbehalten. Die auf dieser Webseite veröffentlichten Inhalte und Werke unterliegen dem Urheberrecht der geltenden Rechtsordnung."
   },
-
   "home": {
     "rotating_words": [
       "AUTOMATISIERT",
-      "EXPERIMENTELL",
       "HEDGEFOND",
-      "experimentell",
+      "EXPERIMENTELL",
       "HYPER"
     ],
     "hero": {
@@ -278,31 +255,28 @@
       "title": "Entdecke Hyper-Strategies",
       "airdrop": {
         "title": "Erhalte XP für Kapitaleinzahlungen",
-        "text": "",
-        "button": "XP-Rangliste ansehen"
+        "text": "XP-Rangliste ansehen"
       },
       "self": {
-        "title": "Zugriff auf die automatisierte Strategie-Engine",
-        "text": "Erstelle und nutze deine eigenen Strategien",
-        "button": "coming soon"
+        "title": "Strategy Builder Engine",
+        "text": "Demnächst: Erstelle und nutze deine eigenen automatisierten Strategien.",
+        "button": "Demnächst"
       },
       "managed": {
         "title": "Investiere in verwaltete Vaults",
-        "text": "Zahle ein und lass unsere Systeme für dich handeln",
-        "button": "anmelden"
+        "text": "Zahle ein und lass unsere Systeme für dich handeln"
       },
-      "invest": {
-        "title": "Werde ein strategischer Partner",
-        "text": "Erfahre mehr über unseren Token und Pre-Sale-Möglichkeiten",
-        "button": "investieren"
-      },
-       "card_section": {
-    "view_leaderboard": "Rangliste ansehen",
-    "invest_now": "Jetzt investieren"
-  }
+      "investor": {
+        "title": "Hyper Strategies Info",
+        "text": "Erfahre mehr über Hyper-Strategies in unserem Gitbook.",
+        "button": "Mehr erfahren"
+      }
     }
   },
-    
+  "card_section": {
+    "view_leaderboard": "Rangliste ansehen",
+    "invest_now": "Jetzt investieren"
+  },
   "faq_page": {
     "title": "Häufig gestellte Fragen",
     "q1_title": "Was sind Bonuspunkte?",
@@ -312,7 +286,6 @@
     "q3_title": "Wie werden Auszahlungen aus Vaults bearbeitet?",
     "q3_answer": "Wenn du eine Auszahlung aus einem Vault beantragst, wird eine Anfrage erstellt, um dein \"handelbares Kapital\" zurück auf dein Hauptguthaben \"Verfügbares Guthaben\" zu verschieben. Dieser Vorgang kann mindestens 48 Stunden dauern. Um Geld von der Plattform auf eine externe Wallet abzuheben, musst du die Funktion \"Guthaben auszahlen\" auf der Wallet-Seite verwenden, nachdem deine Vault-Auszahlung bearbeitet wurde."
   },
-
   "profile_page": {
     "xp_rate_label": "Staking EP-Rate",
     "xp_rate_per_day": "Tag",
@@ -339,9 +312,8 @@
     "placeholder_your_code": "dein-Code",
     "saving_button": "Wird gespeichert...",
     "save_code_button": "Code speichern",
-      "syndicate_title": "Syndikat-Empfehlungen",
+    "syndicate_title": "Syndikat-Empfehlungen",
     "syndicate_description": "Schließen Sie sich mit einer Community zusammen, um gemeinsame Empfehlungsprämien zu verdienen. Demnächst verfügbar.",
     "learn_more_button": "Mehr erfahren"
   }
 }
-
