@@ -12,6 +12,9 @@ import InteractiveBackground from '../components/InteractiveBackground';
 
 const Home = () => {
   const { t } = useTranslation();
+  if (!ready) {
+  return null; // Or a loading spinner
+}
   const navigate = useNavigate();
   const { promptInstall, canInstall, isAppInstalled } = useInstallPrompt();
   const { isIOS } = useIsIOS();
