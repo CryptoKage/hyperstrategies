@@ -1,15 +1,13 @@
-// src/pages/Register.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'; // 1. Import
+import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import Layout from '../components/Layout';
 import InputField from '../components/InputField';
 import GoogleIcon from '../components/GoogleIcon';
 
 const Register = () => {
-  const { t } = useTranslation(); // 2. Initialize
+  const { t } = useTranslation();
   
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -28,34 +26,37 @@ const Register = () => {
     }
   }, [searchParams]);
 
+  // --- THIS IS THE UPDATED FUNCTION ---
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError('');
-  setIsLoading(true);
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
-  try {
-    await api.post('/auth/register', { username, email, password, referralCode });
-    navigate('/login?status=registered');
-  } catch (err) {
-    // --- THIS IS THE NEW ERROR HANDLING LOGIC ---
-    if (err.response && err.response.data) {
-      if (err.response.data.errors) {
-        // Handle validation errors from express-validator
-        const firstError = err.response.data.errors[0];
-        setError(firstError.msg); // Display the helpful message from the backend
-      } else if (err.response.data.error) {
-        // Handle other custom errors (like "email already exists")
-        setError(err.response.data.error);
+    try {
+      await api.post('/auth/register', { username, email, password, referralCode });
+      navigate('/login?status=registered');
+    } catch (err) {
+      // New, more detailed error handling logic
+      if (err.response && err.response.data) {
+        if (err.response.data.errors) {
+          // Handles validation errors from express-validator (e.g., "Password too weak")
+          const firstError = err.response.data.errors[0];
+          setError(firstError.msg); 
+        } else if (err.response.data.error) {
+          // Handles other custom errors from our backend (e.g., "Email already exists")
+          setError(err.response.data.error);
+        } else {
+          // Fallback for other 400-level errors
+          setError(t('register_page.error_unexpected'));
+        }
       } else {
-        setError(t('register_page.error_unexpected'));
+        // Fallback for network errors where there is no response object
+        setError(t('register_page.error_server'));
       }
-    } else {
-      setError(t('register_page.error_server'));
+    } finally {
+      setIsLoading(false);
     }
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
   
   const handleGoogleLogin = () => {
     window.location.href = `${api.defaults.baseURL}/auth/google`;
