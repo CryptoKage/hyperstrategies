@@ -1,5 +1,3 @@
-// src/pages/admin/VaultManagementPage.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
@@ -19,18 +17,14 @@ const VaultManagementPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // State for the PnL Update Form
   const [pnlInput, setPnlInput] = useState('');
   const [isPnlUpdating, setIsPnlUpdating] = useState(false);
   const [pnlMessage, setPnlMessage] = useState({ type: '', text: '' });
   
-  // State for the Profit Distribution Form
   const [profitInput, setProfitInput] = useState('');
   const [isDistributing, setIsDistributing] = useState(false);
   const [distributeMessage, setDistributeMessage] = useState({ type: '', text: '' });
 
-
-  // Fetch the list of all vaults once on component mount
   useEffect(() => {
     const fetchVaults = async () => {
       try {
@@ -46,13 +40,13 @@ const VaultManagementPage = () => {
     fetchVaults();
   }, []);
 
-  // Fetch the detailed data for the selected vault whenever the ID changes
   const fetchVaultDetails = useCallback(async () => {
     if (!selectedVaultId) return;
     setLoading(true);
     setError('');
     setVaultData(null);
     try {
+      // This endpoint will need to be updated to use the ledger system next
       const response = await api.get(`/admin/vaults/${selectedVaultId}/details`);
       setVaultData(response.data);
     } catch (err) {
@@ -66,16 +60,15 @@ const VaultManagementPage = () => {
     fetchVaultDetails();
   }, [fetchVaultDetails]);
 
-  // Handler for PnL Update
   const handleUpdatePnl = async (e) => {
     e.preventDefault();
     setIsPnlUpdating(true);
     setPnlMessage({ type: '', text: '' });
     try {
-      const response = await api.post(`/admin/vaults/${selectedVaultId}/update-pnl`, { pnlPercentage: pnlInput });
+      const response = await api.post(`/admin/vaults/${selectedVaultId}/update-pnl`, { newTotalValue: pnlInput });
       setPnlMessage({ type: 'success', text: response.data.message });
-      setPnlInput(''); // Clear input on success
-      fetchVaultDetails();
+      setPnlInput('');
+      fetchVaultDetails(); // Refresh data after update
     } catch(err) {
       setPnlMessage({ type: 'error', text: err.response?.data?.message || 'Update failed.' });
     } finally {
@@ -83,23 +76,13 @@ const VaultManagementPage = () => {
     }
   };
 
-  // Handler for Profit Distribution
+  // This handler is now deprecated by the new PnL system
   const handleDistributeProfit = async (e) => {
     e.preventDefault();
-    setIsDistributing(true);
-    setDistributeMessage({ type: '', text: '' });
-    try {
-        const response = await api.post('/admin/distribute-profit', { vault_id: selectedVaultId, total_profit_amount: profitInput });
-        setDistributeMessage({ type: 'success', text: response.data.message });
-        setProfitInput(''); // Clear input on success
-        fetchVaultDetails();
-    } catch (err) {
-        setDistributeMessage({ type: 'error', text: err.response?.data?.message || 'Distribution failed.' });
-    } finally {
-        setIsDistributing(false);
-    }
+    setDistributeMessage({ type: 'error', text: 'This function is deprecated. Please use the "Update Vault Value" tool.' });
   };
 
+  const currentVaultCapital = vaultData?.stats?.totalCapital || 0;
 
   return (
     <Layout>
@@ -124,35 +107,41 @@ const VaultManagementPage = () => {
         {vaultData && (
           <>
             <div className="stats-grid" style={{ marginTop: '24px' }}>
-                <StatCard label="Total Capital in Vault" value={`$${(vaultData.stats.totalCapital || 0).toFixed(2)}`} />
-                <StatCard label="Total Unrealized PnL" value={`$${(vaultData.stats.totalPnl || 0).toFixed(2)}`} />
+                <StatCard label="Total Capital in Vault" value={`$${(vaultData.stats.totalCapital || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
+                <StatCard label="Total Unrealized PnL" value={`$${(vaultData.stats.totalPnl || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
                 <StatCard label="Participant Count" value={vaultData.stats.participantCount} />
-                <StatCard label="Current Displayed PnL" value={`${(vaultData.stats.currentPnlPercentage || 0).toFixed(2)}%`} />
+                <StatCard label="Current PnL %" value={`${(vaultData.stats.currentPnlPercentage || 0).toFixed(2)}%`} />
             </div>
 
             <div className="admin-grid">
               <div className="admin-actions-card">
                 <h3>Update Unrealized PnL</h3>
-                <p>Set the current unrealized PnL for all users in this vault as a percentage of their capital.</p>
+                <p>Enter the new total value of all assets in this vault. The system will calculate and distribute the resulting PnL to all participants proportionally.</p>
+                
+                <div className="stat-card" style={{ marginBottom: '16px' }}>
+                  <span className="stat-label">Current Total Vault Value</span>
+                  <span className="stat-value">${currentVaultCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+
                 <form onSubmit={handleUpdatePnl} className="admin-form">
                   <div className="form-group">
-                    <label htmlFor="pnl-percent">Current PnL (%)</label>
-                    <input id="pnl-percent" type="number" step="0.01" value={pnlInput} onChange={e => setPnlInput(e.target.value)} placeholder="e.g., 8.5 for +8.5%" required/>
+                    <label htmlFor="new-total-value">New Total Vault Value (USDC)</label>
+                    <input id="new-total-value" type="number" step="0.01" value={pnlInput} onChange={e => setPnlInput(e.target.value)} placeholder="e.g., 150000.00" required/>
                   </div>
-                  <button type="submit" className="btn-primary" disabled={isPnlUpdating}>{isPnlUpdating ? 'Updating...' : 'Update All PnLs'}</button>
+                  <button type="submit" className="btn-primary" disabled={isPnlUpdating}>{isPnlUpdating ? 'Updating...' : 'Update Vault Value & PnL'}</button>
                 </form>
                 {pnlMessage.text && <p className={`admin-message ${pnlMessage.type}`}>{pnlMessage.text}</p>}
               </div>
 
               <div className="admin-actions-card">
-                  <h3>Distribute Realized Profits</h3>
-                  <p>Distribute realized profits to users. This will apply performance fees and HWM logic.</p>
+                  <h3>Distribute Realized Profits (DEPRECATED)</h3>
+                  <p>This tool is deprecated. Use the 'Update Vault Value' tool to manage PnL.</p>
                   <form onSubmit={handleDistributeProfit} className="admin-form">
                       <div className="form-group">
                           <label htmlFor="profit-amount">Total Realized Profit (USDC)</label>
-                          <input id="profit-amount" type="number" step="0.01" value={profitInput} onChange={e => setProfitInput(e.target.value)} placeholder="e.g., 10000.00" required />
+                          <input id="profit-amount" type="number" step="0.01" value={profitInput} onChange={e => setProfitInput(e.target.value)} placeholder="e.g., 10000.00" disabled />
                       </div>
-                      <button type="submit" className="btn-primary" disabled={isDistributing}>{isDistributing ? 'Distributing...' : 'Distribute Profits'}</button>
+                      <button type="submit" className="btn-primary" disabled>{'Distribute Profits'}</button>
                   </form>
                   {distributeMessage.text && <p className={`admin-message ${distributeMessage.type}`}>{distributeMessage.text}</p>}
               </div>
@@ -164,17 +153,15 @@ const VaultManagementPage = () => {
                 <table className="activity-table">
                   <thead>
                     <tr>
-                      <th>User</th><th>Capital</th><th>Unrealized PnL</th><th>Auto-Compound</th><th>Status</th>
+                      <th>User</th><th>Capital</th><th>Unrealized PnL</th>
                     </tr>
                   </thead>
                   <tbody>
                     {vaultData.participants.map(p => (
-                      <tr key={p.position_id}>
+                      <tr key={p.user_id}>
                         <td><Link to={`/admin/user/${p.user_id}`} className="admin-table-link">{p.username}</Link></td>
-                        <td>${parseFloat(p.tradable_capital).toFixed(2)}</td>
-                        <td className={parseFloat(p.pnl) >= 0 ? 'text-positive' : 'text-negative'}>${parseFloat(p.pnl).toFixed(2)}</td>
-                        <td>{p.auto_compound ? 'ON' : 'OFF'}</td>
-                        <td><span className={`status-badge status-${p.status}`}>{p.status}</span></td>
+                        <td>${parseFloat(p.capital).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td className={parseFloat(p.pnl) >= 0 ? 'text-positive' : 'text-negative'}>${parseFloat(p.pnl).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                       </tr>
                     ))}
                   </tbody>
