@@ -310,6 +310,10 @@
     "title": "Hyper Strategies Info",
     "text": "Learn about Hyper-Strategies from our Gitbook.",
     "button": "Learn More"
+  },
+  "card_section": {
+    "view_leaderboard": "View Leaderboard",
+    "invest_now": "Invest Now"
   }
 }
   },

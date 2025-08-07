@@ -291,7 +291,11 @@
       "invest": {
         "title": "Werde ein strategischer Partner",
         "text": "Erfahre mehr über unseren Token und Pre-Sale-Möglichkeiten"
-      }
+      },
+       "card_section": {
+    "view_leaderboard": "Rangliste ansehen",
+    "invest_now": "Jetzt investieren"
+  }
     }
   },
     

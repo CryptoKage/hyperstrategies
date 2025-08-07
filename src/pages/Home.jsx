@@ -1,5 +1,3 @@
-// src/pages/Home.jsx
-
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -19,15 +17,16 @@ const Home = () => {
   const { isIOS } = useIsIOS();
   const [showIOSPrompt, setShowIOSPrompt] = useState(false);
 
-  // --- MODIFIED --- Load rotating words and cards from the translation file
   const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
-const homePageCards = [
+
+  // --- THIS ARRAY NOW USES YOUR ORIGINAL TEXT ---
+  const homePageCards = [
     { 
       icon: '🏆', 
       title: t('home.cards.airdrop.title'), 
       description: t('home.cards.airdrop.text'), 
       route: '/xpleaderboard',
-      buttonText: t('card_section.select_button')
+      buttonText: t('card_section.view_leaderboard') // A more specific key
     },
     { 
       icon: '⚙️', 
@@ -40,15 +39,15 @@ const homePageCards = [
       icon: '📈', 
       title: t('home.cards.managed.title'), 
       description: t('home.cards.managed.text'), 
-      route: '/login',
-      buttonText: t('card_section.select_button')
+      route: '/login', // Leads to login, then dashboard with vaults
+      buttonText: t('card_section.invest_now') // A more specific key
     },
     { 
       icon: '💼', 
       title: t('home.cards.investor.title'), 
       description: t('home.cards.investor.text'), 
       type: 'link',
-      url: '#', // Replace with your GitBook URL
+      url: 'https://hyper-strategies.gitbook.io/hyper-strategies-docs/', // Added your docs link
       buttonText: t('home.cards.investor.button')
     },
   ];
@@ -94,7 +93,39 @@ const homePageCards = [
             </div>
           </section>
         </div>
-
+        
+        <section className="path-selector-section">
+          <h2>{t('home.cards.title')}</h2>
+          <div className="card-grid">
+            {homePageCards.map((card, idx) => (
+              <div 
+                key={idx} 
+                className={`card ${card.type !== 'coming_soon' ? 'card--clickable' : ''}`}
+                onClick={() => {
+                  if (card.type === 'link') {
+                    window.open(card.url, '_blank', 'noopener,noreferrer');
+                  } else if (card.route) {
+                    navigate(card.route);
+                  }
+                }}
+              >
+                <div className="card__icon">{card.icon}</div>
+                <div className="card__content">
+                  <h3 className="card__title">{card.title}</h3>
+                  <p className="card__description">{card.description}</p>
+                </div>
+                <div className="card__footer">
+                  <button 
+                    className={card.type === 'coming_soon' ? 'btn-secondary' : 'btn-primary'}
+                    disabled={card.type === 'coming_soon'}
+                  >
+                    {card.buttonText}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </Layout>
       
       {showIOSPrompt && <AddToHomeScreenPrompt onClose={() => setShowIOSPrompt(false)} />}
