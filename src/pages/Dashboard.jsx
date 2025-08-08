@@ -246,10 +246,8 @@ const Dashboard = () => {
           {dashboardData.vaults.map(vault => {
             if (investedPositions.find(p => p.vault_id === vault.vault_id)) return null;
             const isActive = vault.status === 'active';
-            
-            const cardStyle = vault.image_url && vaultImageMap[vault.image_url]
-              ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` } 
-              : {};
+            const cardStyle = vault.image_url && vaultImageMap[vault.image_url] ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` } : {};
+            const displayPnl = parseFloat(vault.display_pnl_percentage) || 0;
 
             return (
               <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
@@ -257,6 +255,16 @@ const Dashboard = () => {
                 <div className="card-content">
                   <h3>{vault.name}</h3>
                   <p className="cta-text">{vault.description}</p>
+                  
+                  {isActive && displayPnl > 0 && (
+                    <div className="vault-stat marketing-stat">
+                      <span>{t('dashboard.all_time_pnl')}</span>
+                      <span className="stat-value-positive">
+                        +{displayPnl.toFixed(2)}%
+                      </span>
+                    </div>
+                  )}
+
                   <div className="vault-actions">
                     {isActive ? (
                       <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
@@ -273,8 +281,9 @@ const Dashboard = () => {
         </div>
       </>
     );
-  };
+  }; // --- THIS IS THE CLOSING BRACE FOR renderContent ---
 
+  // --- THIS IS THE FINAL RETURN FOR THE DASHBOARD COMPONENT ---
   return (
     <>
       <Layout>
@@ -292,6 +301,6 @@ const Dashboard = () => {
       )}
     </>
   );
-};
+}; // --- THIS IS THE FINAL CLOSING BRACE FOR THE DASHBOARD COMPONENT ---
 
 export default Dashboard;
