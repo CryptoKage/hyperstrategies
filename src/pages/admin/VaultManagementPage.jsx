@@ -21,6 +21,10 @@ const VaultManagementPage = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateMessage, setUpdateMessage] = useState({ type: '', text: '' });
 
+  // --- NEW: State for the Harvest tool ---
+  const [isHarvesting, setIsHarvesting] = useState(false);
+  const [harvestMessage, setHarvestMessage] = useState({ type: '', text: '' });
+
   useEffect(() => {
     const fetchVaults = async () => {
       try {
@@ -60,7 +64,7 @@ const VaultManagementPage = () => {
     setIsUpdating(true);
     setUpdateMessage({ type: '', text: '' });
     try {
-      const response = await api.post(`/admin/vaults/${selectedVaultId}/update-pnl`, { newTotalValue: newTotalValueInput });
+      const response = await api.post(`/admin/vaults/${selectedVaultId}/finalize-pnl`, { newTotalValue: newTotalValueInput });
       setUpdateMessage({ type: 'success', text: response.data.message });
       setNewTotalValueInput('');
       fetchVaultDetails();
@@ -68,6 +72,21 @@ const VaultManagementPage = () => {
       setUpdateMessage({ type: 'error', text: err.response?.data?.message || 'Update failed.' });
     } finally {
       setIsUpdating(false);
+    }
+  };
+
+  // --- NEW: Handler for the Harvest button ---
+  const handleHarvest = async () => {
+    setIsHarvesting(true);
+    setHarvestMessage({ type: '', text: '' });
+    try {
+      const response = await api.post(`/admin/vaults/${selectedVaultId}/harvest`);
+      setHarvestMessage({ type: 'success', text: response.data.message });
+      fetchVaultDetails(); // Refresh data after harvest
+    } catch (err) {
+      setHarvestMessage({ type: 'error', text: err.response?.data?.message || 'Harvesting failed.' });
+    } finally {
+      setIsHarvesting(false);
     }
   };
 
@@ -102,23 +121,33 @@ const VaultManagementPage = () => {
                 <StatCard label="Current PnL %" value={`${(vaultData.stats.currentPnlPercentage || 0).toFixed(2)}%`} />
             </div>
             
-            <div className="admin-actions-card">
-              <h3>Update Vault Value & Distribute PnL</h3>
-              <p>Enter the new total value of all assets in this vault. The system will calculate and distribute the resulting PnL to all participants proportionally.</p>
-              
-              <div className="stat-card" style={{ marginBottom: '16px' }}>
-                <span className="stat-label">Current Total Vault Value</span>
-                <span className="stat-value">${currentVaultCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <div className="admin-grid">
+              <div className="admin-actions-card">
+                <h3>Finalize Period & Distribute PnL</h3>
+                <p>Enter the new total value of all assets. This will permanently record the gain/loss on every user's ledger.</p>
+                <div className="stat-card" style={{ marginBottom: '16px' }}>
+                  <span className="stat-label">Current Total Vault Value</span>
+                  <span className="stat-value">${currentVaultCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+                <form onSubmit={handleUpdateVaultValue} className="admin-form">
+                  <div className="form-group">
+                    <label htmlFor="new-total-value">New Final Total Value (USDC)</label>
+                    <input id="new-total-value" type="number" step="0.01" value={newTotalValueInput} onChange={e => setNewTotalValueInput(e.target.value)} placeholder="e.g., 150000.00" required/>
+                  </div>
+                  <button type="submit" className="btn-primary" disabled={isUpdating}>{isUpdating ? 'Finalizing...' : 'Finalize & Distribute'}</button>
+                </form>
+                {updateMessage.text && <p className={`admin-message ${updateMessage.type}`}>{updateMessage.text}</p>}
               </div>
 
-              <form onSubmit={handleUpdateVaultValue} className="admin-form">
-                <div className="form-group">
-                  <label htmlFor="new-total-value">New Total Vault Value (USDC)</label>
-                  <input id="new-total-value" type="number" step="0.01" value={newTotalValueInput} onChange={e => setNewTotalValueInput(e.target.value)} placeholder="e.g., 150000.00" required/>
-                </div>
-                <button type="submit" className="btn-primary" disabled={isUpdating}>{isUpdating ? 'Updating...' : 'Update Vault Value'}</button>
-              </form>
-              {updateMessage.text && <p className={`admin-message ${updateMessage.type}`}>{updateMessage.text}</p>}
+              {/* --- NEW HARVEST TOOL --- */}
+              <div className="admin-actions-card">
+                <h3>Process Profit Harvesting</h3>
+                <p>Find all users in this vault with auto-compound disabled and move their accumulated profits to their main balance.</p>
+                <button onClick={handleHarvest} className="btn-secondary" disabled={isHarvesting}>
+                  {isHarvesting ? 'Processing...' : 'Harvest All Profits'}
+                </button>
+                {harvestMessage.text && <p className={`admin-message ${harvestMessage.type}`}>{harvestMessage.text}</p>}
+              </div>
             </div>
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
