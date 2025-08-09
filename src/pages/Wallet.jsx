@@ -23,7 +23,6 @@ const Wallet = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   const fetchWalletData = useCallback(async () => {
-    // Set loading only if it's the initial load
     if (!walletData) setLoading(true); 
     try {
       const [walletRes, historyRes] = await Promise.all([
@@ -49,7 +48,7 @@ const Wallet = () => {
     if (walletData?.address) {
       navigator.clipboard.writeText(walletData.address);
       setCopySuccess(t('wallet.copied'));
-      setTimeout(() => setCopySuccess(''), 2000);
+      setTimeout(() => setCopySuccess(t('wallet.copy')), 2000);
     }
   };
   
@@ -123,6 +122,18 @@ const Wallet = () => {
                   <button onClick={handleCopyToClipboard} className="btn-copy">{copySuccess || t('wallet.copy')}</button>
                 </div>
               </div>
+              <div className="actions-section">
+                <h2>{t('wallet.actions_title')}</h2>
+                <div className="actions-grid">
+                  <div className="action-card">
+                    <h3>{t('wallet.withdraw_funds_title')}</h3>
+                    <p>{t('wallet.withdraw_funds_subtitle')}</p>
+                    <button onClick={() => setIsWithdrawModalOpen(true)} className="btn-primary" disabled={!walletData}>
+                      {t('wallet.start_withdrawal')}
+                    </button>
+                  </div>
+                </div>
+              </div>
             </>
           )}
 
@@ -134,17 +145,6 @@ const Wallet = () => {
 
           {activeTab === 'withdrawals' && (
             <>
-              <div className="actions-section">
-                <div className="actions-grid">
-                  <div className="action-card">
-                    <h3>{t('wallet.withdraw_funds_title')}</h3>
-                    <p>{t('wallet.withdraw_funds_subtitle')}</p>
-                    <button onClick={() => setIsWithdrawModalOpen(true)} className="btn-primary" disabled={!walletData}>
-                      {t('wallet.start_withdrawal')}
-                    </button>
-                  </div>
-                </div>
-              </div>
               {error.history ? <p className='error-message'>{error.history}</p> : <WithdrawalHistory historyData={history} />}
             </>
           )}
