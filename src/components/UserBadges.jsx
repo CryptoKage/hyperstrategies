@@ -4,7 +4,7 @@ import React from 'react';
 const tagStyles = {
   'early_supporter': { text: 'Early Supporter', style: 'badge-gold' },
   'hip_hop_syndicate': { text: 'Hip-Hop Syndicate', style: 'badge-hiphop' }, // Changed to its own style
-  'shadwmf_syndicate': { text: 'ShadwMF', style: 'badge-shadw' },
+  'shdwmf_syndicate': { text: 'ShdwMF', style: 'badge-shdw' },
   'purrtardos_syndicate': { text: 'Purrtardos', style: 'badge-princess' },
   // Add more tags here as you create them
 };

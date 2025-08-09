@@ -3261,7 +3261,7 @@ input:checked + .slider:before {
   text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
 }
 
-/* ShadwMF: Dark grey, inset shadow, glowing text */
+/* ShdwMF: Dark grey, inset shadow, glowing text */
 .badge-shadw {
   background: linear-gradient(145deg, #2e2e2e, #1a1a1a);
   box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
