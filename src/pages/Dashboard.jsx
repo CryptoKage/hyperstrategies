@@ -241,44 +241,48 @@ const Dashboard = () => {
           </>
         )}
 
-        <h2 style={{ marginTop: '48px' }}>{t('dashboard.available_strategies')}</h2>
-        <div className="vaults-grid">
-          {dashboardData.vaults.map(vault => {
-            if (investedPositions.find(p => p.vault_id === vault.vault_id)) return null;
-            const isActive = vault.status === 'active';
-            const cardStyle = vault.image_url && vaultImageMap[vault.image_url] ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` } : {};
-            const displayPnl = parseFloat(vault.display_pnl_percentage) || 0;
+<h2 style={{ marginTop: '48px' }}>{t('dashboard.available_strategies')}</h2>
+<div className="vaults-grid">
+  {dashboardData.vaults.map(vault => {
+    if (investedPositions.find(p => p.vault_id === vault.vault_id)) return null;
+    const isActive = vault.status === 'active';
+    const cardStyle = vault.image_url && vaultImageMap[vault.image_url] ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` } : {};
+    
+    // Get the display PnL from the vault object
+    const displayPnl = parseFloat(vault.display_pnl_percentage) || 0;
 
-            return (
-              <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
-                <div className="card-overlay"></div>
-                <div className="card-content">
-                  <h3>{vault.name}</h3>
-                  <p className="cta-text">{vault.description}</p>
-                  
-                  {isActive && displayPnl > 0 && (
-                    <div className="vault-stat marketing-stat">
-                      <span>{t('dashboard.all_time_pnl')}</span>
-                      <span className="stat-value-positive">
-                        +{displayPnl.toFixed(2)}%
-                      </span>
-                    </div>
-                  )}
+    return (
+      <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
+        <div className="card-overlay"></div>
+        <div className="card-content">
+          <h3>{vault.name}</h3>
+          <p className="cta-text">{vault.description}</p>
+          
+          {/* --- THIS IS THE FIX --- */}
+          {/* We now render the display PnL if it's been set */}
+          {isActive && displayPnl !== 0 && (
+            <div className="vault-stat marketing-stat">
+              <span>{t('dashboard.all_time_pnl')}</span>
+              <span className={displayPnl >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
+                {displayPnl > 0 ? '+' : ''}{displayPnl.toFixed(2)}%
+              </span>
+            </div>
+          )}
 
-                  <div className="vault-actions">
-                    {isActive ? (
-                      <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
-                        {t('dashboard.allocate_funds')}
-                      </button>
-                    ) : (
-                      <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          <div className="vault-actions">
+            {isActive ? (
+              <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
+                {t('dashboard.allocate_funds')}
+              </button>
+            ) : (
+              <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
+            )}
+          </div>
         </div>
+      </div>
+    );
+  })}
+</div>
       </>
     );
   }; // --- THIS IS THE CLOSING BRACE FOR renderContent ---
