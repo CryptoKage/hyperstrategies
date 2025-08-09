@@ -69,6 +69,11 @@
     "error_failed": "Auszahlungsanfrage fehlgeschlagen."
   },
   "wallet": {
+    "tabs": {
+    "overview": "Übersicht",
+    "activity": "Aktivität",
+    "withdrawals": "Auszahlungen"
+  },
     "loading": "Wallet wird geladen...",
     "title": "Deine Wallet",
     "refreshing": "Wird aktualisiert...",

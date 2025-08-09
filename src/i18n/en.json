@@ -69,6 +69,11 @@
     "error_failed": "Failed to request withdrawal."
   },
   "wallet": {
+     "tabs": {
+    "overview": "Overview",
+    "activity": "Activity",
+    "withdrawals": "Withdrawals"
+                },
     "loading": "Loading Wallet...",
     "title": "Your Wallet",
     "refreshing": "Refreshing...",

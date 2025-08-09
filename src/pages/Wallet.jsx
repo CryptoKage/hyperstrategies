@@ -1,5 +1,3 @@
-// src/pages/Wallet.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +8,7 @@ import WithdrawalHistory from '../components/WithdrawalHistory';
 import { useAuth } from '../context/AuthContext';
 import EyeIcon from '../components/EyeIcon';
 import InfoIcon from '../components/InfoIcon';
+import ActivityHistory from '../components/ActivityHistory';
 
 const Wallet = () => {
   const { t } = useTranslation();
@@ -21,41 +20,30 @@ const Wallet = () => {
   const [error, setError] = useState({ wallet: null, history: null });
   const [copySuccess, setCopySuccess] = useState('');
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
-  const fetchWalletDetails = useCallback(async () => {
+  const fetchWalletData = useCallback(async () => {
+    // Set loading only if it's the initial load
+    if (!walletData) setLoading(true); 
     try {
-      const response = await api.get('/user/wallet');
-      setWalletData(response.data);
-      setError(prev => ({ ...prev, wallet: null }));
+      const [walletRes, historyRes] = await Promise.all([
+        api.get('/user/wallet'),
+        api.get('/withdraw/history')
+      ]);
+      setWalletData(walletRes.data);
+      setHistory(historyRes.data);
+      setError({ wallet: null, history: null });
     } catch (err) {
-      console.error("Wallet Details Fetch Error:", err);
-      setError(prev => ({ ...prev, wallet: t('wallet.error_wallet') }));
+      console.error("Wallet Page Fetch Error:", err);
+      setError({ wallet: t('wallet.error_wallet'), history: t('wallet.error_history') });
+    } finally {
+      setLoading(false);
     }
-  }, [t]);
-
-  const fetchHistory = useCallback(async () => {
-    try {
-      const response = await api.get('/withdraw/history');
-      setHistory(response.data);
-      setError(prev => ({ ...prev, history: null }));
-    } catch (err) {
-      console.error("History Fetch Error:", err);
-      setError(prev => ({ ...prev, history: t('wallet.error_history') }));
-    }
-  }, [t]);
-
-  const fetchAllData = useCallback(async () => {
-    setLoading(true);
-    await Promise.all([
-      fetchWalletDetails(),
-      fetchHistory()
-    ]);
-    setLoading(false);
-  }, [fetchWalletDetails, fetchHistory]);
+  }, [t, walletData]);
 
   useEffect(() => {
-    fetchAllData();
-  }, [fetchAllData]);
+    fetchWalletData();
+  }, [fetchWalletData]);
   
   const handleCopyToClipboard = () => {
     if (walletData?.address) {
@@ -66,7 +54,7 @@ const Wallet = () => {
   };
   
   const handleWithdrawalQueued = () => {
-    fetchAllData();
+    fetchWalletData();
   };
 
   const renderContent = () => {
@@ -79,7 +67,7 @@ const Wallet = () => {
         <div className="wallet-header">
           <h1>{t('wallet.title')}</h1>
           <div className="wallet-header-actions">
-            <button onClick={fetchAllData} className="btn-secondary" disabled={loading}>
+            <button onClick={fetchWalletData} className="btn-secondary" disabled={loading}>
               {loading ? t('wallet.refreshing') : t('wallet.refresh')}
             </button>
             <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility">
@@ -88,86 +76,79 @@ const Wallet = () => {
           </div>
         </div>
         
-        <div className="balance-grid">
-          {error.wallet ? <p className='error-message'>{error.wallet}</p> : !walletData ? null : (
+        <div className="tabs">
+          <button className={`tab-button ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>
+            {t('wallet.tabs.overview')}
+          </button>
+          <button className={`tab-button ${activeTab === 'activity' ? 'active' : ''}`} onClick={() => setActiveTab('activity')}>
+            {t('wallet.tabs.activity')}
+          </button>
+          <button className={`tab-button ${activeTab === 'withdrawals' ? 'active' : ''}`} onClick={() => setActiveTab('withdrawals')}>
+            {t('wallet.tabs.withdrawals')}
+          </button>
+        </div>
+
+        <div className="tab-content">
+          {activeTab === 'overview' && (
             <>
-              {/* Card 1: Total Portfolio Value */}
-              <div className="balance-card">
-                <div className="label-with-icon">
-                  <span className="balance-label">{t('wallet.total_portfolio_value')}</span>
-                </div>
-                <div className="balance-value-group">
-                  <span className="balance-value">
-                    {isBalanceHidden 
-                      ? '******' 
-                      : `$${((walletData.totalCapitalInVaults || 0) + (walletData.totalBonusPoints || 0) + (walletData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                    }
-                  </span>
-                  <span className={`stat-sub-value ${ (walletData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative' }`}>
-                    {t('wallet.unrealized_pnl')}: {isBalanceHidden 
-                      ? '******' 
-                      : `${((walletData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(walletData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                    }
-                  </span>
-                </div>
+              <div className="balance-grid">
+                {error.wallet ? <p className='error-message'>{error.wallet}</p> : !walletData ? null : (
+                  <>
+                    <div className="balance-card">
+                      <div className="label-with-icon"><span className="balance-label">{t('wallet.total_portfolio_value')}</span></div>
+                      <div className="balance-value-group">
+                        <span className="balance-value">{isBalanceHidden ? '******' : `$${((walletData.totalCapitalInVaults || 0) + (walletData.totalBonusPoints || 0) + (walletData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+                        <span className={`stat-sub-value ${ (walletData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative' }`}>{t('wallet.unrealized_pnl')}: {isBalanceHidden ? '******' : `${((walletData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(walletData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+                      </div>
+                    </div>
+                    <div className="balance-card">
+                      <div className="label-with-icon"><span className="balance-label">{t('wallet.available_balance_card')}</span></div>
+                      <div className="balance-value-group">
+                        <span className="balance-value">{isBalanceHidden ? '******' : `$${(walletData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+                        <span className="stat-sub-value">{t('wallet.ready_to_invest')}</span>
+                      </div>
+                    </div>
+                    <div className="balance-card">
+                      <div className="label-with-icon"><span className="balance-label">{t('wallet.bonus_points_value')}</span><Link to="/faq" className="info-icon-link" title={t('faq.q1_title')}><InfoIcon /></Link></div>
+                      <div className="balance-value-group"><span className="balance-value">{isBalanceHidden ? '******' : `$${(walletData.totalBonusPoints || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span></div>
+                    </div>
+                  </>
+                )}
               </div>
-
-              {/* Card 2: Available Balance */}
-              <div className="balance-card">
-                <div className="label-with-icon">
-                  <span className="balance-label">{t('wallet.available_balance_card')}</span>
-                </div>
-                <div className="balance-value-group">
-                  <span className="balance-value">
-                    {isBalanceHidden ? '******' : `$${(walletData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-                  </span>
-                  <span className="stat-sub-value">{t('wallet.ready_to_invest')}</span>
-                </div>
-              </div>
-
-              {/* Card 3: Bonus Points Value */}
-              <div className="balance-card">
-                <div className="label-with-icon">
-                  <span className="balance-label">{t('wallet.bonus_points_value')}</span>
-                  <Link to="/faq" className="info-icon-link" title={t('faq.q1_title')}>
-                    <InfoIcon />
-                  </Link>
-                </div>
-                <div className="balance-value-group">
-                  <span className="balance-value">
-                    {isBalanceHidden ? '******' : `$${(walletData.totalBonusPoints || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-                  </span>
+              <div className="address-section">
+                <h2>{t('wallet.deposit_address_title')}</h2>
+                <p className="address-subtext">{t('wallet.deposit_address_subtitle')}</p>
+                <div className="address-box">
+                  <span className="eth-address">{walletData?.address || t('wallet.address_loading')}</span>
+                  <button onClick={handleCopyToClipboard} className="btn-copy">{copySuccess || t('wallet.copy')}</button>
                 </div>
               </div>
             </>
           )}
-        </div>
 
-        <div className="address-section">
-          <h2>{t('wallet.deposit_address_title')}</h2>
-          <p className="address-subtext">{t('wallet.deposit_address_subtitle')}</p>
-          <div className="address-box">
-            <span className="eth-address">{walletData?.address || t('wallet.address_loading')}</span>
-            <button onClick={handleCopyToClipboard} className="btn-copy">{copySuccess || t('wallet.copy')}</button>
-          </div>
-        </div>
-
-        <div className="actions-section">
-          <h2>{t('wallet.actions_title')}</h2>
-          <div className="actions-grid">
-            <div className="action-card">
-              <h3>{t('wallet.withdraw_funds_title')}</h3>
-              <p>{t('wallet.withdraw_funds_subtitle')}</p>
-              <button onClick={() => setIsWithdrawModalOpen(true)} className="btn-primary" disabled={!walletData}>
-                {t('wallet.start_withdrawal')}
-              </button>
+          {activeTab === 'activity' && (
+            <div className="admin-card">
+              <ActivityHistory />
             </div>
-          </div>
+          )}
+
+          {activeTab === 'withdrawals' && (
+            <>
+              <div className="actions-section">
+                <div className="actions-grid">
+                  <div className="action-card">
+                    <h3>{t('wallet.withdraw_funds_title')}</h3>
+                    <p>{t('wallet.withdraw_funds_subtitle')}</p>
+                    <button onClick={() => setIsWithdrawModalOpen(true)} className="btn-primary" disabled={!walletData}>
+                      {t('wallet.start_withdrawal')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {error.history ? <p className='error-message'>{error.history}</p> : <WithdrawalHistory historyData={history} />}
+            </>
+          )}
         </div>
-        
-        {error.history ? <p className='error-message'>{error.history}</p> : 
-          <WithdrawalHistory historyData={history} />
-        }
       </>
     );
   };
