@@ -17,17 +17,26 @@ const VaultManagementPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const [newTotalValueInput, setNewTotalValueInput] = useState('');
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [updateMessage, setUpdateMessage] = useState({ type: '', text: '' });
+  // State for the simplified PnL Form
+  const [pnlPercentage, setPnlPercentage] = useState('');
+  const [beforeTimestamp, setBeforeTimestamp] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
 
-  // --- NEW: State for the Harvest tool ---
-  const [isHarvesting, setIsHarvesting] = useState(false);
-  const [harvestMessage, setHarvestMessage] = useState({ type: '', text: '' });
+  // Set the default timestamp to the current time when the component loads
+  useEffect(() => {
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    const adjustedDate = new Date(now.getTime() - (offset * 60 * 1000));
+    const formattedDate = adjustedDate.toISOString().substring(0, 16);
+    setBeforeTimestamp(formattedDate);
+  }, []);
 
+  // Fetch the list of all vaults once on component mount
   useEffect(() => {
     const fetchVaults = async () => {
       try {
+        // We get the vault list from the /dashboard endpoint as it's already available
         const response = await api.get('/dashboard'); 
         setVaults(response.data.vaults);
         if (response.data.vaults.length > 0) {
@@ -40,6 +49,7 @@ const VaultManagementPage = () => {
     fetchVaults();
   }, []);
 
+  // Fetch the detailed data for the selected vault whenever the ID changes
   const fetchVaultDetails = useCallback(async () => {
     if (!selectedVaultId) return;
     setLoading(true);
@@ -59,34 +69,23 @@ const VaultManagementPage = () => {
     fetchVaultDetails();
   }, [fetchVaultDetails]);
 
-  const handleUpdateVaultValue = async (e) => {
+  // Handler for the new simplified PnL tool
+  const handleApplyPnl = async (e) => {
     e.preventDefault();
-    setIsUpdating(true);
-    setUpdateMessage({ type: '', text: '' });
+    setIsProcessing(true);
+    setMessage({ type: '', text: '' });
     try {
-      const response = await api.post(`/admin/vaults/${selectedVaultId}/finalize-pnl`, { newTotalValue: newTotalValueInput });
-      setUpdateMessage({ type: 'success', text: response.data.message });
-      setNewTotalValueInput('');
+      const response = await api.post(`/admin/vaults/${selectedVaultId}/apply-manual-pnl`, { 
+        pnlPercentage,
+        beforeTimestamp: new Date(beforeTimestamp).toISOString()
+      });
+      setMessage({ type: 'success', text: response.data.message });
+      setPnlPercentage(''); // Reset form
       fetchVaultDetails();
     } catch(err) {
-      setUpdateMessage({ type: 'error', text: err.response?.data?.message || 'Update failed.' });
+      setMessage({ type: 'error', text: err.response?.data?.message || 'Update failed.' });
     } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  // --- NEW: Handler for the Harvest button ---
-  const handleHarvest = async () => {
-    setIsHarvesting(true);
-    setHarvestMessage({ type: '', text: '' });
-    try {
-      const response = await api.post(`/admin/vaults/${selectedVaultId}/harvest`);
-      setHarvestMessage({ type: 'success', text: response.data.message });
-      fetchVaultDetails(); // Refresh data after harvest
-    } catch (err) {
-      setHarvestMessage({ type: 'error', text: err.response?.data?.message || 'Harvesting failed.' });
-    } finally {
-      setIsHarvesting(false);
+      setIsProcessing(false);
     }
   };
 
@@ -116,38 +115,28 @@ const VaultManagementPage = () => {
           <>
             <div className="stats-grid" style={{ marginTop: '24px' }}>
                 <StatCard label="Total Capital in Vault" value={`$${currentVaultCapital.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
-                <StatCard label="Total Unrealized PnL" value={`$${(vaultData.stats.totalPnl || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
+                <StatCard label="Total Realized PnL" value={`$${(vaultData.stats.totalPnl || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
                 <StatCard label="Participant Count" value={vaultData.stats.participantCount} />
-                <StatCard label="Current PnL %" value={`${(vaultData.stats.currentPnlPercentage || 0).toFixed(2)}%`} />
             </div>
             
-            <div className="admin-grid">
-              <div className="admin-actions-card">
-                <h3>Finalize Period & Distribute PnL</h3>
-                <p>Enter the new total value of all assets. This will permanently record the gain/loss on every user's ledger.</p>
-                <div className="stat-card" style={{ marginBottom: '16px' }}>
-                  <span className="stat-label">Current Total Vault Value</span>
-                  <span className="stat-value">${currentVaultCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <div className="admin-actions-card">
+              <h3>Apply Manual PnL</h3>
+              <p>Distribute a percentage-based PnL to all users whose capital was deposited before the specified cutoff time. This creates a permanent ledger entry.</p>
+              
+              <form onSubmit={handleApplyPnl} className="admin-form">
+                <div className="form-group">
+                  <label htmlFor="pnl-percent">PnL to Distribute (%)</label>
+                  <input id="pnl-percent" type="number" step="0.01" value={pnlPercentage} onChange={e => setPnlPercentage(e.target.value)} placeholder="e.g., 5.5 for +5.5% or -2.1 for -2.1%" required/>
                 </div>
-                <form onSubmit={handleUpdateVaultValue} className="admin-form">
-                  <div className="form-group">
-                    <label htmlFor="new-total-value">New Final Total Value (USDC)</label>
-                    <input id="new-total-value" type="number" step="0.01" value={newTotalValueInput} onChange={e => setNewTotalValueInput(e.target.value)} placeholder="e.g., 150000.00" required/>
-                  </div>
-                  <button type="submit" className="btn-primary" disabled={isUpdating}>{isUpdating ? 'Finalizing...' : 'Finalize & Distribute'}</button>
-                </form>
-                {updateMessage.text && <p className={`admin-message ${updateMessage.type}`}>{updateMessage.text}</p>}
-              </div>
 
-              {/* --- NEW HARVEST TOOL --- */}
-              <div className="admin-actions-card">
-                <h3>Process Profit Harvesting</h3>
-                <p>Find all users in this vault with auto-compound disabled and move their accumulated profits to their main balance.</p>
-                <button onClick={handleHarvest} className="btn-secondary" disabled={isHarvesting}>
-                  {isHarvesting ? 'Processing...' : 'Harvest All Profits'}
-                </button>
-                {harvestMessage.text && <p className={`admin-message ${harvestMessage.type}`}>{harvestMessage.text}</p>}
-              </div>
+                <div className="form-group">
+                  <label htmlFor="before-timestamp">Apply to deposits made before:</label>
+                  <input id="before-timestamp" type="datetime-local" value={beforeTimestamp} onChange={e => setBeforeTimestamp(e.target.value)} required />
+                </div>
+
+                <button type="submit" className="btn-primary" disabled={isProcessing}>{isProcessing ? 'Processing...' : 'Apply PnL to Eligible Capital'}</button>
+              </form>
+              {message.text && <p className={`admin-message ${message.type}`}>{message.text}</p>}
             </div>
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
@@ -157,16 +146,18 @@ const VaultManagementPage = () => {
                   <thead>
                     <tr>
                       <th>User</th>
-                      <th>Total Capital</th>
+                      <th>Principal Capital</th>
                       <th>Total PnL</th>
+                      <th>Total Capital</th>
                     </tr>
                   </thead>
                   <tbody>
                     {vaultData.participants.map(p => (
                       <tr key={p.user_id}>
                         <td><Link to={`/admin/user/${p.user_id}`} className="admin-table-link">{p.username}</Link></td>
-                        <td>${parseFloat(p.capital).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td>${parseFloat(p.principal).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                         <td className={parseFloat(p.pnl) >= 0 ? 'text-positive' : 'text-negative'}>${parseFloat(p.pnl).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td>${parseFloat(p.total_capital).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                       </tr>
                     ))}
                   </tbody>
