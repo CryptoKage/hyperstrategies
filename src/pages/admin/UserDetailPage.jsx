@@ -1,32 +1,22 @@
-// src/pages/admin/UserDetailPage.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
+import UserBadges from '../../components/UserBadges'; // We need to import this
 
 const UserDetailPage = () => {
   const { userId } = useParams();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
-  // State specifically for bonus points
-  const [bonusPoints, setBonusPoints] = useState(0);
 
   const fetchUserDetails = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      // We now fetch the main user details and their bonus points in parallel for speed
-      const [userResponse, bonusPointsResponse] = await Promise.all([
-        api.get(`/admin/users/${userId}`),
-        api.get(`/admin/users/${userId}/bonus-points`) // This is the new, small endpoint
-      ]);
-      
-      setUserData(userResponse.data);
-      setBonusPoints(bonusPointsResponse.data.totalBonusPoints);
-
+      // The new endpoint provides all the data we need in a single call
+      const response = await api.get(`/admin/users/${userId}`);
+      setUserData(response.data);
     } catch (err) {
       setError('Failed to fetch user details.');
       console.error(err);
@@ -65,39 +55,17 @@ const UserDetailPage = () => {
           <div className="admin-card">
             <h3>Account Details</h3>
             <div className="details-grid">
-              <div className="detail-item">
-                <strong>User ID:</strong>
-                <span>{details.user_id}</span>
-              </div>
-              <div className="detail-item">
-                <strong>Email:</strong>
-                <span>{details.email}</span>
-              </div>
-              <div className="detail-item full-width">
-                <strong>Wallet:</strong>
-                <span className="address-span">{details.eth_address}</span>
-              </div>
-              <div className="detail-item">
-                <strong>XP:</strong>
-                <span>{details.xp}</span>
-              </div>
-              <div className="detail-item">
-                <strong>Tier:</strong>
-                <span>{details.account_tier}</span>
-              </div>
-              <div className="detail-item">
-                <strong>Balance:</strong>
-                <span>${parseFloat(details.balance).toFixed(2)}</span>
-              </div>
-              <div className="detail-item">
-                <strong>Bonus Points:</strong>
-                <span>${parseFloat(bonusPoints).toFixed(2)}</span>
-              </div>
-              <div className="detail-item">
-                <strong>Referral:</strong>
-                <span>{details.referral_code}</span>
-              </div>
+              <div className="detail-item"><strong>User ID:</strong><span>{details.user_id}</span></div>
+              <div className="detail-item"><strong>Email:</strong><span>{details.email}</span></div>
+              <div className="detail-item full-width"><strong>Wallet:</strong><span className="address-span">{details.eth_address}</span></div>
+              <div className="detail-item"><strong>XP:</strong><span>{(parseFloat(details.xp) || 0).toFixed(2)}</span></div>
+              <div className="detail-item"><strong>Tier:</strong><span>{details.account_tier}</span></div>
+              <div className="detail-item"><strong>Available Balance:</strong><span>${(parseFloat(details.balance) || 0).toFixed(2)}</span></div>
+              <div className="detail-item"><strong>Bonus Points:</strong><span>${(parseFloat(details.total_bonus_points) || 0).toFixed(2)}</span></div>
+              <div className="detail-item"><strong>Referral Code:</strong><span>{details.referral_code}</span></div>
+              <div className="detail-item"><strong>Joined:</strong><span>{new Date(details.created_at).toLocaleDateString()}</span></div>
             </div>
+            <UserBadges tags={details.tags} />
           </div>
 
           <div className="admin-card">
@@ -107,16 +75,15 @@ const UserDetailPage = () => {
                 <table className="activity-table">
                   <thead>
                     <tr>
-                      <th>Vault ID</th><th>Capital</th><th>Status</th><th>Unlock Date</th>
+                      <th>Vault</th>
+                      <th>Total Capital</th>
                     </tr>
                   </thead>
                   <tbody>
                     {positions.map(p => (
-                      <tr key={p.position_id}>
-                        <td>{p.vault_id}</td>
-                        <td>${parseFloat(p.tradable_capital).toFixed(2)}</td>
-                        <td><span className={`status-badge status-${p.status}`}>{p.status}</span></td>
-                        <td>{p.lock_expires_at ? new Date(p.lock_expires_at).toLocaleDateString() : 'N/A'}</td>
+                      <tr key={p.vault_id}>
+                        <td>{p.vault_name} (ID: {p.vault_id})</td>
+                        <td>${(parseFloat(p.total_capital) || 0).toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>

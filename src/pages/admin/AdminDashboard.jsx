@@ -1,5 +1,3 @@
-// src/pages/admin/AdminDashboard.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; 
 import Layout from '../../components/Layout';
@@ -10,17 +8,15 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
-  const [actionMessage, setActionMessage] = useState('');
-  const [isActionLoading, setIsActionLoading] = useState(false);
-
-    const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
 
   const navigate = useNavigate();
 
   const fetchAdminStats = useCallback(async () => {
-    if (!stats) setLoading(true);
+    // We don't need the 'if (!stats)' check, always allow refresh
+    setLoading(true);
     try {
       const response = await api.get('/admin/dashboard-stats');
       setStats(response.data);
@@ -28,57 +24,15 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error("Failed to fetch admin stats:", err);
       setError(err.response?.data?.error || "Could not load admin data.");
-      setStats(err.response?.data || { databaseConnected: false, alchemyConnected: false });
+      // Provide a default stats object on error to prevent crashes
+      setStats({ databaseConnected: false, alchemyConnected: false, pendingVaultWithdrawals: [], recentDeposits: [], recentWithdrawals: [] });
     } finally {
       setLoading(false);
     }
-  }, [stats]);
+  }, []);
 
   useEffect(() => {
     fetchAdminStats();
-  }, [fetchAdminStats]);
-
-  // --- Handlers for existing Admin Actions ---
-  const handleTriggerSweep = useCallback(async () => {
-    setIsActionLoading(true);
-    setActionMessage('Triggering sweep job...');
-    try {
-      const response = await api.post('/admin/trigger-sweep');
-      setActionMessage(response.data.message);
-      setTimeout(fetchAdminStats, 5000);
-    } catch (err) {
-      setActionMessage('Failed to trigger sweep job.');
-    } finally {
-      setIsActionLoading(false);
-    }
-  }, [fetchAdminStats]);
-
-  const handleRetryAll = useCallback(async () => {
-    setIsActionLoading(true);
-    setActionMessage('Re-queueing all failed sweeps...');
-    try {
-      const response = await api.post('/admin/retry-sweeps');
-      setActionMessage(response.data.message);
-      fetchAdminStats();
-    } catch (err) {
-      setActionMessage('Failed to retry sweeps.');
-    } finally {
-      setIsActionLoading(false);
-    }
-  }, [fetchAdminStats]);
-
-  const handleArchive = useCallback(async (positionId) => {
-    setIsActionLoading(true);
-    setActionMessage(`Archiving position ${positionId}...`);
-    try {
-      const response = await api.post(`/admin/archive-sweep/${positionId}`);
-      setActionMessage(response.data.message);
-      fetchAdminStats();
-    } catch (err) {
-      setActionMessage('Failed to archive sweep.');
-    } finally {
-      setIsActionLoading(false);
-    }
   }, [fetchAdminStats]);
 
   const StatCard = ({ label, value, currency = false }) => (
@@ -98,7 +52,7 @@ const AdminDashboard = () => {
     </div>
   );
 
-    const handleSearch = async (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     if (searchQuery.length < 3) return;
     setIsSearching(true);
@@ -114,7 +68,7 @@ const AdminDashboard = () => {
   };
   
   const renderContent = () => {
-    if (loading && !stats) return <p>Loading Admin Dashboard...</p>;
+    if (loading) return <p>Loading Admin Dashboard...</p>;
     if (error && !stats) return <p className="error-message">{error}</p>;
     if (!stats) return <p>No data available.</p>;
     
@@ -126,26 +80,46 @@ const AdminDashboard = () => {
           <StatusIndicator label="Alchemy API" isUp={stats.alchemyConnected} />
         </div>
 
-        {error && !loading && <p className="error-message">{error}</p>}
-
         <div className="stats-grid">
           <StatCard label="Total Users" value={stats.userCount} />
           <StatCard label="Total Available Capital" value={stats.totalAvailable} currency />
           <StatCard label="Total Capital in Vaults" value={stats.totalInVaults} currency />
           <StatCard label="Hot Wallet Gas (ETH)" value={parseFloat(stats.hotWalletBalance)} />
         </div>
+        
+        {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
+          <div className="admin-actions-card warning">
+            <h3>Pending Vault Withdrawals ({stats.pendingVaultWithdrawals.length})</h3>
+            <p>ACTION REQUIRED: These internal vault withdrawals are waiting to be processed by the background job.</p>
+            <div className="table-responsive">
+              <table className="activity-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Description</th>
+                    <th className="amount">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.pendingVaultWithdrawals.map(item => (
+                    <tr key={item.activity_id}>
+                      <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
+                      <td>{item.description}</td>
+                      <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
 
-                <div className="admin-actions-card">
+        <div className="admin-actions-card">
           <h3>User Lookup</h3>
           <p>Search for a user by their username, email, or wallet address.</p>
           <form onSubmit={handleSearch} className="admin-form">
             <div className="form-group">
-              <input
-                type="text"
-                placeholder="Enter search term (3+ characters)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              <input type="text" placeholder="Enter search term (3+ characters)..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
             <button type="submit" className="btn-primary" disabled={isSearching || searchQuery.length < 3}>
               {isSearching ? 'Searching...' : 'Search'}
@@ -165,69 +139,6 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
-          <div className="admin-actions-card warning">
-            <h3>Pending Vault Withdrawals ({stats.pendingVaultWithdrawals.length})</h3>
-            <p>ACTION REQUIRED: These positions need to be unwound on the trading desk. Once funds are returned, the withdrawal processor job will credit the users.</p>
-            <table className="activity-table">
-              <thead>
-                <tr>
-                  <th>User</th>
-                  <th>Description</th>
-                  <th className="amount">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {stats.pendingVaultWithdrawals.map(item => (
-                  <tr key={item.activity_id}>
-                    <td><strong>{item.username}</strong></td>
-                    <td>{item.description}</td>
-                    <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        <div className="admin-actions-card">
-          <h3>Manual Job Triggers</h3>
-          <p>Manually run a scheduled job. This is useful for immediate processing or testing.</p>
-          <div className="action-button-row">
-            <button className="btn-primary" onClick={handleTriggerSweep} disabled={isActionLoading}>
-              {isActionLoading ? 'Job Running...' : 'Trigger Allocation Sweep'}
-            </button>
-            {actionMessage && <span className="action-status">{actionMessage}</span>}
-          </div>
-        </div>
-        
-        {stats.failedSweeps && stats.failedSweeps.length > 0 && (
-          <div className="admin-actions-card warning">
-            <h3>Failed Allocation Sweeps ({stats.failedSweeps.length})</h3>
-            <p>These allocations failed to process automatically. Investigate the cause before retrying.</p>
-            <table className="activity-table">
-              <tbody>
-                {stats.failedSweeps.map(item => (
-                  <tr key={item.position_id}>
-                    <td><strong>{item.username}</strong> - Pos. #{item.position_id}</td>
-                    <td className="amount">${parseFloat(item.tradable_capital).toFixed(2)}</td>
-                    <td className="actions-cell">
-                      <button className="btn-icon" onClick={() => handleArchive(item.position_id)} disabled={isActionLoading} title="Archive/Ignore this sweep">
-                        🗑️
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="action-button-row" style={{marginTop: '16px'}}>
-              <button className="btn-primary" onClick={handleRetryAll} disabled={isActionLoading}>
-                {isActionLoading ? 'Processing...' : 'Retry All Failed'}
-              </button>
-            </div>
-          </div>
-        )}
-
         <div className="admin-grid">
           <div className="activity-card">
             <h3>Recent Deposits</h3>
@@ -237,7 +148,7 @@ const AdminDashboard = () => {
                   {stats.recentDeposits.map((item, index) => (
                     <tr key={`dep-${index}`}>
                       <td><strong>{item.username}</strong> deposited</td>
-                      <td className="amount">${parseFloat(item.amount).toFixed(2)} {item.token}</td>
+                      <td className="amount">${parseFloat(item.amount).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -245,49 +156,43 @@ const AdminDashboard = () => {
             ) : <p>No recent deposits.</p>}
           </div>
           <div className="activity-card">
-            <h3>Recent Withdrawal Requests</h3>
+            <h3>Recent Platform Withdrawals</h3>
             {stats.recentWithdrawals && stats.recentWithdrawals.length > 0 ? (
               <table className="activity-table">
                 <tbody>
                  {stats.recentWithdrawals.map((item, index) => (
                   <tr key={`wd-${index}`}>
                     <td><strong>{item.username}</strong> requested</td>
-                    <td className="amount">${parseFloat(item.amount).toFixed(2)} {item.token}</td>
+                    <td className="amount">${parseFloat(item.amount).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            ) : <p>No recent withdrawal requests.</p>}
+            ) : <p>No recent platform withdrawal requests.</p>}
           </div>
         </div>
       </>
     );
   };
 
-return (
-  <Layout>
-    <div className="admin-container">
-      <div className="admin-header"> {/* The class name is now admin-header */}
-        <h1>Admin Mission Control</h1>
-        <div className="admin-header-actions"> {/* Buttons are wrapped */}
-          <button onClick={fetchAdminStats} className="btn-secondary btn-sm" disabled={loading}>
-            {loading ? 'Refreshing...' : 'Refresh Stats'}
-          </button>
-          <Link to="/admin/financials" className="btn-primary btn-sm">
-            Financials & Auditing
-          </Link>
-           <Link to="/admin/treasury" className="btn-primary btn-sm">
-            Treasury Report
-          </Link>
-          <Link to="/admin/vaults" className="btn-primary btn-sm">
-    Vault Management
-  </Link>
+  return (
+    <Layout>
+      <div className="admin-container">
+        <div className="admin-header">
+          <h1>Admin Mission Control</h1>
+          <div className="admin-header-actions">
+            <button onClick={fetchAdminStats} className="btn-secondary btn-sm" disabled={loading}>
+              {loading ? 'Refreshing...' : 'Refresh Stats'}
+            </button>
+            <Link to="/admin/financials" className="btn-primary btn-sm">Financials & Auditing</Link>
+            <Link to="/admin/treasury" className="btn-primary btn-sm">Treasury Report</Link>
+            <Link to="/admin/vaults" className="btn-primary btn-sm">Vault Management</Link>
+          </div>
         </div>
+        {renderContent()}
       </div>
-      {renderContent()}
-    </div>
-  </Layout>
-);
+    </Layout>
+  );
 };
 
 export default AdminDashboard;
