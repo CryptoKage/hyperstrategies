@@ -1,5 +1,3 @@
-// src/pages/Dashboard.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -36,18 +34,16 @@ const Dashboard = () => {
   const [selectedVault, setSelectedVault] = useState(null);
 
   const [autoCompoundState, setAutoCompoundState] = useState({});
-   const [isUpdatingCompound, setIsUpdatingCompound] = useState({});
-
+  const [isUpdatingCompound, setIsUpdatingCompound] = useState({});
 
   const fetchDashboardData = useCallback(async () => {
     try {
-      // The backend now sends totalCapitalInVaults and totalUnrealizedPnl
       const response = await api.get('/dashboard');
       setDashboardData(response.data);
       const initialCompoundState = {};
       if (response.data.userPositions) {
         response.data.userPositions.forEach(p => {
-          initialCompoundState[p.vault_id] = p.auto_compound ?? true;
+         initialCompoundState[p.vault_id] = p.auto_compound ?? true;
         });
       }
       setAutoCompoundState(initialCompoundState);
@@ -64,22 +60,17 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
-    const handleToggleAutoCompound = async (vaultId) => {
+  const handleToggleAutoCompound = async (vaultId) => {
     const currentState = autoCompoundState[vaultId];
     const newState = !currentState;
-
-    // Set "saving" state for this specific vault
     setIsUpdatingCompound(prev => ({ ...prev, [vaultId]: true }));
     setAutoCompoundState(prevState => ({ ...prevState, [vaultId]: newState }));
-
     try {
-      await api.put(`/vaults/positions/${vaultId}/compound`, { autoCompound: newState });
+      await api.put(`/user/vault-settings/${vaultId}/compound`, { autoCompound: newState });
     } catch (err) {
       console.error("Failed to update auto-compound setting:", err);
-      // Revert on failure
       setAutoCompoundState(prevState => ({ ...prevState, [vaultId]: currentState }));
     } finally {
-      // Always remove "saving" state when done
       setIsUpdatingCompound(prev => ({ ...prev, [vaultId]: false }));
     }
   };
@@ -118,27 +109,19 @@ const Dashboard = () => {
     return (
       <>
         <div className="stats-grid">
-          {/* --- THIS IS THE UPDATED CARD --- */}
           <div className="stat-card">
             <span className="stat-label">{t('dashboard.total_value')}</span>
             <div className="stat-main">
               <span className="stat-value">
                 {isBalanceHidden 
                   ? '******' 
-                  : `$${(
-                      (dashboardData.totalCapitalInVaults || 0) + 
-                      (dashboardData.totalBonusPoints || 0) + 
-                      (dashboardData.availableBalance || 0)
-                    ).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                  : `$${((dashboardData.totalCapitalInVaults || 0) + (dashboardData.totalBonusPoints || 0) + (dashboardData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                 }
               </span>
               <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
             </div>
-            {/* The new sub-value span with cleaner logic and conditional coloring */}
             <span 
-              className={`stat-sub-value ${
-                (dashboardData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'
-              }`}
+              className={`stat-sub-value ${(dashboardData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'}`}
             >
                {t('dashboard.unrealized_pnl')}: {isBalanceHidden 
                 ? '******' 
@@ -150,7 +133,6 @@ const Dashboard = () => {
           <div className="stat-card">
             <span className="stat-label">{t('dashboard.available_balance')}</span>
             <div className="stat-main">
-              {/* Also use toLocaleString here for consistency */}
               <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
               <button onClick={() => navigate('/wallet')} className="btn-link">{t('dashboard.manage')}</button>
             </div>
@@ -160,7 +142,6 @@ const Dashboard = () => {
               <span className="stat-label">{t('dashboard.bonus_points')}</span>
               <Link to="/faq" className="info-icon-link" title={t('faq.q1_title')}><InfoIcon /></Link>
             </div>
-            {/* Also use toLocaleString here for consistency */}
             <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.totalBonusPoints || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
           </div>
         </div>
@@ -172,66 +153,42 @@ const Dashboard = () => {
               {investedPositions.map(position => {
                 const vaultInfo = dashboardData.vaults.find(v => v.vault_id === position.vault_id);
                 if (!vaultInfo) return null;
-                const isLocked = position.lock_expires_at && new Date(position.lock_expires_at) > new Date();
                 
+                const tradableCapital = parseFloat(position.tradable_capital);
+                const pnl = parseFloat(position.pnl);
                 const isUpdating = isUpdatingCompound[position.vault_id];
-
-                const cardStyle = vaultInfo.image_url && vaultImageMap[vaultInfo.image_url]
-                  ? { backgroundImage: `url(${vaultImageMap[vaultInfo.image_url]})` } 
-                  : {};
+                const cardStyle = vaultInfo.image_url && vaultImageMap[vaultInfo.image_url] ? { backgroundImage: `url(${vaultImageMap[vaultInfo.image_url]})` } : {};
 
                 return (
-                  <div key={position.position_id} className="vault-card invested with-bg" style={cardStyle}>
+                  <div key={position.vault_id} className="vault-card invested with-bg" style={cardStyle}>
                     <div className="card-overlay"></div>
                     <div className="card-content">
                       <h3>{vaultInfo.name}</h3>
                       <div className="vault-stat">
                         <span>{t('dashboard.tradable_capital')}</span>
-                        <span>{isBalanceHidden ? '******' : `$${parseFloat(position.tradable_capital).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+                        <span>{isBalanceHidden ? '******' : `$${tradableCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
                       </div>
                       <div className="vault-stat">
                         <span>{t('dashboard.pnl')}</span>
-                        <span className={parseFloat(position.pnl) >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
-                          {isBalanceHidden ? '******' : `${parseFloat(position.pnl) >= 0 ? '+' : ''}$${parseFloat(position.pnl).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                        <span className={pnl >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
+                          {isBalanceHidden ? '******' : `${pnl >= 0 ? '+' : ''}$${pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                         </span>
                       </div>
-                      {isLocked && (
-                          <div className="vault-stat lock-info">
-                              <span>{t('dashboard.unlocks_in')}</span>
-                              <CountdownTimer expiryTimestamp={position.lock_expires_at} />
-                          </div>
-                      )}
                       <div className="auto-compound-toggle">
                         <div className="label-group">
                           <label htmlFor={`compound-toggle-${position.vault_id}`}>
                             {isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}
                           </label>
-                          <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}>
-                            <InfoIcon />
-                          </Link>
+                          <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}><InfoIcon /></Link>
                         </div>
                         <label className="switch">
-                          <input 
-                            type="checkbox" 
-                            id={`compound-toggle-${position.vault_id}`} 
-                            checked={autoCompoundState[position.vault_id] ?? true} 
-                            onChange={() => handleToggleAutoCompound(position.vault_id)}
-                            disabled={isUpdating} // Disable while saving
-                          />
+                          <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} disabled={isUpdating} />
                           <span className="slider round"></span>
                         </label>
                       </div>
-
                       <div className="vault-actions">
                         <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
-                        <button 
-                          className="btn-secondary" 
-                          onClick={() => handleOpenWithdrawModal(position)}
-                          disabled={isLocked}
-                          title={isLocked ? t('dashboard.locked_tooltip', { date: new Date(position.lock_expires_at).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
-                        >
-                          {t('dashboard.withdraw')}
-                        </button>
+                        <button className="btn-secondary" onClick={() => handleOpenWithdrawModal(position)}>{t('dashboard.withdraw')}</button>
                       </div>
                     </div>
                   </div>
@@ -241,53 +198,48 @@ const Dashboard = () => {
           </>
         )}
 
-<h2 style={{ marginTop: '48px' }}>{t('dashboard.available_strategies')}</h2>
-<div className="vaults-grid">
-  {dashboardData.vaults.map(vault => {
-    if (investedPositions.find(p => p.vault_id === vault.vault_id)) return null;
-    const isActive = vault.status === 'active';
-    const cardStyle = vault.image_url && vaultImageMap[vault.image_url] ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` } : {};
-    
-    // Get the display PnL from the vault object
-    const displayPnl = parseFloat(vault.display_pnl_percentage) || 0;
+        <h2 style={{ marginTop: '48px' }}>{t('dashboard.available_strategies')}</h2>
+        <div className="vaults-grid">
+          {dashboardData.vaults.map(vault => {
+            if (investedPositions.find(p => p.vault_id === vault.vault_id)) return null;
+            const isActive = vault.status === 'active';
+            const cardStyle = vault.image_url && vaultImageMap[vault.image_url] ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` } : {};
+            const displayPnl = parseFloat(vault.display_pnl_percentage) || 0;
 
-    return (
-      <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
-        <div className="card-overlay"></div>
-        <div className="card-content">
-          <h3>{vault.name}</h3>
-          <p className="cta-text">{vault.description}</p>
-          
-          {/* --- THIS IS THE FIX --- */}
-          {/* We now render the display PnL if it's been set */}
-          {isActive && displayPnl !== 0 && (
-            <div className="vault-stat marketing-stat">
-              <span>{t('dashboard.all_time_pnl')}</span>
-              <span className={displayPnl >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
-                {displayPnl > 0 ? '+' : ''}{displayPnl.toFixed(2)}%
-              </span>
-            </div>
-          )}
+            return (
+              <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
+                <div className="card-overlay"></div>
+                <div className="card-content">
+                  <h3>{vault.name}</h3>
+                  <p className="cta-text">{vault.description}</p>
+                  
+                  {isActive && displayPnl !== 0 && (
+                    <div className="vault-stat marketing-stat">
+                      <span>{t('dashboard.all_time_pnl')}</span>
+                      <span className={displayPnl >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
+                        {displayPnl > 0 ? '+' : ''}{displayPnl.toFixed(2)}%
+                      </span>
+                    </div>
+                  )}
 
-          <div className="vault-actions">
-            {isActive ? (
-              <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
-                {t('dashboard.allocate_funds')}
-              </button>
-            ) : (
-              <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
-            )}
-          </div>
+                  <div className="vault-actions">
+                    {isActive ? (
+                      <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
+                        {t('dashboard.allocate_funds')}
+                      </button>
+                    ) : (
+                      <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
-    );
-  })}
-</div>
       </>
     );
-  }; // --- THIS IS THE CLOSING BRACE FOR renderContent ---
+  };
 
-  // --- THIS IS THE FINAL RETURN FOR THE DASHBOARD COMPONENT ---
   return (
     <>
       <Layout>
@@ -305,6 +257,6 @@ const Dashboard = () => {
       )}
     </>
   );
-}; // --- THIS IS THE FINAL CLOSING BRACE FOR THE DASHBOARD COMPONENT ---
+};
 
 export default Dashboard;
