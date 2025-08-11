@@ -10,6 +10,7 @@
     "logout": "Logout",
     "signin": "Sign In",
     "register": "Register",
+    "tab_market": "Tab Market",
     "alt_logo": "Hyper-Strategies Logo"
   },
   "footer": {
@@ -320,5 +321,12 @@
     "syndicate_title": "Syndicate Referrals",
     "syndicate_description": "Join forces with a community to earn shared referral rewards. Coming soon.",
     "learn_more_button": "Learn More"
+  }
+  ,"tabs_market": {
+    "title": "Tab Marketplace",
+    "buy": "Buy",
+    "sell": "Sell",
+    "error_loading": "Unable to load tabs.",
+    "empty": "No tabs available."
   }
 }
