@@ -43,7 +43,7 @@ const Dashboard = () => {
       const initialCompoundState = {};
       if (response.data.userPositions) {
         response.data.userPositions.forEach(p => {
-         initialCompoundState[p.vault_id] = p.auto_compound ?? true;
+          initialCompoundState[p.vault_id] = p.auto_compound ?? true;
         });
       }
       setAutoCompoundState(initialCompoundState);
@@ -75,35 +75,15 @@ const Dashboard = () => {
     }
   };
 
-  const handleOpenAllocateModal = (vault) => {
-    setSelectedVault(vault);
-    setAllocateModalOpen(true);
-  };
-  const handleOpenWithdrawModal = (position) => {
-    setSelectedVault(position);
-    setWithdrawModalOpen(true);
-  };
-  const handleActionSuccess = () => {
-    fetchDashboardData();
-  };
+  const handleOpenAllocateModal = (vault) => { setSelectedVault(vault); setAllocateModalOpen(true); };
+  const handleOpenWithdrawModal = (position) => { setSelectedVault(position); setWithdrawModalOpen(true); };
+  const handleActionSuccess = () => { fetchDashboardData(); };
 
-  const StatCardSkeleton = () => (
-    <div className="stat-card skeleton"><div className="skeleton-text short"></div><div className="skeleton-text long"></div></div>
-  );
+  const StatCardSkeleton = () => ( <div className="stat-card skeleton"><div className="skeleton-text short"></div><div className="skeleton-text long"></div></div> );
 
   const renderContent = () => {
-    if (loading) {
-      return (
-        <div className="stats-grid">
-          <StatCardSkeleton /> <StatCardSkeleton /> <StatCardSkeleton />
-        </div>
-      );
-    }
-    
-    if (error || !dashboardData) {
-      return <p className="error-message">{t('dashboard.no_data')}</p>;
-    }
-
+    if (loading) { return ( <div className="stats-grid"><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></div> ); }
+    if (error || !dashboardData) { return <p className="error-message">{t('dashboard.no_data')}</p>; }
     const investedPositions = dashboardData.userPositions || [];
 
     return (
@@ -112,24 +92,13 @@ const Dashboard = () => {
           <div className="stat-card">
             <span className="stat-label">{t('dashboard.total_value')}</span>
             <div className="stat-main">
-              <span className="stat-value">
-                {isBalanceHidden 
-                  ? '******' 
-                  : `$${((dashboardData.totalCapitalInVaults || 0) + (dashboardData.totalBonusPoints || 0) + (dashboardData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-                }
-              </span>
+              <span className="stat-value">{isBalanceHidden ? '******' : `$${((dashboardData.totalCapitalInVaults || 0) + (dashboardData.totalBonusPoints || 0) + (dashboardData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
               <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
             </div>
-            <span 
-              className={`stat-sub-value ${(dashboardData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'}`}
-            >
-               {t('dashboard.unrealized_pnl')}: {isBalanceHidden 
-                ? '******' 
-                : `${((dashboardData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(dashboardData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-              }
+            <span className={`stat-sub-value ${(dashboardData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'}`}>
+               {t('dashboard.unrealized_pnl')}: {isBalanceHidden ? '******' : `${((dashboardData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(dashboardData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             </span>
           </div>
-
           <div className="stat-card">
             <span className="stat-label">{t('dashboard.available_balance')}</span>
             <div className="stat-main">
@@ -153,12 +122,10 @@ const Dashboard = () => {
               {investedPositions.map(position => {
                 const vaultInfo = dashboardData.vaults.find(v => v.vault_id === position.vault_id);
                 if (!vaultInfo) return null;
-                
                 const tradableCapital = parseFloat(position.tradable_capital);
                 const pnl = parseFloat(position.pnl);
                 const isUpdating = isUpdatingCompound[position.vault_id];
                 const cardStyle = vaultInfo.image_url && vaultImageMap[vaultInfo.image_url] ? { backgroundImage: `url(${vaultImageMap[vaultInfo.image_url]})` } : {};
-
                 return (
                   <div key={position.vault_id} className="vault-card invested with-bg" style={cardStyle}>
                     <div className="card-overlay"></div>
@@ -176,9 +143,7 @@ const Dashboard = () => {
                       </div>
                       <div className="auto-compound-toggle">
                         <div className="label-group">
-                          <label htmlFor={`compound-toggle-${position.vault_id}`}>
-                            {isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}
-                          </label>
+                          <label htmlFor={`compound-toggle-${position.vault_id}`}>{isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}</label>
                           <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}><InfoIcon /></Link>
                         </div>
                         <label className="switch">
