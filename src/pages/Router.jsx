@@ -18,6 +18,7 @@ import Wallet from './Wallet';
 import OAuthSuccess from './OAuthSuccess';
 import FAQ from './FAQ';
 import FeeStructure from './FeeStructure';
+import TabsMarketplace from './TabsMarketplace';
 
 import AdminDashboard from './admin/AdminDashboard';
 import FinancialsPage from './admin/FinancialsPage';
@@ -30,6 +31,7 @@ import VaultManagementPage from './admin/VaultManagementPage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import GuestRoute from '../components/GuestRoute';
 import AdminRoute from '../components/AdminRoute';
+import TierRoute from '../components/TierRoute';
 
 const Router = () => {
   return (
@@ -53,6 +55,7 @@ const Router = () => {
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <Route path="/tabs-market" element={<TierRoute><TabsMarketplace /></TierRoute>} />
           
       {/* --- ADMIN-ONLY Protected Routes --- */}
       {/* --- ANNOTATION --- I've standardized the main admin route to just /admin for simplicity */}

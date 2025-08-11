@@ -52,6 +52,9 @@ const Header = () => {
             <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
             <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
             <Link to="/profile" className="header__button">{t('header.profile')}</Link>
+            {user.account_tier >= 2 && (
+              <Link to="/tabs-market" className="header__button header__button--glow">{t('header.tab_market')}</Link>
+            )}
             {user.isAdmin && (<Link to="/admin" className="header__button header__button--admin">{t('header.admin')}</Link>)}
             <button onClick={handleLogout} className="header__button header__button--primary">{t('header.logout')}</button>
           </>
@@ -80,6 +83,7 @@ const Header = () => {
                           <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
                           <Link to="/wallet" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.wallet')}</Link>
                           <Link to="/profile" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.profile')}</Link>
+                          {user.account_tier >= 2 && <Link to="/tabs-market" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.tab_market')}</Link>}
                           {user.isAdmin && <Link to="/admin" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.admin')}</Link>}
                           <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="mobile-menu__button">{t('header.logout')}</button>
                       </>

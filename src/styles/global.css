@@ -1967,6 +1967,27 @@ textarea.input-field { resize: vertical; }
   background-color: #dc2626; /* A darker red for hover */
 }
 
+.header__button--glow {
+  position: relative;
+  overflow: hidden;
+}
+.header__button--glow::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #00f5ff, #ff00ff, #00f5ff);
+  z-index: -1;
+  filter: blur(6px);
+  opacity: 0.6;
+  transition: opacity 0.3s ease-in-out;
+}
+.header__button--glow:hover::after {
+  opacity: 1;
+}
+
 
 .admin-container {
   max-width: 1200px;
@@ -3314,4 +3335,52 @@ input:checked + .slider:before {
 
 .path-selector-section .card__footer {
   text-align: center; /* Center the button within the card */
+}
+
+/* --- Tabs Marketplace --- */
+.tabs-market {
+  padding: 40px 20px;
+}
+
+.market-title {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 32px;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #00f5ff, #ff00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.tab-card {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--color-primary);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+.tab-card .price {
+  font-size: 20px;
+  margin: 8px 0 16px;
+  color: var(--color-primary);
+}
+
+.tab-card .actions {
+  display: flex;
+  gap: 12px;
+}
+
+.empty-message {
+  text-align: center;
+  grid-column: 1 / -1;
 }

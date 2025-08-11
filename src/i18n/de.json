@@ -10,6 +10,7 @@
     "logout": "Abmelden",
     "signin": "Anmelden",
     "register": "Registrieren",
+    "tab_market": "Tab-Marktplatz",
     "alt_logo": "Hyper-Strategies Logo"
   },
   "footer": {
@@ -320,5 +321,12 @@
     "syndicate_title": "Syndikat-Empfehlungen",
     "syndicate_description": "Schließen Sie sich mit einer Community zusammen, um gemeinsame Empfehlungsprämien zu verdienen. Demnächst verfügbar.",
     "learn_more_button": "Mehr erfahren"
+  }
+  ,"tabs_market": {
+    "title": "Tab-Marktplatz",
+    "buy": "Kaufen",
+    "sell": "Verkaufen",
+    "error_loading": "Tabs konnten nicht geladen werden.",
+    "empty": "Keine Tabs verfügbar."
   }
 }
