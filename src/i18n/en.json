@@ -58,7 +58,13 @@
     "processing": "Processing...",
     "error_nan": "Please enter a valid amount.",
     "error_insufficient": "Allocation amount exceeds your available balance.",
-    "error_failed": "Allocation failed. Please try again."
+    "error_failed": "Allocation failed. Please try again.",
+    "calculating": "Calculating...",
+    "base_fee": "Base Deposit Fee",
+    "pin_discount": "{{pinName}} Pin Discount",
+    "final_fee": "Final Fee",
+    "net_investment": "Net Capital Invested",
+    "enter_amount_prompt": "Enter an amount to see your fee breakdown."
   },
   "vault_withdraw_modal": {
     "title": "Request Withdrawal from {{vaultName}}",
@@ -329,4 +335,5 @@
     "error_loading": "Unable to load tabs.",
     "empty": "No tabs available."
   }
+  ,"pins_marketplace_button": "Pins Marketplace"
 }

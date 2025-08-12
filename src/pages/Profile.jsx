@@ -1,3 +1,7 @@
+// ===================================================================================
+// FINAL MERGED VERSION - PASTE THIS OVER THE ENTIRE Profile.jsx
+// This version integrates UserPins and the conditional marketplace link.
+// ===================================================================================
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import InputField from '../components/InputField';
 import XpHistoryList from '../components/XpHistoryList';
-import UserBadges from '../components/UserBadges';
+import UserPins from '../components/UserPins'; // --- CHANGE 1: Import UserPins instead of UserBadges
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -99,7 +103,8 @@ const Profile = () => {
               <button type="submit" className="btn-primary">{t('profile_page.save_changes_button')}</button>
               {editMessage && <p className="edit-message">{editMessage}</p>}
             </form>
-            <UserBadges tags={profileData?.tags} />
+            {/* --- CHANGE 2: Use the new UserPins component and pass it the correct prop --- */}
+            <UserPins userPinNames={profileData?.pins} /> 
           </div>
 
           <div className="profile-card">
@@ -108,6 +113,15 @@ const Profile = () => {
               <span className="stat-label">{t('profile_page.account_tier_label')}</span>
               <span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span>
             </div>
+
+            {/* --- CHANGE 3: Conditional Marketplace Link --- */}
+            {/* This block will only render if the user's tier is 2 or higher */}
+            {profileData.account_tier >= 2 && (
+                <Link to="/pins-marketplace" className="btn-primary marketplace-button">
+                    {t('profile_page.pins_marketplace_button')}
+                </Link>
+            )}
+
             <Link to="/xpleaderboard" className="stat-display xp-link">
               <span className="stat-label">{t('profile_page.xp_label')}</span>
               <span className="stat-value-large">

@@ -58,7 +58,13 @@
     "processing": "Wird verarbeitet...",
     "error_nan": "Bitte gib einen gültigen Betrag ein.",
     "error_insufficient": "Der Einzahlungsbetrag übersteigt dein verfügbares Guthaben.",
-    "error_failed": "Einzahlung fehlgeschlagen. Bitte versuche es erneut."
+    "error_failed": "Einzahlung fehlgeschlagen. Bitte versuche es erneut.",
+       "calculating": "Berechne...",
+    "base_fee": "Basis-Einzahlungsgebühr",
+    "pin_discount": "{{pinName}} Pin-Rabatt",
+    "final_fee": "Endgültige Gebühr",
+    "net_investment": "Investiertes Nettokapital",
+    "enter_amount_prompt": "Geben Sie einen Betrag ein, um Ihre Gebührenaufschlüsselung zu sehen."
   },
   "vault_withdraw_modal": {
     "title": "Auszahlung aus dem Vault \"{{vaultName}}\" anfordern",
@@ -329,4 +335,5 @@
     "error_loading": "Tabs konnten nicht geladen werden.",
     "empty": "Keine Tabs verfügbar."
   }
+  ,"pins_marketplace_button": "Pins-Marktplatz"
 }

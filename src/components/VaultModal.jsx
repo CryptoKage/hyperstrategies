@@ -1,45 +1,54 @@
-// src/components/VaultModal.jsx
-
+ /src/components/VaultModal.jsx
+// This version integrates API-driven fee calculations into your existing component.
+// ===================================================================================
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
 import InfoIcon from './InfoIcon';
+import { ClipLoader } from 'react-spinners'; // Assuming you have react-spinners
 
-const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllocationSuccess }) => {
+const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSuccess }) => {
   const { t } = useTranslation();
   
+  // --- STATE MANAGEMENT ---
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [riskAcknowledged, setRiskAcknowledged] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
-
-  const calculateFees = (vaultData, tier) => {
-    if (!vaultData) return { finalFee: 0.20, tradable: 0, bonus: 0 };
-
-    const baseFee = parseFloat(vaultData.fee_percentage) || 0.20;
-    let finalFee = baseFee;
-
-    if (vaultData.is_fee_tier_based) {
-      const discount = (tier - 1) * 0.02;
-      finalFee = Math.max(0.10, baseFee - discount);
-    }
-    
-    const allocationAmount = parseFloat(amount) || 0;
-    const bonusAmount = allocationAmount * finalFee;
-    const tradableAmount = allocationAmount - bonusAmount;
-
-    return {
-      finalFeePercentage: finalFee,
-      tradableCapital: tradableAmount,
-      bonusPoints: bonusAmount,
-    };
-  };
   
-  const { finalFeePercentage, tradableCapital, bonusPoints } = calculateFees(vault, userTier);
+  // NEW state for API-driven fee calculations
+  const [feeProspectus, setFeeProspectus] = useState(null);
+  const [isCalculatingFee, setIsCalculatingFee] = useState(false);
 
+  // --- API-DRIVEN FEE CALCULATION WITH DEBOUNCE ---
+  useEffect(() => {
+    if (!isOpen || !amount || parseFloat(amount) <= 0) {
+      setFeeProspectus(null);
+      return;
+    }
+
+    setIsCalculatingFee(true);
+    const handler = setTimeout(() => {
+      api.post('/vaults/calculate-investment-fee', {
+        vaultId: vault.vault_id,
+        amount: amount,
+      }).then(response => {
+        setFeeProspectus(response.data);
+      }).catch(err => {
+        console.error("Fee calculation error:", err);
+        setFeeProspectus(null); // Clear on error
+      }).finally(() => {
+        setIsCalculatingFee(false);
+      });
+    }, 500); // 500ms debounce delay
+
+    return () => clearTimeout(handler);
+  }, [amount, vault, isOpen]);
+
+  // --- RESET STATE ON CLOSE (Preserved) ---
   useEffect(() => {
     if (!isOpen) {
       setAmount('');
@@ -47,26 +56,26 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
       setIsLoading(false);
       setRiskAcknowledged(false);
       setTermsAccepted(false);
+      setFeeProspectus(null);
     }
   }, [isOpen]);
 
   if (!isOpen || !vault) return null;
 
+  // --- EVENT HANDLERS (Preserved) ---
   const handleAllocate = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     const allocationAmount = parseFloat(amount);
-    if (isNaN(allocationAmount) || allocationAmount <= 0) {
-      setError(t('vault_modal.error_nan'));
+    
+    // Re-checking validation just in case
+    if (isNaN(allocationAmount) || allocationAmount <= 0 || allocationAmount > availableBalance) {
+      setError(t('vault_modal.error_generic')); // Generic error as button should be disabled
       setIsLoading(false);
       return;
     }
-    if (allocationAmount > availableBalance) {
-      setError(t('vault_modal.error_insufficient'));
-      setIsLoading(false);
-      return;
-    }
+
     try {
       await api.post('/vaults/invest', {
         vaultId: vault.vault_id,
@@ -75,7 +84,9 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
       onAllocationSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.error || t('vault_modal.error_failed'));
+      // Use the new translation-key based errors from the backend
+      const messageKey = err.response?.data?.messageKey || 'vault_modal.error_failed';
+      setError(t(messageKey));
     } finally {
       setIsLoading(false);
     }
@@ -83,18 +94,22 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
   
   const handleMaxClick = () => {
     setAmount((availableBalance || 0).toString());
-};
+  };
 
   const needsWarning = vault.risk_level === 'high' || vault.risk_level === 'extreme';
   
-  // --- THIS IS THE UPGRADED LOGIC ---
   const isSubmitDisabled = 
     isLoading || 
-    !amount || // Disabled if amount is empty
-    parseFloat(amount) <= 0 || // Disabled if amount is not a positive number
+    !amount ||
+    parseFloat(amount) <= 0 ||
+    parseFloat(amount) > availableBalance ||
     (needsWarning && !riskAcknowledged) || 
     !termsAccepted;
 
+  // Helper to format numbers
+  const formatCurrency = (numStr) => parseFloat(numStr || '0').toFixed(2);
+
+  // --- RENDER METHOD ---
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -108,7 +123,7 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
         <form onSubmit={handleAllocate}>
           {error && <p className="error-message">{error}</p>}
           <InputField
-            label={t('vault_modal.allocate_label', { amount: (availableBalance || 0).toFixed(2) })}
+            label={t('vault_modal.allocate_label', { amount: formatCurrency(availableBalance) })}
             id="investAmount"
             type="number"
             value={amount}
@@ -118,18 +133,42 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
             onMaxClick={handleMaxClick}
           />
           
+          {/* --- NEW INVESTMENT BREAKDOWN --- */}
           <div className="investment-breakdown">
-            <h4>{t('vault_modal.breakdown_title', { tier: userTier })}</h4>
-            <div className="breakdown-row">
-              <span>{t('vault_modal.tradable_capital_breakdown', { percentage: Math.round((1 - finalFeePercentage) * 100) })}</span>
-              <span className="breakdown-value">${tradableCapital.toFixed(2)}</span>
-            </div>
-            <div className="breakdown-row">
-              <span>{t('vault_modal.bonus_points_breakdown', { percentage: Math.round(finalFeePercentage * 100) })}</span>
-              <span className="breakdown-value">${bonusPoints.toFixed(2)}</span>
-            </div>
+            <h4>{t('vault_modal.breakdown_title')}</h4>
+            {isCalculatingFee ? (
+              <div className="spinner-container">
+                  <ClipLoader size={20} color={"#ffffff"} />
+                  <span>{t('vault_modal.calculating')}</span>
+              </div>
+            ) : feeProspectus ? (
+              <>
+                <div className="breakdown-row">
+                  <span>{t('vault_modal.base_fee')}</span>
+                  <span className="breakdown-value">${formatCurrency(feeProspectus.baseFee)}</span>
+                </div>
+                {feeProspectus.hasPinDiscount && (
+                  <div className="breakdown-row pin-discount-highlight">
+                    <span>{t('vault_modal.pin_discount', { pinName: feeProspectus.pinName })} ({feeProspectus.pinDiscountPercentage}%)</span>
+                    <span className="breakdown-value">- ${formatCurrency(feeProspectus.baseFee - feeProspectus.finalFee)}</span>
+                  </div>
+                )}
+                <div className="breakdown-row final-fee">
+                  <span>{t('vault_modal.final_fee')}</span>
+                  <span className="breakdown-value">${formatCurrency(feeProspectus.finalFee)}</span>
+                </div>
+                <hr className="breakdown-hr" />
+                <div className="breakdown-row net-investment">
+                  <span>{t('vault_modal.net_investment')}</span>
+                  <span className="breakdown-value">${formatCurrency(feeProspectus.netInvestment)}</span>
+                </div>
+              </>
+            ) : (
+                <div className="breakdown-row"><span className="text-muted">{t('vault_modal.enter_amount_prompt')}</span></div>
+            )}
           </div>
           
+          {/* --- ACKNOWLEDGEMENTS (Preserved) --- */}
           {needsWarning && (
             <div className="acknowledgement-box">
               <input type="checkbox" id="risk-ack" checked={riskAcknowledged} onChange={(e) => setRiskAcknowledged(e.target.checked)} />

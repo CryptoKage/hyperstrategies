@@ -18,14 +18,15 @@ import Wallet from './Wallet';
 import OAuthSuccess from './OAuthSuccess';
 import FAQ from './FAQ';
 import FeeStructure from './FeeStructure';
-import TabsMarketplace from './TabsMarketplace';
+import PinsMarketplace from './PinsMarketplace';
+import TierRoute from '../components/TierRoute';
 
 import AdminDashboard from './admin/AdminDashboard';
 import FinancialsPage from './admin/FinancialsPage';
 import UserDetailPage from './admin/UserDetailPage';
 import TreasuryPage from './admin/TreasuryPage';
 import VaultManagementPage from './admin/VaultManagementPage';
-import TabAdminPage from './admin/TabAdminPage';
+import PinManagementPage from './admin/PinManagementPage';
 
 
 // --- Guard Components ---
@@ -56,7 +57,7 @@ const Router = () => {
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-      <Route path="/tabs-market" element={<TierRoute><TabsMarketplace /></TierRoute>} />
+      <Route path="/pins-marketplace" element={<TierRoute minTier={2}><PinsMarketplace /></TierRoute>} />
           
       {/* --- ADMIN-ONLY Protected Routes --- */}
       {/* --- ANNOTATION --- I've standardized the main admin route to just /admin for simplicity */}
@@ -82,8 +83,8 @@ const Router = () => {
         element={<AdminRoute><VaultManagementPage /></AdminRoute>}
       />
       <Route
-        path="/admin/tabs"
-        element={<AdminRoute><TabAdminPage /></AdminRoute>}
+            path="/admin/pins"
+            element={<AdminRoute><PinManagementPage /></AdminRoute>}
       />
     </Routes>
   );
