@@ -19,7 +19,6 @@ import OAuthSuccess from './OAuthSuccess';
 import FAQ from './FAQ';
 import FeeStructure from './FeeStructure';
 import PinsMarketplace from './PinsMarketplace';
-import TierRoute from '../components/TierRoute';
 
 import AdminDashboard from './admin/AdminDashboard';
 import FinancialsPage from './admin/FinancialsPage';
