@@ -85,17 +85,18 @@ const FinancialsPage = () => {
     <table className="activity-table">
       <thead>
         <tr>
-          <th>User</th><th>Vault</th><th>Capital</th><th>Status</th><th>Unlock Date</th>
+          <th>User</th>
+          <th>Vault</th>
+          <th className="amount">Total Capital</th>
         </tr>
       </thead>
       <tbody>
-        {tableData.map(pos => (
-          <tr key={pos.position_id}>
+        {tableData.map((pos, index) => (
+          // Use a composite key since position_id no longer exists
+          <tr key={`${pos.user_id}-${pos.vault_id}`}>
             <td><Link to={`/admin/user/${pos.user_id}`} className="admin-table-link">{pos.username}</Link></td>
             <td>{pos.vault_name}</td>
-            <td className="amount">${parseFloat(pos.tradable_capital).toFixed(2)}</td>
-            <td><span className={`status-badge status-${pos.status}`}>{pos.status}</span></td>
-            <td>{pos.lock_expires_at ? new Date(pos.lock_expires_at).toLocaleDateString() : 'N/A'}</td>
+            <td className="amount">${parseFloat(pos.total_capital).toFixed(2)}</td>
           </tr>
         ))}
       </tbody>
