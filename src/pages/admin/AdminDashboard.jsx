@@ -52,6 +52,19 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleTriggerSweep = async () => {
+    setIsSweeping(true);
+    setSweepMessage('Triggering sweep job...');
+    try {
+      const response = await api.post('/admin/trigger-sweep');
+      setSweepMessage(response.data.message);
+    } catch (err) {
+      setSweepMessage(err.response?.data?.message || 'Failed to trigger sweep.');
+    } finally {
+      setIsSweeping(false);
+    }
+  };
+
   const StatCard = ({ label, value, currency = false }) => (
     <div className="stat-card">
       <span className="stat-label">{label}</span>
