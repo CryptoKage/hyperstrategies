@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
-import UserPins from '../../components/UserPins'; // We need to import this
+import UserPins from '../../components/UserPins';
 
 const UserDetailPage = () => {
   const { userId } = useParams();
@@ -65,7 +65,7 @@ const UserDetailPage = () => {
               <div className="detail-item"><strong>Referral Code:</strong><span>{details.referral_code}</span></div>
               <div className="detail-item"><strong>Joined:</strong><span>{new Date(details.created_at).toLocaleDateString()}</span></div>
             </div>
-            <UserPins tags={details.tags} />
+            <UserPins userPinNames={details.pins} />
           </div>
 
           <div className="admin-card">
