@@ -6,7 +6,8 @@ import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
 // --- THE FIX: Using the verified relative path structure ---
-import UserPins from '../../components/UserPins'; 
+// import UserPins from '../../components/UserPins'; // Commented out for the test
+import DummyTest from '../../components/DummyTest'; // Importing our new dummy component
 
 const UserDetailPage = () => {
   const { userId } = useParams();
@@ -68,7 +69,8 @@ const UserDetailPage = () => {
               <div className="detail-item"><strong>Referral Code:</strong><span>{details.referral_code}</span></div>
               <div className="detail-item"><strong>Joined:</strong><span>{new Date(details.created_at).toLocaleDateString()}</span></div>
             </div>
-            <UserPins userPinNames={details.pins} />
+            {/* <UserPins userPinNames={details.pins} /> */}
+            <DummyTest /> {/* Using our dummy component for the test */}
           </div>
 
           <div className="admin-card">
