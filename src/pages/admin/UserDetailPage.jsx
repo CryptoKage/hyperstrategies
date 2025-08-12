@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
-import UserPins from '../components/UserPins'; // We need to import this
+import UserPins from '../../components/UserPins'; // We need to import this
 
 const UserDetailPage = () => {
   const { userId } = useParams();
