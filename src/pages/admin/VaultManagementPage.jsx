@@ -152,14 +152,16 @@ const VaultManagementPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {vaultData.participants.map(p => (
-                      <tr key={p.user_id}>
-                        <td><Link to={`/admin/user/${p.user_id}`} className="admin-table-link">{p.username}</Link></td>
-                        <td>${parseFloat(p.principal).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                        <td className={parseFloat(p.pnl) >= 0 ? 'text-positive' : 'text-negative'}>${parseFloat(p.pnl).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                        <td>${parseFloat(p.total_capital).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                      </tr>
-                    ))}
+          {vaultData.participants.map(p => (
+            <tr key={p.user_id}>
+      <td><Link to={`/admin/user/${p.user_id}`} className="admin-table-link">{p.username}</Link></td>
+      {/* --- THIS IS THE FIX --- */}
+      {/* The backend sends 'principal', so we render p.principal */}
+      <td>${(parseFloat(p.principal) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+      <td className={parseFloat(p.pnl) >= 0 ? 'text-positive' : 'text-negative'}>${(parseFloat(p.pnl) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+      <td>${(parseFloat(p.total_capital) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+             </tr>
+                  ))}
                   </tbody>
                 </table>
               </div>
