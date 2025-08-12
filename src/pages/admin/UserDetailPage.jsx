@@ -1,8 +1,12 @@
+// src/pages/admin/UserDetailPage.jsx
+// FINAL ATTEMPT: Using the exact same relative path structure as other working admin pages.
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
-import UserPins from '@/components/UserPins';
+// --- THE FIX: Using the verified relative path structure ---
+import UserPins from '../../components/UserPins'; 
 
 const UserDetailPage = () => {
   const { userId } = useParams();
@@ -14,7 +18,6 @@ const UserDetailPage = () => {
     setLoading(true);
     setError('');
     try {
-      // The new endpoint provides all the data we need in a single call
       const response = await api.get(`/admin/users/${userId}`);
       setUserData(response.data);
     } catch (err) {
