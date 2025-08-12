@@ -35,6 +35,21 @@ const AdminDashboard = () => {
     fetchAdminStats();
   }, [fetchAdminStats]);
 
+   const handleApproveWithdrawal = async (activityId) => {
+    setApprovingId(activityId);
+    setActionMessage({ id: activityId, text: 'Approving...' });
+    try {
+      const response = await api.post(`/admin/approve-withdrawal/${activityId}`);
+      setActionMessage({ id: activityId, type: 'success', text: response.data.message });
+      // Refresh the stats after a short delay to see the item disappear from the list
+      setTimeout(fetchAdminStats, 2000);
+    } catch (err) {
+      setActionMessage({ id: activityId, type: 'error', text: err.response?.data?.message || 'Approval failed.' });
+    } finally {
+      setApprovingId(null);
+    }
+  };
+
   const StatCard = ({ label, value, currency = false }) => (
     <div className="stat-card">
       <span className="stat-label">{label}</span>
