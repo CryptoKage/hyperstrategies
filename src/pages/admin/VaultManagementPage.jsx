@@ -137,7 +137,18 @@ const VaultManagementPage = () => {
                 <button type="submit" className="btn-primary" disabled={isProcessing}>{isProcessing ? 'Processing...' : 'Apply PnL to Eligible Capital'}</button>
               </form>
               {message.text && <p className={`admin-message ${message.type}`}>{message.text}</p>}
+            
+
+            <div className="admin-actions-card">
+                <h3>Capital Sweep</h3>
+                <p>Find all new deposits in the ledger and sweep the total amount to the main trading desk wallet.</p>
+                <button onClick={handleTriggerSweep} className="btn-secondary" disabled={isSweeping}>
+                  {isSweeping ? 'Sweeping...' : 'Sweep Pending Deposits'}
+                </button>
+                {sweepMessage && <p className={`admin-message success`}>{sweepMessage}</p>}
+              </div>
             </div>
+            
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
               <h3>Participants in {vaultData.vault.name}</h3>
