@@ -12,14 +12,12 @@ const AdminDashboard = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   
-  // --- This is the missing state that needs to be added ---
   const [approvingId, setApprovingId] = useState(null);
   const [actionMessage, setActionMessage] = useState({ id: null, type: '', text: '' });
 
   const navigate = useNavigate();
 
   const fetchAdminStats = useCallback(async () => {
-    // We can simplify this a bit
     setLoading(true);
     try {
       const response = await api.get('/admin/dashboard-stats');
@@ -49,19 +47,6 @@ const AdminDashboard = () => {
       setActionMessage({ id: activityId, type: 'error', text: err.response?.data?.message || 'Approval failed.' });
     } finally {
       setApprovingId(null);
-    }
-  };
-
-  const handleTriggerSweep = async () => {
-    setIsSweeping(true);
-    setSweepMessage('Triggering sweep job...');
-    try {
-      const response = await api.post('/admin/trigger-sweep');
-      setSweepMessage(response.data.message);
-    } catch (err) {
-      setSweepMessage(err.response?.data?.message || 'Failed to trigger sweep.');
-    } finally {
-      setIsSweeping(false);
     }
   };
 
