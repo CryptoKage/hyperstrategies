@@ -11,11 +11,15 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  
+  // --- This is the missing state that needs to be added ---
+  const [approvingId, setApprovingId] = useState(null);
+  const [actionMessage, setActionMessage] = useState({ id: null, type: '', text: '' });
 
   const navigate = useNavigate();
 
   const fetchAdminStats = useCallback(async () => {
-    // We don't need the 'if (!stats)' check, always allow refresh
+    // We can simplify this a bit
     setLoading(true);
     try {
       const response = await api.get('/admin/dashboard-stats');
@@ -24,7 +28,6 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error("Failed to fetch admin stats:", err);
       setError(err.response?.data?.error || "Could not load admin data.");
-      // Provide a default stats object on error to prevent crashes
       setStats({ databaseConnected: false, alchemyConnected: false, pendingVaultWithdrawals: [], recentDeposits: [], recentWithdrawals: [] });
     } finally {
       setLoading(false);
@@ -35,13 +38,12 @@ const AdminDashboard = () => {
     fetchAdminStats();
   }, [fetchAdminStats]);
 
-   const handleApproveWithdrawal = async (activityId) => {
+  const handleApproveWithdrawal = async (activityId) => {
     setApprovingId(activityId);
     setActionMessage({ id: activityId, text: 'Approving...' });
     try {
       const response = await api.post(`/admin/approve-withdrawal/${activityId}`);
       setActionMessage({ id: activityId, type: 'success', text: response.data.message });
-      // Refresh the stats after a short delay to see the item disappear from the list
       setTimeout(fetchAdminStats, 2000);
     } catch (err) {
       setActionMessage({ id: activityId, type: 'error', text: err.response?.data?.message || 'Approval failed.' });
@@ -105,7 +107,7 @@ const AdminDashboard = () => {
         {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
           <div className="admin-actions-card warning">
             <h3>Pending Vault Withdrawals ({stats.pendingVaultWithdrawals.length})</h3>
-            <p>ACTION REQUIRED: These internal vault withdrawals are waiting to be processed by the background job.</p>
+            <p>ACTION REQUIRED: Ensure funds are returned from the trading desk, then approve for processing.</p>
             <div className="table-responsive">
               <table className="activity-table">
                 <thead>
@@ -113,6 +115,7 @@ const AdminDashboard = () => {
                     <th>User</th>
                     <th>Description</th>
                     <th className="amount">Amount</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -121,10 +124,20 @@ const AdminDashboard = () => {
                       <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
                       <td>{item.description}</td>
                       <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
+                      <td className="actions-cell">
+                        <button 
+                          className="btn-primary btn-sm" 
+                          onClick={() => handleApproveWithdrawal(item.activity_id)}
+                          disabled={approvingId === item.activity_id}
+                        >
+                          {approvingId === item.activity_id ? '...' : 'Approve'}
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              {actionMessage.text && <p className={`admin-message ${actionMessage.type}`} style={{marginTop: '16px'}}>{actionMessage.text}</p>}
             </div>
           </div>
         )}
@@ -202,7 +215,6 @@ const AdminDashboard = () => {
             <Link to="/admin/financials" className="btn-primary btn-sm">Financials & Auditing</Link>
             <Link to="/admin/treasury" className="btn-primary btn-sm">Treasury Report</Link>
             <Link to="/admin/vaults" className="btn-primary btn-sm">Vault Management</Link>
-            <Link to="/admin/tabs" className="btn-primary btn-sm">Tab Management</Link>
           </div>
         </div>
         {renderContent()}

@@ -17,13 +17,14 @@ const VaultManagementPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // State for the simplified PnL Form
   const [pnlPercentage, setPnlPercentage] = useState('');
   const [beforeTimestamp, setBeforeTimestamp] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
-  // Set the default timestamp to the current time when the component loads
+  const [isSweeping, setIsSweeping] = useState(false);
+  const [sweepMessage, setSweepMessage] = useState('');
+
   useEffect(() => {
     const now = new Date();
     const offset = now.getTimezoneOffset();
@@ -32,11 +33,9 @@ const VaultManagementPage = () => {
     setBeforeTimestamp(formattedDate);
   }, []);
 
-  // Fetch the list of all vaults once on component mount
   useEffect(() => {
     const fetchVaults = async () => {
       try {
-        // We get the vault list from the /dashboard endpoint as it's already available
         const response = await api.get('/dashboard'); 
         setVaults(response.data.vaults);
         if (response.data.vaults.length > 0) {
@@ -49,7 +48,6 @@ const VaultManagementPage = () => {
     fetchVaults();
   }, []);
 
-  // Fetch the detailed data for the selected vault whenever the ID changes
   const fetchVaultDetails = useCallback(async () => {
     if (!selectedVaultId) return;
     setLoading(true);
@@ -69,7 +67,6 @@ const VaultManagementPage = () => {
     fetchVaultDetails();
   }, [fetchVaultDetails]);
 
-  // Handler for the new simplified PnL tool
   const handleApplyPnl = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
@@ -80,12 +77,25 @@ const VaultManagementPage = () => {
         beforeTimestamp: new Date(beforeTimestamp).toISOString()
       });
       setMessage({ type: 'success', text: response.data.message });
-      setPnlPercentage(''); // Reset form
+      setPnlPercentage('');
       fetchVaultDetails();
     } catch(err) {
       setMessage({ type: 'error', text: err.response?.data?.message || 'Update failed.' });
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleTriggerSweep = async () => {
+    setIsSweeping(true);
+    setSweepMessage('Triggering sweep job...');
+    try {
+      const response = await api.post('/admin/trigger-sweep');
+      setSweepMessage(response.data.message);
+    } catch (err) {
+      setSweepMessage(err.response?.data?.message || 'Failed to trigger sweep.');
+    } finally {
+      setIsSweeping(false);
     }
   };
 
@@ -119,27 +129,28 @@ const VaultManagementPage = () => {
                 <StatCard label="Participant Count" value={vaultData.stats.participantCount} />
             </div>
             
-            <div className="admin-actions-card">
-              <h3>Apply Manual PnL</h3>
-              <p>Distribute a percentage-based PnL to all users whose capital was deposited before the specified cutoff time. This creates a permanent ledger entry.</p>
-              
-              <form onSubmit={handleApplyPnl} className="admin-form">
-                <div className="form-group">
-                  <label htmlFor="pnl-percent">PnL to Distribute (%)</label>
-                  <input id="pnl-percent" type="number" step="0.01" value={pnlPercentage} onChange={e => setPnlPercentage(e.target.value)} placeholder="e.g., 5.5 for +5.5% or -2.1 for -2.1%" required/>
-                </div>
+            <div className="admin-grid">
+              <div className="admin-actions-card">
+                <h3>Apply Manual PnL</h3>
+                <p>Distribute a percentage-based PnL to all users whose capital was deposited before the specified cutoff time. This creates a permanent ledger entry.</p>
+                
+                <form onSubmit={handleApplyPnl} className="admin-form">
+                  <div className="form-group">
+                    <label htmlFor="pnl-percent">PnL to Distribute (%)</label>
+                    <input id="pnl-percent" type="number" step="0.01" value={pnlPercentage} onChange={e => setPnlPercentage(e.target.value)} placeholder="e.g., 5.5 for +5.5% or -2.1 for -2.1%" required/>
+                  </div>
 
-                <div className="form-group">
-                  <label htmlFor="before-timestamp">Apply to deposits made before:</label>
-                  <input id="before-timestamp" type="datetime-local" value={beforeTimestamp} onChange={e => setBeforeTimestamp(e.target.value)} required />
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="before-timestamp">Apply to deposits made before:</label>
+                    <input id="before-timestamp" type="datetime-local" value={beforeTimestamp} onChange={e => setBeforeTimestamp(e.target.value)} required />
+                  </div>
 
-                <button type="submit" className="btn-primary" disabled={isProcessing}>{isProcessing ? 'Processing...' : 'Apply PnL to Eligible Capital'}</button>
-              </form>
-              {message.text && <p className={`admin-message ${message.type}`}>{message.text}</p>}
-            
+                  <button type="submit" className="btn-primary" disabled={isProcessing}>{isProcessing ? 'Processing...' : 'Apply PnL to Eligible Capital'}</button>
+                </form>
+                {message.text && <p className={`admin-message ${message.type}`}>{message.text}</p>}
+              </div>
 
-            <div className="admin-actions-card">
+              <div className="admin-actions-card">
                 <h3>Capital Sweep</h3>
                 <p>Find all new deposits in the ledger and sweep the total amount to the main trading desk wallet.</p>
                 <button onClick={handleTriggerSweep} className="btn-secondary" disabled={isSweeping}>
@@ -148,7 +159,6 @@ const VaultManagementPage = () => {
                 {sweepMessage && <p className={`admin-message success`}>{sweepMessage}</p>}
               </div>
             </div>
-            
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
               <h3>Participants in {vaultData.vault.name}</h3>
@@ -163,16 +173,14 @@ const VaultManagementPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-          {vaultData.participants.map(p => (
-            <tr key={p.user_id}>
-      <td><Link to={`/admin/user/${p.user_id}`} className="admin-table-link">{p.username}</Link></td>
-      {/* --- THIS IS THE FIX --- */}
-      {/* The backend sends 'principal', so we render p.principal */}
-      <td>${(parseFloat(p.principal) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-      <td className={parseFloat(p.pnl) >= 0 ? 'text-positive' : 'text-negative'}>${(parseFloat(p.pnl) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-      <td>${(parseFloat(p.total_capital) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-             </tr>
-                  ))}
+                    {vaultData.participants.map(p => (
+                      <tr key={p.user_id}>
+                        <td><Link to={`/admin/user/${p.user_id}`} className="admin-table-link">{p.username}</Link></td>
+                        <td>${(parseFloat(p.principal) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td className={parseFloat(p.pnl) >= 0 ? 'text-positive' : 'text-negative'}>${(parseFloat(p.pnl) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td>${(parseFloat(p.total_capital) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
