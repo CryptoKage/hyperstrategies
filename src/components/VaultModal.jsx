@@ -1,4 +1,4 @@
- /src/components/VaultModal.jsx
+// /src/components/VaultModal.jsx
 // This version integrates API-driven fee calculations into your existing component.
 // ===================================================================================
 import React, { useState, useEffect } from 'react';
