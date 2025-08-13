@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
 import InfoIcon from './InfoIcon';
-import { ClipLoader } from 'react-spinners'; // Assuming you have react-spinners
 
 const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSuccess }) => {
   const { t } = useTranslation();
