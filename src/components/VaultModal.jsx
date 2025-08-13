@@ -1,25 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
 import InfoIcon from './InfoIcon';
 
-const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSuccess }) => {
+// Note: Removed the ClipLoader import since you don't use it.
+
+const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllocationSuccess }) => { // <-- THE FIX 1: Added userTier back to the props
   const { t } = useTranslation();
   
-  // --- STATE MANAGEMENT ---
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [riskAcknowledged, setRiskAcknowledged] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   
-  // NEW state for API-driven fee calculations
   const [feeProspectus, setFeeProspectus] = useState(null);
   const [isCalculatingFee, setIsCalculatingFee] = useState(false);
 
-  // --- API-DRIVEN FEE CALCULATION WITH DEBOUNCE ---
   useEffect(() => {
     if (!isOpen || !amount || parseFloat(amount) <= 0) {
       setFeeProspectus(null);
@@ -29,22 +28,21 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
     setIsCalculatingFee(true);
     const handler = setTimeout(() => {
       api.post('/vaults/calculate-investment-fee', {
-        vaultId: vault.vault_id,
+        vaultId: vault.id, // <-- THE FIX 2: Changed from vault.vault_id to vault.id
         amount: amount,
       }).then(response => {
         setFeeProspectus(response.data);
       }).catch(err => {
         console.error("Fee calculation error:", err);
-        setFeeProspectus(null); // Clear on error
+        setFeeProspectus(null);
       }).finally(() => {
         setIsCalculatingFee(false);
       });
-    }, 500); // 500ms debounce delay
+    }, 500);
 
     return () => clearTimeout(handler);
   }, [amount, vault, isOpen]);
 
-  // --- RESET STATE ON CLOSE (Preserved) ---
   useEffect(() => {
     if (!isOpen) {
       setAmount('');
@@ -58,29 +56,26 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
 
   if (!isOpen || !vault) return null;
 
-  // --- EVENT HANDLERS (Preserved) ---
   const handleAllocate = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     const allocationAmount = parseFloat(amount);
     
-    // Re-checking validation just in case
     if (isNaN(allocationAmount) || allocationAmount <= 0 || allocationAmount > availableBalance) {
-      setError(t('vault_modal.error_generic')); // Generic error as button should be disabled
+      setError(t('vault_modal.error_generic'));
       setIsLoading(false);
       return;
     }
 
     try {
       await api.post('/vaults/invest', {
-        vaultId: vault.vault_id,
+        vaultId: vault.id, // <-- THE FIX 2 (Applied here as well)
         amount: allocationAmount,
       });
       onAllocationSuccess();
       onClose();
     } catch (err) {
-      // Use the new translation-key based errors from the backend
       const messageKey = err.response?.data?.messageKey || 'vault_modal.error_failed';
       setError(t(messageKey));
     } finally {
@@ -96,16 +91,15 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
   
   const isSubmitDisabled = 
     isLoading || 
+    isCalculatingFee || // Also disable while the fee is being calculated
     !amount ||
     parseFloat(amount) <= 0 ||
     parseFloat(amount) > availableBalance ||
     (needsWarning && !riskAcknowledged) || 
     !termsAccepted;
 
-  // Helper to format numbers
   const formatCurrency = (numStr) => parseFloat(numStr || '0').toFixed(2);
 
-  // --- RENDER METHOD ---
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -129,12 +123,12 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
             onMaxClick={handleMaxClick}
           />
           
-          {/* --- NEW INVESTMENT BREAKDOWN --- */}
           <div className="investment-breakdown">
-            <h4>{t('vault_modal.breakdown_title')}</h4>
+            {/* --- THE FIX 1 (Applied here): Pass the userTier to the translation --- */}
+            <h4>{t('vault_modal.breakdown_title', { tier: userTier })}</h4>
             {isCalculatingFee ? (
               <div className="spinner-container">
-                                    <span>{t('vault_modal.calculating')}</span>
+                  <span>{t('vault_modal.calculating')}</span>
               </div>
             ) : feeProspectus ? (
               <>
@@ -163,7 +157,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
             )}
           </div>
           
-          {/* --- ACKNOWLEDGEMENTS (Preserved) --- */}
           {needsWarning && (
             <div className="acknowledgement-box">
               <input type="checkbox" id="risk-ack" checked={riskAcknowledged} onChange={(e) => setRiskAcknowledged(e.target.checked)} />
