@@ -28,10 +28,18 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
       // Use vault.id, but check for vault.vault_id for backward compatibility if needed, though .id is the new standard
       const vaultIdentifier = vault.id || vault.vault_id; 
       api.post('/vaults/calculate-investment-fee', {
-        vaultId: vaultIdentifier, 
-        amount: amount,
+        vaultId: vaultIdentifier,
+        amount: parseFloat(amount),
       }).then(response => {
-        setFeeProspectus(response.data);
+        const data = response.data;
+        setFeeProspectus({
+          baseFee: data.base_fee ?? data.baseFee,
+          finalFee: data.final_fee ?? data.finalFee,
+          netInvestment: data.net_investment ?? data.netInvestment,
+          hasPinDiscount: data.has_pin_discount ?? data.hasPinDiscount,
+          pinName: data.pin_name ?? data.pinName,
+          pinDiscountPercentage: data.pin_discount_percentage ?? data.pinDiscountPercentage,
+        });
       }).catch(err => {
         console.error("Fee calculation error:", err);
         setFeeProspectus(null);
