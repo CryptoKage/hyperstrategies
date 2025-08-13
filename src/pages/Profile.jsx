@@ -10,7 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import InputField from '../components/InputField';
 import XpHistoryList from '../components/XpHistoryList';
-import UserPins from '../../components/UserPins'; // --- CHANGE 1: Import UserPins instead of UserBadges
+import UserPins from '../components/UserPins'; 
 
 const Profile = () => {
   const { t } = useTranslation();
