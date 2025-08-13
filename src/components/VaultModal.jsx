@@ -1,6 +1,3 @@
-// /src/components/VaultModal.jsx
-// This version integrates API-driven fee calculations into your existing component.
-// ===================================================================================
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -137,8 +134,7 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, onAllocationSucc
             <h4>{t('vault_modal.breakdown_title')}</h4>
             {isCalculatingFee ? (
               <div className="spinner-container">
-                  <ClipLoader size={20} color={"#ffffff"} />
-                  <span>{t('vault_modal.calculating')}</span>
+                                    <span>{t('vault_modal.calculating')}</span>
               </div>
             ) : feeProspectus ? (
               <>
