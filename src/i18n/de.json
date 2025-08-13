@@ -59,6 +59,7 @@
     "error_nan": "Bitte gib einen gültigen Betrag ein.",
     "error_insufficient": "Der Einzahlungsbetrag übersteigt dein verfügbares Guthaben.",
     "error_failed": "Einzahlung fehlgeschlagen. Bitte versuche es erneut.",
+    "error_generic": "Es ist ein Fehler aufgetreten. Bitte versuche es erneut.",
        "calculating": "Berechne...",
     "base_fee": "Basis-Einzahlungsgebühr",
     "pin_discount": "{{pinName}} Pin-Rabatt",

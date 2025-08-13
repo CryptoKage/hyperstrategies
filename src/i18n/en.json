@@ -59,6 +59,7 @@
     "error_nan": "Please enter a valid amount.",
     "error_insufficient": "Allocation amount exceeds your available balance.",
     "error_failed": "Allocation failed. Please try again.",
+    "error_generic": "An error occurred. Please try again.",
     "calculating": "Calculating...",
     "base_fee": "Base Deposit Fee",
     "pin_discount": "{{pinName}} Pin Discount",
