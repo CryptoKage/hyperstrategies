@@ -5,6 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
+import UserPins from '../../components/UserPins';
 
 const PinManagementPage = () => {
     // --- State Management: Mirrored from TreasuryPage ---
