@@ -1,13 +1,11 @@
 // src/pages/admin/UserDetailPage.jsx
-// FINAL ATTEMPT: Using the exact same relative path structure as other working admin pages.
+// This is the final version, reverted to use the now-fixed UserPins component.
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
-// --- THE FIX: Using the verified relative path structure ---
-// import UserPins from '../../components/UserPins'; // Commented out for the test
-import DummyTest from '../../components/DummyTest'; // Importing our new dummy component
+import UserPins from '../../components/UserPins'; 
 
 const UserDetailPage = () => {
   const { userId } = useParams();
@@ -69,8 +67,7 @@ const UserDetailPage = () => {
               <div className="detail-item"><strong>Referral Code:</strong><span>{details.referral_code}</span></div>
               <div className="detail-item"><strong>Joined:</strong><span>{new Date(details.created_at).toLocaleDateString()}</span></div>
             </div>
-            {/* <UserPins userPinNames={details.pins} /> */}
-            <DummyTest /> {/* Using our dummy component for the test */}
+            <UserPins userPinNames={details.pins} />
           </div>
 
           <div className="admin-card">
