@@ -1,13 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
 import InfoIcon from './InfoIcon';
 
-// Note: Removed the ClipLoader import since you don't use it.
-
-const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllocationSuccess }) => { // <-- THE FIX 1: Added userTier back to the props
+const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllocationSuccess }) => {
   const { t } = useTranslation();
   
   const [amount, setAmount] = useState('');
@@ -27,8 +25,10 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
 
     setIsCalculatingFee(true);
     const handler = setTimeout(() => {
+      // Use vault.id, but check for vault.vault_id for backward compatibility if needed, though .id is the new standard
+      const vaultIdentifier = vault.id || vault.vault_id; 
       api.post('/vaults/calculate-investment-fee', {
-        vaultId: vault.id, // <-- THE FIX 2: Changed from vault.vault_id to vault.id
+        vaultId: vaultIdentifier, 
         amount: amount,
       }).then(response => {
         setFeeProspectus(response.data);
@@ -69,8 +69,9 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
     }
 
     try {
+      const vaultIdentifier = vault.id || vault.vault_id; // Use the correct ID
       await api.post('/vaults/invest', {
-        vaultId: vault.id, // <-- THE FIX 2 (Applied here as well)
+        vaultId: vaultIdentifier,
         amount: allocationAmount,
       });
       onAllocationSuccess();
@@ -91,7 +92,7 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
   
   const isSubmitDisabled = 
     isLoading || 
-    isCalculatingFee || // Also disable while the fee is being calculated
+    isCalculatingFee ||
     !amount ||
     parseFloat(amount) <= 0 ||
     parseFloat(amount) > availableBalance ||
@@ -124,7 +125,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
           />
           
           <div className="investment-breakdown">
-            {/* --- THE FIX 1 (Applied here): Pass the userTier to the translation --- */}
             <h4>{t('vault_modal.breakdown_title', { tier: userTier })}</h4>
             {isCalculatingFee ? (
               <div className="spinner-container">
