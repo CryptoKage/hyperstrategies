@@ -104,7 +104,7 @@ const Profile = () => {
               {editMessage && <p className="edit-message">{editMessage}</p>}
             </form>
             {/* --- CHANGE 2: Use the new UserPins component and pass it the correct prop --- */}
-            <UserPins userPinNames={profileData?.pins} /> 
+            <UserPins userPinNames={profileData?.tags} />
           </div>
 
           <div className="profile-card">
