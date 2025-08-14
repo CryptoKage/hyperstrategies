@@ -64,7 +64,11 @@
     "pin_discount": "{{pinName}} Pin Discount",
     "final_fee": "Final Fee",
     "net_investment": "Net Capital Invested",
-    "enter_amount_prompt": "Enter an amount to see your fee breakdown."
+    "enter_amount_prompt": "Enter an amount to see your fee breakdown.",
+    "tradable_capital": "Tradable Capital",
+    "deposit_fee": "Deposit Fee",
+    "base_fee_was": "Based on a {{pct}}% standard fee.",
+    "tier_discount": "(-{{pct}}% Tier Bonus)"
   },
   "vault_withdraw_modal": {
     "title": "Request Withdrawal from {{vaultName}}",
