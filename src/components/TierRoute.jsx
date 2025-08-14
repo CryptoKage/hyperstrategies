@@ -1,49 +1,36 @@
 // src/components/TierRoute.jsx
-// This version adds a crucial check to handle the state update timing.
+// TEMPORARY DEBUGGING VERSION
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { jwtDecode } from 'jwt-decode'; // Import jwtDecode here
 
 const TierRoute = ({ minTier = 2, children }) => {
-  const { user, loading: authLoading } = useAuth();
-  const [currentUser, setCurrentUser] = useState(user);
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    // This effect ensures we have the absolute latest user info from the token.
-    // It protects against "stale state" issues from the context.
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setCurrentUser(decoded.user);
-      } catch (e) {
-        console.error("Invalid token in TierRoute:", e);
-        setCurrentUser(null);
-      }
-    } else {
-        setCurrentUser(null);
-    }
-  }, [user]); // Re-run this check if the user object in the context changes.
+  // --- THIS IS OUR DEBUGGING X-RAY ---
+  // This will print the user object to your browser's console.
+  console.log('[TierRoute] Checking access. User object:', user);
 
-  if (authLoading) {
-    // If the main AuthContext is still loading, wait.
-    return null; 
+  if (loading) {
+    console.log('[TierRoute] Auth is loading...');
+    return null; // Wait while the auth state is being determined.
   }
 
-  if (!currentUser) {
-    // If we have no user after checking the token, redirect to login.
+  if (!user) {
+    console.log('[TierRoute] No user found. Redirecting to login.');
     return <Navigate to="/login" replace />;
   }
 
-  // Use the fresh 'currentUser' state for the check.
-  const userTier = currentUser.account_tier || 1;
+  const userTier = user.account_tier || 1;
+  console.log(`[TierRoute] User Tier: ${userTier}, Required Tier: ${minTier}`);
+
   if (userTier < minTier) {
+    console.log('[TierRoute] Access DENIED. Redirecting to dashboard.');
     return <Navigate to="/dashboard" replace />;
   }
 
-  // If all checks pass, render the child component (the marketplace page).
+  console.log('[TierRoute] Access GRANTED.');
   return children;
 };
 
