@@ -1,16 +1,15 @@
 // src/pages/Login.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next'; // 1. Import
+import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import GoogleIcon from '../components/GoogleIcon';
-import InputField from '../components/InputField'; // For consistency
+import InputField from '../components/InputField';
 
 const Login = () => {
-  const { t } = useTranslation(); // 2. Initialize
+  const { t } = useTranslation();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,10 +22,18 @@ const Login = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get('status') === 'registered') {
+    // This hook now checks for different query parameters on load.
+    const status = searchParams.get('status');
+    const session = searchParams.get('session');
+
+    if (status === 'registered') {
       setSuccessMessage(t('login_page.success_message'));
     }
-  }, [searchParams, t]); // Add t to dependency array
+    // --- THIS IS THE NEW LOGIC ---
+    if (session === 'expired') {
+      setError(t('login_page.session_expired'));
+    }
+  }, [searchParams, t]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

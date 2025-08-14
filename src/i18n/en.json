@@ -154,6 +154,7 @@
     "error_server": "Could not connect to the server. Please try again later."
   },
   "login_page": {
+    "session_expired": "Your session has expired. Please log in again.",
     "title": "Sign In",
     "success_message": "Registration successful! Please sign in.",
     "error_failed": "Sign in failed. Please check your credentials.",

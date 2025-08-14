@@ -153,6 +153,7 @@
     "error_server": "Verbindung zum Server konnte nicht hergestellt werden. Bitte versuche es später erneut."
   },
   "login_page": {
+    "session_expired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
     "title": "Anmelden",
     "success_message": "Registrierung erfolgreich! Bitte melde dich an.",
     "error_failed": "Anmeldung fehlgeschlagen. Bitte überprüfe deine Anmeldedaten.",
