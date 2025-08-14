@@ -1,7 +1,5 @@
-// src/components/WithdrawModal.jsx
-
 import React, { useState, useEffect } from 'react';
-import { isAddress } from 'ethers';
+import { isAddress } from 'ethers'; // Note: ethers v6 syntax
 import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
@@ -31,26 +29,29 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
     e.preventDefault();
     setError('');
 
+    // Frontend validation is good for UX, but the backend is the final authority
     if (!isAddress(address)) {
       setError(t('withdraw_modal.error_address'));
       return;
     }
-    const withdrawAmount = parseFloat(amount);
-    if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
+    const withdrawAmountNum = parseFloat(amount);
+    if (isNaN(withdrawAmountNum) || withdrawAmountNum <= 0) {
       setError(t('withdraw_modal.error_nan'));
       return;
     }
-    if (withdrawAmount > usdcBalance) {
+    if (withdrawAmountNum > usdcBalance) {
       setError(t('withdraw_modal.error_insufficient'));
       return;
     }
     
     setIsLoading(true);
     try {
+      // --- THIS IS THE CORRECTED API CALL ---
+      // We only send one 'amount' key, and it's the raw string from state.
       await api.post('/withdraw', {
         token: 'USDC',
-        amount: withdrawAmount,
         toAddress: address,
+        amount: amount.toString() 
       });
       onWithdrawalQueued();
       onClose();
@@ -59,6 +60,10 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleMaxClick = () => {
+    setAmount((usdcBalance || 0).toString());
   };
 
   return (
@@ -81,13 +86,14 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
             required
           />
           <InputField
-            label={t('withdraw_modal.amount_label', { balance: usdcBalance.toFixed(4) })}
+            label={t('withdraw_modal.amount_label', { balance: (usdcBalance || 0).toFixed(4) })}
             id="withdrawAmount"
             type="number"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="e.g., 100.00"
             required
+            onMaxClick={handleMaxClick} // Assuming InputField supports this
           />
           
           <div className="modal-actions">
