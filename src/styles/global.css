@@ -3380,12 +3380,19 @@ input:checked + .slider:before {
   cursor: help; /* Shows a '?' on hover to indicate the title tooltip */
 }
 .pin-image {
-  display: block; 
-  border-radius: 50%; 
+  /* --- THE FIX --- */
+  /* We set a max-width and max-height to constrain the size */
+  /* without forcing the dimensions, which preserves the aspect ratio. */
+  max-width: 48px;
+  max-height: 48px;
+  
+  /* The rest of the styles are good */
+  display: block;
+  border-radius: 50%;
   border: 2px solid #555;
   transition: transform 0.2s ease-in-out;
 }
-  
+
 .pin-image:hover {
   transform: scale(1.1);
 }
