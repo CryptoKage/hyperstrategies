@@ -13,7 +13,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
   const [error, setError] = useState('');
   const [riskAcknowledged, setRiskAcknowledged] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  
   const [feeProspectus, setFeeProspectus] = useState(null);
   const [isCalculatingFee, setIsCalculatingFee] = useState(false);
 
@@ -22,13 +21,10 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
       setFeeProspectus(null);
       return;
     }
-
     setIsCalculatingFee(true);
     const handler = setTimeout(() => {
-      // Use vault.id, but check for vault.vault_id for backward compatibility if needed, though .id is the new standard
-      const vaultIdentifier = vault.id || vault.vault_id; 
       api.post('/vaults/calculate-investment-fee', {
-        vaultId: vaultIdentifier, 
+        vaultId: vault.vault_id,
         amount: amount,
       }).then(response => {
         setFeeProspectus(response.data);
@@ -39,7 +35,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
         setIsCalculatingFee(false);
       });
     }, 500);
-
     return () => clearTimeout(handler);
   }, [amount, vault, isOpen]);
 
@@ -56,20 +51,19 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
 
   if (!isOpen || !vault) return null;
 
-  const handleAllocate = async (e) => {
+    const handleAllocate = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-   if (!amount || parseFloat(amount) <= 0 || parseFloat(amount) > availableBalance) {
+    if (!amount || parseFloat(amount) <= 0 || parseFloat(amount) > availableBalance) {
       setError(t('vault_modal.error_generic'));
       setIsLoading(false);
       return;
     }
-
-   try {
+    try {
       await api.post('/vaults/invest', {
         vaultId: vault.vault_id,
-        amount: amount, // Send the raw string from state
+        amount: amount,
       });
       onAllocationSuccess();
       onClose();
@@ -81,21 +75,9 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
     }
   };
   
-  const handleMaxClick = () => {
-    setAmount((availableBalance || 0).toString());
-  };
-
+  const handleMaxClick = () => { setAmount((availableBalance || 0).toString()); };
   const needsWarning = vault.risk_level === 'high' || vault.risk_level === 'extreme';
-  
-  const isSubmitDisabled = 
-    isLoading || 
-    isCalculatingFee ||
-    !amount ||
-    parseFloat(amount) <= 0 ||
-    parseFloat(amount) > availableBalance ||
-    (needsWarning && !riskAcknowledged) || 
-    !termsAccepted;
-
+  const isSubmitDisabled = isLoading || isCalculatingFee || !amount || parseFloat(amount) <= 0 || parseFloat(amount) > availableBalance || (needsWarning && !riskAcknowledged) || !termsAccepted;
   const formatCurrency = (numStr) => parseFloat(numStr || '0').toFixed(2);
 
   return (
@@ -124,19 +106,27 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
           <div className="investment-breakdown">
             <h4>{t('vault_modal.breakdown_title', { tier: userTier })}</h4>
             {isCalculatingFee ? (
-              <div className="spinner-container">
-                  <span>{t('vault_modal.calculating')}</span>
-              </div>
+              <div className="spinner-container"><span>{t('vault_modal.calculating')}</span></div>
             ) : feeProspectus ? (
               <>
                 <div className="breakdown-row">
-                  <span>{t('vault_modal.base_fee')}</span>
+                  {/* --- NEW: Display the base fee percentage --- */}
+                  <span>{t('vault_modal.base_fee')} ({parseFloat(vault.fee_percentage) * 100}%)</span>
                   <span className="breakdown-value">${formatCurrency(feeProspectus.baseFee)}</span>
                 </div>
+
+                {/* --- NEW: Tier Discount Display --- */}
+                {vault.is_fee_tier_based && userTier > 1 && (
+                    <div className="breakdown-row tier-discount-highlight">
+                        <span>{t('vault_modal.tier_discount', { tier: userTier })} ({(userTier - 1) * 2}%)</span>
+                        <span className="breakdown-value">- ${formatCurrency(feeProspectus.baseFee * ((userTier - 1) * 0.02) / parseFloat(vault.fee_percentage))}</span>
+                    </div>
+                )}
+
                 {feeProspectus.hasPinDiscount && (
                   <div className="breakdown-row pin-discount-highlight">
                     <span>{t('vault_modal.pin_discount', { pinName: feeProspectus.pinName })} ({feeProspectus.pinDiscountPercentage}%)</span>
-                    <span className="breakdown-value">- ${formatCurrency(feeProspectus.baseFee - feeProspectus.finalFee)}</span>
+                    <span className="breakdown-value">- ${formatCurrency(parseFloat(feeProspectus.baseFee) - parseFloat(feeProspectus.finalFee))}</span>
                   </div>
                 )}
                 <div className="breakdown-row final-fee">
