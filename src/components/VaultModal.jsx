@@ -65,6 +65,8 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
   const handleMaxClick = () => setAmount((availableBalance || 0).toString());
   const needsWarning = vault.risk_level === 'high' || vault.risk_level === 'extreme';
   const isSubmitDisabled = isLoading || isCalculatingFee || !feeProspectus || !amount || parseFloat(amount) <= 0 || parseFloat(amount) > availableBalance || (needsWarning && !riskAcknowledged) || !termsAccepted;
+  
+  // --- THE FIX: Make this function safer by providing a default of '0' ---
   const formatCurrency = (numStr) => parseFloat(numStr || '0').toFixed(2);
 
   return (
@@ -94,22 +96,22 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
             ) : feeProspectus ? (
               <>
                 <div className="breakdown-row">
-                  <span>{t('vault_modal.tradable_capital')} ({feeProspectus.finalTradablePct.toFixed(1)}%)</span>
+                  {/* --- THE FIX: Add safety checks ( (feeProspectus.finalTradablePct || 0) ) --- */}
+                  <span>{t('vault_modal.tradable_capital')} ({(feeProspectus.finalTradablePct || 0).toFixed(1)}%)</span>
                   <span>${formatCurrency(feeProspectus.finalTradableAmount)}</span>
                 </div>
                 <div className="breakdown-row">
-                  <span>{t('vault_modal.deposit_fee')} ({feeProspectus.finalFeePct.toFixed(1)}%)</span>
+                  <span>{t('vault_modal.deposit_fee')} ({(feeProspectus.finalFeePct || 0).toFixed(1)}%)</span>
                   <span>${formatCurrency(feeProspectus.finalFeeAmount)}</span>
                 </div>
                 
-                {/* Conditionally render the discount details only if they apply */}
                 {(feeProspectus.tierDiscountPct > 0 || feeProspectus.totalPinDiscountPct > 0) && (
                     <div className="discounts-applied">
-                        {t('vault_modal.base_fee_was', { pct: feeProspectus.baseFeePct })}
+                        {t('vault_modal.base_fee_was', { pct: (feeProspectus.baseFeePct || 0) })}
                         {feeProspectus.tierDiscountPct > 0 && 
-                            <span className="discount-detail">{t('vault_modal.tier_discount', { pct: feeProspectus.tierDiscountPct })}</span>}
+                            <span className="discount-detail">{t('vault_modal.tier_discount', { pct: (feeProspectus.tierDiscountPct || 0) })}</span>}
                         {feeProspectus.totalPinDiscountPct > 0 && 
-                            <span className="discount-detail">{t('vault_modal.pin_discount', { pct: feeProspectus.totalPinDiscountPct })}</span>}
+                            <span className="discount-detail">{t('vault_modal.pin_discount', { pct: (feeProspectus.totalPinDiscountPct || 0) })}</span>}
                     </div>
                 )}
               </>
