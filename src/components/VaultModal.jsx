@@ -60,19 +60,16 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    const allocationAmount = parseFloat(amount);
-    
-    if (isNaN(allocationAmount) || allocationAmount <= 0 || allocationAmount > availableBalance) {
+   if (!amount || parseFloat(amount) <= 0 || parseFloat(amount) > availableBalance) {
       setError(t('vault_modal.error_generic'));
       setIsLoading(false);
       return;
     }
 
-    try {
-      const vaultIdentifier = vault.id || vault.vault_id; // Use the correct ID
+   try {
       await api.post('/vaults/invest', {
-        vaultId: vaultIdentifier,
-        amount: allocationAmount,
+        vaultId: vault.vault_id,
+        amount: amount, // Send the raw string from state
       });
       onAllocationSuccess();
       onClose();
