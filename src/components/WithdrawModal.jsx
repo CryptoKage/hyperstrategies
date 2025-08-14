@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { isAddress } from 'ethers'; // Note: ethers v6 syntax
+import { ethers } from 'ethers'; // Use ethers v6 style: import { isAddress } from 'ethers';
 import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
@@ -29,8 +29,7 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
     e.preventDefault();
     setError('');
 
-    // Frontend validation is good for UX, but the backend is the final authority
-    if (!isAddress(address)) {
+    if (!ethers.isAddress(address)) { // Corrected for ethers v6/v5 utils
       setError(t('withdraw_modal.error_address'));
       return;
     }
@@ -46,8 +45,8 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
     
     setIsLoading(true);
     try {
-      // --- THIS IS THE CORRECTED API CALL ---
-      // We only send one 'amount' key, and it's the raw string from state.
+      // --- THIS IS THE FIX ---
+      // We send the raw 'amount' state, converted to a string.
       await api.post('/withdraw', {
         token: 'USDC',
         toAddress: address,
@@ -61,7 +60,7 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
       setIsLoading(false);
     }
   };
-
+  
   const handleMaxClick = () => {
     setAmount((usdcBalance || 0).toString());
   };
@@ -93,7 +92,7 @@ const WithdrawModal = ({ isOpen, onClose, usdcBalance, onWithdrawalQueued }) => 
             onChange={(e) => setAmount(e.target.value)}
             placeholder="e.g., 100.00"
             required
-            onMaxClick={handleMaxClick} // Assuming InputField supports this
+            onMaxClick={handleMaxClick}
           />
           
           <div className="modal-actions">
