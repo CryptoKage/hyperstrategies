@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+// --- THE FIX: Import the 'Trans' component for handling links in translations ---
+import { useTranslation, Trans } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
 import InfoIcon from './InfoIcon';
@@ -23,6 +24,7 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
     }
     setIsCalculatingFee(true);
     const handler = setTimeout(() => {
+      // Your dashboard passes vault.vault_id, so we use that.
       api.post('/vaults/calculate-investment-fee', {
         vaultId: vault.vault_id,
         amount: amount,
@@ -65,8 +67,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
   const handleMaxClick = () => setAmount((availableBalance || 0).toString());
   const needsWarning = vault.risk_level === 'high' || vault.risk_level === 'extreme';
   const isSubmitDisabled = isLoading || isCalculatingFee || !feeProspectus || !amount || parseFloat(amount) <= 0 || parseFloat(amount) > availableBalance || (needsWarning && !riskAcknowledged) || !termsAccepted;
-  
-  // --- THE FIX: Make this function safer by providing a default of '0' ---
   const formatCurrency = (numStr) => parseFloat(numStr || '0').toFixed(2);
 
   return (
@@ -90,13 +90,13 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
             onMaxClick={handleMaxClick}
           />
           <div className="investment-breakdown">
-            <h4>{t('vault_modal.breakdown_title')}</h4>
+            {/* --- THE FIX: Pass the userTier prop to the translation --- */}
+            <h4>{t('vault_modal.breakdown_title', { tier: userTier })}</h4>
             {isCalculatingFee ? (
               <p>{t('vault_modal.calculating')}</p>
             ) : feeProspectus ? (
               <>
                 <div className="breakdown-row">
-                  {/* --- THE FIX: Add safety checks ( (feeProspectus.finalTradablePct || 0) ) --- */}
                   <span>{t('vault_modal.tradable_capital')} ({(feeProspectus.finalTradablePct || 0).toFixed(1)}%)</span>
                   <span>${formatCurrency(feeProspectus.finalTradableAmount)}</span>
                 </div>
@@ -107,11 +107,11 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
                 
                 {(feeProspectus.tierDiscountPct > 0 || feeProspectus.totalPinDiscountPct > 0) && (
                     <div className="discounts-applied">
-                        {t('vault_modal.base_fee_was', { pct: (feeProspectus.baseFeePct || 0) })}
+                        {t('vault_modal.base_fee_was', { pct: (feeProspectus.baseFeePct || 0).toFixed(1) })}
                         {feeProspectus.tierDiscountPct > 0 && 
-                            <span className="discount-detail">{t('vault_modal.tier_discount', { pct: (feeProspectus.tierDiscountPct || 0) })}</span>}
+                            <span className="discount-detail">{t('vault_modal.tier_discount', { pct: feeProspectus.tierDiscountPct.toFixed(1) })}</span>}
                         {feeProspectus.totalPinDiscountPct > 0 && 
-                            <span className="discount-detail">{t('vault_modal.pin_discount', { pct: (feeProspectus.totalPinDiscountPct || 0) })}</span>}
+                            <span className="discount-detail">{t('vault_modal.pin_discount', { pct: feeProspectus.totalPinDiscountPct.toFixed(1) })}</span>}
                     </div>
                 )}
               </>
@@ -127,7 +127,12 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
           )}
           <div className="acknowledgement-box">
             <input type="checkbox" id="terms-ack" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />
-            <label htmlFor="terms-ack">{t('vault_modal.terms_ack_link')}</label>
+            {/* --- THE FIX: Use the <Trans> component to handle the link in the translation --- */}
+            <label htmlFor="terms-ack">
+              <Trans i18nKey="vault_modal.terms_ack_link">
+                I have read and agree to the <a href="/fees" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>.
+              </Trans>
+            </label>
           </div>
           <div className="modal-actions">
             <button type="button" onClick={onClose} className="btn-secondary">{t('vault_modal.cancel')}</button>

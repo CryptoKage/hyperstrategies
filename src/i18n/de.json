@@ -61,15 +61,15 @@
     "error_failed": "Einzahlung fehlgeschlagen. Bitte versuche es erneut.",
        "calculating": "Berechne...",
     "base_fee": "Basis-Einzahlungsgebühr",
-    "pin_discount": "{{pinName}} Pin-Rabatt",
     "final_fee": "Endgültige Gebühr",
     "net_investment": "Investiertes Nettokapital",
     "enter_amount_prompt": "Geben Sie einen Betrag ein, um Ihre Gebührenaufschlüsselung zu sehen.",
-       "tradable_capital": "Handelbares Kapital",
+    "tradable_capital": "Handelbares Kapital",
     "deposit_fee": "Einzahlungsgebühr",
     "base_fee_was": "Basierend auf einer Standardgebühr von {{pct}}%.",
-    "tier_discount": "(-{{pct}}% Rang-Bonus)"
-
+    "tier_discount": "(-{{pct}}% Rang-Bonus)",
+    "pin_discount": "(-{{pct}}% Pin-Bonus)",
+    "terms_ack_link": "Ich habe die <1>Allgemeinen Geschäftsbedingungen</1> gelesen und stimme ihnen zu."
   },
   "vault_withdraw_modal": {
     "title": "Auszahlung aus dem Vault \"{{vaultName}}\" anfordern",

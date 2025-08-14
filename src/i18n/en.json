@@ -61,14 +61,16 @@
     "error_failed": "Allocation failed. Please try again.",
     "calculating": "Calculating...",
     "base_fee": "Base Deposit Fee",
-    "pin_discount": "{{pinName}} Pin Discount",
     "final_fee": "Final Fee",
     "net_investment": "Net Capital Invested",
     "enter_amount_prompt": "Enter an amount to see your fee breakdown.",
     "tradable_capital": "Tradable Capital",
     "deposit_fee": "Deposit Fee",
     "base_fee_was": "Based on a {{pct}}% standard fee.",
-    "tier_discount": "(-{{pct}}% Tier Bonus)"
+    "tier_discount": "(-{{pct}}% Tier Bonus)",
+    "pin_discount": "(-{{pct}}% Pin Bonus)",
+    "terms_ack_link": "I have read and agree to the <1>Terms and Conditions</1>."
+
   },
   "vault_withdraw_modal": {
     "title": "Request Withdrawal from {{vaultName}}",
