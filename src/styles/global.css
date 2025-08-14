@@ -3380,13 +3380,12 @@ input:checked + .slider:before {
   cursor: help; /* Shows a '?' on hover to indicate the title tooltip */
 }
 .pin-image {
-  width: 48px;  /* Or whatever size you prefer */
-  height: 48px; /* Or whatever size you prefer */
-  border-radius: 50%; /* Makes them circular */
-  object-fit: cover;
+  display: block; 
+  border-radius: 50%; 
   border: 2px solid #555;
   transition: transform 0.2s ease-in-out;
 }
+  
 .pin-image:hover {
   transform: scale(1.1);
 }
