@@ -12,7 +12,7 @@ const importAll = (r) => {
   return images;
 }
 
-const pinImages = importAll(require.context('../assets/Decals', false, /\.png$/));
+const pinImages = importAll(require.context('../assets/Decals', false, /\.(png|jpe?g)$/i));
 
 const UserPins = ({ userPinNames }) => {
     const [allPinDefs, setAllPinDefs] = useState([]);
