@@ -36,15 +36,31 @@ const Dashboard = () => {
   const [autoCompoundState, setAutoCompoundState] = useState({});
   const [isUpdatingCompound, setIsUpdatingCompound] = useState({});
 
+  // --- NEW: State to store the lock status for each vault ---
+  const [vaultLockStatuses, setVaultLockStatuses] = useState({});
+
   const fetchDashboardData = useCallback(async () => {
     try {
       const response = await api.get('/dashboard');
       setDashboardData(response.data);
+
       const initialCompoundState = {};
       if (response.data.userPositions) {
         response.data.userPositions.forEach(p => {
           initialCompoundState[p.vault_id] = p.auto_compound ?? true;
         });
+
+        // --- NEW LOGIC: After fetching positions, fetch their lock statuses ---
+        const lockStatusPromises = response.data.userPositions.map(p =>
+          api.get(`/vaults/${p.vault_id}/lock-status`)
+        );
+        const lockStatusResults = await Promise.all(lockStatusPromises);
+        
+        const newLockStatuses = {};
+        response.data.userPositions.forEach((p, index) => {
+          newLockStatuses[p.vault_id] = lockStatusResults[index].data;
+        });
+        setVaultLockStatuses(newLockStatuses);
       }
       setAutoCompoundState(initialCompoundState);
       setError('');
@@ -126,6 +142,10 @@ const Dashboard = () => {
                 const pnl = parseFloat(position.pnl);
                 const isUpdating = isUpdatingCompound[position.vault_id];
                 const cardStyle = vaultInfo.image_url && vaultImageMap[vaultInfo.image_url] ? { backgroundImage: `url(${vaultImageMap[vaultInfo.image_url]})` } : {};
+                
+                // --- THE FIX: Get the lock status for the current position ---
+                const vaultLockStatus = vaultLockStatuses[position.vault_id] || { isLocked: true }; // Default to locked while loading
+
                 return (
                   <div key={position.vault_id} className="vault-card invested with-bg" style={cardStyle}>
                     <div className="card-overlay"></div>
@@ -153,7 +173,16 @@ const Dashboard = () => {
                       </div>
                       <div className="vault-actions">
                         <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
-                        <button className="btn-secondary" onClick={() => handleOpenWithdrawModal(position)}>{t('dashboard.withdraw')}</button>
+                        
+                        {/* --- THE FIX: The Withdraw button is now disabled and has a tooltip based on lock status --- */}
+                        <button 
+                          className="btn-secondary" 
+                          onClick={() => handleOpenWithdrawModal(position)}
+                          disabled={vaultLockStatus.isLocked}
+                          title={vaultLockStatus.isLocked ? `Unlocks on ${new Date(vaultLockStatus.unlockDate).toLocaleDateString()}` : 'Withdraw funds'}
+                        >
+                          {t('dashboard.withdraw')}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -215,10 +244,23 @@ const Dashboard = () => {
       </Layout>
       
       {dashboardData && (
-        <VaultModal isOpen={isAllocateModalOpen} onClose={() => setAllocateModalOpen(false)} vault={selectedVault} availableBalance={dashboardData.availableBalance} userTier={dashboardData.accountTier} onAllocationSuccess={handleActionSuccess} />
+        <VaultModal 
+          isOpen={isAllocateModalOpen} 
+          onClose={() => setAllocateModalOpen(false)} 
+          vault={selectedVault} 
+          availableBalance={dashboardData.availableBalance} 
+          userTier={dashboardData.accountTier} 
+          onAllocationSuccess={handleActionSuccess} 
+        />
       )}
       {dashboardData && (
-        <VaultWithdrawModal isOpen={isWithdrawModalOpen} onClose={() => setWithdrawModalOpen(false)} vault={selectedVault} onWithdrawalSuccess={handleActionSuccess} />
+        <VaultWithdrawModal 
+          isOpen={isWithdrawModalOpen} 
+          onClose={() => setWithdrawModalOpen(false)} 
+          vault={selectedVault}
+          unlockDate={vaultLockStatuses[selectedVault?.vault_id]?.unlockDate}
+          onWithdrawalSuccess={handleActionSuccess} 
+        />
       )}
     </>
   );
