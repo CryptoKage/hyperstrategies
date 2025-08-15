@@ -3385,16 +3385,19 @@ input:checked + .slider:before {
   /* without forcing the dimensions, which preserves the aspect ratio. */
   max-width: 148px;
   max-height: 148px;
-  
-  /* The rest of the styles are good */
   display: block;
-  border-radius: 50%;
-  border: 2px solid #555;
-  transition: transform 0.2s ease-in-out;
+  
+  /* --- THE FIX: Remove border and add a glow effect --- */
+  /* We remove the border and border-radius completely. */
+  filter: drop-shadow(0 0 3px rgba(100, 150, 255, 0.4)); /* A subtle blue glow */
+  
+  transition: transform 0.2s ease-in-out, filter 0.2s ease-in-out;
 }
 
 .pin-image:hover {
   transform: scale(1.1);
+  /* Make the glow more intense on hover */
+  filter: drop-shadow(0 0 8px rgba(150, 200, 255, 0.7)); 
 }
 
 .marketplace-button {

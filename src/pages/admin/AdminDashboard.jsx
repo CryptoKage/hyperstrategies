@@ -213,6 +213,7 @@ const AdminDashboard = () => {
             <Link to="/admin/financials" className="btn-primary btn-sm">Financials & Auditing</Link>
             <Link to="/admin/treasury" className="btn-primary btn-sm">Treasury Report</Link>
             <Link to="/admin/vaults" className="btn-primary btn-sm">Vault Management</Link>
+            <Link to="/admin/pins" className="btn-primary btn-sm">Pin Management</Link>
           </div>
         </div>
         {renderContent()}
