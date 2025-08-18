@@ -15,6 +15,12 @@ const AdminDashboard = () => {
   const [approvingId, setApprovingId] = useState(null);
   const [actionMessage, setActionMessage] = useState({ id: null, type: '', text: '' });
 
+  // --- NEW STATE for Diagnostic Tools ---
+  const [blockToScan, setBlockToScan] = useState('');
+  const [userToScan, setUserToScan] = useState('');
+  const [isScanning, setIsScanning] = useState(false);
+  const [scanMessage, setScanMessage] = useState({ type: '', text: '' });
+
   const navigate = useNavigate();
 
   const fetchAdminStats = useCallback(async () => {
@@ -47,6 +53,38 @@ const AdminDashboard = () => {
       setActionMessage({ id: activityId, type: 'error', text: err.response?.data?.message || 'Approval failed.' });
     } finally {
       setApprovingId(null);
+    }
+  };
+
+  // --- NEW HANDLER for Force Block Scan ---
+  const handleForceScanBlock = async (e) => {
+    e.preventDefault();
+    setIsScanning(true);
+    setScanMessage({ text: 'Scanning block...' });
+    try {
+      const response = await api.post('/admin/force-scan-block', { blockNumber: blockToScan });
+      setScanMessage({ type: 'success', text: response.data.message });
+      setBlockToScan('');
+    } catch (err) {
+      setScanMessage({ type: 'error', text: err.response?.data?.message || 'Failed to scan block.' });
+    } finally {
+      setIsScanning(false);
+    }
+  };
+
+  // --- NEW HANDLER for User Wallet Scan ---
+  const handleScanUserWallet = async (e) => {
+    e.preventDefault();
+    setIsScanning(true);
+    setScanMessage({ text: 'Scanning user wallet history...' });
+    try {
+      const response = await api.post('/admin/scan-user-wallet', { userId: userToScan });
+      setScanMessage({ type: 'success', text: response.data.message });
+      setUserToScan('');
+    } catch (err) {
+      setScanMessage({ type: 'error', text: err.response?.data?.message || 'Failed to scan wallet.' });
+    } finally {
+      setIsScanning(false);
     }
   };
 
@@ -195,6 +233,42 @@ const AdminDashboard = () => {
               </tbody>
             </table>
             ) : <p>No recent platform withdrawal requests.</p>}
+          </div>
+        </div>
+
+        {/* --- THIS IS THE NEW DIAGNOSTIC TOOLS CARD --- */}
+        <div className="admin-actions-card">
+          <h3>Diagnostic & Repair Tools</h3>
+          {scanMessage.text && <p className={`admin-message ${scanMessage.type}`}>{scanMessage.text}</p>}
+
+          <div className="admin-grid" style={{ marginTop: '20px' }}>
+            {/* Tool 1: Force Scan Block */}
+            <div className="diagnostic-tool">
+              <h4>Force Re-Scan Block</h4>
+              <p>If the automated scanner missed a deposit, enter the block number here to force a re-scan.</p>
+              <form onSubmit={handleForceScanBlock} className="admin-form">
+                <div className="form-group">
+                  <input type="number" placeholder="Enter Block Number" value={blockToScan} onChange={(e) => setBlockToScan(e.target.value)} required />
+                </div>
+                <button type="submit" className="btn-secondary" disabled={isScanning || !blockToScan}>
+                  {isScanning ? 'Scanning...' : 'Scan Block'}
+                </button>
+              </form>
+            </div>
+            
+            {/* Tool 2: Scan User Wallet */}
+            <div className="diagnostic-tool">
+              <h4>Scan User Wallet History</h4>
+              <p>If a specific user's deposit is missing, enter their User ID (UUID) to scan their entire wallet history.</p>
+              <form onSubmit={handleScanUserWallet} className="admin-form">
+                <div className="form-group">
+                  <input type="text" placeholder="Enter User ID (UUID)" value={userToScan} onChange={(e) => setUserToScan(e.target.value)} required />
+                </div>
+                <button type="submit" className="btn-secondary" disabled={isScanning || !userToScan}>
+                  {isScanning ? 'Scanning...' : 'Scan Wallet'}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </>
