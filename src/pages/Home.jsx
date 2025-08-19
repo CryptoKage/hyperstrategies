@@ -7,6 +7,7 @@ import useIsIOS from '../hooks/useIsIOS';
 import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
 import Layout from '../components/Layout';
 import ChartImage from '../assets/chart-placeholder.png';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const { t, ready } = useTranslation();
@@ -58,7 +59,12 @@ const Home = () => {
     <>
       <Layout>
         <div className="hero-section-wrapper">
-          <section className="hero-section">
+          <motion.section
+            className="hero-section"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
             <div className="hero-content">
               <h1 className="hero-headline">
                 <RotatingText
@@ -87,7 +93,8 @@ const Home = () => {
             <div className="hero-image-container">
               <img src={ChartImage} alt="Trading Chart" className="hero-image" />
             </div>
-          </section>
+            <div className="scroll-cue">▼ Scroll</div>
+          </motion.section>
         </div>
         
         {/* --- REVERTED: Using the original path-selector-section and card mapping --- */}
