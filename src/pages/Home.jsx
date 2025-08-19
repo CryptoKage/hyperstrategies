@@ -8,7 +8,6 @@ import useIsIOS from '../hooks/useIsIOS';
 import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
 import InteractiveBackground from '../components/InteractiveBackground';
 import PlasmaEffect from '../components/PlasmaEffect';
-import ChartImage from '../assets/chart-placeholder.png';
 
 const Home = () => {
   const { t, ready } = useTranslation();
