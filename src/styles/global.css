@@ -3248,15 +3248,20 @@ input:checked + .slider:before {
   text-align: center; /* Center the button within the card */
 }
 
-/* --- Tabs Marketplace --- */
-.tabs-market {
-  padding: 40px 20px;
+/* --- PIN Marketplace --- */
+.pins-market-container {
+  max-width: 900px; /* Give the page a max-width */
+  margin: 40px auto; /* Center the page with top/bottom margin */
+  padding: 20px;
 }
 
-.market-title {
+/* This styles the main title of the page */
+.pins-market-container .market-title {
   text-align: center;
   font-size: 32px;
-  margin-bottom: 32px;
+  margin-bottom: 48px; /* Increased margin for more space */
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 16px;
 }
 
 .gradient-text {
