@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, RoundedBox } from '@react-three/drei';
+import { Text } from '@react-three/drei';
 import { motion } from 'framer-motion';
 
 const FloatingCard = ({ title, description, position, delay = 0 }) => {
@@ -16,7 +16,7 @@ const FloatingCard = ({ title, description, position, delay = 0 }) => {
         color="#3fbaf3"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/Inter-Bold.woff" // Use a specific font file for 3D text
+        // --- THE FIX: Removed the 'font' prop to use the default ---
       >
         {title}
       </Text>
@@ -29,7 +29,7 @@ const FloatingCard = ({ title, description, position, delay = 0 }) => {
         anchorX="center"
         anchorY="middle"
         lineHeight={1.5}
-        font="/fonts/Inter-Regular.woff"
+        // --- THE FIX: Removed the 'font' prop to use the default ---
       >
         {description}
       </Text>
