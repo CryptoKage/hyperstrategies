@@ -339,12 +339,12 @@
     "syndicate_description": "Join forces with a community to earn shared referral rewards. Coming soon.",
     "learn_more_button": "Learn More"
   }
-  ,"tabs_market": {
-    "title": "Tab Marketplace",
-    "buy": "Buy",
-    "sell": "Sell",
-    "error_loading": "Unable to load tabs.",
-    "empty": "No tabs available."
-  }
+  ,"pins_market": {
+    "title": "Pins Marketplace",
+    "coming_soon_title": "Peer-to-Peer Trading is Coming Soon",
+    "coming_soon_desc": "Soon you will be able to list your unique, owned Pins for sale and trade with other users right here. Build your collection, equip your best Pins, and get ready to trade.",
+    "view_my_pins": "View My Pin Collection"
+}
+  
   ,"pins_marketplace_button": "Pins Marketplace"
 }

@@ -337,13 +337,13 @@
     "syndicate_title": "Syndikat-Empfehlungen",
     "syndicate_description": "Schließen Sie sich mit einer Community zusammen, um gemeinsame Empfehlungsprämien zu verdienen. Demnächst verfügbar.",
     "learn_more_button": "Mehr erfahren"
-  }
-  ,"tabs_market": {
-    "title": "Tab-Marktplatz",
-    "buy": "Kaufen",
-    "sell": "Verkaufen",
-    "error_loading": "Tabs konnten nicht geladen werden.",
-    "empty": "Keine Tabs verfügbar."
-  }
+  },
+"pins_market": {
+    "title": "Pins-Marktplatz",
+    "coming_soon_title": "Peer-to-Peer-Handel in Kürze verfügbar",
+    "coming_soon_desc": "Bald können Sie hier Ihre einzigartigen, eigenen Pins zum Verkauf anbieten und mit anderen Benutzern handeln. Bauen Sie Ihre Sammlung auf, rüsten Sie Ihre besten Pins aus und machen Sie sich bereit zum Handeln.",
+    "view_my_pins": "Meine Pin-Sammlung ansehen"
+}
+  
   ,"pins_marketplace_button": "Pins-Marktplatz"
 }
