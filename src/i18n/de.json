@@ -274,18 +274,18 @@
     "cards": {
       "title": "Entdecke Hyper-Strategies",
       "airdrop": {
-        "title": "Erhalte XP für Kapitaleinzahlungen",
-        "text": "XP-Rangliste ansehen",
+        "title": "XP, Stufen & Rangliste",
+        "text": "Interagiere mit der Plattform, sammle XP, steigere dein Kontolevel und wetteifere um zukünftige Token-Zuteilungen.",
         "button": "RANGLISTE ANSEHEN"
       },
       "self": {
         "title": "Strategy Builder Engine",
-        "text": "Demnächst: Erstelle und nutze deine eigenen automatisierten Strategien.",
+        "text": "Demnächst: Eine leistungsstarke Engine zum Erstellen, Backtesten und Deployen eigener automatisierter Handelsstrategien.",
         "button": "Demnächst"
       },
       "managed": {
         "title": "Investiere in verwaltete Vaults",
-        "text": "Zahle ein und lass unsere Systeme für dich handeln",
+        "text": "Zahle ein und lass unsere Systeme und Trader in kuratierten Hochleistungs-Vaults für dich arbeiten.",
         "button": "Anmelden"
       },
       "investor": {
