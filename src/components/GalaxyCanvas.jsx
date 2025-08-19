@@ -14,7 +14,8 @@ const GalaxyCanvas = ({ onScrollUpdate }) => {
   const cards = ['managed', 'airdrop', 'self'];
 
   return (
-    <Canvas 
+    <Canvas
+      style={{ width: '100%', height: '100vh' }}
       camera={{ position: [0, 0, 5], fov: 75 }}
       gl={{ outputColorSpace: THREE.SRGBColorSpace }}
     >
