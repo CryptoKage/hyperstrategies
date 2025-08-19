@@ -32,29 +32,31 @@ const Home = () => {
       <div className="home-3d-wrapper">
         <GalaxyCanvas onScrollUpdate={handleScroll} />
 
-        <div
-          className="home-3d-ui-container"
-          style={{ opacity: uiOpacity, pointerEvents: uiOpacity > 0.1 ? 'auto' : 'none' }}
-        >
-          <section className="hero-section-3d">
-            <div className="hero-content">
-              <h1 className="hero-headline">
-                <RotatingText texts={rotatingWords} suffix="-STRATEGIES" />
-              </h1>
-              <p className="hero-subtext">{t('home.hero.subtext', 'Automated Trading Solutions, Curated Crypto Vaults.')}</p>
-              <div className="button-row" style={{ justifyContent: 'center' }}>
-                <Link to="/register" className="btn-primary btn-large">{t('home.hero.register_now', 'Register Now')}</Link>
-                <Link to="/login" className="btn-outline btn-large">{t('home.hero.sign_in', 'Sign In')}</Link>
+        <div className="home-3d-ui-container" style={{ opacity: uiOpacity }}>
+          <div
+            className="home-3d-ui-inner"
+            style={{ pointerEvents: uiOpacity > 0.1 ? 'auto' : 'none' }}
+          >
+            <section className="hero-section-3d">
+              <div className="hero-content">
+                <h1 className="hero-headline">
+                  <RotatingText texts={rotatingWords} suffix="-STRATEGIES" />
+                </h1>
+                <p className="hero-subtext">{t('home.hero.subtext', 'Automated Trading Solutions, Curated Crypto Vaults.')}</p>
+                <div className="button-row" style={{ justifyContent: 'center' }}>
+                  <Link to="/register" className="btn-primary btn-large">{t('home.hero.register_now', 'Register Now')}</Link>
+                  <Link to="/login" className="btn-outline btn-large">{t('home.hero.sign_in', 'Sign In')}</Link>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
 
-          {uiOpacity > 0 && (
-            <div className="scroll-cue-3d">
-              <span>Scroll Down to Explore</span>
-              <div className="scroll-arrow">↓</div>
-            </div>
-          )}
+            {uiOpacity > 0 && (
+              <div className="scroll-cue-3d">
+                <span>Scroll Down to Explore</span>
+                <div className="scroll-arrow">↓</div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
