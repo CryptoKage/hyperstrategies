@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
-import RotatingText from 'components/RotatingText'; // Using absolute path
-import useInstallPrompt from 'hooks/useInstallPrompt'; // Using absolute path
-import useIsIOS from 'hooks/useIsIOS';                 // Using absolute path
-import AddToHomeScreenPrompt from 'components/AddToHomeScreenPrompt'; // Using absolute path
-import InteractiveBackground from 'components/InteractiveBackground';   // Using absolute path
-import PlasmaEffect from 'components/PlasmaEffect';                   // Using absolute path
-
-// --- THE FIX: Use an absolute path from the 'src' directory ---
-import ChartImage from 'assets/chart-placeholder.png'; 
+// --- THE FIX: Using explicit, correct relative paths ---
+import RotatingText from '../components/RotatingText';
+import useInstallPrompt from '../hooks/useInstallPrompt';
+import useIsIOS from '../hooks/useIsIOS';
+import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
+import InteractiveBackground from '../components/InteractiveBackground';
+import PlasmaEffect from '../components/PlasmaEffect';
+import ChartImage from '../assets/chart-placeholder.png';
 
 const Home = () => {
   const { t, ready } = useTranslation();
