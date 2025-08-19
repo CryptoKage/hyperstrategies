@@ -1,8 +1,7 @@
 // src/pages/Home.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Layout from '../components/Layout';
 import GalaxyCanvas from '../components/GalaxyCanvas';
 
 // --- THE FIX: We no longer need a separate CSS file for this page.
@@ -10,15 +9,33 @@ import GalaxyCanvas from '../components/GalaxyCanvas';
 
 const Home = () => {
   const { t } = useTranslation();
+  const [uiOpacity, setUiOpacity] = useState(1);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const fadeDistance = window.innerHeight * 0.4;
+      const newOpacity = 1 - window.scrollY / fadeDistance;
+      setUiOpacity(newOpacity < 0 ? 0 : newOpacity > 1 ? 1 : newOpacity);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // We are creating a simplified version that does not use the Layout component
   // because it's a fullscreen experience. The Header and Footer are omitted on this page.
-  
+
+  const pointerClass = uiOpacity === 0 ? ' pointer-none' : '';
+
   return (
     <div className="home-3d-wrapper">
       <GalaxyCanvas />
 
-      <div className="home-3d-ui-container">
+      <div
+        className={`home-3d-ui-container${pointerClass}`}
+        style={{ opacity: uiOpacity }}
+      >
         <section className="hero-section-3d">
           <div className="hero-content">
             <h1 className="hero-headline">
