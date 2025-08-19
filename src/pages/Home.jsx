@@ -8,6 +8,34 @@ import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
 import Layout from '../components/Layout';
 import ChartImage from '../assets/chart-placeholder.png';
 
+const ConstellationSection = ({
+  icon,
+  title,
+  description,
+  buttonText,
+  type,
+  onClick,
+}) => (
+  <section className="constellation-section">
+    <div className="card">
+      <div className="card__icon">{icon}</div>
+      <div className="card__content">
+        <h3 className="card__title">{title}</h3>
+        <p className="card__description">{description}</p>
+      </div>
+      <div className="card__footer">
+        <button
+          className={type === 'coming_soon' ? 'btn-secondary' : 'btn-primary'}
+          disabled={type === 'coming_soon'}
+          onClick={type === 'coming_soon' ? undefined : onClick}
+        >
+          {buttonText}
+        </button>
+      </div>
+    </div>
+  </section>
+);
+
 const Home = () => {
   const { t, ready } = useTranslation();
   const navigate = useNavigate();
@@ -90,39 +118,25 @@ const Home = () => {
           </section>
         </div>
         
-        {/* --- REVERTED: Using the original path-selector-section and card mapping --- */}
-        <section className="path-selector-section">
-          <h2>{t('home.cards.title')}</h2>
-          <div className="card-grid">
-            {homePageCards.map((card, idx) => (
-              <div 
-                key={idx} 
-                className={`card ${card.type !== 'coming_soon' ? 'card--clickable' : ''}`}
-                onClick={() => {
-                  if (card.type === 'link') {
-                    window.open(card.url, '_blank', 'noopener,noreferrer');
-                  } else if (card.route) {
-                    navigate(card.route);
-                  }
-                }}
-              >
-                <div className="card__icon">{card.icon}</div>
-                <div className="card__content">
-                  <h3 className="card__title">{card.title}</h3>
-                  <p className="card__description">{card.description}</p>
-                </div>
-                <div className="card__footer">
-                  <button 
-                    className={card.type === 'coming_soon' ? 'btn-secondary' : 'btn-primary'}
-                    disabled={card.type === 'coming_soon'}
-                  >
-                    {card.buttonText}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <div className="constellation-wrapper">
+          {homePageCards.map((card, idx) => (
+            <ConstellationSection
+              key={idx}
+              icon={card.icon}
+              title={card.title}
+              description={card.description}
+              buttonText={card.buttonText}
+              type={card.type}
+              onClick={() => {
+                if (card.type === 'link') {
+                  window.open(card.url, '_blank', 'noopener,noreferrer');
+                } else if (card.route) {
+                  navigate(card.route);
+                }
+              }}
+            />
+          ))}
+        </div>
       </Layout>
       
       {showIOSPrompt && <AddToHomeScreenPrompt onClose={() => setShowIOSPrompt(false)} />}

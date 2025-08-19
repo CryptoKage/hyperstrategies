@@ -157,8 +157,7 @@ button {
 
 /* --- About Section --- */
 
-.about-section h2,
-.path-selector-section h2 {
+.about-section h2 {
     margin-bottom: 24px;
 }
 
@@ -1338,22 +1337,6 @@ button {
     grid-template-columns: 1fr;
   }
 
-  /* Your existing front page card grid fix */
-  .card-grid .card-section__wrapper {
-    /* On mobile, we switch from grid to flex for simpler centering */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px; /* Keep the vertical space between cards */
-  }
-
-  
-  .card-grid .card {
-    margin-left: auto;
-    margin-right: auto;
-    width: 90%; /* Ensure the card doesn't try to be 100% wide */
-    max-width: 320px; /* Set a reasonable max-width */
-  }
   /* --- 4. Modal & Form Fixes --- */
 
   .modal-content {
@@ -2656,11 +2639,16 @@ textarea.input-field { resize: vertical; }
 /* This is the key fix: make all page containers transparent */
 
 
-/* --- 4. Homepage Card Section --- */
-.path-selector-section {
-  background-color: transparent;
-  padding-top: 60px;
-  padding-bottom: 60px;
+/* --- Homepage Constellation Sections --- */
+.constellation-wrapper {
+  height: 100vh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+
+.constellation-section {
+  height: 100vh;
+  scroll-snap-align: start;
 }
 
 /* --- 5. Footer --- */
@@ -2778,7 +2766,6 @@ textarea.input-field { resize: vertical; }
 .faq-container,
 .leaderboard-container,
 .hero-section-wrapper,
-.path-selector-section,
 .auth-wrapper {
   background-color: transparent !important; /* Force transparency */
 }
@@ -3206,46 +3193,6 @@ input:checked + .slider:before {
   font-size: 0.8em;
   color: var(--color-text-secondary);
   margin-top: 4px;
-}
-
-.path-selector-section h2 {
-  text-align: center;
-  font-size: 28px; /* A good size for a section title */
-  margin-bottom: 48px; /* More space below the title */
-}
-
-/* 2. Target the grid container specifically within the path-selector-section */
-/* This is the KEY FIX for the desktop layout */
-.path-selector-section .card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
-  max-width: 1200px; /* Give the grid a max width */
-  margin: 0 auto; /* Center the grid container itself */
-}
-
-/* 3. Target the cards specifically within this section */
-/* This ensures we don't affect other cards on the site */
-.path-selector-section .card {
-  background-color: var(--color-surface); /* Use the standard card background */
-  text-align: left; /* Re-align text to the left for a cleaner look */
-  max-width: none; /* Remove the max-width that was forcing stacking */
-  width: 100%; /* Allow the card to fill the grid cell */
-}
-
-/* 4. Target the card content for better alignment */
-.path-selector-section .card__content {
-  text-align: center;
-}
-
-.path-selector-section .card__icon {
-  text-align: center;
-  font-size: 28px;
-   margin-bottom: 16px;
-}
-
-.path-selector-section .card__footer {
-  text-align: center; /* Center the button within the card */
 }
 
 /* --- PIN Marketplace --- */
