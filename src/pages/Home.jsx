@@ -8,18 +8,27 @@ const Home = () => {
   const { t } = useTranslation();
   const [uiOpacity, setUiOpacity] = useState(1);
 
-  // --- THE FIX: The handleScroll function must be defined here ---
-  const handleScroll = (scrollOffset) => {
-    const fadeStart = 0.05;
-    const fadeEnd = 0.2;
-    
-    if (scrollOffset > fadeStart) {
-      const newOpacity = 1 - (scrollOffset - fadeStart) / (fadeEnd - fadeStart);
-      setUiOpacity(Math.max(0, Math.min(1, newOpacity)));
-    } else {
-      setUiOpacity(1);
-    }
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      const fadeDistance = window.innerHeight * 0.4;
+      const newOpacity = 1 - window.scrollY / fadeDistance;
+      setUiOpacity(newOpacity < 0 ? 0 : newOpacity > 1 ? 1 : newOpacity);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const rotatingWords = t('home.rotating_words', { returnObjects: true });
+
+
+  // We are creating a simplified version that does not use the Layout component
+  // because it's a fullscreen experience. The Header and Footer are omitted on this page.
+
+
+  const pointerClass = uiOpacity === 0 ? ' pointer-none' : '';
+
 
   const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
 
@@ -27,7 +36,7 @@ const Home = () => {
 
   return (
     <div className="home-3d-wrapper">
-      <GalaxyCanvas onScrollUpdate={handleScroll} />
+      <GalaxyCanvas />
 
       <div
         className={`home-3d-ui-container${pointerClass}`}
