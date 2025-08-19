@@ -20,7 +20,12 @@ const Home = () => {
     }
   };
 
-  const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
+  const defaultRotatingWords = ['AUTOMATED', 'HEDGEFUND', 'EXPERIMENTAL', 'HYPER'];
+  let rotatingWords = t('home.rotating_words', { returnObjects: true });
+  if (!Array.isArray(rotatingWords)) {
+    console.warn("Missing or invalid translation for 'home.rotating_words'. Falling back to defaults.");
+    rotatingWords = defaultRotatingWords;
+  }
 
   return (
     <div>
