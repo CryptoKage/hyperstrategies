@@ -1,72 +1,136 @@
-// src/pages/Home.jsx
-
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-import GalaxyCanvas from '../components/GalaxyCanvas';
+import { useNavigate, Link } from 'react-router-dom';
 import RotatingText from '../components/RotatingText';
-
-// --- THE FIX: We no longer need a separate CSS file for this page.
-// All styles are now in global.css, which is imported by src/index.js
+import useInstallPrompt from '../hooks/useInstallPrompt';
+import useIsIOS from '../hooks/useIsIOS';
+import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
+import ChartImage from '../assets/chart-placeholder.png';
+import InteractiveBackground from '../components/InteractiveBackground';
+import PlasmaEffect from '../components/PlasmaEffect'; // We also need the plasma effect for the full experience
 
 const Home = () => {
-  const { t } = useTranslation();
-  const [uiOpacity, setUiOpacity] = useState(1);
+  const { t, ready } = useTranslation();
+  const navigate = useNavigate();
+  const { promptInstall, canInstall, isAppInstalled } = useInstallPrompt();
+  const { isIOS } = useIsIOS();
+  const [showIOSPrompt, setShowIOSPrompt] = useState(false);
+  
+  if (!ready) {
+    // A simple loading state for i18next
+    return <div style={{ backgroundColor: '#040e21', height: '100vh' }}>Loading...</div>;
+  }
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const fadeDistance = window.innerHeight * 0.4;
-      const newOpacity = 1 - window.scrollY / fadeDistance;
-      setUiOpacity(newOpacity < 0 ? 0 : newOpacity > 1 ? 1 : newOpacity);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const [scrollOffset, setScrollOffset] = useState(0);
-
-  const rotatingWords = t('home.rotating_words', { returnObjects: true });
-
-
-  // We are creating a simplified version that does not use the Layout component
-  // because it's a fullscreen experience. The Header and Footer are omitted on this page.
-
-
-  const pointerClass = uiOpacity === 0 ? ' pointer-none' : '';
-
-
+  const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
+  
+  const homePageCards = [
+    { 
+      icon: '🏆', 
+      title: t('home.cards.airdrop.title'), 
+      description: t('home.cards.airdrop.text'), 
+      route: '/xpleaderboard',
+      buttonText: t('card_section.view_leaderboard')
+    },
+    { 
+      icon: '⚙️', 
+      title: t('home.cards.self.title'), 
+      description: t('home.cards.self.text'), 
+      type: 'coming_soon',
+      buttonText: t('home.cards.self.button')
+    },
+    { 
+      icon: '📈', 
+      title: t('home.cards.managed.title'), 
+      description: t('home.cards.managed.text'), 
+      route: '/login',
+      buttonText: t('card_section.invest_now')
+    },
+    { 
+      icon: '💼', 
+      title: t('home.cards.investor.title'), 
+      description: t('home.cards.investor.text'), 
+      type: 'link',
+      url: 'https://hyper-strategies.gitbook.io/hyper-strategies-docs/',
+      buttonText: t('home.cards.investor.button')
+    },
+  ];
 
   return (
-    <div className="home-3d-wrapper">
-      <GalaxyCanvas onScroll={setScrollOffset} />
+    // We use a React Fragment <> because this page does not use the main Layout
+    <>
+      <div className="home-page-wrapper">
+        {/* The homepage now has its own, dedicated background effects */}
+        <PlasmaEffect />
+        <InteractiveBackground />
+        
+        <div className="hero-section-wrapper">
+          <section className="hero-section">
+            <div className="hero-content">
+              <h1 className="hero-headline">
+                <RotatingText
+                  texts={rotatingWords}
+                  mainClassName="text-rotate-bg"
+                  staggerFrom="last"
+                  rotationInterval={2500}
+                  loop={'twice'}
+                />
+                -STRATEGIES
+              </h1>
+              <p className="hero-subtext">{t('home.hero.subtext')}</p>
+              
+              {/* --- THE FIX: The new Register and Sign In buttons --- */}
+              <div className="button-row">
+                <Link to="/register" className="btn-primary btn-large">
+                  {t('home.hero.register_now', 'Register Now')}
+                </Link>
+                <Link to="/login" className="btn-outline btn-large">
+                  {t('home.hero.sign_in', 'Sign In')}
+                </Link>
+              </div>
 
-      <div
-
-        className={`home-3d-ui-container${pointerClass}`}
-        style={{ opacity: uiOpacity }}
-
-      >
-        <section className="hero-section-3d">
-          <div className="hero-content">
-            <h1 className="hero-headline">
-              <RotatingText texts={rotatingWords} />
-            </h1>
-            <p className="hero-subtext">{t('home.hero.subtext', 'Automated Trading Solutions, Curated Crypto Vaults.')}</p>
-            <div className="button-row">
-              <Link to="/register" className="btn-primary btn-large">{t('home.hero.register_now', 'Register Now')}</Link>
-              <Link to="/login" className="btn-outline btn-large">{t('home.hero.sign_in', 'Sign In')}</Link>
             </div>
+            <div className="hero-image-container">
+              <img src={ChartImage} alt="Trading Chart" className="hero-image" />
+            </div>
+          </section>
+        </div>
+        
+        <section className="path-selector-section">
+          <h2>{t('home.cards.title')}</h2>
+          <div className="card-grid">
+            {homePageCards.map((card, idx) => (
+              <div 
+                key={idx} 
+                className={`card ${card.type !== 'coming_soon' ? 'card--clickable' : ''}`}
+                onClick={() => {
+                  if (card.type === 'link') {
+                    window.open(card.url, '_blank', 'noopener,noreferrer');
+                  } else if (card.route) {
+                    navigate(card.route);
+                  }
+                }}
+              >
+                <div className="card__icon">{card.icon}</div>
+                <div className="card__content">
+                  <h3 className="card__title">{card.title}</h3>
+                  <p className="card__description">{card.description}</p>
+                </div>
+                <div className="card__footer">
+                  <button 
+                    className={card.type === 'coming_soon' ? 'btn-secondary' : 'btn-primary'}
+                    disabled={card.type === 'coming_soon'}
+                  >
+                    {card.buttonText}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
-
-        <div className="scroll-cue-3d">
-          <span>Scroll Down to Explore</span>
-          <div className="scroll-arrow">↓</div>
-        </div>
       </div>
-    </div>
+      
+      {showIOSPrompt && <AddToHomeScreenPrompt onClose={() => setShowIOSPrompt(false)} />}
+    </>
   );
 };
 
