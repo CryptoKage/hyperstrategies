@@ -2,7 +2,10 @@
 import { useScroll } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 
+
 const ScrollManager = ({ distance = 15 }) => {
+=======
+
   const scroll = useScroll();
 
   // useFrame is a hook that runs on every single rendered frame
@@ -12,7 +15,10 @@ const ScrollManager = ({ distance = 15 }) => {
     const scrollOffset = scroll.offset;
 
     // Animate the camera's Y position based on the scroll
+
     state.camera.position.y = -scrollOffset * distance; // Total scroll distance
+
+
   });
 
   return null; // This component doesn't render anything visible

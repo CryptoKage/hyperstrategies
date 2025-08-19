@@ -24,8 +24,10 @@ const GalaxyCanvas = () => {
         <ScrollControls pages={cards.length} damping={0.3}>
           <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />
 
+
           {/* --- This is where we add our new components --- */}
           <ScrollManager distance={CARD_SPACING * cards.length} />
+
 
           {/* We place our cards at different Y positions in the 3D space */}
           {cards.map((key, index) => (

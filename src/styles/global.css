@@ -2611,14 +2611,6 @@ textarea.input-field { resize: vertical; }
 /* This is the key fix: make all page containers transparent */
 
 
-/* --- Homepage Cards --- */
-.home-cards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
-}
-
 /* --- 5. Footer --- */
 .footer {
   position: relative;
@@ -3351,50 +3343,6 @@ input:checked + .slider:before {
   line-height: 1.6;
 }
 
-/* ==========================================================================
-   CONSTELLATION CARD STYLES
-   ========================================================================== */
-
-.home-card {
-  position: relative; /* This is crucial for layering */
-  overflow: hidden; /* This keeps the starfield inside the card's rounded corners */
-  /* Add back some of your original card styles */
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.home-card__background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1; /* Sits behind the content */
-  opacity: 0.5; /* Make it subtle */
-}
-
-.starfield-canvas {
-  width: 100%;
-  height: 100%;
-}
-
-.home-card__content {
-  position: relative;
-  z-index: 2; /* Sits on top of the background */
-  /* Make sure the content can fill the card */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-}
-
 /* src/styles/home3d.css */
 
 /* ==========================================================================
@@ -3422,14 +3370,12 @@ input:checked + .slider:before {
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* Allows clicks to go through to the canvas, except for buttons */
+  pointer-events: auto;
+  transition: opacity 0.5s ease;
 }
 
-/* Make sure buttons and links inside the UI are clickable */
-.home-3d-ui-container .btn-primary,
-.home-3d-ui-container .btn-outline,
-.home-3d-ui-container a {
-  pointer-events: auto;
+.home-3d-ui-container.pointer-none {
+  pointer-events: none;
 }
 
 .hero-section-3d .button-row {
