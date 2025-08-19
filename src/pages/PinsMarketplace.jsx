@@ -1,65 +1,62 @@
 // FILE: /src/pages/PinsMarketplace.jsx
-import React, { useEffect, useState } from 'react';
+// V1.0 VERSION: This is a polished "Coming Soon" showcase page.
+
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import api from '../api/api';
 import Layout from '../components/Layout';
+import { Link } from 'react-router-dom';
+
+// We can import a few of the pin images to make the showcase more visual
+import bugFinderImg from '../assets/Decals/BUGFINDER.png';
+import cabalImg from '../assets/Decals/CABAL.png';
+import shdwmfImg from '../assets/Decals/SHDWMF.png';
 
 const PinsMarketplace = () => {
   const { t } = useTranslation();
-  const [listedPins, setListedPins] = useState([]);
-  const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchMarketplaceListings = async () => {
-      try {
-        // Updated API endpoint - this will need to be created on the backend later.
-        const res = await api.get('/pins/marketplace-listings'); 
-        setListedPins(res.data);
-      } catch (err) {
-        setError(t('pins_market.error_loading'));
-      }
-    };
-    fetchMarketplaceListings();
-  }, [t]);
-
-  const handleBuyPin = async (listingId) => {
-    try {
-      // Updated API endpoint
-      await api.post(`/pins/listings/${listingId}/buy`);
-      // Refresh listings after successful purchase
-      setListedPins(prev => prev.filter(pin => pin.listing_id !== listingId));
-    } catch (err) {
-      console.error('Buy Pin failed', err);
-    }
-  };
+  // We no longer need to fetch data, so the useEffect and state are removed.
 
   return (
     <Layout>
       <div className="pins-market-container">
         <h2 className="market-title gradient-text">{t('pins_market.title')}</h2>
-        {error && <p className="error-message">{error}</p>}
-        <div className="market-grid">
-          {listedPins.map(pin => (
-            <motion.div
-              key={pin.listing_id}
-              className="pin-card" // Renamed class
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              whileHover={{ scale: 1.03 }}
-            >
-              <img src={pin.image_url} alt={pin.name} className="pin-card-image" />
-              <h3>{pin.name}</h3>
-              <p className="price">${pin.price}</p>
-              <div className="actions">
-                <button className="btn-primary" onClick={() => handleBuyPin(pin.listing_id)}>{t('pins_market.buy')}</button>
-              </div>
-            </motion.div>
-          ))}
-          {listedPins.length === 0 && !error && (
-            <p className="empty-message">{t('pins_market.empty')}</p>
-          )}
+        
+        {/* --- THIS IS THE NEW SHOWCASE SECTION --- */}
+        <div className="coming-soon-showcase">
+          <div className="showcase-images">
+            <motion.img 
+              src={bugFinderImg} 
+              alt="Bug Finder Pin" 
+              className="showcase-pin"
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.img 
+              src={cabalImg} 
+              alt="Cabal Pin" 
+              className="showcase-pin"
+              initial={{ scale: 1.1 }}
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.img 
+              src={shdwmfImg} 
+              alt="SHDWMF Pin" 
+              className="showcase-pin"
+              animate={{ y: [0, -7, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+          
+          <h3>{t('pins_market.coming_soon_title')}</h3>
+          <p>{t('pins_market.coming_soon_desc')}</p>
+
+          <Link to="/profile" className="btn-primary" style={{marginTop: '24px', width: 'auto'}}>
+            {t('pins_market.view_my_pins')}
+          </Link>
         </div>
+
       </div>
     </Layout>
   );
