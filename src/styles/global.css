@@ -3390,106 +3390,59 @@ input:checked + .slider:before {
 }
 
 /* ==========================================================================
-   HOMEPAGE STYLES (Scoped to prevent conflicts)
+   NEW ANIMATED HOMEPAGE STYLES
    ========================================================================== */
 
-/* --- Hero Section Scoped Styles --- */
-.home-hero .hero-section {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 80px 24px;
+/* This targets the main wrapper ONLY on the homepage */
+.home-page-container .layout-wrapper {
+  /* This is critical for the parallax/zoom effect. */
+  /* It forces the browser to treat this container as a 3D space. */
+  perspective: 1px;
 }
 
-.home-hero .btn-large {
-  padding: 16px 32px;
-  font-size: 18px;
+.home-page-container .main-content {
+  /* We remove the background color to see the global animated backgrounds */
+  background-color: transparent;
 }
 
-/* --- Journey Section Scoped Styles --- */
-.home-journey .journey-section {
-  padding: 80px 24px;
+.home-hero .hero-section { /* This is now inside home-page-container */
+  /* ... your existing hero styles ... */
+  min-height: 80vh; /* Give the hero section some height to scroll past */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Journey Section Styles --- */
+.journey-section {
+  padding: 100px 24px;
   text-align: center;
+  /* This ensures the cards are rendered on top of the hero as you scroll */
+  position: relative;
+  z-index: 5;
+  background-color: var(--color-background); /* Give it a solid background */
 }
 
-.home-journey h2 {
+.journey-section h2 {
   font-size: 32px;
   margin-bottom: 48px;
 }
 
-.home-journey .card-grid-narrative {
+.card-grid-narrative {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 32px;
   max-width: 1200px;
   margin: 0 auto;
+  /* This ensures the zoom effect originates from the center */
+  transform-origin: center;
 }
 
-.home-journey .card-narrative {
+/* The card styles are the same, but we can add the nebula effect here */
+.card-narrative {
   background: radial-gradient(circle at 50% 0%, rgba(63, 186, 243, 0.1), transparent 70%);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  min-height: 400px;
-  transition: all 0.3s ease;
+  /* ... rest of your card-narrative styles ... */
 }
 
-.home-journey .card-narrative:hover {
-  transform: translateY(-5px);
-  border-color: var(--color-primary);
-  background: radial-gradient(circle at 50% 0%, rgba(63, 186, 243, 0.15), transparent 70%);
-}
-
-.home-journey .card-narrative-visual {
-  height: 80px;
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  position: relative;
-}
-
-.home-journey .card-narrative-visual.icon {
-  font-size: 48px;
-}
-
-.home-journey .vault-preview-image {
-  width: 120px;
-  height: 60px;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 2px solid var(--color-border);
-  position: absolute;
-  transition: transform 0.3s ease;
-}
-
-.home-journey .vault-preview-image.behind {
-  transform: translateX(20px) translateY(10px) rotate(5deg);
-  z-index: -1;
-  opacity: 0.7;
-}
-
-.home-journey .card-narrative:hover .vault-preview-image {
-  transform: rotate(2deg);
-}
-
-.home-journey .card-narrative:hover .vault-preview-image.behind {
-  transform: translateX(25px) translateY(12px) rotate(8deg);
-}
-
-.home-journey .card-narrative .card__content {
-  flex-grow: 1;
-}
-
-.home-journey .card-narrative .card__footer {
-  width: 100%;
-  margin-top: 24px;
-}
-
-.home-journey .card-narrative .card__footer a.btn-primary {
-  display: block;
-}
+/* ... (the rest of your card-narrative styles for visuals, content, etc.) */
