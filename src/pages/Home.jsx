@@ -25,8 +25,6 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const [scrollOffset, setScrollOffset] = useState(0);
-
   const rotatingWords = t('home.rotating_words', { returnObjects: true });
 
 
@@ -40,7 +38,7 @@ const Home = () => {
 
   return (
     <div className="home-3d-wrapper">
-      <GalaxyCanvas onScroll={setScrollOffset} />
+      <GalaxyCanvas />
 
       <div
 
