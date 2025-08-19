@@ -2635,7 +2635,8 @@ textarea.input-field { resize: vertical; }
 }
 
 /* --- 2. Animated Backgrounds --- */
-.interactive-background, .plasma-background {
+.layout-wrapper > .interactive-background,
+.plasma-background {
   position: fixed;
   top: 0;
   left: 0;
@@ -2644,7 +2645,7 @@ textarea.input-field { resize: vertical; }
   pointer-events: none;
 }
 
-.interactive-background {
+.layout-wrapper > .interactive-background {
   z-index: -2; /* Sits just behind content */
 }
 

@@ -58,7 +58,7 @@ const Home = () => {
 
   return (
     <>
-      <Layout>
+      <Layout showInteractiveBackground={false}>
         <div className="hero-section-wrapper">
           <motion.section
             className="hero-section"
