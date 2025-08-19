@@ -7,13 +7,15 @@ import RotatingText from '../components/RotatingText';
 const Home = () => {
   const { t } = useTranslation();
   const [uiOpacity, setUiOpacity] = useState(1);
+  const [scrollOffset, setScrollOffset] = useState(0);
   const cardKeys = ['managed', 'airdrop', 'self', 'investor'];
 
-  const handleScroll = (scrollOffset) => {
+  const handleScroll = (offset) => {
+    setScrollOffset(offset);
     const fadeStart = 0.02;
     const fadeEnd = 0.15;
-    if (scrollOffset > fadeStart) {
-      const newOpacity = 1 - (scrollOffset - fadeStart) / (fadeEnd - fadeStart);
+    if (offset > fadeStart) {
+      const newOpacity = 1 - (offset - fadeStart) / (fadeEnd - fadeStart);
       setUiOpacity(Math.max(0, newOpacity));
     } else {
       setUiOpacity(1);
@@ -30,7 +32,7 @@ const Home = () => {
   return (
     <div>
       <div className="home-3d-wrapper">
-        <GalaxyCanvas onScrollUpdate={handleScroll} />
+        {scrollOffset < 1 && <GalaxyCanvas onScrollUpdate={handleScroll} />}
 
         <div className="home-3d-ui-container" style={{ opacity: uiOpacity }}>
           <div

@@ -15,7 +15,7 @@ const GalaxyCanvas = ({ onScrollUpdate }) => {
 
   return (
     <Canvas
-      style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh' }}
+      style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', pointerEvents: 'none' }}
       camera={{ position: [0, 0, 5], fov: 75 }}
       gl={{ outputColorSpace: THREE.SRGBColorSpace }}
     >
