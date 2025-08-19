@@ -3282,11 +3282,12 @@ input:checked + .slider:before {
 
 /* This is the main container that holds the 3D canvas */
 .home-3d-wrapper {
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  overflow-y: auto;
   background-color: var(--color-background);
 }
 
@@ -3304,6 +3305,21 @@ input:checked + .slider:before {
 /* We re-enable pointer events ONLY for the direct children of the UI container */
 .home-3d-ui-container > * {
   pointer-events: auto;
+}
+
+/* Section for listing cards or other content below the hero */
+.home-card-listings {
+  padding: 2rem 1rem;
+}
+
+.home-card-listings ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+}
+
+.home-card-listings li + li {
+  margin-top: 0.5rem;
 }
 
 /* This styles the main 'hero' section with the title and buttons */
