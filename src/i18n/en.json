@@ -272,7 +272,9 @@
     "hero": {
       "subtext": "Automated Trading Solutions, Curated Crypto Vaults.",
       "join_community": "Join the Community",
-      "install_app": "Install App"
+      "install_app": "Install App",
+       "register_now": "Register Now",
+    "sign_in": "Sign In"
     },
     "cards": {
       "title": "Explore Hyper-Strategies",

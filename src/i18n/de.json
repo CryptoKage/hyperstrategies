@@ -267,7 +267,9 @@
     "hero": {
       "subtext": "Handverlesene Krypto-Vaults. Vertrauen bei jedem Schritt.",
       "join_community": "Tritt der Community bei",
-      "install_app": "App installieren"
+      "install_app": "App installieren",
+       "register_now": "Register Now",
+    "sign_in": "Sign In"
     },
     "cards": {
       "title": "Entdecke Hyper-Strategies",
