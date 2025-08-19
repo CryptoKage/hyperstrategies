@@ -4,7 +4,6 @@ import { useFrame } from '@react-three/fiber';
 
 
 const ScrollManager = ({ distance = 15 }) => {
-=======
 
   const scroll = useScroll();
 
