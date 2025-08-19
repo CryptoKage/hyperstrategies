@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
-import RotatingText from '../components/RotatingText';
-import useInstallPrompt from '../hooks/useInstallPrompt';
-import useIsIOS from '../hooks/useIsIOS';
-import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
-import ChartImage from '../assets/chart-placeholder.png';
-import InteractiveBackground from '../components/InteractiveBackground';
-import PlasmaEffect from '../components/PlasmaEffect'; // We also need the plasma effect for the full experience
+import RotatingText from 'components/RotatingText'; // Using absolute path
+import useInstallPrompt from 'hooks/useInstallPrompt'; // Using absolute path
+import useIsIOS from 'hooks/useIsIOS';                 // Using absolute path
+import AddToHomeScreenPrompt from 'components/AddToHomeScreenPrompt'; // Using absolute path
+import InteractiveBackground from 'components/InteractiveBackground';   // Using absolute path
+import PlasmaEffect from 'components/PlasmaEffect';                   // Using absolute path
+
+// --- THE FIX: Use an absolute path from the 'src' directory ---
+import ChartImage from 'assets/chart-placeholder.png'; 
 
 const Home = () => {
   const { t, ready } = useTranslation();
@@ -17,7 +19,6 @@ const Home = () => {
   const [showIOSPrompt, setShowIOSPrompt] = useState(false);
   
   if (!ready) {
-    // A simple loading state for i18next
     return <div style={{ backgroundColor: '#040e21', height: '100vh' }}>Loading...</div>;
   }
 
@@ -56,10 +57,8 @@ const Home = () => {
   ];
 
   return (
-    // We use a React Fragment <> because this page does not use the main Layout
     <>
       <div className="home-page-wrapper">
-        {/* The homepage now has its own, dedicated background effects */}
         <PlasmaEffect />
         <InteractiveBackground />
         
@@ -78,7 +77,6 @@ const Home = () => {
               </h1>
               <p className="hero-subtext">{t('home.hero.subtext')}</p>
               
-              {/* --- THE FIX: The new Register and Sign In buttons --- */}
               <div className="button-row">
                 <Link to="/register" className="btn-primary btn-large">
                   {t('home.hero.register_now', 'Register Now')}
