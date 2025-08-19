@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { ScrollControls, Stars } from '@react-three/drei';
+import { Stars } from '@react-three/drei';
 import ScrollManager from './ScrollManager';
 import FloatingCard from './FloatingCard';
 import { useTranslation } from 'react-i18next';
@@ -22,23 +22,21 @@ const GalaxyCanvas = ({ onScrollUpdate }) => {
       <ambientLight intensity={0.8} />
       <pointLight position={[10, 10, 10]} intensity={1.5} />
       <Suspense fallback={null}>
-        <ScrollControls pages={cards.length} damping={0.25}>
-          <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-          <ScrollManager 
-            distance={cards.length * CARD_SPACING} 
-            onScrollUpdate={onScrollUpdate} 
+        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+        <ScrollManager
+          distance={cards.length * CARD_SPACING}
+          onScrollUpdate={onScrollUpdate}
+        />
+        {/* The cards are now positioned along the Z-axis for the fly-through effect */}
+        {cards.map((key, index) => (
+          <FloatingCard
+            key={key}
+            title={t(`home.cards.${key}.title`)}
+            description={t(`home.cards.${key}.text`)}
+            position={[0, 0, -index * CARD_SPACING]}
+            delay={index * 0.2}
           />
-          {/* The cards are now positioned along the Z-axis for the fly-through effect */}
-          {cards.map((key, index) => (
-            <FloatingCard
-              key={key}
-              title={t(`home.cards.${key}.title`)}
-              description={t(`home.cards.${key}.text`)}
-              position={[0, 0, -index * CARD_SPACING]}
-              delay={index * 0.2}
-            />
-          ))}
-        </ScrollControls>
+        ))}
       </Suspense>
     </Canvas>
   );
