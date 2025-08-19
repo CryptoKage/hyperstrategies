@@ -9,8 +9,8 @@ import { Link } from 'react-router-dom';
 
 // We can import a few of the pin images to make the showcase more visual
 import bugFinderImg from '../assets/Decals/BUGFINDER.png';
-import cabalImg from '../assets/Decals/CABAL.png';
-import shdwmfImg from '../assets/Decals/SHDWMF.png';
+import DMTImg from '../assets/Decals/DMT.png';
+import EARLYSUPPORTERImg from '../assets/Decals/EARLYSUPPORTER.png';
 
 const PinsMarketplace = () => {
   const { t } = useTranslation();
@@ -33,16 +33,16 @@ const PinsMarketplace = () => {
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.img 
-              src={cabalImg} 
-              alt="Cabal Pin" 
+              src={DMTImg} 
+              alt="DMT Pin" 
               className="showcase-pin"
               initial={{ scale: 1.1 }}
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             />
             <motion.img 
-              src={shdwmfImg} 
-              alt="SHDWMF Pin" 
+              src={EARLYSUPPORTERImg} 
+              alt="EARLYSUPPORTER Pin" 
               className="showcase-pin"
               animate={{ y: [0, -7, 0] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
