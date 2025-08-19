@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@react-three/fiber": "^8.18.0",
+    "@react-three/fiber": "^8.15.13",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "ethers": "^6.15.0",
