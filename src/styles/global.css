@@ -251,6 +251,8 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative; 
+  z-index: 10;
 }
 
 .header__left {
@@ -394,23 +396,6 @@ button {
   --color-error: #ef4444;
 }
 
-/* --- Main Auth Container --- 
-.auth-container {
-  max-width: 420px;
-  margin: 80px auto; /* Increased top margin for more space from the header *//*
-  padding: 48px; /* More internal padding for breathing room *//*
-  background-color: var(--color-surface);
-  border-radius: 16px; /* A softer, more modern border radius *//*
-  border: 1px solid var(--color-border);
-} 
-
-.auth-form h2 {
-  text-align: center;
-  margin-bottom: 32px;
-  color: var(--color-text-primary);
-  font-size: 28px;
-} */
-
 /* --- Form Elements --- */
 .form-group {
   margin-bottom: 24px;
@@ -424,16 +409,6 @@ button {
   color: var(--color-text-secondary);
 }
 
-/*.form-group input {
-  width: 100%;
-  padding: 12px 16px;
-  background-color: var(--color-background); /* Use main background for inputs *//*
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  color: var(--color-text-primary);
-  font-size: 16px;
-  transition: border-color 0.2s;
-}*/
 
 .form-group input:focus {
   outline: none;
@@ -3414,3 +3389,107 @@ input:checked + .slider:before {
   border-radius: 8px;
 }
 
+/* ==========================================================================
+   HOMEPAGE STYLES (Scoped to prevent conflicts)
+   ========================================================================== */
+
+/* --- Hero Section Scoped Styles --- */
+.home-hero .hero-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.home-hero .btn-large {
+  padding: 16px 32px;
+  font-size: 18px;
+}
+
+/* --- Journey Section Scoped Styles --- */
+.home-journey .journey-section {
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.home-journey h2 {
+  font-size: 32px;
+  margin-bottom: 48px;
+}
+
+.home-journey .card-grid-narrative {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-journey .card-narrative {
+  background: radial-gradient(circle at 50% 0%, rgba(63, 186, 243, 0.1), transparent 70%);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 400px;
+  transition: all 0.3s ease;
+}
+
+.home-journey .card-narrative:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-primary);
+  background: radial-gradient(circle at 50% 0%, rgba(63, 186, 243, 0.15), transparent 70%);
+}
+
+.home-journey .card-narrative-visual {
+  height: 80px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+}
+
+.home-journey .card-narrative-visual.icon {
+  font-size: 48px;
+}
+
+.home-journey .vault-preview-image {
+  width: 120px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid var(--color-border);
+  position: absolute;
+  transition: transform 0.3s ease;
+}
+
+.home-journey .vault-preview-image.behind {
+  transform: translateX(20px) translateY(10px) rotate(5deg);
+  z-index: -1;
+  opacity: 0.7;
+}
+
+.home-journey .card-narrative:hover .vault-preview-image {
+  transform: rotate(2deg);
+}
+
+.home-journey .card-narrative:hover .vault-preview-image.behind {
+  transform: translateX(25px) translateY(12px) rotate(8deg);
+}
+
+.home-journey .card-narrative .card__content {
+  flex-grow: 1;
+}
+
+.home-journey .card-narrative .card__footer {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.home-journey .card-narrative .card__footer a.btn-primary {
+  display: block;
+}
