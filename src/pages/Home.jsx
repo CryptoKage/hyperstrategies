@@ -2,15 +2,19 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import Layout from '../components/Layout';
 import GalaxyCanvas from '../components/GalaxyCanvas';
+import RotatingText from '../components/RotatingText';
 
 // --- THE FIX: We no longer need a separate CSS file for this page.
 // All styles are now in global.css, which is imported by src/index.js
 
 const Home = () => {
   const { t } = useTranslation();
+
   const [scrollOffset, setScrollOffset] = useState(0);
+
+  const rotatingWords = t('home.rotating_words', { returnObjects: true });
+
 
   // We are creating a simplified version that does not use the Layout component
   // because it's a fullscreen experience. The Header and Footer are omitted on this page.
@@ -26,7 +30,7 @@ const Home = () => {
         <section className="hero-section-3d">
           <div className="hero-content">
             <h1 className="hero-headline">
-              HYPER-STRATEGIES
+              <RotatingText texts={rotatingWords} />
             </h1>
             <p className="hero-subtext">{t('home.hero.subtext', 'Automated Trading Solutions, Curated Crypto Vaults.')}</p>
             <div className="button-row">
