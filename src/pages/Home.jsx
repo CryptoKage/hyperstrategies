@@ -1,31 +1,27 @@
 // src/pages/Home.jsx
-// This is the new root component for our 3D homepage experience.
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
-import GalaxyCanvas from '../components/GalaxyCanvas'; // Import our new 3D canvas
+import GalaxyCanvas from '../components/GalaxyCanvas';
 
-// We'll create a new, separate CSS file for this page to avoid conflicts.
-import '../styles/home3d.css'; 
+// --- THE FIX: We no longer need a separate CSS file for this page.
+// All styles are now in global.css, which is imported by src/index.js
 
 const Home = () => {
   const { t } = useTranslation();
 
+  // We are creating a simplified version that does not use the Layout component
+  // because it's a fullscreen experience. The Header and Footer are omitted on this page.
+  
   return (
-    // We don't use the standard Layout here because this page is a fullscreen experience.
-    // However, we will still include the Header and Footer manually.
     <div className="home-3d-wrapper">
-      {/* The 3D canvas sits in the background, filling the entire screen. */}
       <GalaxyCanvas />
 
-      {/* --- This is the HTML User Interface that sits ON TOP of the 3D canvas --- */}
       <div className="home-3d-ui-container">
         <section className="hero-section-3d">
           <div className="hero-content">
             <h1 className="hero-headline">
-              {/* We can re-add the RotatingText later if we want */}
               HYPER-STRATEGIES
             </h1>
             <p className="hero-subtext">{t('home.hero.subtext', 'Automated Trading Solutions, Curated Crypto Vaults.')}</p>
@@ -36,7 +32,6 @@ const Home = () => {
           </div>
         </section>
 
-        {/* This is a simple cue to tell users they can scroll. */}
         <div className="scroll-cue-3d">
           <span>Scroll Down to Explore</span>
           <div className="scroll-arrow">↓</div>
