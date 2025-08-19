@@ -1,124 +1,48 @@
-import React, { useState } from 'react';
+// src/pages/Home.jsx
+// This is the new root component for our 3D homepage experience.
+
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, Link } from 'react-router-dom';
-import RotatingText from '../components/RotatingText';
-import ConstellationSection from '../components/ConstellationSection';
-import useInstallPrompt from '../hooks/useInstallPrompt';
-import useIsIOS from '../hooks/useIsIOS';
-import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
+import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { motion } from 'framer-motion';
+import GalaxyCanvas from '../components/GalaxyCanvas'; // Import our new 3D canvas
+
+// We'll create a new, separate CSS file for this page to avoid conflicts.
+import '../styles/home3d.css'; 
 
 const Home = () => {
-  const { t, ready } = useTranslation();
-  const navigate = useNavigate();
-  const { promptInstall, canInstall, isAppInstalled } = useInstallPrompt();
-  const { isIOS } = useIsIOS();
-  const [showIOSPrompt, setShowIOSPrompt] = useState(false);
-  
-  if (!ready) {
-    return <Layout><div>Loading...</div></Layout>;
-  }
-
-  const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
-  
-  // --- REVERTED: Using the original homePageCards array structure ---
-  const homePageCards = [
-    { 
-      icon: '🏆', 
-      title: t('home.cards.airdrop.title'), 
-      description: t('home.cards.airdrop.text'), 
-      route: '/xpleaderboard',
-      buttonText: t('home.cards.airdrop.button')
-    },
-    { 
-      icon: '⚙️', 
-      title: t('home.cards.self.title'), 
-      description: t('home.cards.self.text'), 
-      type: 'coming_soon',
-      buttonText: t('home.cards.self.button')
-    },
-    { 
-      icon: '📈', 
-      title: t('home.cards.managed.title'), 
-      description: t('home.cards.managed.text'), 
-      route: '/login',
-      buttonText: t('home.cards.managed.button')
-    },
-    { 
-      icon: '💼', 
-      title: t('home.cards.investor.title'), 
-      description: t('home.cards.investor.text'), 
-      type: 'link',
-      url: 'https://hyper-strategies.gitbook.io/hyper-strategies-docs/',
-      buttonText: t('home.cards.investor.button')
-    },
-  ];
+  const { t } = useTranslation();
 
   return (
-    <>
-      <Layout showInteractiveBackground={false}>
-        <div className="hero-section-wrapper">
-          <motion.section
-            className="hero-section"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <div className="hero-content">
-              <h1 className="hero-headline">
-                <RotatingText
-                  texts={rotatingWords}
-                  mainClassName="text-rotate-bg"
-                  staggerFrom="last"
-                  rotationInterval={2500}
-                  loop={'twice'}
-                />
-                -STRATEGIES
-              </h1>
-              <p className="hero-subtext">{t('home.hero.subtext')}</p>
-              <div className="button-row">
-                <Link to="/register" className="btn-primary">{t('home.hero.register_now')}</Link>
-                <Link to="/login" className="btn-outline">{t('home.hero.sign_in')}</Link>
-                {/* Kept the install buttons as they are good UX */}
-                {canInstall && !isAppInstalled && (
-                  <button className="btn-outline" onClick={promptInstall}>{t('home.hero.install_app')}</button>
-                )}
-                {isIOS && !isAppInstalled && (
-                  <button className="btn-outline" onClick={() => setShowIOSPrompt(true)}>{t('home.hero.install_app')}</button>
-                )}
-              </div>
+    // We don't use the standard Layout here because this page is a fullscreen experience.
+    // However, we will still include the Header and Footer manually.
+    <div className="home-3d-wrapper">
+      {/* The 3D canvas sits in the background, filling the entire screen. */}
+      <GalaxyCanvas />
+
+      {/* --- This is the HTML User Interface that sits ON TOP of the 3D canvas --- */}
+      <div className="home-3d-ui-container">
+        <section className="hero-section-3d">
+          <div className="hero-content">
+            <h1 className="hero-headline">
+              {/* We can re-add the RotatingText later if we want */}
+              HYPER-STRATEGIES
+            </h1>
+            <p className="hero-subtext">{t('home.hero.subtext', 'Automated Trading Solutions, Curated Crypto Vaults.')}</p>
+            <div className="button-row">
+              <Link to="/register" className="btn-primary btn-large">{t('home.hero.register_now', 'Register Now')}</Link>
+              <Link to="/login" className="btn-outline btn-large">{t('home.hero.sign_in', 'Sign In')}</Link>
             </div>
-            <div className="scroll-cue">▼ Scroll</div>
-          </motion.section>
+          </div>
+        </section>
+
+        {/* This is a simple cue to tell users they can scroll. */}
+        <div className="scroll-cue-3d">
+          <span>Scroll Down to Explore</span>
+          <div className="scroll-arrow">↓</div>
         </div>
-        
-        <div className="home-cards-container">
-          {homePageCards.map((card, idx) => (
-            <ConstellationSection
-              key={idx}
-              icon={card.icon}
-              title={card.title}
-              description={card.description}
-              buttonText={card.buttonText}
-              onClick={
-                card.type === 'coming_soon'
-                  ? undefined
-                  : () => {
-                      if (card.type === 'link') {
-                        window.open(card.url, '_blank', 'noopener,noreferrer');
-                      } else if (card.route) {
-                        navigate(card.route);
-                      }
-                    }
-              }
-            />
-          ))}
-        </div>
-      </Layout>
-      
-      {showIOSPrompt && <AddToHomeScreenPrompt onClose={() => setShowIOSPrompt(false)} />}
-    </>
+      </div>
+    </div>
   );
 };
 
