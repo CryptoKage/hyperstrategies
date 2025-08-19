@@ -1,7 +1,7 @@
 // src/components/FloatingCard.jsx
 import React from 'react';
 import { Text, Plane } from '@react-three/drei';
-import { motion } from 'framer-motion-3d';
+import { motion } from 'framer-motion';
 
 const FloatingCard = ({ title, description, position, delay = 0 }) => {
   return (
