@@ -2,6 +2,15 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 
+// Simple seeded random number generator to ensure deterministic patterns
+const createSeededRandom = (seed) => {
+  let s = seed;
+  return () => {
+    const x = Math.sin(s++) * 10000;
+    return x - Math.floor(x);
+  };
+};
+
 // --- FIX 1: Make the hook server-side-rendering (SSR) safe ---
 // This hook now safely handles cases where `window` is not defined.
 const useWindowSize = () => {
@@ -16,7 +25,8 @@ const useWindowSize = () => {
   return size;
 };
 
-const InteractiveBackground = () => {
+// Accept a `seed` prop so each instance can generate a unique node pattern
+const InteractiveBackground = ({ seed = Math.random() }) => {
   const [width, height] = useWindowSize();
   const containerRef = useRef(null);
 
@@ -25,6 +35,7 @@ const InteractiveBackground = () => {
   const linesRef = useRef([]);
   const pointElementsRef = useRef([]);
   const lineElementsRef = useRef([]);
+  const animationFrameIdRef = useRef(null);
 
   // --- FIX 3: Use a single state to trigger the initial render ---
   // We only need to render the SVG elements ONCE. After that, we manipulate them directly.
@@ -46,11 +57,17 @@ const InteractiveBackground = () => {
     const numPoints = Math.floor((containerWidth * containerHeight) / 15000);
     const connectionDistance = 120;
 
+    const rng = createSeededRandom(typeof seed === 'number' ? seed : seed.toString().split('').reduce((a, c) => a + c.charCodeAt(0), 0));
+
+    // Reset element references when regenerating
+    pointElementsRef.current = [];
+    lineElementsRef.current = [];
+
     // Generate points and store them in the ref, NOT state.
-     pointsRef.current = Array.from({ length: numPoints }, () => {
+    pointsRef.current = Array.from({ length: numPoints }, () => {
       // --- THE FIX: Assign a random color to each point on creation ---
       let color = colorPalette.primary;
-      const rand = Math.random();
+      const rand = rng();
       if (rand < 0.05) { // 5% chance of being a "buy" node
         color = colorPalette.buy;
       } else if (rand > 0.95) { // 5% chance of being a "sell" node
@@ -58,10 +75,10 @@ const InteractiveBackground = () => {
       }
 
       return {
-        x: Math.random() * containerWidth,
-        y: Math.random() * containerHeight,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
+        x: rng() * containerWidth,
+        y: rng() * containerHeight,
+        vx: (rng() - 0.5) * 0.3,
+        vy: (rng() - 0.5) * 0.3,
         color: color // Store the color with the point
       };
     });
@@ -86,7 +103,7 @@ const InteractiveBackground = () => {
 
     // Trigger the one-time render
     setIsInitialized(true);
-  }, []);
+  }, [seed]);
 
   // Regenerate network on resize
   useEffect(() => {
@@ -99,7 +116,6 @@ const InteractiveBackground = () => {
   useEffect(() => {
     if (!isInitialized) return; // Don't start animating until the network is generated
 
-    let animationFrameId;
     const animate = () => {
       if (!containerRef.current) return;
       const containerWidth = containerRef.current.offsetWidth;
@@ -134,10 +150,10 @@ const InteractiveBackground = () => {
         }
       });
 
-      animationFrameId = requestAnimationFrame(animate);
+      animationFrameIdRef.current = requestAnimationFrame(animate);
     };
     animate();
-    return () => cancelAnimationFrame(animationFrameId);
+    return () => cancelAnimationFrame(animationFrameIdRef.current);
   }, [isInitialized]);
 
   return (
