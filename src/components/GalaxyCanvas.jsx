@@ -44,10 +44,9 @@ const GalaxyCanvas = ({ onScrollUpdate }) => {
   const cards = ['managed', 'airdrop', 'self'];
 
   return (
+    // --- THE FIX: Add the new CSS class ---
     <div className="home-3d-canvas">
       <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-        <ambientLight intensity={0.8} />
-        <pointLight position={[10, 10, 10]} intensity={1.5} />
         <Suspense fallback={null}>
           <ScrollControls pages={cards.length} damping={0.25}>
             <Scene onScrollUpdate={onScrollUpdate} />
@@ -57,5 +56,4 @@ const GalaxyCanvas = ({ onScrollUpdate }) => {
     </div>
   );
 };
-
 export default GalaxyCanvas;
