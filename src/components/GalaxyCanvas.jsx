@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree, extend } from '@react-three/fiber';
-import { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls as ThreeOrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 extend({ OrbitControls: ThreeOrbitControls });
 
