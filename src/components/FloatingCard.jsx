@@ -3,7 +3,20 @@ import React from 'react';
 import { Text, Plane } from '@react-three/drei';
 import { motion } from 'framer-motion';
 
-const FloatingCard = ({ title, description, position, delay = 0 }) => {
+const FloatingCard = ({
+  title,
+  description,
+  buttonLabel,
+  link,
+  position,
+  delay = 0,
+}) => {
+  const handleClick = () => {
+    if (link) {
+      window.open(link, '_blank');
+    }
+  };
+
   return (
     <motion.group
       position={position}
@@ -11,8 +24,12 @@ const FloatingCard = ({ title, description, position, delay = 0 }) => {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, delay }}
     >
-      <Plane args={[4, 2]} /* width, height */ >
-        <meshStandardMaterial color="#101827" metalness={0.1} roughness={0.2} />
+      <Plane args={[4, 2]} /* width, height */>
+        <meshStandardMaterial
+          color="#101827"
+          metalness={0.1}
+          roughness={0.2}
+        />
       </Plane>
       <Text
         position={[0, 0.5, 0.1]}
@@ -35,6 +52,18 @@ const FloatingCard = ({ title, description, position, delay = 0 }) => {
       >
         {description}
       </Text>
+      {buttonLabel && (
+        <Text
+          position={[0, -0.6, 0.1]}
+          fontSize={0.15}
+          color="#3fbaf3"
+          anchorX="center"
+          anchorY="middle"
+          onClick={handleClick}
+        >
+          {buttonLabel}
+        </Text>
+      )}
     </motion.group>
   );
 };
