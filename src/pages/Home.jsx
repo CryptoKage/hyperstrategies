@@ -8,25 +8,18 @@ const Home = () => {
   const { t } = useTranslation();
   const [uiOpacity, setUiOpacity] = useState(1);
 
-  useEffect(() => {
-    // This function now controls the fading of the HTML UI
-    const handleScroll = (scrollOffset) => {
-      const fadeStart = 0.05; // When to start fading
-      const fadeEnd = 0.2;   // When to be fully faded
-      
-      if (scrollOffset > fadeStart) {
-        const newOpacity = 1 - (scrollOffset - fadeStart) / (fadeEnd - fadeStart);
-        setUiOpacity(Math.max(0, Math.min(1, newOpacity)));
-      } else {
-        setUiOpacity(1);
-      }
-    };
-
-    // We can't use window.addEventListener anymore, so we will pass this function
-    // to the GalaxyCanvas, which will call it on every scroll frame.
-    // For now, we will just keep the state logic. The connection is made in GalaxyCanvas.
-
-  }, []);
+  // --- THE FIX: The handleScroll function must be defined here ---
+  const handleScroll = (scrollOffset) => {
+    const fadeStart = 0.05;
+    const fadeEnd = 0.2;
+    
+    if (scrollOffset > fadeStart) {
+      const newOpacity = 1 - (scrollOffset - fadeStart) / (fadeEnd - fadeStart);
+      setUiOpacity(Math.max(0, Math.min(1, newOpacity)));
+    } else {
+      setUiOpacity(1);
+    }
+  };
 
   const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
 
@@ -34,7 +27,6 @@ const Home = () => {
 
   return (
     <div className="home-3d-wrapper">
-      {/* --- THE FIX: We pass the handleScroll function to the canvas --- */}
       <GalaxyCanvas onScrollUpdate={handleScroll} />
 
       <div
@@ -44,7 +36,6 @@ const Home = () => {
         <section className="hero-section-3d">
           <div className="hero-content">
             <h1 className="hero-headline">
-              {/* --- THE FIX: The "-STRATEGIES" text is now inside the RotatingText component --- */}
               <RotatingText texts={rotatingWords} suffix="-STRATEGIES" />
             </h1>
             <p className="hero-subtext">{t('home.hero.subtext', 'Automated Trading Solutions, Curated Crypto Vaults.')}</p>
