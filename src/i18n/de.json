@@ -269,13 +269,14 @@
       "join_community": "Tritt der Community bei",
       "install_app": "App installieren",
        "register_now": "Register Now",
-    "sign_in": "Sign In"
+    "sign_in": "Anmelden"
     },
     "cards": {
       "title": "Entdecke Hyper-Strategies",
       "airdrop": {
         "title": "Erhalte XP für Kapitaleinzahlungen",
-        "text": "XP-Rangliste ansehen"
+        "text": "XP-Rangliste ansehen",
+        "button": "RANGLISTE ANSEHEN"
       },
       "self": {
         "title": "Strategy Builder Engine",
@@ -284,7 +285,8 @@
       },
       "managed": {
         "title": "Investiere in verwaltete Vaults",
-        "text": "Zahle ein und lass unsere Systeme für dich handeln"
+        "text": "Zahle ein und lass unsere Systeme für dich handeln",
+        "button": "Anmelden"
       },
       "investor": {
         "title": "Hyper Strategies Info",
