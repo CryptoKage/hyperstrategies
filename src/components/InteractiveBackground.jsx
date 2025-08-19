@@ -30,6 +30,13 @@ const InteractiveBackground = () => {
   // We only need to render the SVG elements ONCE. After that, we manipulate them directly.
   const [isInitialized, setIsInitialized] = useState(false);
 
+   const colorPalette = {
+    primary: 'var(--color-primary)', // #3fbaf3
+    buy: '#4ade80',      // A nice, vibrant green
+    sell: '#f87171'      // A complementary red
+  };
+
+
   const generateNetwork = useCallback(() => {
     if (!containerRef.current) return;
     
@@ -40,12 +47,24 @@ const InteractiveBackground = () => {
     const connectionDistance = 120;
 
     // Generate points and store them in the ref, NOT state.
-    pointsRef.current = Array.from({ length: numPoints }, () => ({
-      x: Math.random() * containerWidth,
-      y: Math.random() * containerHeight,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-    }));
+     pointsRef.current = Array.from({ length: numPoints }, () => {
+      // --- THE FIX: Assign a random color to each point on creation ---
+      let color = colorPalette.primary;
+      const rand = Math.random();
+      if (rand < 0.05) { // 5% chance of being a "buy" node
+        color = colorPalette.buy;
+      } else if (rand > 0.95) { // 5% chance of being a "sell" node
+        color = colorPalette.sell;
+      }
+
+      return {
+        x: Math.random() * containerWidth,
+        y: Math.random() * containerHeight,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        color: color // Store the color with the point
+      };
+    });
 
     // Generate lines and store them in the ref, NOT state.
     const newLines = [];
