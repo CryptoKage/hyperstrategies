@@ -1,5 +1,5 @@
 // src/pages/Home.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
@@ -10,15 +10,19 @@ import GalaxyCanvas from '../components/GalaxyCanvas';
 
 const Home = () => {
   const { t } = useTranslation();
+  const [scrollOffset, setScrollOffset] = useState(0);
 
   // We are creating a simplified version that does not use the Layout component
   // because it's a fullscreen experience. The Header and Footer are omitted on this page.
-  
+
   return (
     <div className="home-3d-wrapper">
-      <GalaxyCanvas />
+      <GalaxyCanvas onScroll={setScrollOffset} />
 
-      <div className="home-3d-ui-container">
+      <div
+        className="home-3d-ui-container"
+        style={{ opacity: 1 - scrollOffset }}
+      >
         <section className="hero-section-3d">
           <div className="hero-content">
             <h1 className="hero-headline">
