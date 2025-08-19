@@ -3350,3 +3350,47 @@ input:checked + .slider:before {
   color: var(--color-text-secondary);
   line-height: 1.6;
 }
+
+/* ==========================================================================
+   CONSTELLATION CARD STYLES
+   ========================================================================== */
+
+.home-card {
+  position: relative; /* This is crucial for layering */
+  overflow: hidden; /* This keeps the starfield inside the card's rounded corners */
+  /* Add back some of your original card styles */
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.home-card__background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Sits behind the content */
+  opacity: 0.5; /* Make it subtle */
+}
+
+.starfield-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.home-card__content {
+  position: relative;
+  z-index: 2; /* Sits on top of the background */
+  /* Make sure the content can fill the card */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
