@@ -279,18 +279,18 @@
     "cards": {
       "title": "Explore Hyper-Strategies",
       "airdrop": {
-        "title": "XP LEADERBOARD",
-        "text": "Gain XP for Token Allocation",
+        "title": "XP, Tiers & Leaderboard",
+        "text": "Engage with the platform to earn XP, climb account tiers, and compete for future token allocations.",
         "button": "VIEW LEADERBOARD"
       },
       "self": {
         "title": "Strategy Builder Engine",
-        "text": "Coming Soon: Build and deploy your own automated strategies.",
+        "text": "Coming Soon: A powerful engine to build, backtest, and deploy your own automated trading strategies.",
         "button": "Coming Soon"
       },
       "managed": {
         "title": "Invest in Managed Vaults",
-        "text": "Deposit and let our systems trade for you",
+        "text": "Deposit and let our systems and traders work for you in curated, high-performance vaults.",
         "button": "VISIT DASHBOARD"
       },
       "investor": {

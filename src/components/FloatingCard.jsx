@@ -1,10 +1,16 @@
 // src/components/FloatingCard.jsx
 import React from 'react';
 import { Text, Plane } from '@react-three/drei';
+import { motion } from 'framer-motion-3d';
 
-const FloatingCard = ({ title, description, position }) => {
+const FloatingCard = ({ title, description, position, delay = 0 }) => {
   return (
-    <group position={position}>
+    <motion.group
+      position={position}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, delay }}
+    >
       <Plane args={[4, 2]} /* width, height */ >
         <meshStandardMaterial color="#101827" metalness={0.1} roughness={0.2} />
       </Plane>
@@ -29,7 +35,7 @@ const FloatingCard = ({ title, description, position }) => {
       >
         {description}
       </Text>
-    </group>
+    </motion.group>
   );
 };
 
