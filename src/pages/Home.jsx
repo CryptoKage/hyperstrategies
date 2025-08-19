@@ -7,7 +7,6 @@ import useInstallPrompt from '../hooks/useInstallPrompt';
 import useIsIOS from '../hooks/useIsIOS';
 import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
 import Layout from '../components/Layout';
-import ChartImage from '../assets/chart-placeholder.png';
 import { motion } from 'framer-motion';
 
 const Home = () => {
@@ -89,10 +88,6 @@ const Home = () => {
                   <button className="btn-outline" onClick={() => setShowIOSPrompt(true)}>{t('home.hero.install_app')}</button>
                 )}
               </div>
-            </div>
-            {/* --- REVERTED: Added the ChartImage back --- */}
-            <div className="hero-image-container">
-              <img src={ChartImage} alt="Trading Chart" className="hero-image" />
             </div>
             <div className="scroll-cue">▼ Scroll</div>
           </motion.section>
