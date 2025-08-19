@@ -1,17 +1,28 @@
-import { useScroll } from '@react-three/drei';
+import { useEffect, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 
 const ScrollManager = ({ distance, onScrollUpdate }) => {
-  const scroll = useScroll();
+  const scrollRef = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const offset = docHeight > 0 ? scrollY / docHeight : 0;
+      scrollRef.current = offset;
+      if (onScrollUpdate) {
+        onScrollUpdate(offset);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [onScrollUpdate]);
 
   useFrame((state) => {
-    const scrollOffset = scroll.offset;
-    // Animate the camera's Z position for a "flying through space" effect
+    const scrollOffset = scrollRef.current;
     state.camera.position.z = 5 - scrollOffset * distance;
-    
-    if (onScrollUpdate) {
-      onScrollUpdate(scrollOffset);
-    }
   });
 
   return null;
