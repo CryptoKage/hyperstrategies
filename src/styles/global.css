@@ -3432,6 +3432,18 @@ input:checked + .slider:before {
   pointer-events: auto;
 }
 
+.hero-section-3d .button-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center; /* This is the key fix */
+  flex-wrap: wrap;
+}
+
+.hero-section-3d .btn-large {
+    padding: 14px 28px;
+    font-size: 16px;
+}
+
 .hero-section-3d {
   display: flex;
   align-items: center;
