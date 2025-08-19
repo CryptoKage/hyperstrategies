@@ -4,10 +4,11 @@ import React, { forwardRef, useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './RotatingText.css';
 
-const RotatingText = forwardRef(({
+const RotatingText = forwardRef(({ 
   texts = [],
   mainClassName = 'text-rotate',
   loop = true, // We'll keep the loop prop for flexibility
+  suffix = '',
   staggerFrom = 'last',
   initial = { y: '100%', opacity: 0 },
   animate = { y: '0%', opacity: 1 },
@@ -59,7 +60,7 @@ const RotatingText = forwardRef(({
 
   return (
     <motion.span className={mainClassName}>
-      <span className="text-rotate-sr-only">{texts[currentIndex]}</span>
+      <span className="text-rotate-sr-only">{texts[currentIndex]}{suffix}</span>
       <AnimatePresence mode="wait">
         <motion.span
           key={currentIndex}
@@ -89,6 +90,7 @@ const RotatingText = forwardRef(({
           })}
         </motion.span>
       </AnimatePresence>
+      {suffix && <span className="text-rotate-suffix">{suffix}</span>}
     </motion.span>
   );
 });
