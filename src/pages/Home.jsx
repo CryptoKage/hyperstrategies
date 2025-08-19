@@ -20,7 +20,7 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const rotatingWords = t('home.rotating_words', { returnObjects: true });
+  const RotatingText = t('home.rotating_words', { returnObjects: true });
 
 
   // We are creating a simplified version that does not use the Layout component
@@ -32,7 +32,7 @@ const Home = () => {
 
   const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
 
-  const pointerClass = uiOpacity <= 0.1 ? ' pointer-none' : '';
+
 
   return (
     <div className="home-3d-wrapper">
