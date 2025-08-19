@@ -2,40 +2,13 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
 import RotatingText from '../components/RotatingText';
+import ConstellationSection from '../components/ConstellationSection';
 import useInstallPrompt from '../hooks/useInstallPrompt';
 import useIsIOS from '../hooks/useIsIOS';
 import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
 import Layout from '../components/Layout';
 import ChartImage from '../assets/chart-placeholder.png';
 import { motion } from 'framer-motion';
-
-const ConstellationSection = ({
-  icon,
-  title,
-  description,
-  buttonText,
-  type,
-  onClick,
-}) => (
-  <section className="constellation-section">
-    <div className="card">
-      <div className="card__icon">{icon}</div>
-      <div className="card__content">
-        <h3 className="card__title">{title}</h3>
-        <p className="card__description">{description}</p>
-      </div>
-      <div className="card__footer">
-        <button
-          className={type === 'coming_soon' ? 'btn-secondary' : 'btn-primary'}
-          disabled={type === 'coming_soon'}
-          onClick={type === 'coming_soon' ? undefined : onClick}
-        >
-          {buttonText}
-        </button>
-      </div>
-    </div>
-  </section>
-);
 
 const Home = () => {
   const { t, ready } = useTranslation();
@@ -133,14 +106,17 @@ const Home = () => {
               title={card.title}
               description={card.description}
               buttonText={card.buttonText}
-              type={card.type}
-              onClick={() => {
-                if (card.type === 'link') {
-                  window.open(card.url, '_blank', 'noopener,noreferrer');
-                } else if (card.route) {
-                  navigate(card.route);
-                }
-              }}
+              onClick={
+                card.type === 'coming_soon'
+                  ? undefined
+                  : () => {
+                      if (card.type === 'link') {
+                        window.open(card.url, '_blank', 'noopener,noreferrer');
+                      } else if (card.route) {
+                        navigate(card.route);
+                      }
+                    }
+              }
             />
           ))}
         </div>
