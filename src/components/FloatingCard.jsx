@@ -1,47 +1,27 @@
-// src/components/FloatingCard.jsx
 import React from 'react';
-import { Text, Plane } from '@react-three/drei';
+import { Text, RoundedBox } from '@react-three/drei';
 import { motion } from 'framer-motion';
 
-const FloatingCard = ({
-  title,
-  description,
-  buttonLabel,
-  link,
-  position,
-  delay = 0,
-}) => {
-  const handleClick = () => {
-    if (link) {
-      window.open(link, '_blank');
-    }
-  };
-
+const FloatingCard = ({ title, description, position, delay = 0 }) => {
   return (
     <motion.group
       position={position}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6, delay }}
+      initial={{ opacity: 0, scale: 0.8, y: position[1] + 2 }}
+      animate={{ opacity: 1, scale: 1, y: position[1] }}
+      transition={{ duration: 0.8, delay, ease: 'easeOut' }}
     >
-      <Plane args={[4, 2]} /* width, height */>
-        <meshStandardMaterial
-          color="#101827"
-          metalness={0.1}
-          roughness={0.2}
-        />
-      </Plane>
       <Text
         position={[0, 0.5, 0.1]}
         fontSize={0.3}
         color="#3fbaf3"
         anchorX="center"
         anchorY="middle"
+        font="/fonts/Inter-Bold.woff" // Use a specific font file for 3D text
       >
         {title}
       </Text>
       <Text
-        position={[0, 0, 0.1]}
+        position={[0, -0.1, 0.1]}
         fontSize={0.15}
         color="#a0aec0"
         maxWidth={3.5}
@@ -49,21 +29,10 @@ const FloatingCard = ({
         anchorX="center"
         anchorY="middle"
         lineHeight={1.5}
+        font="/fonts/Inter-Regular.woff"
       >
         {description}
       </Text>
-      {buttonLabel && (
-        <Text
-          position={[0, -0.6, 0.1]}
-          fontSize={0.15}
-          color="#3fbaf3"
-          anchorX="center"
-          anchorY="middle"
-          onClick={handleClick}
-        >
-          {buttonLabel}
-        </Text>
-      )}
     </motion.group>
   );
 };

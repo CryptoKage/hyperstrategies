@@ -6,46 +6,40 @@ import FloatingCard from './FloatingCard';
 import { useTranslation } from 'react-i18next';
 import * as THREE from 'three';
 
-const CARD_SPACING = 5;
-const START_Y = -2;
+const CARD_SPACING = 7; // Increased spacing for a better feel
+const START_Y = 0; // We'll handle position differently
 
-const GalaxyCanvas = () => {
+const GalaxyCanvas = ({ onScrollUpdate }) => {
   const { t } = useTranslation();
-
   const cards = ['managed', 'airdrop', 'self'];
 
   return (
-    <div className="galaxy-canvas-wrapper">
-      <h2 className="cards-title">{t('home.cards.title')}</h2>
-      <Canvas
-        camera={{ position: [0, 0, 5], fov: 75 }}
-        gl={{ outputColorSpace: THREE.SRGBColorSpace }}
-      >
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-
-        <Suspense fallback={null}>
-          <ScrollControls pages={cards.length} damping={0.3}>
-            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />
-            <ScrollManager distance={CARD_SPACING * cards.length} />
-            {cards.map((key, index) => {
-              const link = t(`home.cards.${key}.link`, '');
-              return (
-                <FloatingCard
-                  key={key}
-                  title={t(`home.cards.${key}.title`)}
-                  description={t(`home.cards.${key}.text`)}
-                  buttonLabel={t(`home.cards.${key}.button`, '')}
-                  link={link || undefined}
-                  position={[0, START_Y - index * CARD_SPACING, 0]}
-                  delay={index * 0.2}
-                />
-              );
-            })}
-          </ScrollControls>
-        </Suspense>
-      </Canvas>
-    </div>
+    <Canvas 
+      camera={{ position: [0, 0, 5], fov: 75 }}
+      gl={{ outputColorSpace: THREE.SRGBColorSpace }}
+    >
+      <ambientLight intensity={0.8} />
+      <pointLight position={[10, 10, 10]} intensity={1.5} />
+      <Suspense fallback={null}>
+        <ScrollControls pages={cards.length} damping={0.25}>
+          <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+          <ScrollManager 
+            distance={cards.length * CARD_SPACING} 
+            onScrollUpdate={onScrollUpdate} 
+          />
+          {/* The cards are now positioned along the Z-axis for the fly-through effect */}
+          {cards.map((key, index) => (
+            <FloatingCard
+              key={key}
+              title={t(`home.cards.${key}.title`)}
+              description={t(`home.cards.${key}.text`)}
+              position={[0, 0, -index * CARD_SPACING]}
+              delay={index * 0.2}
+            />
+          ))}
+        </ScrollControls>
+      </Suspense>
+    </Canvas>
   );
 };
 

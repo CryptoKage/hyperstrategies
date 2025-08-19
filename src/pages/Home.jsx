@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import GalaxyCanvas from '../components/GalaxyCanvas';
@@ -8,39 +8,26 @@ const Home = () => {
   const { t } = useTranslation();
   const [uiOpacity, setUiOpacity] = useState(1);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const fadeDistance = window.innerHeight * 0.4;
-      const newOpacity = 1 - window.scrollY / fadeDistance;
-      setUiOpacity(newOpacity < 0 ? 0 : newOpacity > 1 ? 1 : newOpacity);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const RotatingText = t('home.rotating_words', { returnObjects: true });
-
-
-  // We are creating a simplified version that does not use the Layout component
-  // because it's a fullscreen experience. The Header and Footer are omitted on this page.
-
-
-  const pointerClass = uiOpacity === 0 ? ' pointer-none' : '';
-
+  const handleScroll = (scrollOffset) => {
+    const fadeStart = 0.02;
+    const fadeEnd = 0.15;
+    if (scrollOffset > fadeStart) {
+      const newOpacity = 1 - (scrollOffset - fadeStart) / (fadeEnd - fadeStart);
+      setUiOpacity(Math.max(0, newOpacity));
+    } else {
+      setUiOpacity(1);
+    }
+  };
 
   const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
 
-
-
   return (
     <div className="home-3d-wrapper">
-      <GalaxyCanvas />
+      <GalaxyCanvas onScrollUpdate={handleScroll} />
 
       <div
-        className={`home-3d-ui-container${pointerClass}`}
-        style={{ opacity: uiOpacity }}
+        className="home-3d-ui-container"
+        style={{ opacity: uiOpacity, pointerEvents: uiOpacity > 0.1 ? 'auto' : 'none' }}
       >
         <section className="hero-section-3d">
           <div className="hero-content">
@@ -55,10 +42,12 @@ const Home = () => {
           </div>
         </section>
 
-        <div className="scroll-cue-3d">
-          <span>Scroll Down to Explore</span>
-          <div className="scroll-arrow">↓</div>
-        </div>
+        {uiOpacity > 0 && (
+          <div className="scroll-cue-3d">
+            <span>Scroll Down to Explore</span>
+            <div className="scroll-arrow">↓</div>
+          </div>
+        )}
       </div>
     </div>
   );

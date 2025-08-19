@@ -3342,40 +3342,42 @@ input:checked + .slider:before {
   color: var(--color-text-secondary);
   line-height: 1.6;
 }
-
 /* ==========================================================================
-   3D HOME PAGE STYLES
+   FINAL 3D HOME PAGE STYLES
    ========================================================================== */
 
-/* This is the main wrapper for the entire 3D experience */
+/* This forces the scrollbar to be available for the 3D scene */
+html, body {
+  overflow: auto !important;
+}
+
+/* This is the main container that holds the 3D canvas */
 .home-3d-wrapper {
-  position: fixed; /* Fix the canvas to the viewport */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden; /* Prevent the canvas from causing a double scrollbar */
+  background-color: var(--color-background);
 }
 
-/* This is the container for the HTML UI that sits ON TOP of the canvas */
+/* This is the container for the 2D HTML UI that sits ON TOP of the canvas */
 .home-3d-ui-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  /* This is crucial: it allows clicks to pass through to the canvas */
-  pointer-events: none; 
-  /* This ensures the UI itself doesn't have a scrollbar */
-  overflow: hidden;
+  /* This is crucial: it allows mouse events (like scrolling) to pass through to the canvas below */
+  pointer-events: none;
 }
 
-/* We re-enable pointer events ONLY for the content inside */
+/* We re-enable pointer events ONLY for the direct children of the UI container */
 .home-3d-ui-container > * {
   pointer-events: auto;
 }
 
-/* Style for the main hero section */
+/* This styles the main 'hero' section with the title and buttons */
 .hero-section-3d {
   display: flex;
   align-items: center;
@@ -3384,14 +3386,13 @@ input:checked + .slider:before {
   text-align: center;
 }
 
-/* This fixes the black boxes. We ensure the content has no background. */
+/* This ensures the content itself has no background and is centered */
 .hero-content {
   background-color: transparent !important;
   max-width: 600px;
   padding: 20px;
 }
 
-/* Make the headline much larger for a bigger impact */
 .hero-headline {
   font-size: 64px;
   font-weight: 800;
@@ -3399,7 +3400,7 @@ input:checked + .slider:before {
   margin-bottom: 24px;
 }
 
-/* Style for the scroll down prompt */
+/* Style for the 'Scroll Down' prompt */
 .scroll-cue-3d {
   position: absolute;
   bottom: 40px;
@@ -3418,9 +3419,4 @@ input:checked + .slider:before {
   0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
   40% { transform: translate(-50%, -15px); }
   60% { transform: translate(-50%, -5px); }
-}
-
-/* This is a helper to disable pointer events when the UI fades out */
-.pointer-none {
-    pointer-events: none !important;
 }
