@@ -1,17 +1,15 @@
-/* ==========================================================================
-   Base & Reset Styles
-   ========================================================================== */
+/* Base and reset styles */
 
-/* 1. Universal Box Sizing - This is the most important rule */
+/* Universal box sizing */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* 2. HTML & Body Defaults */
+/* HTML & body defaults */
 html, body {
-  height: 100%; /* Ensures the body can fill the full screen height */
+  height: 100%;
   margin: 0;
   padding: 0;
   overflow: auto !important; /* Allow scrolling for 3D scenes */
@@ -19,36 +17,36 @@ html, body {
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--color-background); /* Use our theme variable */
-  color: var(--color-text-primary); /* Use our theme variable */
-  line-height: 1.5; /* Improves readability */
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  line-height: 1.5;
 }
 
-/* 3. Typography & Link Defaults */
+/* Typography & link defaults */
 h1, h2, h3, h4, h5, h6, p, ul, li {
-  margin: 0; /* The main part of the reset */
+  margin: 0;
   padding: 0;
 }
 
 h1, h2, h3 {
-  color: #ffffff; /* This is fine, but you could also use var(--color-text-primary) */
+  color: #ffffff;
 }
 
 a {
-  color: var(--color-primary); /* Use our theme variable */
+  color: var(--color-primary);
   text-decoration: none;
 }
 
 a:hover {
-  text-decoration: underline; /* A common and clear hover effect */
+  text-decoration: underline;
 }
 
-/* 4. Button & Form Defaults */
+/* Button & form defaults */
 button {
   cursor: pointer;
-  font-family: inherit; /* Ensures buttons use the same font as the rest of the site */
+  font-family: inherit;
   font-weight: 500;
-  border: none; /* A good default reset for buttons */
+  border: none;
 }
 
 
@@ -99,7 +97,7 @@ button {
 
 .card {
   flex: 1 1 220px;
-  min-height: 320px; /* ✅ Force consistent height */
+  min-height: 320px;
   max-width: 280px;
   display: flex;
   flex-direction: column;
@@ -142,8 +140,7 @@ button {
 }
 
 
-
-/* --- About Section --- */
+/* About section */
 
 .about-section h2 {
     margin-bottom: 24px;
@@ -158,29 +155,27 @@ button {
   line-height: 1.8;
 }
 
+/* Card section */
 
-/* --- Card Section (for CardSection.jsx) --- */
-
-/* This styles the wrapper div inside the CardSection component */
+/* Wrapper for CardSection */
 .card-section__wrapper {
   display: grid;
   gap: 24px;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
-/* We'll override the default card styles for the dark theme */
+/* Card overrides for dark theme */
 .card {
   background-color: #1a1e1b;
   border: 1px solid #333;
   border-radius: 12px;
   padding: 24px;
   color: #a0a0a0;
-  
-  /* Flexbox magic for alignment! */
+
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* This pushes the footer to the bottom */
-  text-align: center; /* Center align all content */
+  justify-content: space-between;
+  text-align: center;
   transition: all 0.3s ease;
 }
 
@@ -195,17 +190,17 @@ button {
 }
 
 .card__icon {
-  font-size: 36px; /* Make the emoji bigger */
+  font-size: 36px;
   margin-bottom: 16px;
 }
 
 .card__content {
-  flex-grow: 1; /* Allows this section to take up available space */
+  flex-grow: 1;
 }
 
 .card__title {
   color: #ffffff;
-  font-size: 18px; /* Slightly larger title */
+  font-size: 18px;
   font-weight: bold;
   margin-bottom: 8px;
 }
@@ -213,11 +208,11 @@ button {
 .card__description {
   font-size: 14px;
   line-height: 1.5;
-  min-height: 60px; /* Ensures cards have a similar text area height */
+  min-height: 60px;
 }
 
 .card__footer {
-  margin-top: 24px; /* Space above the button */
+  margin-top: 24px;
 }
 
 
@@ -299,18 +294,18 @@ button {
   font-weight: bold;
 }
 .header__button--primary:hover {
-  background-color: #63cfff; /* A slightly lighter primary for hover */
+  background-color: #63cfff;
   color: var(--color-background);
 }
 
-/* Container for the Sign In / Register buttons */
+/* Sign in/register buttons */
 .header__auth-buttons {
   display: flex;
   align-items: center;
-  gap: 12px; /* Space between the buttons */
+  gap: 12px;
 }
 
-/* Container for the logged-in user info */
+/* Logged-in user info */
 .header__user-info {
   display: flex;
   align-items: center;
@@ -323,8 +318,7 @@ button {
 }
 
 
-/* --- New Secondary Button Style --- */
-/* We'll make this a more subtle button */
+/* Secondary button style */
 .btn-secondary {
   background: transparent;
   color: #a0a0a0;
@@ -336,7 +330,7 @@ button {
 }
 
 .btn-secondary:hover {
-  background-color: #ffffff10; /* A very faint white background */
+  background-color: #ffffff10;
   color: #ffffff;
 }
 
@@ -348,18 +342,19 @@ button {
   letter-spacing: 0.5px;
 }
 
+
 .header__left:hover .header__brand-name {
-    color: #00d4ff; /* Make the text glow on hover, just like the link color */
+    color: #00d4ff;
 }
 
-/* This styles the 'My Dashboard' button to look like plain text */
+/* Plain text user button */
 .header__user-button {
   background: none;
   border: none;
   padding: 0;
   margin: 0;
-  font-family: inherit; /* Use the same font as the rest of the site */
-  font-size: inherit; /* Use the same size as surrounding text */
+  font-family: inherit;
+  font-size: inherit;
   font-weight: 500;
   color: #a0a0a0;
   cursor: pointer;
@@ -367,23 +362,21 @@ button {
 }
 
 .header__user-button:hover {
-  color: #ffffff; /* Make it brighter on hover */
+  color: #ffffff;
 }
 
-/* Add these styles to your global.css */
-
-/* Add this to the top of your global.css to define your theme */
+/* Theme variables */
 :root {
-  --color-background: #040e21; /* Your deep blue brand background */
-  --color-primary: #3fbaf3;    /* Your bright cyan for buttons and links */
-  --color-surface: #101827;  /* A slightly lighter, related dark blue for cards */
-  --color-border: #2c3a4f;   /* A subtle border color */
+  --color-background: #040e21;
+  --color-primary: #3fbaf3;
+  --color-surface: #101827;
+  --color-border: #2c3a4f;
   --color-text-primary: #ffffff;
-  --color-text-secondary: #a0aec0; /* A soft gray for labels and subtext */
+  --color-text-secondary: #a0aec0;
   --color-error: #ef4444;
 }
 
-/* --- Form Elements --- */
+/* Form elements */
 .form-group {
   margin-bottom: 24px;
 }
@@ -397,13 +390,14 @@ button {
 }
 
 
+
 .form-group input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(63, 186, 243, 0.3); /* Adds a nice glow on focus */
+  box-shadow: 0 0 0 3px rgba(63, 186, 243, 0.3);
 }
 
-/* --- Error Message --- */
+/* Error message */
 .error-message {
   color: var(--color-error);
   background-color: rgba(239, 68, 68, 0.1);
@@ -413,7 +407,10 @@ button {
   text-align: center;
   margin-bottom: 24px;
 }
+
+
 /* --- Dashboard Styles --- */
+
 .dashboard-container {
   max-width: 1100px;
   margin: 40px auto;
@@ -433,7 +430,7 @@ button {
   padding-bottom: 12px;
 }
 
-/* Stats Grid (Portfolio Value, Balance) */
+/* Stats grid */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -464,12 +461,12 @@ button {
 .stat-value-positive {
   font-size: 28px;
   font-weight: 600;
-  color: #4ade80; /* Green */
+  color: #4ade80;
 }
 .stat-value-negative {
   font-size: 28px;
   font-weight: 600;
-  color: #f87171; /* Red */
+  color: #f87171;
 }
 
 
@@ -503,13 +500,13 @@ button {
 }
 
 .vault-actions {
-  margin-top: auto; /* Pushes buttons to the bottom */
+  margin-top: auto;
   padding-top: 24px;
   display: flex;
   gap: 12px;
 }
 
-.btn-secondary { /* A new button style */
+.btn-secondary {
   flex: 1;
   background-color: var(--color-border);
   color: var(--color-text-primary);
@@ -539,7 +536,6 @@ button {
   color: var(--color-text-secondary);
 }
 
-/* In global.css */
 .vault-card.cta {
   background-color: var(--color-primary);
   color: var(--color-background);
@@ -557,9 +553,7 @@ button {
   opacity: 0.9;
 }
 
-/* ==========================
-   Buttons
-========================== */
+/* Buttons */
 button {
   cursor: pointer;
   font-family: inherit;
@@ -665,11 +659,12 @@ button {
   padding: 0 1rem;
   z-index: 1;
   position: relative;
-}*/
+}
 
 /* ==========================
    Responsive Support
 ========================== */
+
 @media (max-width: 768px) {
   .auth-container {
     margin: 2rem 1rem;
@@ -692,22 +687,12 @@ button {
 }
 
 @media (max-width: 1024px) and (min-device-width: 768px) and (orientation: portrait) {
-  /* Apple iPad portrait mode */
   .auth-container {
     padding: 3rem 2rem;
     max-width: 600px;
   }
 }
 
-
-/* .form-group input {
-  width: 100%;
-  padding: 0.6rem 0.75rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-  font-size: 1rem;
-} */
 
 .btn-primary {
   width: 100%;
@@ -723,16 +708,6 @@ button {
 .btn-primary:hover {
   background-color: #63cfff;
 }
-
-/*.auth-divider {
-  text-align: center;
-  margin: 1.5rem 0;
-  font-size: 0.9rem;
-  color: #888;
-}*/
-
-
-
 .form-group input {
   width: 100%;
   padding: 12px 16px;
@@ -804,14 +779,14 @@ button {
 }
 
 .status-open {
-  color: #4ade80; /* Green */
+  color: #4ade80;
 }
 
 .status-closed {
-  color: #f87171; /* Red */
+  color: #f87171;
 }
 
-/* In global.css */
+/* Input group */
 
 .input-group {
   margin-bottom: 24px;
@@ -835,23 +810,20 @@ button {
   color: var(--color-text-primary);
   font-size: 16px;
   transition: all 0.2s ease-in-out;
-  box-sizing: border-box; /* Ensures padding doesn't affect width */
+  box-sizing: border-box;
 }
 
-/* Add a focus state for better UX */
 .input-field:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(63, 186, 243, 0.2);
 }
 
-/* Style for placeholder text */
 .input-field::placeholder {
   color: #4a5568;
 }
 
-/* --- Modal Styles --- */
-
+/* Modal styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -942,7 +914,6 @@ button {
   gap: 16px;
 }
 
-/* In src/styles/global.css */
 
 .actions-section {
   margin-top: 48px;
@@ -974,7 +945,7 @@ button {
 
 .action-card p {
   color: var(--color-text-secondary);
-  flex-grow: 1; /* Makes text take up space to align buttons */
+  flex-grow: 1;
 }
 
 .action-card .btn-primary {
@@ -1138,10 +1109,9 @@ button {
   border-radius: 6px;
   font-weight: 600;
   cursor: pointer;
-  min-width: 80px; /* Prevents button from resizing */
+  min-width: 80px;
 }
 
-/* In src/styles/global.css */
 
 .actions-section {
   margin-top: 48px;
@@ -1172,6 +1142,30 @@ button {
 .action-card h3 {
   margin-top: 0;
 }
+
+.action-card p {
+  color: var(--color-text-secondary);
+  flex-grow: 1;
+}
+
+.action-card .btn-primary {
+  margin-top: 16px;
+  width: 100%;
+}
+/* --- History Table Styles --- */
+.history-container { margin-top: 48px; }
+.history-container h2 { font-size: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--color-border); padding-bottom: 12px; }
+.history-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.history-table th, .history-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--color-border); }
+.history-table th { color: var(--color-text-secondary); font-weight: 500; }
+.history-table tbody tr:hover { background-color: var(--color-surface); }
+.etherscan-link { color: var(--color-primary); text-decoration: none; font-weight: 500; }
+.etherscan-link:hover { text-decoration: underline; }
+.status-badge { padding: 4px 10px; border-radius: 12px; font-weight: 600; font-size: 12px; text-transform: capitalize; }
+.status-sent { background-color: rgba(74, 222, 128, 0.1); color: #4ade80; }
+.status-processing { background-color: rgba(251, 188, 5, 0.1); color: #FBBC05; }
+.status-queued { background-color: rgba(96, 165, 250, 0.1); color: #60a5fa; }
+.status-failed { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }
 
 
 /* --- Tooltip for Failed Status --- */
@@ -1231,7 +1225,7 @@ button {
   
   /* Make headings slightly smaller on mobile */
   h1, .dashboard-container h1, .wallet-header h1 {
-    font-size: 28px !important; /* Use !important to override more specific rules if needed */
+    font-size: 28px !important;
   }
 
   h2, .dashboard-container h2, .actions-section h2, .history-container h2 {
@@ -1244,7 +1238,7 @@ button {
     flex-direction: column;
     align-items: flex-start;
     padding: 16px;
-    gap: 0; /* Reset gap for vertical stacking */
+    gap: 0;
   }
   
   .header__right {
@@ -1262,7 +1256,7 @@ button {
   }
 
   .header__title {
-    display: none; /* Hide text title to save space, logo remains */
+    display: none;
   }
 
   /* --- 3. Grid & Layout Fixes --- */
@@ -1282,11 +1276,11 @@ button {
   .modal-content {
     width: 90vw;
     padding: 24px 16px;
-    max-height: 85vh; /* Prevent modal from being taller than the screen */
-    overflow-y: auto; /* Allow the whole modal to scroll if content is too long */
+    max-height: 85vh;
+    overflow-y: auto;
   }
   
-  /* This is the fix for your vault/withdrawal deposit box */
+  /* Fix for vault/withdrawal deposit box */
   .referral-update-form,
   .investment-breakdown {
     flex-direction: column;
@@ -1338,15 +1332,13 @@ button {
   padding: 4px;
 }
 
-/* In global.css */
-
 .disclaimer.warning {
-  border-left-color: #f59e0b; /* Amber/Yellow for high risk */
+  border-left-color: #f59e0b;
   background-color: rgba(245, 158, 11, 0.1);
 }
 
 .disclaimer.warning.extreme {
-  border-left-color: #ef4444; /* Red for extreme risk */
+  border-left-color: #ef4444;
   background-color: rgba(239, 68, 68, 0.1);
 }
 
@@ -1463,7 +1455,6 @@ button {
 
 
 
-/* In src/styles/global.css */
 
 .info-box {
   background-color: rgba(63, 186, 243, 0.1);
@@ -1489,7 +1480,6 @@ button {
   text-decoration: underline;
 }
 
-/* In src/styles/global.css */
 
 .profile-container { max-width: 900px; margin: 40px auto; padding: 20px; }
 .profile-container h1 { font-size: 32px; margin-bottom: 32px; }
