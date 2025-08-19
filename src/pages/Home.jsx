@@ -6,8 +6,7 @@ import useInstallPrompt from '../hooks/useInstallPrompt';
 import useIsIOS from '../hooks/useIsIOS';
 import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
 import Layout from '../components/Layout';
-import coreVaultBg from '../assets/core.png';
-import apecoinVaultBg from '../assets/apecoin.png';
+import ChartImage from '../assets/chart-placeholder.png';
 
 const Home = () => {
   const { t, ready } = useTranslation();
@@ -22,94 +21,112 @@ const Home = () => {
 
   const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
   
+  // --- REVERTED: Using the original homePageCards array structure ---
+  const homePageCards = [
+    { 
+      icon: '🏆', 
+      title: t('home.cards.airdrop.title'), 
+      description: t('home.cards.airdrop.text'), 
+      route: '/xpleaderboard',
+      buttonText: t('home.cards.airdrop.button')
+    },
+    { 
+      icon: '⚙️', 
+      title: t('home.cards.self.title'), 
+      description: t('home.cards.self.text'), 
+      type: 'coming_soon',
+      buttonText: t('home.cards.self.button')
+    },
+    { 
+      icon: '📈', 
+      title: t('home.cards.managed.title'), 
+      description: t('home.cards.managed.text'), 
+      route: '/login',
+      buttonText: t('home.cards.managed.button')
+    },
+    { 
+      icon: '💼', 
+      title: t('home.cards.investor.title'), 
+      description: t('home.cards.investor.text'), 
+      type: 'link',
+      url: 'https://hyper-strategies.gitbook.io/hyper-strategies-docs/',
+      buttonText: t('home.cards.investor.button')
+    },
+  ];
+
   return (
-    <Layout>
-      <div className="home-hero">
-        <section className="hero-section">
-          <div className="hero-content">
-            <h1 className="hero-headline">
-              <RotatingText
-                texts={rotatingWords}
-                mainClassName="text-rotate-bg"
-                staggerFrom="last"
-                rotationInterval={2500}
-                loop={'twice'}
-              />
-              -STRATEGIES
-            </h1>
-            <p className="hero-subtext">{t('home.hero.subtext')}</p>
-            <div className="button-row">
-              <Link to="/register" className="btn-primary btn-large">{t('home.hero.register_now')}</Link>
-              <Link to="/login" className="btn-outline btn-large">{t('home.hero.sign_in')}</Link>
-              {canInstall && !isAppInstalled && (
-                  <button className="btn-outline btn-large" onClick={promptInstall}>
-                    {t('home.hero.install_app')}
-                  </button>
-              )}
-              {isIOS && !isAppInstalled && (
-                  <button className="btn-outline btn-large" onClick={() => setShowIOSPrompt(true)}>
-                    {t('home.hero.install_app')}
-                  </button>
-              )}
+    <>
+      <Layout>
+        <div className="hero-section-wrapper">
+          <section className="hero-section">
+            <div className="hero-content">
+              <h1 className="hero-headline">
+                <RotatingText
+                  texts={rotatingWords}
+                  mainClassName="text-rotate-bg"
+                  staggerFrom="last"
+                  rotationInterval={2500}
+                  loop={'twice'}
+                />
+                -STRATEGIES
+              </h1>
+              <p className="hero-subtext">{t('home.hero.subtext')}</p>
+              <div className="button-row">
+                <Link to="/register" className="btn-primary">{t('home.hero.register_now')}</Link>
+                <Link to="/login" className="btn-outline">{t('home.hero.sign_in')}</Link>
+                {/* Kept the install buttons as they are good UX */}
+                {canInstall && !isAppInstalled && (
+                  <button className="btn-outline" onClick={promptInstall}>{t('home.hero.install_app')}</button>
+                )}
+                {isIOS && !isAppInstalled && (
+                  <button className="btn-outline" onClick={() => setShowIOSPrompt(true)}>{t('home.hero.install_app')}</button>
+                )}
+              </div>
             </div>
+            {/* --- REVERTED: Added the ChartImage back --- */}
+            <div className="hero-image-container">
+              <img src={ChartImage} alt="Trading Chart" className="hero-image" />
+            </div>
+          </section>
+        </div>
+        
+        {/* --- REVERTED: Using the original path-selector-section and card mapping --- */}
+        <section className="path-selector-section">
+          <h2>{t('home.cards.title')}</h2>
+          <div className="card-grid">
+            {homePageCards.map((card, idx) => (
+              <div 
+                key={idx} 
+                className={`card ${card.type !== 'coming_soon' ? 'card--clickable' : ''}`}
+                onClick={() => {
+                  if (card.type === 'link') {
+                    window.open(card.url, '_blank', 'noopener,noreferrer');
+                  } else if (card.route) {
+                    navigate(card.route);
+                  }
+                }}
+              >
+                <div className="card__icon">{card.icon}</div>
+                <div className="card__content">
+                  <h3 className="card__title">{card.title}</h3>
+                  <p className="card__description">{card.description}</p>
+                </div>
+                <div className="card__footer">
+                  <button 
+                    className={card.type === 'coming_soon' ? 'btn-secondary' : 'btn-primary'}
+                    disabled={card.type === 'coming_soon'}
+                  >
+                    {card.buttonText}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
-      </div>
+      </Layout>
       
-      <div className="home-journey">
-        <section className="journey-section">
-          <h2>{t('home.journey.title')}</h2>
-          <div className="card-grid-narrative">
-            <div className="card-narrative">
-              <div className="card-narrative-visual">
-                <img src={coreVaultBg} alt="Core Vault" className="vault-preview-image" />
-                <img src={apecoinVaultBg} alt="ApeCoin Vault" className="vault-preview-image behind" />
-              </div>
-              <div className="card__content">
-                <h3 className="card__title">{t('home.journey.vaults.title')}</h3>
-                <p className="card__description">{t('home.journey.vaults.description')}</p>
-              </div>
-              <div className="card__footer">
-                <button className="btn-primary" onClick={() => navigate('/login')}>{t('home.journey.vaults.button')}</button>
-              </div>
-            </div>
-            <div className="card-narrative">
-               <div className="card-narrative-visual icon">🏆</div>
-              <div className="card__content">
-                <h3 className="card__title">{t('home.journey.rewards.title')}</h3>
-                <p className="card__description">{t('home.journey.rewards.description')}</p>
-              </div>
-              <div className="card__footer">
-                <button className="btn-primary" onClick={() => navigate('/xpleaderboard')}>{t('home.journey.rewards.button')}</button>
-              </div>
-            </div>
-            <div className="card-narrative">
-              <div className="card-narrative-visual icon">⚙️</div>
-              <div className="card__content">
-                <h3 className="card__title">{t('home.journey.future.title')}</h3>
-                <p className="card__description">{t('home.journey.future.description')}</p>
-              </div>
-              <div className="card__footer">
-                <button className="btn-secondary" disabled>{t('home.journey.future.button')}</button>
-              </div>
-            </div>
-            <div className="card-narrative">
-              <div className="card-narrative-visual icon">📚</div>
-              <div className="card__content">
-                <h3 className="card__title">{t('home.journey.library.title')}</h3>
-                <p className="card__description">{t('home.journey.library.description')}</p>
-              </div>
-              <div className="card__footer">
-                <a href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/" target="_blank" rel="noopener noreferrer" className="btn-primary">
-                  {t('home.journey.library.button')}
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
       {showIOSPrompt && <AddToHomeScreenPrompt onClose={() => setShowIOSPrompt(false)} />}
-    </Layout>
+    </>
   );
 };
 
