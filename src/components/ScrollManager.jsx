@@ -6,9 +6,10 @@ const ScrollManager = ({ distance, onScrollUpdate }) => {
 
   useEffect(() => {
     const handleScroll = () => {
+      const wrapper = document.querySelector('.home-3d-wrapper');
       const scrollY = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const offset = docHeight > 0 ? scrollY / docHeight : 0;
+      const wrapperHeight = wrapper ? wrapper.offsetHeight - window.innerHeight : 0;
+      const offset = wrapperHeight > 0 ? Math.min(scrollY / wrapperHeight, 1) : 0;
       scrollRef.current = offset;
       if (onScrollUpdate) {
         onScrollUpdate(offset);
