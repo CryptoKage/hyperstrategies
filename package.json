@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-three/fiber": "^8.18.0",
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "ethers": "^6.15.0",
@@ -20,6 +21,7 @@
     "sequelize": "^6.37.1",
     "simplex-noise": "^4.0.3",
     "sqlite3": "^5.1.7",
+    "three": "^0.179.1",
     "typescript": "^3.2.1"
   },
   "scripts": {
