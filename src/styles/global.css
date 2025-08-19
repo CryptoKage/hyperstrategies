@@ -2613,14 +2613,15 @@ textarea.input-field { resize: vertical; }
 
 /* --- Homepage Constellation Sections --- */
 .constellation-wrapper {
-  height: 100vh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 40px 0;
 }
 
 .constellation-section {
-  height: 100vh;
-  scroll-snap-align: start;
+  height: 60vh;
+  min-height: 300px;
 }
 
 /* --- 5. Footer --- */

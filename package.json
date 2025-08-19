@@ -20,7 +20,9 @@
     "sequelize": "^6.37.1",
     "simplex-noise": "^4.0.3",
     "sqlite3": "^5.1.7",
-    "typescript": "^3.2.1"
+    "typescript": "^3.2.1",
+    "@react-three/fiber": "^9.0.0",
+    "three": "^0.157.0"
   },
   "scripts": {
     "start": "react-scripts start",

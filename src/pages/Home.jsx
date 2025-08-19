@@ -112,6 +112,7 @@ const Home = () => {
                       }
                     }
               }
+              seed={idx}
             />
           ))}
         </div>
