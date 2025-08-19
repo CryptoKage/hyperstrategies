@@ -1,106 +1,66 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import GalaxyCanvas from '../components/GalaxyCanvas';
 import RotatingText from '../components/RotatingText';
-import useInstallPrompt from '../hooks/useInstallPrompt';
-import useIsIOS from '../hooks/useIsIOS';
-import AddToHomeScreenPrompt from '../components/AddToHomeScreenPrompt';
-import InteractiveBackground from '../components/InteractiveBackground';
-import PlasmaEffect from '../components/PlasmaEffect';
-
-// --- THE FIX: We NO LONGER import the image here ---
-// import ChartImage from '../assets/chart-placeholder.png';
 
 const Home = () => {
-  const { t, ready } = useTranslation();
-  const navigate = useNavigate();
-  const { promptInstall, canInstall, isAppInstalled } = useInstallPrompt();
-  const { isIOS } = useIsIOS();
-  const [showIOSPrompt, setShowIOSPrompt] = useState(false);
-  
-  if (!ready) {
-    return <div style={{ backgroundColor: '#040e21', height: '100vh' }}>Loading...</div>;
-  }
+  const { t } = useTranslation();
+  const [uiOpacity, setUiOpacity] = useState(1);
+
+  useEffect(() => {
+    // This function now controls the fading of the HTML UI
+    const handleScroll = (scrollOffset) => {
+      const fadeStart = 0.05; // When to start fading
+      const fadeEnd = 0.2;   // When to be fully faded
+      
+      if (scrollOffset > fadeStart) {
+        const newOpacity = 1 - (scrollOffset - fadeStart) / (fadeEnd - fadeStart);
+        setUiOpacity(Math.max(0, Math.min(1, newOpacity)));
+      } else {
+        setUiOpacity(1);
+      }
+    };
+
+    // We can't use window.addEventListener anymore, so we will pass this function
+    // to the GalaxyCanvas, which will call it on every scroll frame.
+    // For now, we will just keep the state logic. The connection is made in GalaxyCanvas.
+
+  }, []);
 
   const rotatingWords = t('home.rotating_words', { returnObjects: true }) || [];
-  
-  const homePageCards = [
-    { 
-      icon: '🏆', 
-      title: t('home.cards.airdrop.title'), 
-      description: t('home.cards.airdrop.text'), 
-      route: '/xpleaderboard',
-      buttonText: t('card_section.view_leaderboard')
-    },
-    { 
-      icon: '⚙️', 
-      title: t('home.cards.self.title'), 
-      description: t('home.cards.self.text'), 
-      type: 'coming_soon',
-      buttonText: t('home.cards.self.button')
-    },
-    { 
-      icon: '📈', 
-      title: t('home.cards.managed.title'), 
-      description: t('home.cards.managed.text'), 
-      route: '/login',
-      buttonText: t('card_section.invest_now')
-    },
-    { 
-      icon: '💼', 
-      title: t('home.cards.investor.title'), 
-      description: t('home.cards.investor.text'), 
-      type: 'link',
-      url: 'https://hyper-strategies.gitbook.io/hyper-strategies-docs/',
-      buttonText: t('home.cards.investor.button')
-    },
-  ];
+
+  const pointerClass = uiOpacity <= 0.1 ? ' pointer-none' : '';
 
   return (
-    <>
-      <div className="home-page-wrapper">
-        <PlasmaEffect />
-        <InteractiveBackground />
-        
-        <div className="hero-section-wrapper">
-          <section className="hero-section">
-            <div className="hero-content">
-              <h1 className="hero-headline">
-                <RotatingText
-                  texts={rotatingWords}
-                  mainClassName="text-rotate-bg"
-                  staggerFrom="last"
-                  rotationInterval={2500}
-                  loop={'twice'}
-                />
-                -STRATEGIES
-              </h1>
-              <p className="hero-subtext">{t('home.hero.subtext')}</p>
-              
-              <div className="button-row">
-                <Link to="/register" className="btn-primary btn-large">
-                  {t('home.hero.register_now', 'Register Now')}
-                </Link>
-                <Link to="/login" className="btn-outline btn-large">
-                  {t('home.hero.sign_in', 'Sign In')}
-                </Link>
-              </div>
+    <div className="home-3d-wrapper">
+      {/* --- THE FIX: We pass the handleScroll function to the canvas --- */}
+      <GalaxyCanvas onScrollUpdate={handleScroll} />
 
+      <div
+        className={`home-3d-ui-container${pointerClass}`}
+        style={{ opacity: uiOpacity }}
+      >
+        <section className="hero-section-3d">
+          <div className="hero-content">
+            <h1 className="hero-headline">
+              {/* --- THE FIX: The "-STRATEGIES" text is now inside the RotatingText component --- */}
+              <RotatingText texts={rotatingWords} suffix="-STRATEGIES" />
+            </h1>
+            <p className="hero-subtext">{t('home.hero.subtext', 'Automated Trading Solutions, Curated Crypto Vaults.')}</p>
+            <div className="button-row" style={{ justifyContent: 'center' }}>
+              <Link to="/register" className="btn-primary btn-large">{t('home.hero.register_now', 'Register Now')}</Link>
+              <Link to="/login" className="btn-outline btn-large">{t('home.hero.sign_in', 'Sign In')}</Link>
             </div>
-            <div className="hero-image-container">
-              {/* --- THE FIX: Use a direct public path for the image src --- */}
-              <img src="/images/chart-placeholder.png" alt="Trading Chart" className="hero-image" />
-            </div>
-          </section>
-        </div>
-        
-        <section className="path-selector-section">
-          { /* ... (rest of your card section code is perfect) ... */ }
+          </div>
         </section>
+
+        <div className="scroll-cue-3d">
+          <span>Scroll Down to Explore</span>
+          <div className="scroll-arrow">↓</div>
+        </div>
       </div>
-      
-      {showIOSPrompt && <AddToHomeScreenPrompt onClose={() => setShowIOSPrompt(false)} />}
-    </>
+    </div>
   );
 };
 
