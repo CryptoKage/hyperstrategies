@@ -2660,16 +2660,12 @@ textarea.input-field { resize: vertical; }
 /* This is the key fix: make all page containers transparent */
 
 
-/* --- Homepage Constellation Sections --- */
-.constellation-wrapper {
-  height: 100vh;
-  overflow-y: auto;
-  scroll-snap-type: y mandatory;
-}
-
-.constellation-section {
-  height: 100vh;
-  scroll-snap-align: start;
+/* --- Homepage Cards --- */
+.home-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
 }
 
 /* --- 5. Footer --- */
