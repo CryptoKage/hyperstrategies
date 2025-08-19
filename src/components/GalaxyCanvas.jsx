@@ -5,7 +5,7 @@ import { ScrollControls, Stars } from '@react-three/drei';
 import ScrollManager from './ScrollManager'; // Import the brain
 import FloatingCard from './FloatingCard';   // Import the card
 
-const GalaxyCanvas = () => {
+const GalaxyCanvas = ({ onScroll }) => {
   return (
     <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
       {/* Add some ambient light to see the cards */}
@@ -16,8 +16,8 @@ const GalaxyCanvas = () => {
         <ScrollControls pages={3} damping={0.3}>
           <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade />
           
-          {/* --- This is where we add our new components --- */}
-          <ScrollManager />
+            {/* --- This is where we add our new components --- */}
+            <ScrollManager onScroll={onScroll} />
           
           {/* We place our cards at different Y positions in the 3D space */}
           <FloatingCard 
