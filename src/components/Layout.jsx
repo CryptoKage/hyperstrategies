@@ -6,13 +6,13 @@ import Footer from './Footer';
 import InteractiveBackground from './InteractiveBackground';
 import PlasmaEffect from './PlasmaEffect';
 
-const Layout = ({ children }) => {
+const Layout = ({ children, showInteractiveBackground = true }) => {
   return (
     <div className="layout-wrapper">
       <PlasmaEffect />
-      <InteractiveBackground />
+      {showInteractiveBackground && <InteractiveBackground />}
       <Header />
-      <main className="main-content"> 
+      <main className="main-content">
         {children}
       </main>
       <Footer />
