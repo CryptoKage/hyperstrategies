@@ -3272,27 +3272,37 @@ input:checked + .slider:before {
 
 /* This is the main container that holds the 3D canvas */
 .home-3d-wrapper {
-  position: relative;
-  width: 100vw;
-  height: 400vh;
-  background-color: var(--color-background);
-}
-
-/* This is the container for the 2D HTML UI that sits ON TOP of the canvas */
-.home-3d-ui-container {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: relative; /* Changed from fixed to relative */
   width: 100vw;
   height: 100vh;
-  /* This is crucial: it allows mouse events (like scrolling) to pass through to the canvas below */
-  pointer-events: none;
+  overflow: hidden; /* Hide any accidental overflow */
 }
 
-/* We re-enable pointer events ONLY for the direct children of the UI container */
+/* The Canvas is now positioned absolutely within the wrapper */
+.home-3d-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The UI container sits on top of the canvas */
+.home-3d-ui-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* Allows scroll events to pass through to the canvas underneath */
+  pointer-events: none; 
+}
+
+/* Re-enable pointer events for UI elements so they can be clicked */
 .home-3d-ui-container > * {
   pointer-events: auto;
 }
+
 
 /* Section for listing cards or other content below the hero */
 .home-card-listings {
