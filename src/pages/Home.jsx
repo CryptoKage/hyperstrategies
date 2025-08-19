@@ -93,7 +93,7 @@ const Home = () => {
           </motion.section>
         </div>
         
-        <div className="constellation-wrapper">
+        <div className="home-cards-container">
           {homePageCards.map((card, idx) => (
             <ConstellationSection
               key={idx}
