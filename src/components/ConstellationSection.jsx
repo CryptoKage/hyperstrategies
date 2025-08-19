@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import InteractiveBackground from './InteractiveBackground';
+import GalaxyCanvas from './GalaxyCanvas';
 import '../styles/components.css';
 
-const ConstellationSection = ({ icon, title, description, buttonText, onClick }) => {
+const ConstellationSection = ({ icon, title, description, buttonText, onClick, seed }) => {
   return (
     <section className="constellation-section">
-      <InteractiveBackground />
+      <GalaxyCanvas seed={seed} />
       <motion.div
         className="constellation-content"
         initial={{ opacity: 0, y: 40 }}
