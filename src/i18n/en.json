@@ -232,9 +232,9 @@
     "signup_tier_5": "<strong>Users 401-500:</strong> 5 XP",
     "accordion_title_allocation": "💰 Capital Allocation: $10 = 1 XP",
     "accordion_desc_allocation": "You earn XP by putting your capital to work. For every $10 you allocate to a vault (minimum $100 allocation), you receive 1 XP. A $1,000 allocation will net you 100 XP.",
-    "accordion_title_referral": "🤝 Successful Referral: Dynamic (10%)",
-    "accordion_desc_referral": "When a user signs up with your referral code and makes a vault allocation (minimum $100), you (the referrer) will receive XP equal to 10% of the allocation amount, EVERY TIME. If they allocate $1,000, you get 100 XP.",
-    "accordion_title_staking": "⏳ Weekly Staking Bonus: Coming Soon",
+    "accordion_title_referral": "🤝 Successful Referral: Dynamic (5%)",
+    "accordion_desc_referral": "When a user signs up with your referral code and makes a vault allocation (minimum $100), you (the referrer) will receive XP equal to 5% of the allocation amount, EVERY TIME. If they allocate $1,000, you get 50 XP.",
+    "accordion_title_staking": "⏳ Daily XP Bonus",
     "accordion_desc_staking": "A future feature will reward users with XP for every week they keep their capital locked in a vault, encouraging long-term participation.",
     "accordion_title_buyback": "💸 Bonus Point Buy-Back: 10 to 1 XP",
     "accordion_desc_buyback": "When the platform buys back your Bonus Points, you will receive XP equal to 10% of the value. A 200 Bonus Point buy-back will grant you 20 XP."
