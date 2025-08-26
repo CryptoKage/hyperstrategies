@@ -106,7 +106,7 @@
     "error_history": "Auszahlungsverlauf konnte nicht geladen werden.",
     "balance_ape": "APE-Guthaben",
     "usd_value": "~${{amount}} USD",
-    "total_portfolio_value": "Gesamter Portfoliowert",
+    "total_portfolio_value": "Portfolio-Gesamtwert",
     "unrealized_pnl": "Nicht realisierter G/V",
     "available_balance_card": "Verfügbares Guthaben",
     "ready_to_invest": "Bereit zum Investieren oder Abheben",
@@ -210,8 +210,8 @@
     "xp_rule_4_desc": "Verdiene für alle <strong>10 Bonuspunkte 1 XP</strong> , bei jeder Rückvergütung."
   },
   "xp_leaderboard": {
-    "title": "XP & Bestenliste",
-    "subtitle": "Verdiene XP durch deine Teilnahme am Ökosystem und steige in den Stufen auf!",
+    "title": "XP Bestenliste",
+    "subtitle": "Erhalte XP für dein Engagement",
     "how_to_earn_button": "Wie man XP verdient",
     "my_rank_title": "Deine Stufe",
     "rank": "Stufe",
@@ -263,8 +263,7 @@
     "rotating_words": [
       "AUTOMATISIERT",
       "HEDGEFOND",
-      "EXPERIMENTELL",
-      "HYPER"
+      "EXPERIMENTELL"
     ],
     "hero": {
       "subtext": "Handverlesene Krypto-Vaults. Vertrauen bei jedem Schritt.",
@@ -351,6 +350,7 @@
     "view_my_pins": "Meine Pin-Sammlung ansehen"
 },
 "forgot_password_page": {
+   "success_message": "Wenn ein Konto mit dieser E-Mail-Adresse existiert, wurde ein Link zum Zurücksetzen des Passworts gesendet.",
   "title": "Passwort zurücksetzen",
   "description": "Geben Sie die E-Mail-Adresse Ihres Kontos ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
   "email_label": "E-Mail",

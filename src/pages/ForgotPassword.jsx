@@ -23,9 +23,14 @@ const ForgotPassword = () => {
     setIsLoading(true);
 
     try {
-      const response = await api.post('/auth/forgot-password', { email });
-      setMessage(response.data.message);
-      setIsSubmitted(true); // This will hide the form and only show the message
+      await api.post('/auth/forgot-password', { email });
+      
+      // --- THE FIX ---
+      // Instead of using the message from the backend, we now set our own
+      // message using a key from our translation file. This ensures it will always be in the correct language.
+      setMessage(t('forgot_password_page.success_message'));
+      
+      setIsSubmitted(true);
     } catch (err) {
       setError(err.response?.data?.error || t('forgot_password_page.error_failed'));
     } finally {
@@ -49,9 +54,7 @@ const ForgotPassword = () => {
             <form className="auth-form" onSubmit={handleSubmit}>
               <h2>{t('forgot_password_page.title')}</h2>
               <p className="form-description">{t('forgot_password_page.description')}</p>
-              
               {error && <p className="error-message">{error}</p>}
-              
               <InputField 
                 label={t('forgot_password_page.email_label')} 
                 id="email" 
@@ -60,7 +63,6 @@ const ForgotPassword = () => {
                 onChange={(e) => setEmail(e.target.value)} 
                 required 
               />
-              
               <button type="submit" className="btn-primary" disabled={isLoading}>
                 {isLoading ? t('forgot_password_page.button_sending') : t('forgot_password_page.button_send')}
               </button>

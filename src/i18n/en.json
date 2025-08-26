@@ -211,8 +211,8 @@
     "xp_rule_4_desc": "Earn 1 XP for every 10 Bonus Points the platform buys back from you."
   },
   "xp_leaderboard": {
-    "title": "XP & Leaderboard",
-    "subtitle": "Earn XP by participating in the ecosystem and climb the tiers!",
+    "title": "XP Leaderboard",
+    "subtitle": "Earn XP by participating in the ecosystem",
     "how_to_earn_button": "How to Earn XP",
     "my_rank_title": "Your Rank",
     "rank": "Rank",
@@ -268,8 +268,7 @@
     "rotating_words": [
       "AUTOMATED",
       "HEDGEFUND",
-      "EXPERIMENTAL",
-      "HYPER"
+      "EXPERIMENTAL"
     ],
     "hero": {
       "subtext": "Automated Trading Solutions, Curated Crypto Vaults.",
@@ -353,6 +352,7 @@
 },
   
 "forgot_password_page": {
+  "success_message": "If an account with that email exists, a password reset link has been sent.",
   "title": "Reset Your Password",
   "description": "Enter your account's email address and we will send you a link to reset your password.",
   "email_label": "Email",
