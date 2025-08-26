@@ -3419,3 +3419,21 @@ input:checked + .slider:before {
   color: var(--color-text-secondary);
   line-height: 1.6;
 }
+
+.auth-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+.forgot-password-link {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}

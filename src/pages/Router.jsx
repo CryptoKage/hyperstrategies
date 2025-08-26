@@ -19,6 +19,8 @@ import OAuthSuccess from './OAuthSuccess';
 import FAQ from './FAQ';
 import FeeStructure from './FeeStructure';
 import PinsMarketplace from './PinsMarketplace';
+import ForgotPassword from './ForgotPassword';
+import ResetPassword from './ResetPassword';
 
 import AdminDashboard from './admin/AdminDashboard';
 import FinancialsPage from './admin/FinancialsPage';
@@ -47,6 +49,8 @@ const Router = () => {
       <Route path="/oauth-success" element={<OAuthSuccess />} />
       <Route path="/xpleaderboard" element={<XPLeaderboard />} /> 
       <Route path="/fees" element={<FeeStructure />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} /> 
+      <Route path="/reset-password" element={<ResetPassword />} /> 
 
       {/* --- Guest-Only Routes --- */}
       <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />

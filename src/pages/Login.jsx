@@ -1,4 +1,5 @@
 // src/pages/Login.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -22,14 +23,15 @@ const Login = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    // This hook now checks for different query parameters on load.
     const status = searchParams.get('status');
     const session = searchParams.get('session');
 
     if (status === 'registered') {
       setSuccessMessage(t('login_page.success_message'));
     }
-    // --- THIS IS THE NEW LOGIC ---
+    if (status === 'reset_success') {
+      setSuccessMessage(t('login_page.reset_success'));
+    }
     if (session === 'expired') {
       setError(t('login_page.session_expired'));
     }
@@ -81,6 +83,12 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)} 
               required 
             />
+            
+            <div className="auth-options">
+              <Link to="/forgot-password" className="forgot-password-link">
+                {t('login_page.forgot_password_link')}
+              </Link>
+            </div>
             
             <button type="submit" className="btn-primary" disabled={isLoading}>
               {isLoading ? t('login_page.button_signing_in') : t('login_page.button_signin')}

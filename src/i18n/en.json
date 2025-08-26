@@ -156,6 +156,7 @@
   "login_page": {
     "session_expired": "Your session has expired. Please log in again.",
     "title": "Sign In",
+    "forgot_password_link": "Forgot Password?",
     "success_message": "Registration successful! Please sign in.",
     "error_failed": "Sign in failed. Please check your credentials.",
     "email_label": "Email Address",
@@ -165,7 +166,8 @@
     "divider": "OR",
     "google_signin": "Sign in with Google",
     "register_prompt": "Don't have an account?",
-    "register_link": "Register"
+    "register_link": "Register",
+    "reset_success": "Your password has been successfully updated!"
   },
   "fees_page": {
     "title": "Platform Tiers & Fees",
@@ -340,14 +342,37 @@
     "save_code_button": "Save Code",
     "syndicate_title": "Syndicate Referrals",
     "syndicate_description": "Join forces with a community to earn shared referral rewards. Coming soon.",
-    "learn_more_button": "Learn More"
+    "learn_more_button": "Learn More",
+    "pins_marketplace_button": "Pins Marketplace"
   }
   ,"pins_market": {
     "title": "Pins Marketplace",
     "coming_soon_title": "Peer-to-Peer Trading is Coming Soon",
     "coming_soon_desc": "Soon you will be able to list your unique, owned Pins for sale and trade with other users right here. Build your collection, equip your best Pins, and get ready to trade.",
     "view_my_pins": "View My Pin Collection"
-}
+},
   
-  ,"pins_marketplace_button": "Pins Marketplace"
+"forgot_password_page": {
+  "title": "Reset Your Password",
+  "description": "Enter your account's email address and we will send you a link to reset your password.",
+  "email_label": "Email",
+  "button_send": "Send Reset Link",
+  "button_sending": "Sending...",
+  "error_failed": "An unexpected error occurred. Please try again.",
+  "success_title": "Check Your Email",
+  "back_to_login": "Back to Login"
+},
+"reset_password_page": {
+  "title": "Create New Password",
+  "description": "Please enter your new password below. Make sure it's secure.",
+  "password_label": "New Password",
+  "confirm_password_label": "Confirm New Password",
+  "button_update": "Update Password",
+  "button_updating": "Updating...",
+  "error_match": "Passwords do not match.",
+  "error_no_token": "Invalid or missing reset token. Please request a new link.",
+  "error_failed": "An unexpected error occurred. The link may have expired.",
+  "success_title": "Success!",
+  "login_now": "Login Now"
+}
 }
