@@ -26,6 +26,11 @@ const Login = () => {
     const status = searchParams.get('status');
     const session = searchParams.get('session');
 
+     const refCode = searchParams.get('ref');
+    if (refCode) {
+      setReferralCode(refCode);
+    }
+
     if (status === 'registered') {
       setSuccessMessage(t('login_page.success_message'));
     }
@@ -55,7 +60,11 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `${api.defaults.baseURL}/auth/google`;
+    if (referralCode) {
+      window.location.href = `${api.defaults.baseURL}/auth/google?ref=${referralCode}`;
+    } else {
+      window.location.href = `${api.defaults.baseURL}/auth/google`;
+    }
   };
 
   return (

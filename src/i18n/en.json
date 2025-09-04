@@ -140,7 +140,7 @@
   },
   "register_page": {
     "title": "Create an Account",
-    "referred_by": "You've been invited with code <strong>{{code}}</strong>",
+    "referred_by_text_only": "You've been invited with code: ",
     "username_label": "Username",
     "email_label": "Email Address",
     "password_label": "Password",
@@ -210,7 +210,7 @@
     "xp_rule_4_title": "Bonus Point Buy-Backs:",
     "xp_rule_4_desc": "Earn 1 XP for every 10 Bonus Points the platform buys back from you."
   },
-  "xp_leaderboard": {
+   "xp_leaderboard": {
     "title": "XP Leaderboard",
     "subtitle": "Earn XP by participating in the ecosystem",
     "how_to_earn_button": "How to Earn XP",
@@ -221,8 +221,9 @@
     "loading": "Loading Leaderboard...",
     "table_user": "User",
     "modal_title": "How to Earn XP",
-    "copy_button": "Copy Info to Share",
+    "copy_button": "Copy Link",
     "copied_button": "Copied!",
+    "referral_link": "Referral Link",
     "accordion_title_signup": "🚀 Early Adopter Signup Bonus (First 500 Users)",
     "accordion_desc_signup": "A one-time XP bonus is awarded to the first 500 users upon registration to reward our earliest supporters. The bonus is tiered:",
     "signup_tier_1": "<strong>Users 1-100:</strong> 25 XP",

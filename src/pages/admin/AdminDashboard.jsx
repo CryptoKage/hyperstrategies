@@ -211,9 +211,13 @@ const AdminDashboard = () => {
                 <tbody>
                   {stats.recentDeposits.map((item, index) => (
                     <tr key={`dep-${index}`}>
-                      <td><strong>{item.username}</strong> deposited</td>
-                      <td className="amount">${parseFloat(item.amount).toFixed(2)}</td>
-                    </tr>
+                      <td> <strong> <Link to={`/admin/user/${item.user_id}`} 
+                        className="admin-table-link">  {item.username}
+          </Link>
+        </strong> deposited
+      </td>
+      <td className="amount">${parseFloat(item.amount).toFixed(2)}</td>
+    </tr>
                   ))}
                 </tbody>
               </table>
@@ -226,9 +230,14 @@ const AdminDashboard = () => {
                 <tbody>
                  {stats.recentWithdrawals.map((item, index) => (
                   <tr key={`wd-${index}`}>
-                    <td><strong>{item.username}</strong> requested</td>
-                    <td className="amount">${parseFloat(item.amount).toFixed(2)}</td>
-                  </tr>
+                    <td> <strong>
+        <Link to={`/admin/user/${item.user_id}`} className="admin-table-link">
+          {item.username}
+        </Link>
+      </strong> requested
+    </td>
+    <td className="amount">${parseFloat(item.amount).toFixed(2)}</td>
+  </tr>
                 ))}
               </tbody>
             </table>

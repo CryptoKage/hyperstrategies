@@ -30,8 +30,6 @@ export const AuthProvider = ({ children }) => {
     try {
       const decoded = jwtDecode(token);
       
-      // ✅ THE FIX: Use the correct variable name 'decoded'
-      console.log('[AuthContext] User state SET. isAdmin status:', decoded.user.isAdmin);
       
       setUser(decoded.user);
     } catch (err) {

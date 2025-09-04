@@ -1,5 +1,3 @@
-// src/pages/XPLeaderboard.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
@@ -16,12 +14,9 @@ const XPLeaderboard = () => {
   const [myRank, setMyRank] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isXPModalOpen, setIsXPModalOpen] = useState(false);
-  const [copySuccess, setCopySuccess] = useState('');
-
-  // Set initial button text from translation file
-  useEffect(() => {
-    setCopySuccess(t('xp_leaderboard.copy_button'));
-  }, [t]);
+  
+  // --- NEW: State to track which link is being copied ---
+  const [copiedLink, setCopiedLink] = useState(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -32,9 +27,8 @@ const XPLeaderboard = () => {
       ]);
       
       setLeaderboard(leaderboardRes.data);
-      if (myRankRes) {
-        setMyRank(myRankRes.data);
-      }
+      if (myRankRes) setMyRank(myRankRes.data);
+
     } catch (err) {
       console.error("Could not load leaderboard data.", err);
     } finally {
@@ -45,32 +39,18 @@ const XPLeaderboard = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
-  const handleCopyClick = () => {
-    // Note: For simplicity, this shareable text block remains in English.
-    // It can be internationalized later if needed by building it from translated parts.
-    const xpInfoText = `
-🚀 How to Earn XP on HyperStrategies 🚀
-
-- Early Adopter Bonus: Get up to 25 XP for being one of the first 1000 users to allocate funds!
-- Successful Referral: Earn 50 XP when a friend you refer makes their first vault allocation.
-- Capital Allocation: Earn 1 XP for every $100 you allocate to a vault.
-
-Join with my referral link and get a head start! 👇
-[Your Referral Link Here]
-  `;
-
-    const shareableText = user 
-      ? xpInfoText.replace('[Your Referral Link Here]', `https://www.hyper-strategies.com/register?ref=${user.referral_code}`)
-      : xpInfoText.replace('[Your Referral Link Here]', 'https://www.hyper-strategies.com');
-      
-    navigator.clipboard.writeText(shareableText.trim());
-    
-    setCopySuccess(t('xp_leaderboard.copied_button'));
-    setTimeout(() => setCopySuccess(t('xp_leaderboard.copy_button')), 2000);
+  
+  // --- NEW: Function to handle copying a specific referral link ---
+  const handleCopyLink = (referralCode) => {
+    const link = `https://www.hyper-strategies.com/register?ref=${referralCode}`;
+    navigator.clipboard.writeText(link);
+    setCopiedLink(referralCode);
+    setTimeout(() => setCopiedLink(null), 2000); // Reset after 2 seconds
   };
-
-  const formatAddress = (address) => address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Anonymous';
+  
+  const formatReferralCode = (code) => {
+    return code ? code.replace('HS-', '') : 'Anonymous';
+  };
 
   return (
     <>
@@ -114,16 +94,27 @@ Join with my referral link and get a head start! 👇
                     <th>{t('xp_leaderboard.rank')}</th>
                     <th>{t('xp_leaderboard.table_user')}</th>
                     <th>XP</th>
+                    <th style={{ textAlign: 'right' }}>{t('xp_leaderboard.referral_link')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {leaderboard.map((player, index) => {
-                    const isCurrentUser = user && user.username === player.username;
+                    const isCurrentUser = user && user.referral_code === player.referral_code;
                     return (
-                      <tr key={player.eth_address || index} className={isCurrentUser ? 'current-user-row' : ''}>
+                      <tr key={player.referral_code || index} className={isCurrentUser ? 'current-user-row' : ''}>
                         <td>{index + 1}</td>
-                        <td>{formatAddress(player.eth_address)}</td>
+                        {/* --- THE FIX: Display formatted referral code --- */}
+                        <td>{formatReferralCode(player.referral_code)}</td>
                         <td>{parseInt(player.xp).toLocaleString()}</td>
+                        {/* --- THE FIX: Add a Copy Link button to each row --- */}
+                        <td style={{ textAlign: 'right' }}>
+                           <button 
+                             onClick={() => handleCopyLink(player.referral_code)}
+                             className="btn-secondary btn-sm"
+                           >
+                             {copiedLink === player.referral_code ? t('xp_leaderboard.copied_button') : t('xp_leaderboard.copy_button')}
+                           </button>
+                        </td>
                       </tr>
                     );
                   })}

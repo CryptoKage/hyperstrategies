@@ -58,8 +58,16 @@ const Register = () => {
     }
   };
   
-  const handleGoogleLogin = () => {
-    window.location.href = `${api.defaults.baseURL}/auth/google`;
+   const handleGoogleLogin = () => {
+    // --- THIS IS THE FIX ---
+    // We check if the 'referralCode' state variable has a value.
+    if (referralCode) {
+      // If it does, we append it as a query parameter to the login URL.
+      window.location.href = `${api.defaults.baseURL}/auth/google?ref=${referralCode}`;
+    } else {
+      // Otherwise, we use the normal URL without the parameter.
+      window.location.href = `${api.defaults.baseURL}/auth/google`;
+    }
   };
 
   return (
@@ -69,11 +77,18 @@ const Register = () => {
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>{t('register_page.title')}</h2>
             
-            {referralCode && (
-              <div className="info-box">
-                <span dangerouslySetInnerHTML={{ __html: t('register_page.referred_by', { code: referralCode }) }} />
-              </div>
-            )}
+          {referralCode && (
+  <div className="info-box">
+    <span>
+      {/* 
+        This is the fix. We render the translated text first, and then
+        render the user-provided 'referralCode' safely inside a strong tag.
+        This completely removes the dangerouslySetInnerHTML and the XSS risk.
+      */}
+      {t('register_page.referred_by_text_only')} <strong>{referralCode}</strong>
+    </span>
+  </div>
+            )}  
             
             {error && <p className="error-message">{error}</p>}
             

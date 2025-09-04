@@ -39,11 +39,16 @@ const UserDetailPage = () => {
     return <Layout><div className="admin-container"><p className="error-message">{error}</p></div></Layout>;
   }
 
-  if (!userData) {
+ if (!userData) {
     return <Layout><div className="admin-container"><h1>User not found.</h1></div></Layout>;
   }
 
   const { details, positions, activity } = userData;
+
+  const totalStakedCapital = positions.reduce((sum, position) => sum + parseFloat(position.total_capital || 0), 0);
+ 
+  const dailyXpRate = totalStakedCapital / 300;
+
 
   return (
     <Layout>
@@ -62,12 +67,28 @@ const UserDetailPage = () => {
               <div className="detail-item full-width"><strong>Wallet:</strong><span className="address-span">{details.eth_address}</span></div>
               <div className="detail-item"><strong>XP:</strong><span>{(parseFloat(details.xp) || 0).toFixed(2)}</span></div>
               <div className="detail-item"><strong>Tier:</strong><span>{details.account_tier}</span></div>
+              
+           
+              <div className="detail-item"><strong>Staking XP Rate:</strong><span>+{dailyXpRate.toFixed(2)} / day</span></div>
+              
               <div className="detail-item"><strong>Available Balance:</strong><span>${(parseFloat(details.balance) || 0).toFixed(2)}</span></div>
               <div className="detail-item"><strong>Bonus Points:</strong><span>${(parseFloat(details.total_bonus_points) || 0).toFixed(2)}</span></div>
               <div className="detail-item"><strong>Referral Code:</strong><span>{details.referral_code}</span></div>
               <div className="detail-item"><strong>Joined:</strong><span>{new Date(details.created_at).toLocaleDateString()}</span></div>
             </div>
-            <UserPins userPinNames={details.pins} />
+            
+         
+            {details.pins && details.pins.length > 0 && (
+              <div className="user-pins-admin-list">
+                <h4 style={{ marginTop: '20px', marginBottom: '10px' }}>Owned Pins ({details.pins.length})</h4>
+                <ul>
+                  {details.pins.map(pinName => (
+                    <li key={pinName}>{pinName}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+           
           </div>
 
           <div className="admin-card">
