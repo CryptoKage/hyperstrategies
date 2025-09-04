@@ -11,6 +11,7 @@ import InputField from '../components/InputField';
 
 const Login = () => {
   const { t } = useTranslation();
+  const [referralCode, setReferralCode] = useState('');
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

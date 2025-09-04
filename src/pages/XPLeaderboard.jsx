@@ -158,11 +158,6 @@ const XPLeaderboard = () => {
             <p>{t('xp_leaderboard.accordion_desc_buyback')}</p>
           </AccordionItem>
         </Accordion>
-        <div className="modal-actions" style={{ marginTop: '24px' }}>
-          <button className="btn-primary" onClick={handleCopyClick}>
-            {copySuccess}
-          </button>
-        </div>
       </InfoModal>
     </>
   );
