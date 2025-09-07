@@ -3481,3 +3481,29 @@ right: 8px;
 font-size: 1rem;
 opacity: 0.3;
 }
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Create a two-column grid */
+  gap: 24px; /* Space between the cards */
+}
+
+/* Make the Pin Loadout card take up one column */
+.profile-card.pin-manager-card {
+  grid-column: span 1;
+}
+
+/* Make the Pin Collection card span the full width on the next row */
+.profile-card.pin-collection-card {
+  grid-column: span 2; /* Span both columns */
+}
+
+/* Ensure the inactive pins scroll horizontally if they overflow */
+.inactive-pins-container {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping to a new line */
+    gap: 12px;
+    overflow-x: auto; /* Allow horizontal scrolling */
+    padding-bottom: 12px; /* Add some space for the scrollbar */
+}
+

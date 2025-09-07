@@ -1,27 +1,17 @@
-import React from 'react';
-
-const importAll = (r) => {
-  let images = {};
-  r.keys().forEach((item) => { images[item.replace('./', '')] = r(item); });
-  return images;
-}
-
-const pinImages = importAll(require.context('../assets/Decals', false, /\.(png|jpe?g)$/i));
-
-/**
- * A simple component that displays a single pin image based on its name.
- * @param {{ pinName: string, description: string }} props
- */
+// ==============================================================================
+// START: REPLACE the PinImage component in UserPins.jsx
+// ==============================================================================
 export const PinImage = ({ pinName, description = '' }) => {
     if (!pinName) {
         return <div className="pin-image-wrapper missing-image" title="Unknown Pin">?</div>;
     }
     
     // --- THIS IS THE FIX ---
-    // The variable 'pinImages' (with an 's') was correctly defined above.
-    // I was likely using the wrong variable name inside the component.
-    const imageName = `${pinName.toUpperCase()}.png`;
-    const imageSrc = pinImages[imageName]; // Use the correct variable name 'pinImages'
+    // We remove all spaces from the pin name before creating the filename.
+    // "EARLY SUPPORTER" now correctly becomes "EARLYSUPPORTER".
+    const sanitizedPinName = pinName.replace(/\s/g, '');
+    const imageName = `${sanitizedPinName.toUpperCase()}.png`;
+    const imageSrc = pinImages[imageName];
 
     if (!imageSrc) {
         return <div className="pin-image-wrapper missing-image" title={`Image for ${pinName} not found`}>?</div>;
@@ -37,3 +27,6 @@ export const PinImage = ({ pinName, description = '' }) => {
         </div>
     );
 };
+// ==============================================================================
+// END OF REPLACEMENT
+// ==============================================================================
