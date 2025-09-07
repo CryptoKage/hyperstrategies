@@ -162,33 +162,31 @@ const Profile = () => {
           <h1>{t('profile_page.title')}</h1>
           <div className="profile-grid">
             
-            {/* --- NEW: Pin Loadout Manager Card --- */}
             <div className="profile-card pin-manager-card">
               <h3>Pin Loadout</h3>
               <p>Equip pins to activate their bonuses. Slots are unlocked by your Account Tier.</p>
               <h4>Active Slots ({activePins.length} / {profileData.totalPinSlots})</h4>
               <div className="active-slots-container">
-                {Array.from({ length: profileData.totalPinSlots }).map((_, index) => (
-                  <Droppable key={index} droppableId={`active-slot-${index}`}>
-                    {(provided, snapshot) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => activePins[index] && setSelectedPin(activePins[index])}>
-                        {activePins[index] ? (
-                          <Draggable draggableId={activePins[index].pin_id.toString()} index={index}>
-                            {(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={activePins[index].pin_name} /></div>)}
-                          </Draggable>
-                        ) : (<span className="empty-slot-text">Empty Slot</span>)}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                ))}
+                {Array.from({ length: profileData.totalPinSlots }).map((_, index) => {
+                  const pinInSlot = activePins[index];
+                  return (
+                    <Droppable key={`slot-${index}`} droppableId={`active-slot-${index}`}>
+                      {(provided, snapshot) => (
+                        <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => pinInSlot && setSelectedPin(pinInSlot)}>
+                          {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} /></div>)}</Draggable>) : (<span className="empty-slot-text">Empty Slot</span>)}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  );
+                })}
+                {profileData.account_tier < 10 && (<div className="pin-slot locked" title={`Unlocks at Tier ${profileData.account_tier + 1}`}><span>Locked</span></div>)}
               </div>
               <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout}>
                 {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
               </button>
             </div>
             
-            {/* --- NEW: Inactive Pins Collection --- */}
             <div className="profile-card pin-collection-card">
               <h3>Your Pin Collection ({inactivePins.length})</h3>
               <Droppable droppableId="inactive" direction="horizontal">
@@ -206,21 +204,11 @@ const Profile = () => {
               </Droppable>
             </div>
 
-            {/* --- PRESERVED: Your existing Stats & Referrals Card --- */}
             <div className="profile-card">
               <h3>{t('profile_page.stats_referrals_title')}</h3>
-              <div className="stat-display tier-display">
-                <span className="stat-label">{t('profile_page.account_tier_label')}</span>
-                <span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span>
-              </div>
-              {profileData.account_tier >= 2 && (
-                <Link to="/pins-marketplace" className="btn-primary marketplace-button">{t('profile_page.pins_marketplace_button')}</Link>
-              )}
-              <Link to="/xpleaderboard" className="stat-display xp-link">
-                <span className="stat-label">{t('profile_page.xp_label')}</span>
-                <span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span>
-                <span className="link-indicator">→</span>
-              </Link>
+              <div className="stat-display tier-display"><span className="stat-label">{t('profile_page.account_tier_label')}</span><span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span></div>
+              {profileData.account_tier >= 2 && (<Link to="/pins-marketplace" className="btn-primary marketplace-button">{t('profile_page.pins_marketplace_button')}</Link>)}
+              <Link to="/xpleaderboard" className="stat-display xp-link"><span className="stat-label">{t('profile_page.xp_label')}</span><span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span><span className="link-indicator">→</span></Link>
               <div className="stat-display">
                 <span className="stat-label">{t('profile_page.xp_rate_label')}</span>
                 <span className="stat-value-large xp-rate-value">+{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span></span>
@@ -243,17 +231,12 @@ const Profile = () => {
                 {referralUpdateMessage.text && (<p className={`referral-message ${referralUpdateMessage.type}`}>{referralUpdateMessage.text}</p>)}
               </div>
             </div>
-
-            {/* --- PRESERVED: XP History Card --- */}
-            <div className="profile-card">
-              <XpHistoryList />
-            </div>
+            
+            <div className="profile-card"><XpHistoryList /></div>
 
           </div>
         </div>
       </DragDropContext>
-
-      {/* --- NEW: The Modal that is controlled by our new logic --- */}
       <PinDetailModal 
         isOpen={!!selectedPin}
         onClose={() => setSelectedPin(null)}
@@ -265,6 +248,3 @@ const Profile = () => {
     </Layout>
   );
 };
-
-export default Profile;
-

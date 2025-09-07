@@ -3437,3 +3437,47 @@ input:checked + .slider:before {
   color: var(--color-primary);
   text-decoration: underline;
 }
+
+
+/* pins */
+
+.pin-slot {
+border: 2px dashed var(--color-border);
+border-radius: 8px;
+width: 100px;
+height: 100px;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.2s ease-in-out;
+cursor: pointer;
+}
+.pin-slot.over {
+border-color: var(--color-primary);
+background-color: rgba(63, 186, 243, 0.1);
+}
+.pin-slot .empty-slot-text {
+color: var(--color-text-muted);
+font-size: 0.8rem;
+}
+/* Style for the new locked slot */
+.pin-slot.locked {
+border-style: solid;
+border-color: rgba(128, 128, 128, 0.2);
+background-color: rgba(0, 0, 0, 0.2);
+cursor: not-allowed;
+position: relative;
+}
+.pin-slot.locked span {
+color: rgba(128, 128, 128, 0.4);
+font-weight: bold;
+}
+
+.pin-slot.locked::after {
+content: '🔒';
+position: absolute;
+top: 8px;
+right: 8px;
+font-size: 1rem;
+opacity: 0.3;
+}
