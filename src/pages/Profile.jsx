@@ -6,6 +6,7 @@ import Layout from '../components/Layout';
 import XpHistoryList from '../components/XpHistoryList';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PinDetailModal from '../components/PinDetailModal';
+import { PinImage } from '../components/UserPins';
 
 
 const Profile = () => {
