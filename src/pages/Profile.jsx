@@ -1,52 +1,116 @@
-// ===================================================================================
-// FINAL MERGED VERSION - PASTE THIS OVER THE ENTIRE Profile.jsx
-// This version integrates UserPins and the conditional marketplace link.
-// ===================================================================================
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../api/api';
-import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
-import InputField from '../components/InputField';
 import XpHistoryList from '../components/XpHistoryList';
-import UserPins from '../components/UserPins'; 
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import PinDetailModal from '../components/PinDetailModal';
+
 
 const Profile = () => {
   const { t } = useTranslation();
-  const { user, login } = useAuth();
-  
+
+  // --- State for Profile Data ---
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const [username, setUsername] = useState('');
-  const [editMessage, setEditMessage] = useState('');
+  // --- State for Pin Management ---
+  const [activePins, setActivePins] = useState([]);
+  const [inactivePins, setInactivePins] = useState([]);
+  const [isSavingLoadout, setIsSavingLoadout] = useState(false);
+  const [selectedPin, setSelectedPin] = useState(null);
 
+  // --- State for Editing Profile & Referrals (Preserved) ---
+  const [username, setUsername] = useState('');
+  const [editMessage, setEditMessage] = useState({ type: '', text: '' });
   const [customReferralInput, setCustomReferralInput] = useState('');
   const [isUpdatingReferral, setIsUpdatingReferral] = useState(false);
   const [referralUpdateMessage, setReferralUpdateMessage] = useState({ type: '', text: '' });
   const [copySuccessMessage, setCopySuccessMessage] = useState('');
 
-  useEffect(() => {
-    setCopySuccessMessage(t('profile_page.copy_link_button'));
+  const fetchProfile = useCallback(async () => {
+    try {
+      const response = await api.get('/user/profile');
+      const data = response.data;
+      setProfileData(data);
+      setUsername(data.username);
+
+      const activeIds = new Set(data.activePinIds);
+      setActivePins(data.ownedPins.filter(p => activeIds.has(p.pin_id)));
+      setInactivePins(data.ownedPins.filter(p => !activeIds.has(p.pin_id)));
+
+    } catch (err) { setError(t('profile_page.error_load')); } 
+    finally { setIsLoading(false); }
   }, [t]);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await api.get('/user/profile');
-        setProfileData(response.data);
-        setUsername(response.data.username);
-      } catch (err) {
-        setError(t('profile_page.error_load'));
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchProfile();
-  }, [t]);
+    setCopySuccessMessage(t('profile_page.copy_link_button'));
+  }, [fetchProfile, t]);
 
+  const handleEquipPin = (pinToEquip) => {
+    if (activePins.length >= profileData.totalPinSlots) {
+      alert("All slots are full. Unequip a pin first.");
+      return;
+    }
+    setActivePins([...activePins, pinToEquip]);
+    setInactivePins(inactivePins.filter(p => p.pin_id !== pinToEquip.pin_id));
+    setSelectedPin(null); // Close modal
+  };
+
+  const handleUnequipPin = (pinToUnequip) => {
+    setInactivePins([...inactivePins, pinToUnequip]);
+    setActivePins(activePins.filter(p => p.pin_id !== pinToUnequip.pin_id));
+    setSelectedPin(null); // Close modal
+  };
+
+   const handleSaveChanges = async () => {
+    setIsSavingLoadout(true);
+    setEditMessage({ type: '', text: '' }); // Clear any old messages
+    try {
+        const activePinIds = activePins.map(p => p.pin_id);
+        await api.post('/user/active-pins', { activePinIds });
+        setEditMessage({ type: 'success', text: 'Pin loadout saved successfully!' });
+    } catch (error) {
+        setEditMessage({ type: 'error', text: 'Failed to save loadout. Please try again.' });
+        console.error("Failed to save pin loadout", error);
+    } finally {
+        setIsSavingLoadout(false);
+    }
+  };
+// ==
+
+  // --- Drag and Drop Logic ---
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+    if (!destination) return;
+
+    // Moving from Inactive to Active
+    if (source.droppableId === 'inactive' && destination.droppableId.startsWith('active-slot')) {
+      if (activePins.length >= profileData.totalPinSlots) return; // Cannot add to full slots
+      const itemToMove = inactivePins[source.index];
+      const newInactive = Array.from(inactivePins);
+      newInactive.splice(source.index, 1);
+      const newActive = Array.from(activePins);
+      newActive.push(itemToMove);
+      setActivePins(newActive);
+      setInactivePins(newInactive);
+    }
+
+    // Moving from Active to Inactive
+    if (source.droppableId.startsWith('active-slot') && destination.droppableId === 'inactive') {
+      const itemToMove = activePins[source.index];
+      const newActive = Array.from(activePins);
+      newActive.splice(source.index, 1);
+      const newInactive = Array.from(inactivePins);
+      newInactive.push(itemToMove);
+      setActivePins(newActive);
+      setInactivePins(newInactive);
+    }
+  };
+  
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setEditMessage('');
@@ -92,105 +156,111 @@ const Profile = () => {
 
   return (
     <Layout>
-      <div className="profile-container">
-        <h1>{t('profile_page.title')}</h1>
-        <div className="profile-grid">
-          
-          <div className="profile-card">
-            <h3>{t('profile_page.edit_details_title')}</h3>
-            <form onSubmit={handleProfileUpdate}>
-              <InputField label={t('profile_page.username_label')} id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-              <button type="submit" className="btn-primary">{t('profile_page.save_changes_button')}</button>
-              {editMessage && <p className="edit-message">{editMessage}</p>}
-            </form>
-            {/* --- CHANGE 2: Use the new UserPins component and pass it the correct prop --- */}
-            <UserPins userPinNames={profileData?.pins} />
-          </div>
-
-          <div className="profile-card">
-            <h3>{t('profile_page.stats_referrals_title')}</h3>
-            <div className="stat-display tier-display">
-              <span className="stat-label">{t('profile_page.account_tier_label')}</span>
-              <span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span>
-            </div>
-
-            {/* --- CHANGE 3: Conditional Marketplace Link --- */}
-            {/* This block will only render if the user's tier is 2 or higher */}
-            {profileData.account_tier >= 2 && (
-                <Link to="/pins-marketplace" className="btn-primary marketplace-button">
-                    {t('profile_page.pins_marketplace_button')}
-                </Link>
-            )}
-
-            <Link to="/xpleaderboard" className="stat-display xp-link">
-              <span className="stat-label">{t('profile_page.xp_label')}</span>
-              <span className="stat-value-large">
-                {(parseFloat(profileData.xp) || 0).toFixed(2)} XP
-              </span>
-              <span className="link-indicator">→</span>
-            </Link>
-            <div className="stat-display">
-              <span className="stat-label">{t('profile_page.xp_rate_label')}</span>
-              <span className="stat-value-large xp-rate-value">
-                +{dailyXpRate.toFixed(2)}
-                <span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span>
-              </span>
-            </div>
-            <div className="stat-display">
-              <span className="stat-label">{t('profile_page.referral_code_label')}</span>
-              <span className="referral-code">{profileData.referral_code}</span>
-              <button onClick={handleCopyLink} className="btn-secondary">
-                {copySuccessMessage}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div className="profile-container">
+          <h1>{t('profile_page.title')}</h1>
+          <div className="profile-grid">
+            
+            {/* --- NEW: Pin Loadout Manager Card --- */}
+            <div className="profile-card pin-manager-card">
+              <h3>Pin Loadout</h3>
+              <p>Equip pins to activate their bonuses. Slots are unlocked by your Account Tier.</p>
+              <h4>Active Slots ({activePins.length} / {profileData.totalPinSlots})</h4>
+              <div className="active-slots-container">
+                {Array.from({ length: profileData.totalPinSlots }).map((_, index) => (
+                  <Droppable key={index} droppableId={`active-slot-${index}`}>
+                    {(provided, snapshot) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => activePins[index] && setSelectedPin(activePins[index])}>
+                        {activePins[index] ? (
+                          <Draggable draggableId={activePins[index].pin_id.toString()} index={index}>
+                            {(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={activePins[index].pin_name} /></div>)}
+                          </Draggable>
+                        ) : (<span className="empty-slot-text">Empty Slot</span>)}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                ))}
+              </div>
+              <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout}>
+                {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
               </button>
             </div>
-            <div className="custom-referral-section">
-              <h4>{t('profile_page.customize_link_title')}</h4>
-              <p className="form-description">{t('profile_page.customize_link_subtitle')}</p>
-              <form onSubmit={handleUpdateReferralCode} className="referral-update-form">
-                <div className="referral-input-group">
-                  <span className="referral-input-prefix">HS-</span>
-                  <input
-                    type="text"
-                    className="referral-update-input"
-                    placeholder={t('profile_page.placeholder_your_code')}
-                    value={customReferralInput}
-                    onChange={(e) => setCustomReferralInput(e.target.value)}
-                    disabled={isUpdatingReferral}
-                  />
-                </div>
-                <button type="submit" className="btn-primary" disabled={isUpdatingReferral || !customReferralInput}>
-                  {isUpdatingReferral ? t('profile_page.saving_button') : t('profile_page.save_code_button')}
-                </button>
-              </form>
-              {referralUpdateMessage.text && (
-                <p className={`referral-message ${referralUpdateMessage.type}`}>{referralUpdateMessage.text}</p>
-              )}
+            
+            {/* --- NEW: Inactive Pins Collection --- */}
+            <div className="profile-card pin-collection-card">
+              <h3>Your Pin Collection ({inactivePins.length})</h3>
+              <Droppable droppableId="inactive" direction="horizontal">
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps} className="inactive-pins-container">
+                    {inactivePins.map((pin, index) => (
+                      <Draggable key={pin.pin_id} draggableId={pin.pin_id.toString()} index={index}>
+                        {(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} onClick={() => setSelectedPin(pin)}><PinImage pinName={pin.pin_name} /></div>)}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                    {inactivePins.length === 0 && <p>You have no inactive pins.</p>}
+                  </div>
+                )}
+              </Droppable>
             </div>
-          </div>
-          
-          <div className="profile-card">
-            <XpHistoryList />
-          </div>
 
-          <div className="profile-card">
-            <h3>{t('profile_page.syndicate_title')}</h3>
-            <p className="form-description">
-              {t('profile_page.syndicate_description')}
-            </p>
-            <a 
-              href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="btn-primary"
-            >
-              {t('profile_page.learn_more_button')}
-            </a>
-          </div>
+            {/* --- PRESERVED: Your existing Stats & Referrals Card --- */}
+            <div className="profile-card">
+              <h3>{t('profile_page.stats_referrals_title')}</h3>
+              <div className="stat-display tier-display">
+                <span className="stat-label">{t('profile_page.account_tier_label')}</span>
+                <span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span>
+              </div>
+              {profileData.account_tier >= 2 && (
+                <Link to="/pins-marketplace" className="btn-primary marketplace-button">{t('profile_page.pins_marketplace_button')}</Link>
+              )}
+              <Link to="/xpleaderboard" className="stat-display xp-link">
+                <span className="stat-label">{t('profile_page.xp_label')}</span>
+                <span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span>
+                <span className="link-indicator">→</span>
+              </Link>
+              <div className="stat-display">
+                <span className="stat-label">{t('profile_page.xp_rate_label')}</span>
+                <span className="stat-value-large xp-rate-value">+{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span></span>
+              </div>
+              <div className="stat-display">
+                <span className="stat-label">{t('profile_page.referral_code_label')}</span>
+                <span className="referral-code">{profileData.referral_code}</span>
+                <button onClick={handleCopyLink} className="btn-secondary">{copySuccessMessage}</button>
+              </div>
+              <div className="custom-referral-section">
+                <h4>{t('profile_page.customize_link_title')}</h4>
+                <p className="form-description">{t('profile_page.customize_link_subtitle')}</p>
+                <form onSubmit={handleUpdateReferralCode} className="referral-update-form">
+                  <div className="referral-input-group">
+                    <span className="referral-input-prefix">HS-</span>
+                    <input type="text" className="referral-update-input" placeholder={t('profile_page.placeholder_your_code')} value={customReferralInput} onChange={(e) => setCustomReferralInput(e.target.value)} disabled={isUpdatingReferral}/>
+                  </div>
+                  <button type="submit" className="btn-primary" disabled={isUpdatingReferral || !customReferralInput}>{isUpdatingReferral ? t('profile_page.saving_button') : t('profile_page.save_code_button')}</button>
+                </form>
+                {referralUpdateMessage.text && (<p className={`referral-message ${referralUpdateMessage.type}`}>{referralUpdateMessage.text}</p>)}
+              </div>
+            </div>
 
+            {/* --- PRESERVED: XP History Card --- */}
+            <div className="profile-card">
+              <XpHistoryList />
+            </div>
+
+          </div>
         </div>
-      </div>
+      </DragDropContext>
+
+      {/* --- NEW: The Modal that is controlled by our new logic --- */}
+      <PinDetailModal 
+        isOpen={!!selectedPin}
+        onClose={() => setSelectedPin(null)}
+        pin={selectedPin}
+        isActive={activePins.some(p => p.pin_id === selectedPin?.pin_id)}
+        onEquip={handleEquipPin}
+        onUnequip={handleUnequipPin}
+      />
     </Layout>
   );
 };
-
-export default Profile;
