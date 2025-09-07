@@ -1,16 +1,31 @@
 // ==============================================================================
-// START: REPLACE the PinImage component in UserPins.jsx
+// FINAL VERSION: PASTE THIS ENTIRE BLOCK to replace your full UserPins.jsx file
+// This version includes both the typo fix and the space-removal logic.
 // ==============================================================================
+import React from 'react';
+
+const importAll = (r) => {
+  let images = {};
+  r.keys().forEach((item) => { images[item.replace('./', '')] = r(item); });
+  return images;
+}
+
+const pinImages = importAll(require.context('../assets/Decals', false, /\.(png|jpe?g)$/i));
+
+/**
+ * A simple component that displays a single pin image based on its name.
+ * @param {{ pinName: string, description: string }} props
+ */
 export const PinImage = ({ pinName, description = '' }) => {
     if (!pinName) {
         return <div className="pin-image-wrapper missing-image" title="Unknown Pin">?</div>;
     }
     
-    // --- THIS IS THE FIX ---
-    // We remove all spaces from the pin name before creating the filename.
-    // "EARLY SUPPORTER" now correctly becomes "EARLYSUPPORTER".
+    // 1. Sanitize the name by removing spaces for the filename lookup
     const sanitizedPinName = pinName.replace(/\s/g, '');
     const imageName = `${sanitizedPinName.toUpperCase()}.png`;
+    
+    // 2. Use the correct 'pinImages' variable to find the imported image
     const imageSrc = pinImages[imageName];
 
     if (!imageSrc) {
@@ -28,5 +43,5 @@ export const PinImage = ({ pinName, description = '' }) => {
     );
 };
 // ==============================================================================
-// END OF REPLACEMENT
+// END OF FILE REPLACEMENT
 // ==============================================================================
