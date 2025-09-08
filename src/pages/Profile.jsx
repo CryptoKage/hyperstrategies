@@ -160,7 +160,7 @@ const Profile = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="profile-container">
           <h1>{t('profile_page.title')}</h1>
-          <div className="profile-grid">
+          <div className="profile-pin-layout-grid">
             
             <div className="profile-card pin-manager-card">
               <h3>Pin Loadout</h3>

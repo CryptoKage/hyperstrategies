@@ -3488,14 +3488,26 @@ opacity: 0.3;
   gap: 24px; /* Space between the cards */
 }
 
-/* Make the Pin Loadout card take up one column */
-.profile-card.pin-manager-card {
-  grid-column: span 1;
+/* The new grid container for the profile page */
+.profile-pin-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 24px;
 }
 
-/* Make the Pin Collection card span the full width on the next row */
-.profile-card.pin-collection-card {
-  grid-column: span 2; /* Span both columns */
+/* Make the Pin Loadout card sit in the first column */
+.profile-pin-layout-grid .profile-card.pin-manager-card {
+  grid-column: 1 / 2;
+}
+
+/* Make the Pin Collection card sit in the second column */
+.profile-pin-layout-grid .profile-card.pin-collection-card {
+  grid-column: 2 / 3;
+}
+
+/* Make ALL other cards below span the full width */
+.profile-pin-layout-grid > .profile-card:not(.pin-manager-card):not(.pin-collection-card) {
+  grid-column: 1 / 3;
 }
 
 /* Ensure the inactive pins scroll horizontally if they overflow */
@@ -3505,5 +3517,18 @@ opacity: 0.3;
     gap: 12px;
     overflow-x: auto; /* Allow horizontal scrolling */
     padding-bottom: 12px; /* Add some space for the scrollbar */
+    min-height: 120px; /* Give the drop zone some height */
 }
 
+/* --- Mobile Responsiveness for the new grid --- */
+@media (max-width: 900px) { /* A breakpoint before the main mobile styles */
+  .profile-pin-layout-grid {
+    grid-template-columns: 1fr; /* Stack to a single column on tablets/mobile */
+  }
+  
+  .profile-pin-layout-grid .profile-card.pin-manager-card,
+  .profile-pin-layout-grid .profile-card.pin-collection-card,
+  .profile-pin-layout-grid > .profile-card:not(.pin-manager-card):not(.pin-collection-card) {
+    grid-column: 1 / 2; /* Ensure all cards are in the single column */
+  }
+}
