@@ -3518,6 +3518,7 @@ opacity: 0.3;
     overflow-x: auto; /* Allow horizontal scrolling */
     padding-bottom: 12px; /* Add some space for the scrollbar */
     min-height: 120px; /* Give the drop zone some height */
+    overflow: hidden;
 }
 
 /* --- Mobile Responsiveness for the new grid --- */
