@@ -22,6 +22,8 @@ const Profile = () => {
   const [inactivePins, setInactivePins] = useState([]);
   const [isSavingLoadout, setIsSavingLoadout] = useState(false);
   const [selectedPin, setSelectedPin] = useState(null);
+  // -- auto --
+  const [isAutoEquip, setIsAutoEquip] = useState(true);
 
   // --- State for Editing Profile & Referrals (Preserved) ---
   const [username, setUsername] = useState('');
@@ -37,6 +39,7 @@ const Profile = () => {
       const data = response.data;
       setProfileData(data);
       setUsername(data.username);
+      setIsAutoEquip(data.auto_equip_pins);
 
       const activeIds = new Set(data.activePinIds);
       setActivePins(data.ownedPins.filter(p => activeIds.has(p.pin_id)));
@@ -60,6 +63,22 @@ const Profile = () => {
     setInactivePins(inactivePins.filter(p => p.pin_id !== pinToEquip.pin_id));
     setSelectedPin(null); // Close modal
   };
+
+  const handleToggleAutoEquip = async () => {
+  const newState = !isAutoEquip;
+  setIsAutoEquip(newState); // Optimistically update the UI
+  try {
+    await api.put('/user/pins/auto-equip', { isEnabled: newState });
+    // If the user turned auto-equip ON, we should refresh the profile
+    // to get the new, optimized pin loadout from the backend.
+    if (newState) {
+      fetchProfile();
+    }
+  } catch (error) {
+    console.error("Failed to toggle auto-equip", error);
+    setIsAutoEquip(!newState); // Revert UI on failure
+  }
+};
 
   const handleUnequipPin = (pinToUnequip) => {
     setInactivePins([...inactivePins, pinToUnequip]);
@@ -164,6 +183,17 @@ const Profile = () => {
             
             <div className="profile-card pin-manager-card">
               <h3>Pin Loadout</h3>
+              <div className="auto-equip-toggle-wrapper">
+  <span>Auto-Equip Best Pins</span>
+  <label className="switch">
+    <input 
+      type="checkbox" 
+      checked={isAutoEquip} 
+      onChange={handleToggleAutoEquip} 
+    />
+    <span className="slider round"></span>
+  </label>
+</div>
               <p>Equip pins to activate their bonuses. Slots are unlocked by your Account Tier.</p>
               <h4>Active Slots ({activePins.length} / {profileData.totalPinSlots})</h4>
               <div className="active-slots-container">
@@ -173,7 +203,7 @@ const Profile = () => {
                     <Droppable key={`slot-${index}`} droppableId={`active-slot-${index}`}>
                       {(provided, snapshot) => (
                         <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => pinInSlot && setSelectedPin(pinInSlot)}>
-                          {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} /></div>)}</Draggable>) : (<span className="empty-slot-text">Empty Slot</span>)}
+                          {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} imageFilename={pinInSlot.image_filename} /></div>)}</Draggable>) : (<span className="empty-slot-text">Empty Slot</span>)}
                           {provided.placeholder}
                         </div>
                       )}
@@ -194,7 +224,7 @@ const Profile = () => {
                   <div ref={provided.innerRef} {...provided.droppableProps} className="inactive-pins-container">
                     {inactivePins.map((pin, index) => (
                       <Draggable key={pin.pin_id} draggableId={pin.pin_id.toString()} index={index}>
-                        {(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} onClick={() => setSelectedPin(pin)}><PinImage pinName={pin.pin_name} /></div>)}
+                        {(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} onClick={() => setSelectedPin(pin)}><PinImage pinName={pin.pin_name}    imageFilename={pin.image_filename}  /></div>)}
                       </Draggable>
                     ))}
                     {provided.placeholder}

@@ -1,31 +1,27 @@
-// ==============================================================================
-// FINAL VERSION: PASTE THIS ENTIRE BLOCK to replace your full UserPins.jsx file
-// This version includes both the typo fix and the space-removal logic.
-// ==============================================================================
-import React from 'react';
-
-const importAll = (r) => {
-  let images = {};
-  r.keys().forEach((item) => { images[item.replace('./', '')] = r(item); });
-  return images;
-}
-
-const pinImages = importAll(require.context('../assets/Decals', false, /\.(png|jpe?g)$/i));
-
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// START: REPLACE the PinImage component in UserPins.jsx with this final version
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 /**
- * A simple component that displays a single pin image based on its name.
- * @param {{ pinName: string, description: string }} props
+ * A robust component that displays a single pin image.
+ * It prioritizes using a direct filename but falls back to sanitizing the pin name.
+ * @param {{ pinName: string, imageFilename?: string, description?: string }} props
  */
-export const PinImage = ({ pinName, description = '' }) => {
+export const PinImage = ({ pinName, imageFilename, description = '' }) => {
     if (!pinName) {
         return <div className="pin-image-wrapper missing-image" title="Unknown Pin">?</div>;
     }
+
+    // --- THIS IS THE NEW LOGIC ---
+    let imageName;
+    if (imageFilename) {
+        // 1. (Preferred) Use the direct, reliable filename from the API if it exists.
+        imageName = imageFilename;
+    } else {
+        // 2. (Fallback) If the filename isn't provided, sanitize the pinName as we did before.
+        const sanitizedPinName = pinName.replace(/\s/g, '');
+        imageName = `${sanitizedPinName.toUpperCase()}.png`;
+    }
     
-    // 1. Sanitize the name by removing spaces for the filename lookup
-    const sanitizedPinName = pinName.replace(/\s/g, '');
-    const imageName = `${sanitizedPinName.toUpperCase()}.png`;
-    
-    // 2. Use the correct 'pinImages' variable to find the imported image
     const imageSrc = pinImages[imageName];
 
     if (!imageSrc) {
@@ -42,6 +38,6 @@ export const PinImage = ({ pinName, description = '' }) => {
         </div>
     );
 };
-// ==============================================================================
-// END OF FILE REPLACEMENT
-// ==============================================================================
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// END OF REPLACEMENT
+// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
