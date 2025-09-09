@@ -3542,3 +3542,110 @@ opacity: 0.3;
 .profile-card.disabled p {
   color: var(--color-text-secondary);
 }
+
+/* Styles for the new Rewards Center page.                                      */
+/* ============================================================================== */
+
+/* --- Main Page Container --- */
+.rewards-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
+.rewards-container h1 {
+  font-size: 32px;
+  margin-bottom: 32px;
+}
+
+/* --- Top Grid Layout (Claim & Presale cards) --- */
+.rewards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+/* --- The Main XP Counter Card --- */
+.rewards-card {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.rewards-card h3 {
+  margin-top: 0;
+  font-size: 20px;
+}
+.rewards-card p {
+  color: var(--color-text-secondary);
+  flex-grow: 1; /* Pushes the button to the bottom */
+  margin-bottom: 24px;
+}
+.xp-counter {
+  font-size: clamp(2.5rem, 8vw, 4rem); /* Responsive font size */
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 16px 0;
+  line-height: 1;
+}
+
+.claim-message {
+  margin-top: 16px !important;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* --- Presale Call-to-Action Card --- */
+.presale-card {
+  background-color: rgba(63, 186, 243, 0.1);
+  border: 1px solid var(--color-primary);
+}
+
+/* --- XP History Section --- */
+.xp-history-section {
+  margin-top: 48px;
+}
+.xp-history-section h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.xp-history-section p {
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.xp-history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.xp-source-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+}
+
+.xp-source-title {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-transform: capitalize;
+  margin-bottom: 8px;
+}
+
+.xp-source-amount {
+  display: block;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+  .rewards-grid {
+    grid-template-columns: 1fr; /* Stack the cards vertically on mobile */
+  }
+}

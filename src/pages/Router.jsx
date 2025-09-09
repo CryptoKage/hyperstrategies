@@ -28,7 +28,7 @@ import UserDetailPage from './admin/UserDetailPage';
 import TreasuryPage from './admin/TreasuryPage';
 import VaultManagementPage from './admin/VaultManagementPage';
 import PinManagementPage from './admin/PinManagementPage';
-
+import RewardsCenter from './RewardsCenter';
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -61,6 +61,7 @@ const Router = () => {
       <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/pins-marketplace" element={<TierRoute minTier={2}><PinsMarketplace /></TierRoute>} />
+      <Route path="/rewards" element={<ProtectedRoute><RewardsCenter /></ProtectedRoute>} />
           
       {/* --- ADMIN-ONLY Protected Routes --- */}
       {/* --- ANNOTATION --- I've standardized the main admin route to just /admin for simplicity */}
