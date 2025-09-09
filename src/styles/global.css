@@ -3534,9 +3534,9 @@ opacity: 0.3;
   }
 }
 
-.profile-card.disabled {
+.loadout-content-wrapper.disabled {
   opacity: 0.6;
-  pointer-events: none; /* This is a fallback to help disable clicks */
+  pointer-events: none;
 }
 .profile-card.disabled h3,
 .profile-card.disabled p {

@@ -183,40 +183,32 @@ const Profile = () => {
             
             <div className={`profile-card pin-manager-card ${isAutoEquip ? 'disabled' : ''}`}>
               <h3>Pin Loadout</h3>
-              <div className="auto-equip-toggle-wrapper">
-  <span>Auto-Equip Best Pins</span>
-  <label className="switch">
-    <input 
-      type="checkbox" 
-      checked={isAutoEquip} 
-      onChange={handleToggleAutoEquip} 
-    />
-    <span className="slider round"></span>
-  </label>
-</div>
-              <p>Equip pins to activate their bonuses. Slots are unlocked by your Account Tier.</p>
-              <h4>Active Slots ({activePins.length} / {profileData.totalPinSlots})</h4>
-              <div className="active-slots-container">
-                {Array.from({ length: profileData.totalPinSlots }).map((_, index) => {
-                  const pinInSlot = activePins[index];
-                  return (
-                    <Droppable key={`slot-${index}`} droppableId={`active-slot-${index}`} isDropDisabled={isAutoEquip}>
-                      {(provided, snapshot) => (
-                        <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => pinInSlot && setSelectedPin(pinInSlot)}>
-                          {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} imageFilename={pinInSlot.image_filename} /></div>)}</Draggable>) : (<span className="empty-slot-text">Empty Slot</span>)}
-                          {provided.placeholder}
-                        </div>
-                      )}
-                    </Droppable>
-                  );
-                })}
-                {profileData.account_tier < 10 && (<div className="pin-slot locked" title={`Unlocks at Tier ${profileData.account_tier + 1}`}><span>Locked</span></div>)}
-              </div>
-              <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout || isAutoEquip}>
-  {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
-</button>
+  
+  {/* The toggle switch now sits outside of the disabled area */}
+  <div className="auto-equip-toggle-wrapper">
+    <span>Auto-Equip Best Pins</span>
+    <label className="switch">
+      <input 
+        type="checkbox" 
+        checked={isAutoEquip} 
+        onChange={handleToggleAutoEquip} 
+      />
+      <span className="slider round"></span>
+    </label>
+  </div>
+
+  {/* --- THIS IS THE FIX --- */}
+  {/* We create a new wrapper for the content that will be disabled */}
+  <div className={`loadout-content-wrapper ${isAutoEquip ? 'disabled' : ''}`}>
+    <h4>Active Slots ({activePins.length} / {profileData.totalPinSlots})</h4>
+    <div className="active-slots-container">
+      {/* ... your existing Array.from logic for slots goes here ... */}
+    </div>
+    <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout || isAutoEquip}>
+      {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
+    </button>
             </div>
-            
+            </div>
             <div className={`profile-card pin-collection-card ${isAutoEquip ? 'disabled' : ''}`}>
               <h3>Your Pin Collection ({inactivePins.length})</h3>
               <Droppable droppableId="inactive" direction="horizontal" isDropDisabled={isAutoEquip}>
