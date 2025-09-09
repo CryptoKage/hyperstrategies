@@ -33,9 +33,14 @@ const UserDetailPage = () => {
     }
   }, [userId]); // The dependency on userId is correct.
 
-  useEffect(() => {
+ useEffect(() => {
+  // --- THIS IS THE FIX ---
+  // We add this check to ensure that the effect ONLY runs
+  // when the userId from the URL is a valid, non-empty string.
+  if (userId) {
     fetchUserDetails();
-  }, [fetchUserDetails]);
+  }
+}, [userId, fetchUserDetails]);
 
   if (loading) {
     return <Layout><div className="admin-container"><h1>Loading User Details...</h1></div></Layout>;
