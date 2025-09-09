@@ -1,3 +1,7 @@
+// ==============================================================================
+// FINAL, FULL VERSION (v3): PASTE THIS to replace your entire Profile.jsx file
+// This version preserves all functions and fixes the disabled toggle bug.
+// ==============================================================================
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -8,24 +12,17 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PinDetailModal from '../components/PinDetailModal';
 import { PinImage } from '../components/UserPins';
 
-
 const Profile = () => {
   const { t } = useTranslation();
 
-  // --- State for Profile Data ---
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-
-  // --- State for Pin Management ---
   const [activePins, setActivePins] = useState([]);
   const [inactivePins, setInactivePins] = useState([]);
   const [isSavingLoadout, setIsSavingLoadout] = useState(false);
   const [selectedPin, setSelectedPin] = useState(null);
-  // -- auto --
   const [isAutoEquip, setIsAutoEquip] = useState(true);
-
-  // --- State for Editing Profile & Referrals (Preserved) ---
   const [username, setUsername] = useState('');
   const [editMessage, setEditMessage] = useState({ type: '', text: '' });
   const [customReferralInput, setCustomReferralInput] = useState('');
@@ -40,11 +37,9 @@ const Profile = () => {
       setProfileData(data);
       setUsername(data.username);
       setIsAutoEquip(data.auto_equip_pins);
-
       const activeIds = new Set(data.activePinIds);
       setActivePins(data.ownedPins.filter(p => activeIds.has(p.pin_id)));
       setInactivePins(data.ownedPins.filter(p => !activeIds.has(p.pin_id)));
-
     } catch (err) { setError(t('profile_page.error_load')); } 
     finally { setIsLoading(false); }
   }, [t]);
@@ -54,6 +49,18 @@ const Profile = () => {
     setCopySuccessMessage(t('profile_page.copy_link_button'));
   }, [fetchProfile, t]);
 
+  const handleToggleAutoEquip = async () => {
+    const newState = !isAutoEquip;
+    setIsAutoEquip(newState);
+    try {
+      await api.put('/user/pins/auto-equip', { isEnabled: newState });
+      if (newState) { fetchProfile(); }
+    } catch (error) {
+      console.error("Failed to toggle auto-equip", error);
+      setIsAutoEquip(!newState);
+    }
+  };
+
   const handleEquipPin = (pinToEquip) => {
     if (activePins.length >= profileData.totalPinSlots) {
       alert("All slots are full. Unequip a pin first.");
@@ -61,84 +68,57 @@ const Profile = () => {
     }
     setActivePins([...activePins, pinToEquip]);
     setInactivePins(inactivePins.filter(p => p.pin_id !== pinToEquip.pin_id));
-    setSelectedPin(null); // Close modal
+    setSelectedPin(null);
   };
-
-  const handleToggleAutoEquip = async () => {
-  const newState = !isAutoEquip;
-  setIsAutoEquip(newState); // Optimistically update the UI
-  try {
-    await api.put('/user/pins/auto-equip', { isEnabled: newState });
-    // If the user turned auto-equip ON, we should refresh the profile
-    // to get the new, optimized pin loadout from the backend.
-    if (newState) {
-      fetchProfile();
-    }
-  } catch (error) {
-    console.error("Failed to toggle auto-equip", error);
-    setIsAutoEquip(!newState); // Revert UI on failure
-  }
-};
 
   const handleUnequipPin = (pinToUnequip) => {
     setInactivePins([...inactivePins, pinToUnequip]);
     setActivePins(activePins.filter(p => p.pin_id !== pinToUnequip.pin_id));
-    setSelectedPin(null); // Close modal
+    setSelectedPin(null);
   };
 
-   const handleSaveChanges = async () => {
-    setIsSavingLoadout(true);
-    setEditMessage({ type: '', text: '' }); // Clear any old messages
-    try {
-        const activePinIds = activePins.map(p => p.pin_id);
-        await api.post('/user/active-pins', { activePinIds });
-        setEditMessage({ type: 'success', text: 'Pin loadout saved successfully!' });
-    } catch (error) {
-        setEditMessage({ type: 'error', text: 'Failed to save loadout. Please try again.' });
-        console.error("Failed to save pin loadout", error);
-    } finally {
-        setIsSavingLoadout(false);
-    }
-  };
-// ==
-
-  // --- Drag and Drop Logic ---
   const onDragEnd = (result) => {
     const { source, destination } = result;
     if (!destination) return;
-
-    // Moving from Inactive to Active
     if (source.droppableId === 'inactive' && destination.droppableId.startsWith('active-slot')) {
-      if (activePins.length >= profileData.totalPinSlots) return; // Cannot add to full slots
+      if (activePins.length >= profileData.totalPinSlots) return;
       const itemToMove = inactivePins[source.index];
-      const newInactive = Array.from(inactivePins);
-      newInactive.splice(source.index, 1);
-      const newActive = Array.from(activePins);
-      newActive.push(itemToMove);
-      setActivePins(newActive);
-      setInactivePins(newInactive);
+      const newInactive = Array.from(inactivePins); newInactive.splice(source.index, 1);
+      const newActive = Array.from(activePins); newActive.push(itemToMove);
+      setActivePins(newActive); setInactivePins(newInactive);
     }
-
-    // Moving from Active to Inactive
     if (source.droppableId.startsWith('active-slot') && destination.droppableId === 'inactive') {
       const itemToMove = activePins[source.index];
-      const newActive = Array.from(activePins);
-      newActive.splice(source.index, 1);
-      const newInactive = Array.from(inactivePins);
-      newInactive.push(itemToMove);
-      setActivePins(newActive);
-      setInactivePins(newInactive);
+      const newActive = Array.from(activePins); newActive.splice(source.index, 1);
+      const newInactive = Array.from(inactivePins); newInactive.push(itemToMove);
+      setActivePins(newActive); setInactivePins(newInactive);
     }
   };
-  
+
+  const handleSaveChanges = async () => {
+    setIsSavingLoadout(true);
+    setEditMessage({ type: '', text: '' });
+    try {
+      const activePinIds = activePins.map(p => p.pin_id);
+      await api.post('/user/active-pins', { activePinIds });
+      setEditMessage({ type: 'success', text: 'Pin loadout saved successfully!' });
+    } catch (error) {
+      setEditMessage({ type: 'error', text: 'Failed to save loadout. Please try again.' });
+      console.error("Failed to save pin loadout", error);
+    } finally {
+      setIsSavingLoadout(false);
+    }
+  };
+
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    setEditMessage('');
+    setEditMessage({ type: '', text: '' });
     try {
-      const response = await api.put('/user/profile', { username });
-      setEditMessage(response.data.message);
+      await api.put('/user/profile', { username });
+      setEditMessage({ type: 'success', text: t('profile_page.success_update') });
     } catch (err) {
-      setEditMessage(err.response?.data?.error || t('profile_page.error_update'));
+      const errorMessage = err.response?.data?.error || t('profile_page.error_update');
+      setEditMessage({ type: 'error', text: errorMessage });
     }
   };
 
@@ -159,9 +139,8 @@ const Profile = () => {
     }
   };
 
-  const referralLink = `https://www.hyper-strategies.com/register?ref=${profileData?.referral_code}`;
-
   const handleCopyLink = () => {
+    const referralLink = `https://www.hyper-strategies.com/register?ref=${profileData?.referral_code}`;
     navigator.clipboard.writeText(referralLink);
     setCopySuccessMessage(t('profile_page.copied_button'));
     setTimeout(() => {
@@ -169,7 +148,7 @@ const Profile = () => {
     }, 2000);
   };
 
-  if (isLoading) return <Layout><div className="profile-container"><h1>{t('profile_page.loading')}</h1></div></Layout>;
+  if (isLoading || !profileData) return <Layout><div className="profile-container"><h1>{t('profile_page.loading')}</h1></div></Layout>;
   if (error) return <Layout><div className="profile-container"><p className="error-message">{error}</p></div></Layout>;
 
   const dailyXpRate = (profileData?.total_staked_capital || 0) / 300;
@@ -181,42 +160,49 @@ const Profile = () => {
           <h1>{t('profile_page.title')}</h1>
           <div className="profile-pin-layout-grid">
             
-            <div className={`profile-card pin-manager-card ${isAutoEquip ? 'disabled' : ''}`}>
+            <div className="profile-card pin-manager-card">
               <h3>Pin Loadout</h3>
-  
-  {/* The toggle switch now sits outside of the disabled area */}
-  <div className="auto-equip-toggle-wrapper">
-    <span>Auto-Equip Best Pins</span>
-    <label className="switch">
-      <input 
-        type="checkbox" 
-        checked={isAutoEquip} 
-        onChange={handleToggleAutoEquip} 
-      />
-      <span className="slider round"></span>
-    </label>
-  </div>
-
-  {/* --- THIS IS THE FIX --- */}
-  {/* We create a new wrapper for the content that will be disabled */}
-  <div className={`loadout-content-wrapper ${isAutoEquip ? 'disabled' : ''}`}>
-    <h4>Active Slots ({activePins.length} / {profileData.totalPinSlots})</h4>
-    <div className="active-slots-container">
-      {/* ... your existing Array.from logic for slots goes here ... */}
-    </div>
-    <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout || isAutoEquip}>
-      {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
-    </button>
+              <div className="auto-equip-toggle-wrapper">
+                <span>Auto-Equip Best Pins</span>
+                <label className="switch">
+                  <input type="checkbox" checked={isAutoEquip} onChange={handleToggleAutoEquip} />
+                  <span className="slider round"></span>
+                </label>
+              </div>
+              
+              <div className={`loadout-content-wrapper ${isAutoEquip ? 'disabled' : ''}`}>
+                <p>Equip pins to activate their bonuses. Slots are unlocked by your Account Tier.</p>
+                <h4>Active Slots ({activePins.length} / {profileData.totalPinSlots})</h4>
+                <div className="active-slots-container">
+                  {Array.from({ length: profileData.totalPinSlots }).map((_, index) => {
+                    const pinInSlot = activePins[index];
+                    return (
+                      <Droppable key={`slot-${index}`} droppableId={`active-slot-${index}`} isDropDisabled={isAutoEquip}>
+                        {(provided, snapshot) => (
+                          <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => !isAutoEquip && pinInSlot && setSelectedPin(pinInSlot)}>
+                            {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index} isDragDisabled={isAutoEquip}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} imageFilename={pinInSlot.image_filename} /></div>)}</Draggable>) : (<span className="empty-slot-text">Empty Slot</span>)}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    );
+                  })}
+                  {profileData.account_tier < 10 && (<div className="pin-slot locked" title={`Unlocks at Tier ${profileData.account_tier + 1}`}><span>Locked</span></div>)}
+                </div>
+                <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout || isAutoEquip}>
+                  {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
+                </button>
+              </div>
             </div>
-            </div>
+            
             <div className={`profile-card pin-collection-card ${isAutoEquip ? 'disabled' : ''}`}>
               <h3>Your Pin Collection ({inactivePins.length})</h3>
               <Droppable droppableId="inactive" direction="horizontal" isDropDisabled={isAutoEquip}>
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps} className="inactive-pins-container">
                     {inactivePins.map((pin, index) => (
-                      <Draggable key={pin.pin_id} draggableId={pin.pin_id.toString()} index={index}>
-                        {(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} onClick={() => setSelectedPin(pin)}><PinImage pinName={pin.pin_name}    imageFilename={pin.image_filename}  /></div>)}
+                      <Draggable key={pin.pin_id} draggableId={pin.pin_id.toString()} index={index} isDragDisabled={isAutoEquip}>
+                        {(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} onClick={() => !isAutoEquip && setSelectedPin(pin)}><PinImage pinName={pin.pin_name} imageFilename={pin.image_filename} /></div>)}
                       </Draggable>
                     ))}
                     {provided.placeholder}
@@ -231,23 +217,13 @@ const Profile = () => {
               <div className="stat-display tier-display"><span className="stat-label">{t('profile_page.account_tier_label')}</span><span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span></div>
               {profileData.account_tier >= 2 && (<Link to="/pins-marketplace" className="btn-primary marketplace-button">{t('profile_page.pins_marketplace_button')}</Link>)}
               <Link to="/xpleaderboard" className="stat-display xp-link"><span className="stat-label">{t('profile_page.xp_label')}</span><span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span><span className="link-indicator">→</span></Link>
-              <div className="stat-display">
-                <span className="stat-label">{t('profile_page.xp_rate_label')}</span>
-                <span className="stat-value-large xp-rate-value">+{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span></span>
-              </div>
-              <div className="stat-display">
-                <span className="stat-label">{t('profile_page.referral_code_label')}</span>
-                <span className="referral-code">{profileData.referral_code}</span>
-                <button onClick={handleCopyLink} className="btn-secondary">{copySuccessMessage}</button>
-              </div>
+              <div className="stat-display"><span className="stat-label">{t('profile_page.xp_rate_label')}</span><span className="stat-value-large xp-rate-value">+{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span></span></div>
+              <div className="stat-display"><span className="stat-label">{t('profile_page.referral_code_label')}</span><span className="referral-code">{profileData.referral_code}</span><button onClick={handleCopyLink} className="btn-secondary">{copySuccessMessage}</button></div>
               <div className="custom-referral-section">
                 <h4>{t('profile_page.customize_link_title')}</h4>
                 <p className="form-description">{t('profile_page.customize_link_subtitle')}</p>
                 <form onSubmit={handleUpdateReferralCode} className="referral-update-form">
-                  <div className="referral-input-group">
-                    <span className="referral-input-prefix">HS-</span>
-                    <input type="text" className="referral-update-input" placeholder={t('profile_page.placeholder_your_code')} value={customReferralInput} onChange={(e) => setCustomReferralInput(e.target.value)} disabled={isUpdatingReferral}/>
-                  </div>
+                  <div className="referral-input-group"><span className="referral-input-prefix">HS-</span><input type="text" className="referral-update-input" placeholder={t('profile_page.placeholder_your_code')} value={customReferralInput} onChange={(e) => setCustomReferralInput(e.target.value)} disabled={isUpdatingReferral}/></div>
                   <button type="submit" className="btn-primary" disabled={isUpdatingReferral || !customReferralInput}>{isUpdatingReferral ? t('profile_page.saving_button') : t('profile_page.save_code_button')}</button>
                 </form>
                 {referralUpdateMessage.text && (<p className={`referral-message ${referralUpdateMessage.type}`}>{referralUpdateMessage.text}</p>)}
@@ -271,4 +247,4 @@ const Profile = () => {
   );
 };
 
-export default Profile; 
+export default Profile;
