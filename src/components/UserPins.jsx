@@ -1,6 +1,16 @@
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// START: REPLACE the PinImage component in UserPins.jsx with this final version
-// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+// ==============================================================================
+// FINAL, DEFINITIVE VERSION: PASTE THIS to replace your full UserPins.jsx file
+// ==============================================================================
+import React from 'react';
+
+const importAll = (r) => {
+  let images = {};
+  r.keys().forEach((item) => { images[item.replace('./', '')] = r(item); });
+  return images;
+}
+
+const pinImages = importAll(require.context('../assets/Decals', false, /\.(png|jpe?g)$/i));
+
 /**
  * A robust component that displays a single pin image.
  * It prioritizes using a direct filename but falls back to sanitizing the pin name.
@@ -11,17 +21,18 @@ export const PinImage = ({ pinName, imageFilename, description = '' }) => {
         return <div className="pin-image-wrapper missing-image" title="Unknown Pin">?</div>;
     }
 
-    // --- THIS IS THE NEW LOGIC ---
     let imageName;
     if (imageFilename) {
-        // 1. (Preferred) Use the direct, reliable filename from the API if it exists.
+        // Preferred: Use the direct, reliable filename from the API.
         imageName = imageFilename;
     } else {
-        // 2. (Fallback) If the filename isn't provided, sanitize the pinName as we did before.
+        // Fallback: Sanitize the pinName.
         const sanitizedPinName = pinName.replace(/\s/g, '');
         imageName = `${sanitizedPinName.toUpperCase()}.png`;
     }
     
+    // --- THIS IS THE FIX ---
+    // Use the correct 'pinImages' variable (with an 's').
     const imageSrc = pinImages[imageName];
 
     if (!imageSrc) {
@@ -38,6 +49,6 @@ export const PinImage = ({ pinName, imageFilename, description = '' }) => {
         </div>
     );
 };
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-// END OF REPLACEMENT
-// =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// ==============================================================================
+// END OF FILE REPLACEMENT
+// ==============================================================================
