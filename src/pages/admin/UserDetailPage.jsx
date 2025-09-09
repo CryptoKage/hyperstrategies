@@ -13,7 +13,13 @@ const UserDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchUserDetails = useCallback(async () => {
+    const fetchUserDetails = useCallback(async () => {
+    // --- THIS IS THE FIX ---
+    // This "guard clause" ensures we never make an API call if userId is missing.
+    if (!userId) {
+      return; // Stop the function from running
+    }
+
     setLoading(true);
     setError('');
     try {
@@ -25,7 +31,7 @@ const UserDetailPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, [userId]); // The dependency on userId is correct.
 
   useEffect(() => {
     fetchUserDetails();
