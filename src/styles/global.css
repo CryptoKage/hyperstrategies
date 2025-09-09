@@ -3533,3 +3533,12 @@ opacity: 0.3;
     grid-column: 1 / 2; /* Ensure all cards are in the single column */
   }
 }
+
+.profile-card.disabled {
+  opacity: 0.6;
+  pointer-events: none; /* This is a fallback to help disable clicks */
+}
+.profile-card.disabled h3,
+.profile-card.disabled p {
+  color: var(--color-text-secondary);
+}

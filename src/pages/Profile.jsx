@@ -181,7 +181,7 @@ const Profile = () => {
           <h1>{t('profile_page.title')}</h1>
           <div className="profile-pin-layout-grid">
             
-            <div className="profile-card pin-manager-card">
+            <div className={`profile-card pin-manager-card ${isAutoEquip ? 'disabled' : ''}`}>
               <h3>Pin Loadout</h3>
               <div className="auto-equip-toggle-wrapper">
   <span>Auto-Equip Best Pins</span>
@@ -200,7 +200,7 @@ const Profile = () => {
                 {Array.from({ length: profileData.totalPinSlots }).map((_, index) => {
                   const pinInSlot = activePins[index];
                   return (
-                    <Droppable key={`slot-${index}`} droppableId={`active-slot-${index}`}>
+                    <Droppable key={`slot-${index}`} droppableId={`active-slot-${index}`} isDropDisabled={isAutoEquip}>
                       {(provided, snapshot) => (
                         <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => pinInSlot && setSelectedPin(pinInSlot)}>
                           {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} imageFilename={pinInSlot.image_filename} /></div>)}</Draggable>) : (<span className="empty-slot-text">Empty Slot</span>)}
@@ -212,14 +212,14 @@ const Profile = () => {
                 })}
                 {profileData.account_tier < 10 && (<div className="pin-slot locked" title={`Unlocks at Tier ${profileData.account_tier + 1}`}><span>Locked</span></div>)}
               </div>
-              <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout}>
-                {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
-              </button>
+              <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout || isAutoEquip}>
+  {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
+</button>
             </div>
             
-            <div className="profile-card pin-collection-card">
+            <div className={`profile-card pin-collection-card ${isAutoEquip ? 'disabled' : ''}`}>
               <h3>Your Pin Collection ({inactivePins.length})</h3>
-              <Droppable droppableId="inactive" direction="horizontal">
+              <Droppable droppableId="inactive" direction="horizontal" isDropDisabled={isAutoEquip}>
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps} className="inactive-pins-container">
                     {inactivePins.map((pin, index) => (
