@@ -168,22 +168,34 @@ setTotalXp(statsRes.data.totalXpAwarded);
           </div>
         </div>
 
-        <div className="xp-history-section">
-          <h2>XP Ledger</h2>
-          <p>A breakdown of all XP you have earned and claimed so far.</p>
-          <div className="xp-history-grid">
-            {rewardsData.claimedHistory.length > 0 ? (
-              rewardsData.claimedHistory.map((item, index) => (
-                <div key={index} className="xp-source-card">
-                  <span className="xp-source-title">{item.source.replace(/_/g, ' ')}</span>
-                  <span className="xp-source-amount">+{item.total.toLocaleString(undefined, {maximumFractionDigits: 2})} XP</span>
-                </div>
-              ))
-            ) : (
-              <p>You have no claimed XP history yet.</p>
-            )}
-          </div>
-        </div>
+<div className="xp-history-section">
+  <h2>XP Ledger</h2>
+  <p>A chronological history of all XP you have earned.</p>
+  <div className="xp-history-list-wrapper">
+    {rewardsData.claimedHistory.length > 0 ? (
+      <ul className="xp-history-list">
+        {rewardsData.claimedHistory.map((item) => (
+          <li key={item.activity_id} className="history-item">
+            <div className="history-item-main">
+              <span className="history-description">{item.description}</span>
+              <span className="history-xp stat-pnl-positive">
+                +{parseFloat(item.amount_primary).toFixed(2)} XP
+              </span>
+            </div>
+            <span className="history-date">
+              {new Date(item.created_at).toLocaleString(undefined, { 
+                dateStyle: 'medium', 
+                timeStyle: 'short' 
+              })}
+            </span>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>You have no claimed XP history yet.</p>
+    )}
+  </div>
+</div>
       </div>
     </Layout>
   );
