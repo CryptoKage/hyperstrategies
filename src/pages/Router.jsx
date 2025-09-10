@@ -28,6 +28,7 @@ import UserDetailPage from './admin/UserDetailPage';
 import TreasuryPage from './admin/TreasuryPage';
 import VaultManagementPage from './admin/VaultManagementPage';
 import PinManagementPage from './admin/PinManagementPage';
+import XPAwardsPage from './admin/XPAwardsPage';
 import RewardsCenter from './RewardsCenter';
 
 // --- Guard Components ---
