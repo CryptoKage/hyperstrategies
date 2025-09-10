@@ -12,6 +12,8 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PinDetailModal from '../components/PinDetailModal';
 import { PinImage } from '../components/UserPins';
 import { createPkcePair } from '../utils/pkce';
+import TelegramLoginButton from '../components/TelegramLoginButton';
+
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -176,6 +178,18 @@ const handleConnectX = async () => {
       // You could set an error message state here to show the user
     }
   };
+
+  const handleTelegramAuth = async (user) => {
+  try {
+    await api.post('/user/link-telegram', user);
+    // On success, refresh the profile to show the "Connected" state
+    fetchProfile();
+  } catch (error) {
+    console.error("Telegram linking failed:", error);
+    alert("Failed to link Telegram account.");
+  }
+};
+
 
   if (isLoading || !profileData) return <Layout><div className="profile-container"><h1>{t('profile_page.loading')}</h1></div></Layout>;
   if (error) return <Layout><div className="profile-container"><p className="error-message">{error}</p></div></Layout>;
