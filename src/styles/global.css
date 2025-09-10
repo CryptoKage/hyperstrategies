@@ -3916,3 +3916,9 @@ opacity: 0.3;
   color: var(--color-text-secondary);
 }
 /* ============================================================================== */
+.card-header-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem; /* Add some space below the header */
+}

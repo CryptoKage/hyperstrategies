@@ -316,6 +316,12 @@ const handleConnectX = async () => {
         onEquip={handleEquipPin}
         onUnequip={handleUnequipPin}
       />
+        <PinListerModal 
+        isOpen={isListerModalOpen}
+        onClose={() => setIsListerModalOpen(false)}
+        inactivePins={inactivePins}
+        onListSuccess={fetchProfile} // This correctly calls the profile refresh function
+      />
     </Layout>
   );
 };
