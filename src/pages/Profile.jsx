@@ -276,7 +276,9 @@ const handleConnectX = async () => {
                   <span>Connect X (Twitter)</span>
                 </button>
                 {/* --- THIS IS THE NEW TELEGRAM BUTTON --- */}
-                <TelegramLoginButton onAuth={handleTelegramAuth} />
+                <div className="telegram-button-wrapper">
+  <TelegramLoginButton onAuth={handleTelegramAuth} />
+</div>
                 <button className="btn-secondary connection-button" disabled>
                   <span>Connect EVM Wallet</span>
                 </button>
@@ -304,7 +306,38 @@ const handleConnectX = async () => {
             </div>
             
             <div className="profile-card"><XpHistoryList /></div>
-
+                <div className="profile-card">
+              <h3>{t('profile_page.edit_details_title')}</h3>
+              <form onSubmit={handleProfileUpdate}>
+                <div className="form-group">
+                  <label htmlFor="username">{t('profile_page.username_label')}</label>
+                  <input
+                    id="username"
+                    type="text"
+                    className="input-field"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </div>
+                <button type="submit" className="btn-primary">{t('profile_page.save_changes_button')}</button>
+                {editMessage.text && (<p className={`edit-message ${editMessage.type}`}>{editMessage.text}</p>)}
+              </form>
+            </div>
+            {/* --- PRESERVED: Your Syndicate Card --- */}
+            <div className="profile-card">
+              <h3>{t('profile_page.syndicate_title')}</h3>
+              <p className="form-description">
+                {t('profile_page.syndicate_description')}
+              </p>
+              <a 
+                href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn-primary"
+              >
+                {t('profile_page.learn_more_button')}
+              </a>
+            </div>
           </div>
         </div>
       </DragDropContext>

@@ -25,36 +25,35 @@ const Home = () => {
     <Layout>
       <div className="home-container">
         {/* Hero Section */}
-        <section className="hero-section">
-          <h1 className="hero-headline">
-            <RotatingText texts={rotatingWords} suffix="-STRATEGIES" />
-          </h1>
-          <p className="hero-subtext">{t('home.hero.subtext', 'Automated Trading Solutions, Curated Crypto Vaults.')}</p>
-          <div className="button-row">
-            <Link to="/register" className="btn-primary btn-large">{t('home.hero.register_now', 'Register Now')}</Link>
-            <Link to="/login" className="btn-outline btn-large">{t('home.hero.sign_in', 'Sign In')}</Link>
-          </div>
-        </section>
-
-        {/* Cards Section */}
         <section className="card-section">
-          <Card
-            title={t('home.cards.managed.title', 'Managed Vaults')}
-            text={t('home.cards.managed.text', 'Access our flagship strategies with active, discretionary management.')}
-          />
+          {/* Card 1: Invest in Vaults (Links to Dashboard) */}
+          <Link to="/dashboard" className="card-link-wrapper">
+            <Card
+              title={t('home.cards.managed.title', 'Managed Vaults')}
+              text={t('home.cards.managed.text', 'Access our flagship strategies with active, discretionary management.')}
+            />
+          </Link>
+
+          {/* Card 2: Automated Strategies (No Link) */}
           <Card
             title={t('home.cards.automated.title', 'Automated Strategies')}
             text={t('home.cards.automated.text', 'Explore fully-automated, quantitative strategies trading 24/7.')}
           />
-          <Card
-            title={t('home.cards.syndicate.title', 'Community Syndicates')}
-            text={t('home.cards.syndicate.text', 'Join with your community to unlock shared benefits and revenue streams.')}
-          />
+
+          {/* Card 3: Syndicates (Links to Profile) */}
+          <Link to="/profile" className="card-link-wrapper">
+            <Card
+              title={t('home.cards.syndicate.title', 'Community Syndicates')}
+              text={t('home.cards.syndicate.text', 'Join with your community to unlock shared benefits and revenue streams.')}
+            />
+          </Link>
+
+          {/* Card 4: XP System (Links to Rewards) */}
           <Link to="/rewards" className="card-link-wrapper">
-           <Card
-            title={t('home.cards.referral.title', 'Referral & XP System')}
-            text={t('home.cards.referral.text', 'Earn XP, climb tiers, and unlock rewards by inviting others to the platform.')}
-          />
+            <Card
+              title={t('home.cards.referral.title', 'Referral & XP System')}
+              text={t('home.cards.referral.text', 'Earn XP, climb tiers, and unlock rewards by inviting others to the platform.')}
+            />
           </Link>
         </section>
       </div>

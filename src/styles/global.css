@@ -3395,17 +3395,35 @@ input:checked + .slider:before {
   margin-top: 4rem;
 }
 
+.card-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+/* This removes the underline from the link that wraps the card */
+a.card-link-wrapper {
+  text-decoration: none;
+}
+
 .home-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 2rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%; /* Ensures all cards in a row are the same height */
+  display: flex;
+  flex-direction: column;
+  /* --- THIS IS THE NEW PART --- */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .home-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  /* --- THIS IS THE NEW GLOW EFFECT --- */
+  border-color: var(--color-primary);
+  box-shadow: 0 0 25px rgba(63, 186, 243, 0.2); 
 }
 
 .home-card h3 {
@@ -3418,6 +3436,14 @@ input:checked + .slider:before {
 .home-card p {
   color: var(--color-text-secondary);
   line-height: 1.6;
+  flex-grow: 1; /* Pushes the card link/footer down */
+}
+
+.home-card .card-link {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
 }
 
 .auth-options {
@@ -3927,67 +3953,85 @@ opacity: 0.3;
 /* CSS for the new "My Listings" section on the Marketplace Page                */
 /* ============================================================================== */
 
+/* ============================================================================== */
+/* START: REPLACE your existing "My Listings" CSS in global.css                 */
+/* ============================================================================== */
+
+/* Main container for the user's personal listings section */
 .my-listings-section {
-  background-color: rgba(63, 186, 243, 0.05); /* A subtle highlight color */
-  border: 1px solid var(--color-border);
+  background-color: var(--color-surface); /* Use the standard card background */
+  border: 1px solid var(--color-primary); /* Highlight with primary color border */
   border-radius: 12px;
   padding: 24px;
-  margin-bottom: 48px; /* Space between this and the main market grid */
+  margin-bottom: 48px;
+  /* Add a subtle glow to make it feel important */
+  box-shadow: 0 0 20px rgba(63, 186, 243, 0.1);
 }
 
 .my-listings-section h3 {
   margin-top: 0;
   margin-bottom: 16px;
   font-size: 20px;
+  color: var(--color-text-primary); /* Ensure text is bright */
 }
 
+/* The grid that holds the individual listing cards */
 .my-listings-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  /* Create columns that are at least 300px wide, but grow to fill space */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
 }
 
+/* A single card for one of the user's listings */
 .my-listing-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background-color: var(--color-surface);
+  gap: 16px;
+  background-color: var(--color-background); /* Darker background to stand out */
   border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 12px;
+  transition: background-color 0.2s;
+}
+.my-listing-card:hover {
+    background-color: #101827; /* Slightly lighter on hover */
 }
 
 .my-listing-card .pin-image-wrapper {
   flex-shrink: 0;
-  width: 48px; /* Smaller images for this compact view */
-  height: 48px;
+  width: 56px; /* A bit larger for more detail */
+  height: 56px;
 }
 
 .listing-info {
-  flex-grow: 1;
+  flex-grow: 1; /* Pushes the button to the right */
 }
 
 .listing-info strong {
   display: block;
   font-size: 1rem;
+  color: var(--color-text-primary);
 }
 
 .listing-info span {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: var(--color-primary); /* Use primary color for the price */
+  font-weight: 600;
 }
 
-/* A specific small, red button for cancelling */
+/* Styles for the small red cancel button */
 .btn-danger-small {
   background-color: #ef4444;
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 8px 12px;
+  padding: 8px 16px; /* A bit more padding */
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
+  flex-shrink: 0; /* Prevent the button from shrinking */
 }
 
 .btn-danger-small:hover {
@@ -3997,5 +4041,10 @@ opacity: 0.3;
 .btn-danger-small:disabled {
   background-color: #999;
   cursor: not-allowed;
+  opacity: 0.7;
 }
-/* ============================================================================== */
+
+.telegram-button-wrapper {
+  display: flex;
+  justify-content: center;
+}
