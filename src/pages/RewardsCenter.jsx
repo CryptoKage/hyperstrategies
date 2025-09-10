@@ -17,16 +17,21 @@ const RewardsCenter = () => {
   const [error, setError] = useState('');
   const [isClaiming, setIsClaiming] = useState(false);
   const [claimMessage, setClaimMessage] = useState('');
+
+  const [totalXp, setTotalXp] = useState(0);
   
   const [verifyingBountyId, setVerifyingBountyId] = useState(null);
   const [verificationMessage, setVerificationMessage] = useState({ id: null, type: '', text: '' });
 
   const fetchData = useCallback(async () => {
     try {
-      const [rewardsRes, bountiesRes] = await Promise.all([
-        api.get('/user/rewards'),
-        api.get('/bounties')
-      ]);
+     const [rewardsRes, bountiesRes, statsRes] = await Promise.all([
+  api.get('/user/rewards'),
+  api.get('/bounties'),
+  api.get('/stats/total-xp-awarded') 
+]);
+setTotalXp(statsRes.data.totalXpAwarded);
+
       setRewardsData(rewardsRes.data);
       setBounties(bountiesRes.data);
     } catch (err) {
@@ -54,6 +59,9 @@ const RewardsCenter = () => {
       setIsClaiming(false);
     }
   };
+
+  
+
 
   const handleVerifyBounty = async (bountyId) => {
     setVerifyingBountyId(bountyId);
@@ -84,6 +92,20 @@ const RewardsCenter = () => {
     <Layout>
       <div className="rewards-container">
         <h1>Rewards Center</h1>
+         <div className="global-stats-section">
+          <div className="stat-box">
+            <span>Total XP Awarded on Platform</span>
+            <CountUp 
+              end={totalXp}
+              duration={2}
+              separator=","
+              decimals={0}
+            />
+          </div>
+          <Link to="/xpleaderboard" className="btn-outline">
+            View Leaderboard
+          </Link>
+        </div>
 
         <div className="rewards-grid">
           <div className="profile-card rewards-card">

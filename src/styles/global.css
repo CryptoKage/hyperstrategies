@@ -4055,3 +4055,32 @@ opacity: 0.3;
   display: flex;
   justify-content: center;
 }
+
+.global-stats-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  gap: 16px;
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-bottom: 32px;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-box span:first-child {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+}
+
+.stat-box .countup-start { /* This is a class react-countup uses */
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
