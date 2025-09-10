@@ -50,10 +50,12 @@ const Home = () => {
             title={t('home.cards.syndicate.title', 'Community Syndicates')}
             text={t('home.cards.syndicate.text', 'Join with your community to unlock shared benefits and revenue streams.')}
           />
+          <Link to="/rewards" className="card-link-wrapper">
            <Card
             title={t('home.cards.referral.title', 'Referral & XP System')}
             text={t('home.cards.referral.text', 'Earn XP, climb tiers, and unlock rewards by inviting others to the platform.')}
           />
+          </Link>
         </section>
       </div>
     </Layout>

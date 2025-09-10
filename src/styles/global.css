@@ -3649,3 +3649,9 @@ opacity: 0.3;
     grid-template-columns: 1fr; /* Stack the cards vertically on mobile */
   }
 }
+
+/* - home card link css - */
+.card-link-wrapper {
+  text-decoration: none;
+  color: inherit;
+}
