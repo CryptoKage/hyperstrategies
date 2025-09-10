@@ -260,24 +260,6 @@ const handleConnectX = async () => {
               </Droppable>
             </div>
 
-             <div className="profile-card">
-              <h3>Connect Accounts & Wallets</h3>
-              <p className="form-description">
-                Link your social and Web3 accounts to unlock exclusive bounties and rewards.
-              </p>
-              <div className="connection-buttons-container">
-                <button className="btn-secondary connection-button" onClick={handleConnectX}>
-                  <span>Connect X (Twitter)</span>
-                </button>
-                <button className="btn-secondary connection-button" disabled>
-                  <span>Connect Telegram</span>
-                </button>
-                <button className="btn-secondary connection-button" disabled>
-                  <span>Connect EVM Wallet</span>
-                </button>
-              </div>
-            </div>
-
             <div className="profile-card">
               <h3>{t('profile_page.stats_referrals_title')}</h3>
               <div className="stat-display tier-display"><span className="stat-label">{t('profile_page.account_tier_label')}</span><span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span></div>
