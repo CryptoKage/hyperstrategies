@@ -3655,3 +3655,24 @@ opacity: 0.3;
   text-decoration: none;
   color: inherit;
 }
+
+.connection-buttons-container {
+  display: flex;
+  flex-direction: column; /* Stack the buttons vertically */
+  gap: 12px; /* Space between the buttons */
+  margin-top: 24px;
+}
+
+.connection-button {
+  width: 100%; /* Make buttons take up the full width of the card */
+  justify-content: center; /* Center the text inside the button */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Style for when buttons are disabled */
+.connection-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

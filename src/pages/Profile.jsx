@@ -11,6 +11,7 @@ import XpHistoryList from '../components/XpHistoryList';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PinDetailModal from '../components/PinDetailModal';
 import { PinImage } from '../components/UserPins';
+import { createPkcePair } from '../utils/pkce';
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -148,6 +149,34 @@ const Profile = () => {
     }, 2000);
   };
 
+const handleConnectX = async () => {
+    try {
+      // 1. Generate the verifier and challenge
+      const { verifier, challenge } = await createPkcePair();
+
+      // 2. IMPORTANT: Save the verifier to the backend session
+      // This is a new, simple endpoint we will need to add.
+      await api.post('/user/session-store', { key: 'x_code_verifier', value: verifier });
+
+      // 3. Construct the authorization URL
+      const params = new URLSearchParams({
+        response_type: 'code',
+        client_id: process.env.REACT_APP_X_CLIENT_ID, // Your X Client ID from .env
+        redirect_uri: process.env.REACT_APP_X_CALLBACK_URL, // Your callback URL from .env
+        scope: 'tweet.read users.read like.read offline.access',
+        state: 'state', // A random string for security
+        code_challenge: challenge,
+        code_challenge_method: 'S256'
+      });
+      
+      // 4. Redirect the user to X to authorize the app
+      window.location.href = `https://twitter.com/i/oauth2/authorize?${params}`;
+    } catch (error) {
+      console.error("Failed to start X connection flow:", error);
+      // You could set an error message state here to show the user
+    }
+  };
+
   if (isLoading || !profileData) return <Layout><div className="profile-container"><h1>{t('profile_page.loading')}</h1></div></Layout>;
   if (error) return <Layout><div className="profile-container"><p className="error-message">{error}</p></div></Layout>;
 
@@ -196,6 +225,25 @@ const Profile = () => {
             </div>
             
             <div className={`profile-card pin-collection-card ${isAutoEquip ? 'disabled' : ''}`}>
+              <div className="profile-card">
+  <h3>Connect Accounts & Wallets</h3>
+  <p className="form-description">
+    Link your social and Web3 accounts to unlock exclusive bounties and rewards.
+  </p>
+  <div className="connection-buttons-container">
+<button className="btn-secondary connection-button" onClick={handleConnectX}>
+  <span>Connect X (Twitter)</span>
+</button>
+    <button className="btn-secondary connection-button" disabled>
+      {/* We can add an icon here later */}
+      <span>Connect Telegram</span>
+    </button>
+    <button className="btn-secondary connection-button" disabled>
+      {/* We can add an icon here later */}
+      <span>Connect EVM Wallet</span>
+    </button>
+  </div>
+</div>
               <h3>Your Pin Collection ({inactivePins.length})</h3>
               <Droppable droppableId="inactive" direction="horizontal" isDropDisabled={isAutoEquip}>
                 {(provided) => (
