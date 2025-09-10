@@ -90,6 +90,7 @@ const Router = () => {
             path="/admin/pins"
             element={<AdminRoute><PinManagementPage /></AdminRoute>}
       />
+      <Route path="/admin/xp-awards" element={<AdminRoute><XPAwardsPage /></AdminRoute>} />
     </Routes>
   );
 };
