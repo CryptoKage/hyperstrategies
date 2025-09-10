@@ -260,14 +260,30 @@ const handleConnectX = async () => {
               </Droppable>
             </div>
 
+             <div className="profile-card">
+              <h3>Connect Accounts & Wallets</h3>
+              <p className="form-description">
+                Link your social and Web3 accounts to unlock exclusive bounties and rewards.
+              </p>
+              <div className="connection-buttons-container">
+                <button className="btn-secondary connection-button" onClick={handleConnectX}>
+                  <span>Connect X (Twitter)</span>
+                </button>
+                <button className="btn-secondary connection-button" disabled>
+                  <span>Connect Telegram</span>
+                </button>
+                <button className="btn-secondary connection-button" disabled>
+                  <span>Connect EVM Wallet</span>
+                </button>
+              </div>
+            </div>
+
             <div className="profile-card">
               <h3>{t('profile_page.stats_referrals_title')}</h3>
               <div className="stat-display tier-display"><span className="stat-label">{t('profile_page.account_tier_label')}</span><span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span></div>
               {profileData.account_tier >= 2 && (<Link to="/pins-marketplace" className="btn-primary marketplace-button">{t('profile_page.pins_marketplace_button')}</Link>)}
               <Link to="/xpleaderboard" className="stat-display xp-link"><span className="stat-label">{t('profile_page.xp_label')}</span><span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span><span className="link-indicator">→</span></Link>
-              <Link to="/rewards" className="btn-primary" style={{ width: '100%', textAlign: 'center', marginTop: '16px', marginBottom: '16px' }}>
-  Claim XP / View Bounties
-</Link>
+              <Link to="/rewards" className="btn-primary" style={{ width: '100%', textAlign: 'center', marginTop: '16px', marginBottom: '16px' }}>Claim XP / View Bounties</Link>
               <div className="stat-display"><span className="stat-label">{t('profile_page.xp_rate_label')}</span><span className="stat-value-large xp-rate-value">+{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span></span></div>
               <div className="stat-display"><span className="stat-label">{t('profile_page.referral_code_label')}</span><span className="referral-code">{profileData.referral_code}</span><button onClick={handleCopyLink} className="btn-secondary">{copySuccessMessage}</button></div>
               <div className="custom-referral-section">
