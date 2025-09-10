@@ -3676,3 +3676,74 @@ opacity: 0.3;
   cursor: not-allowed;
   opacity: 0.5;
 }
+
+.bounty-board-section {
+  margin-top: 48px;
+}
+.bounty-board-section h2 {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+.bounty-board-section p {
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.bounties-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bounty-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.bounty-content {
+  flex-grow: 1;
+}
+.bounty-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+}
+.bounty-content p {
+  margin: 0;
+  font-size: 14px;
+}
+.bounty-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-primary);
+  text-decoration: none;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.bounty-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.bounty-reward {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.bounty-message {
+  width: 100%;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.bounty-message.success { color: #4ade80; }
+.bounty-message.error { color: #f87171; }

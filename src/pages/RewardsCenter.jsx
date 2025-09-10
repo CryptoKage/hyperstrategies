@@ -1,28 +1,36 @@
-
-// START: PASTE THIS ENTIRE BLOCK into your new src/pages/RewardsCenter.jsx 
-
+// ==============================================================================
+// FINAL, FULL VERSION: PASTE THIS to replace your entire RewardsCenter.jsx FILE
+// ==============================================================================
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import Layout from '../components/Layout';
-import CountUp from 'react-countup'; // <-- Import the animation library
+import CountUp from 'react-countup';
 
 const RewardsCenter = () => {
   const { t } = useTranslation();
 
   const [rewardsData, setRewardsData] = useState({ unclaimedXp: 0, claimedHistory: [] });
+  const [bounties, setBounties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isClaiming, setIsClaiming] = useState(false);
   const [claimMessage, setClaimMessage] = useState('');
+  
+  const [verifyingBountyId, setVerifyingBountyId] = useState(null);
+  const [verificationMessage, setVerificationMessage] = useState({ id: null, type: '', text: '' });
 
-  const fetchRewardsData = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const response = await api.get('/user/rewards');
-      setRewardsData(response.data);
+      const [rewardsRes, bountiesRes] = await Promise.all([
+        api.get('/user/rewards'),
+        api.get('/bounties')
+      ]);
+      setRewardsData(rewardsRes.data);
+      setBounties(bountiesRes.data);
     } catch (err) {
-      console.error("Failed to fetch rewards data:", err);
+      console.error("Failed to fetch page data:", err);
       setError("Could not load your rewards data at this time.");
     } finally {
       setLoading(false);
@@ -30,8 +38,8 @@ const RewardsCenter = () => {
   }, []);
 
   useEffect(() => {
-    fetchRewardsData();
-  }, [fetchRewardsData]);
+    fetchData();
+  }, [fetchData]);
 
   const handleClaim = async () => {
     setIsClaiming(true);
@@ -39,12 +47,29 @@ const RewardsCenter = () => {
     try {
       const response = await api.post('/user/rewards/claim');
       setClaimMessage(response.data.message || "XP Claimed!");
-      // Re-fetch data to update the UI with new totals
-      await fetchRewardsData();
+      await fetchData();
     } catch (err) {
       setClaimMessage(err.response?.data?.error || "Failed to claim XP.");
     } finally {
       setIsClaiming(false);
+    }
+  };
+
+  const handleVerifyBounty = async (bountyId) => {
+    setVerifyingBountyId(bountyId);
+    setVerificationMessage({ id: bountyId, text: 'Verifying...' });
+    try {
+      const response = await api.post(`/bounties/${bountyId}/verify`);
+      if (response.data.success) {
+        setVerificationMessage({ id: bountyId, type: 'success', text: response.data.message });
+        fetchData(); // Refresh all data to update unclaimed total
+      } else {
+        setVerificationMessage({ id: bountyId, type: 'error', text: response.data.message });
+      }
+    } catch (err) {
+      setVerificationMessage({ id: bountyId, type: 'error', text: err.response?.data?.error || "Verification failed." });
+    } finally {
+      setVerifyingBountyId(null);
     }
   };
 
@@ -61,7 +86,6 @@ const RewardsCenter = () => {
         <h1>Rewards Center</h1>
 
         <div className="rewards-grid">
-          {/* --- Claim XP Card --- */}
           <div className="profile-card rewards-card">
             <h3>Unclaimed XP</h3>
             <div className="xp-counter">
@@ -74,28 +98,54 @@ const RewardsCenter = () => {
               />
             </div>
             <p>This is XP you've earned from bounties and special events. Claim it to add it to your total balance.</p>
-            <button 
-              className="btn-primary" 
-              onClick={handleClaim} 
-              disabled={isClaiming || rewardsData.unclaimedXp <= 0}
-            >
+            <button className="btn-primary" onClick={handleClaim} disabled={isClaiming || rewardsData.unclaimedXp <= 0}>
               {isClaiming ? "Claiming..." : "Claim All XP"}
             </button>
             {claimMessage && <p className="claim-message">{claimMessage}</p>}
           </div>
 
-          {/* --- Presale Card --- */}
           <div className="profile-card presale-card">
             <h3>Platform Presale</h3>
             <p>Your total XP balance determines your allocation in our upcoming token presale. Secure your spot!</p>
-            {/* This link should go to your future presale page */}
-            <Link to="/presale-info" className="btn-secondary">
-              Learn More About the Presale
-            </Link>
+            <Link to="/presale-info" className="btn-secondary">Learn More About the Presale</Link>
+          </div>
+        </div>
+        
+        <div className="bounty-board-section">
+          <h2>Available Bounties</h2>
+          <p>Complete these tasks to earn more XP, which will be added to your 'Unclaimed XP' total above.</p>
+          <div className="bounties-list">
+            {bounties.length > 0 ? (
+              bounties.map(bounty => (
+                <div key={bounty.bounty_id} className="bounty-card">
+                  <div className="bounty-content">
+                    <h4>{bounty.title}</h4>
+                    <p>{bounty.description}</p>
+                    <a href={bounty.target_url} target="_blank" rel="noopener noreferrer" className="bounty-link">
+                      Go to Task →
+                    </a>
+                  </div>
+                  <div className="bounty-actions">
+                    <span className="bounty-reward">+{bounty.xp_reward} XP</span>
+                    <button 
+                      className="btn-secondary"
+                      onClick={() => handleVerifyBounty(bounty.bounty_id)}
+                      disabled={verifyingBountyId === bounty.bounty_id}
+                    >
+                      {verifyingBountyId === bounty.bounty_id ? '...' : 'Verify'}
+                    </button>
+                  </div>
+                  {verificationMessage.id === bounty.bounty_id && (
+                    <p className={`bounty-message ${verificationMessage.type}`}>{verificationMessage.text}</p>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p>No new bounties available right now. Check back soon!</p>
+            )}
           </div>
         </div>
 
-        {/* --- XP History Section --- */}
         <div className="xp-history-section">
           <h2>XP Ledger</h2>
           <p>A breakdown of all XP you have earned and claimed so far.</p>
@@ -118,3 +168,6 @@ const RewardsCenter = () => {
 };
 
 export default RewardsCenter;
+// ==============================================================================
+// END OF FILE
+// ==============================================================================
