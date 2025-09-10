@@ -3978,9 +3978,16 @@ opacity: 0.3;
 /* The grid that holds the individual listing cards */
 .my-listings-grid {
   display: grid;
-  /* Create columns that are at least 300px wide, but grow to fill space */
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  /* This creates a grid with 2 equal columns, which will handle empty space better */
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+}
+
+/* On smaller screens, stack to a single column */
+@media (max-width: 768px) {
+  .my-listings-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* A single card for one of the user's listings */
