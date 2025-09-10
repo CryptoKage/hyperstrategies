@@ -136,6 +136,7 @@ const PinsMarketplace = () => {
         isProcessing={isBuying}
         error={buyError}
       />
+      
     </Layout>
   );
 };

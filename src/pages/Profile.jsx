@@ -13,6 +13,7 @@ import PinDetailModal from '../components/PinDetailModal';
 import { PinImage } from '../components/UserPins';
 import { createPkcePair } from '../utils/pkce';
 import TelegramLoginButton from '../components/TelegramLoginButton';
+import PinListerModal from '../components/PinListerModal';
 
 
 const Profile = () => {
@@ -32,6 +33,7 @@ const Profile = () => {
   const [isUpdatingReferral, setIsUpdatingReferral] = useState(false);
   const [referralUpdateMessage, setReferralUpdateMessage] = useState({ type: '', text: '' });
   const [copySuccessMessage, setCopySuccessMessage] = useState('');
+  const [isListerModalOpen, setIsListerModalOpen] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -238,7 +240,16 @@ const handleConnectX = async () => {
               </div>
             </div>
              <div className={`profile-card pin-collection-card ${isAutoEquip ? 'disabled' : ''}`}>
-              <h3>Your Pin Collection ({inactivePins.length})</h3>
+              <div className="card-header-with-button">
+  <h3>Your Pin Collection ({inactivePins.length})</h3>
+  <button 
+    className="btn-secondary btn-sm" 
+    onClick={() => setIsListerModalOpen(true)}
+    disabled={isAutoEquip || inactivePins.length === 0}
+  >
+    List a Pin
+  </button>
+</div>
               <Droppable droppableId="inactive" direction="horizontal" isDropDisabled={isAutoEquip}>
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps} className="inactive-pins-container">
