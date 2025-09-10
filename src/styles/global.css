@@ -3922,3 +3922,80 @@ opacity: 0.3;
   align-items: center;
   margin-bottom: 1rem; /* Add some space below the header */
 }
+
+/* ============================================================================== */
+/* CSS for the new "My Listings" section on the Marketplace Page                */
+/* ============================================================================== */
+
+.my-listings-section {
+  background-color: rgba(63, 186, 243, 0.05); /* A subtle highlight color */
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 48px; /* Space between this and the main market grid */
+}
+
+.my-listings-section h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+.my-listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.my-listing-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.my-listing-card .pin-image-wrapper {
+  flex-shrink: 0;
+  width: 48px; /* Smaller images for this compact view */
+  height: 48px;
+}
+
+.listing-info {
+  flex-grow: 1;
+}
+
+.listing-info strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.listing-info span {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+/* A specific small, red button for cancelling */
+.btn-danger-small {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-danger-small:hover {
+  background-color: #dc2626;
+}
+
+.btn-danger-small:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+/* ============================================================================== */

@@ -120,7 +120,7 @@ const handleCancelListing = async (listingId) => {
     );
   };
 
-  return (
+return (
     <Layout>
       <div className="pins-market-container">
         <div className="market-header">
@@ -135,7 +135,19 @@ const handleCancelListing = async (listingId) => {
                 ))}
               </select>
             </div>
-            {myListings.length > 0 && (
+            <div className="control-group">
+              <label htmlFor="sort-pins">Sort by:</label>
+              <select id="sort-pins" value={sort} onChange={(e) => setSort(e.target.value)}>
+                <option value="created_at-DESC">Newest First</option>
+                <option value="price-ASC">Price: Low to High</option>
+                <option value="price-DESC">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* --- THIS IS THE CORRECT PLACEMENT for "My Listings" --- */}
+        {myListings.length > 0 && (
           <div className="my-listings-section">
             <h3>My Active Listings</h3>
             <div className="my-listings-grid">
@@ -159,19 +171,10 @@ const handleCancelListing = async (listingId) => {
           </div>
         )}
         
-        {renderContent()}
-            <div className="control-group">
-              <label htmlFor="sort-pins">Sort by:</label>
-              <select id="sort-pins" value={sort} onChange={(e) => setSort(e.target.value)}>
-                <option value="created_at-DESC">Newest First</option>
-                <option value="price-ASC">Price: Low to High</option>
-                <option value="price-DESC">Price: High to Low</option>
-              </select>
-            </div>
-          </div>
-        </div>
+        {/* --- The main content is now only called ONCE --- */}
         {renderContent()}
       </div>
+
        <BuyPinModal 
         isOpen={!!selectedListing}
         onClose={() => { setSelectedListing(null); setBuyError(''); }}
@@ -180,7 +183,6 @@ const handleCancelListing = async (listingId) => {
         isProcessing={isBuying}
         error={buyError}
       />
-      
     </Layout>
   );
 };
