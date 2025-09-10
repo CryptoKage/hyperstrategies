@@ -18,6 +18,8 @@ const PinsMarketplace = () => {
     const [selectedListing, setSelectedListing] = useState(null);
   const [isBuying, setIsBuying] = useState(false);
   const [buyError, setBuyError] = useState('');
+  const [myListings, setMyListings] = useState([]);
+  const [isCancelling, setIsCancelling] = useState(null); 
 
   // --- State for Filtering & Sorting ---
   const [filter, setFilter] = useState('ALL'); // 'ALL' or a specific pin_name
@@ -36,10 +38,14 @@ const PinsMarketplace = () => {
       }
 
       // Fetch all data in parallel
-      const [listingsRes, pinDefsRes] = await Promise.all([
-        api.get(`/pins-marketplace/listings?${params.toString()}`),
-        api.get('/pins/definitions') // For the filter dropdown
-      ]);
+      const [listingsRes, pinDefsRes, myListingsRes] = await Promise.all([
+  api.get(`/pins-marketplace/listings?${params.toString()}`),
+  api.get('/pins/definitions'),
+  api.get('/pins-marketplace/my-listings') // <-- The new call
+]);
+
+// Then, add this line to set the new state:
+setMyListings(myListingsRes.data);
 
       setListings(listingsRes.data);
       setPinDefinitions(pinDefsRes.data);
@@ -71,6 +77,19 @@ const PinsMarketplace = () => {
       setIsBuying(false);
     }
   };
+
+const handleCancelListing = async (listingId) => {
+  setIsCancelling(listingId);
+  try {
+    await api.delete(`/pins-marketplace/listings/${listingId}`);
+    fetchMarketplaceData(); // Refresh all data on success
+  } catch (err) {
+    console.error("Failed to cancel listing:", err);
+    alert("Could not cancel the listing. Please try again.");
+  } finally {
+    setIsCancelling(null);
+  }
+};
 
   const renderContent = () => {
     if (loading) { return <p>Loading listings...</p>; }
@@ -116,6 +135,31 @@ const PinsMarketplace = () => {
                 ))}
               </select>
             </div>
+            {myListings.length > 0 && (
+          <div className="my-listings-section">
+            <h3>My Active Listings</h3>
+            <div className="my-listings-grid">
+              {myListings.map(listing => (
+                <div key={listing.listing_id} className="my-listing-card">
+                  <PinImage pinName={listing.pin_name} imageFilename={listing.image_filename} />
+                  <div className="listing-info">
+                    <strong>{listing.pin_name}</strong>
+                    <span>${parseFloat(listing.price).toFixed(2)}</span>
+                  </div>
+                  <button 
+                    className="btn-danger-small"
+                    onClick={() => handleCancelListing(listing.listing_id)}
+                    disabled={isCancelling === listing.listing_id}
+                  >
+                    {isCancelling === listing.listing_id ? '...' : 'Cancel'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {renderContent()}
             <div className="control-group">
               <label htmlFor="sort-pins">Sort by:</label>
               <select id="sort-pins" value={sort} onChange={(e) => setSort(e.target.value)}>
