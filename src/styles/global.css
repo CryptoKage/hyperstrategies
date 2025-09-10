@@ -3978,8 +3978,8 @@ opacity: 0.3;
 /* The grid that holds the individual listing cards */
 .my-listings-grid {
   display: grid;
-  /* This creates a grid with 2 equal columns, which will handle empty space better */
-  grid-template-columns: repeat(2, 1fr);
+  /* This creates columns that are at least 300px wide, but grow to fill space */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 16px;
 }
 
