@@ -1,5 +1,3 @@
-// src/components/Layout.jsx
-
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
@@ -8,15 +6,20 @@ import PlasmaEffect from './PlasmaEffect';
 
 const Layout = ({ children, showInteractiveBackground = true }) => {
   return (
-    <div className="layout-wrapper">
+    // We create a fragment <> to return multiple top-level elements
+    <>
+      {/* The backgrounds are now at the top level, outside the main wrapper */}
       <PlasmaEffect />
       {showInteractiveBackground && <InteractiveBackground />}
-      <Header />
-      <main className="main-content">
-        {children}
-      </main>
-      <Footer />
-    </div>
+      
+      <div className="layout-wrapper">
+        <Header />
+        <main className="main-content">
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </>
   );
 };
 
