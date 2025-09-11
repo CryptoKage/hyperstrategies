@@ -127,12 +127,17 @@ setTotalXp(statsRes.data.totalXpAwarded);
           </div>
 
           <div className="profile-card presale-card">
-            <h3>Platform Presale</h3>
-            <p>Your total XP balance determines your allocation in our upcoming token presale. Secure your spot!</p>
-            <Link to="/presale-info" className="btn-secondary">Learn More About the Presale</Link>
-          </div>
-        </div>
-        
+  <h3>Platform Presale</h3>
+  <p>Your total XP balance determines your allocation in our upcoming token presale. Secure your spot!</p>
+  
+  {/* --- THIS IS THE FIX --- */}
+  <div className="card-action-center">
+    <Link to="/presale-info" className="btn-secondary">
+      Learn More About the Presale
+    </Link>
+  </div>
+</div>
+</div>        
         <div className="bounty-board-section">
           <h2>Available Bounties</h2>
           <p>Complete these tasks to earn more XP, which will be added to your 'Unclaimed XP' total above.</p>
