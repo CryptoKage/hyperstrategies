@@ -4058,3 +4058,12 @@ opacity: 0.3;
     grid-template-columns: 1fr; /* Stack cards on mobile */
   }
 }
+
+#root {
+  background-color: transparent;
+}
+
+/* Ensure the main layout wrapper is transparent so backgrounds can be seen */
+.layout-wrapper {
+  background-color: transparent !important;
+}

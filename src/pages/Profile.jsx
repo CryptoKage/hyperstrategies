@@ -198,163 +198,62 @@ const handleConnectX = async () => {
 
   const dailyXpRate = (profileData?.total_staked_capital || 0) / 300;
 
-  return (
+return (
     <Layout>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="profile-container">
-          <h1>{t('profile_page.title')}</h1>
-          <div className="profile-pin-layout-grid">
-            
-            <div className="profile-card pin-manager-card">
-              <h3>Pin Loadout</h3>
-              <div className="auto-equip-toggle-wrapper">
-                <span>Auto-Equip Best Pins</span>
-                <label className="switch">
-                  <input type="checkbox" checked={isAutoEquip} onChange={handleToggleAutoEquip} />
-                  <span className="slider round"></span>
-                </label>
-              </div>
-              
-              <div className={`loadout-content-wrapper ${isAutoEquip ? 'disabled' : ''}`}>
-                <p>Equip pins to activate their bonuses. Slots are unlocked by your Account Tier.</p>
-                <h4>Active Slots ({activePins.length} / {profileData.totalPinSlots})</h4>
-                <div className="active-slots-container">
-                  {Array.from({ length: profileData.totalPinSlots }).map((_, index) => {
-                    const pinInSlot = activePins[index];
-                    return (
-                      <Droppable key={`slot-${index}`} droppableId={`active-slot-${index}`} isDropDisabled={isAutoEquip}>
-                        {(provided, snapshot) => (
-                          <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => !isAutoEquip && pinInSlot && setSelectedPin(pinInSlot)}>
-                            {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index} isDragDisabled={isAutoEquip}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} imageFilename={pinInSlot.image_filename} /></div>)}</Draggable>) : (<span className="empty-slot-text">Empty Slot</span>)}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    );
-                  })}
-                  {profileData.account_tier < 10 && (<div className="pin-slot locked" title={`Unlocks at Tier ${profileData.account_tier + 1}`}><span>Locked</span></div>)}
-                </div>
-                <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout || isAutoEquip}>
-                  {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
-                </button>
-              </div>
-            </div>
-             <div className={`profile-card pin-collection-card ${isAutoEquip ? 'disabled' : ''}`}>
-              <div className="card-header-with-button">
-  <h3>Your Pin Collection ({inactivePins.length})</h3>
-  <button 
-    className="btn-secondary btn-sm" 
-    onClick={() => setIsListerModalOpen(true)}
-    disabled={isAutoEquip || inactivePins.length === 0}
-  >
-    List a Pin
-  </button>
-</div>
-              <Droppable droppableId="inactive" direction="horizontal" isDropDisabled={isAutoEquip}>
-                {(provided) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps} className="inactive-pins-container">
-                    {inactivePins.map((pin, index) => (
-                      <Draggable key={pin.pin_id} draggableId={pin.pin_id.toString()} index={index} isDragDisabled={isAutoEquip}>
-                        {(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} onClick={() => !isAutoEquip && setSelectedPin(pin)}><PinImage pinName={pin.pin_name} imageFilename={pin.image_filename} /></div>)}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                    {inactivePins.length === 0 && <p>You have no inactive pins.</p>}
-                  </div>
-                )}
-              </Droppable>
-            </div>
+      <div className="presale-container shadcn-theme">
+        <h1>Platform Token Presale</h1>
+        <p className="presale-subtitle">Your XP balance determines your eligibility and allocation. Secure your spot in the future of HyperStrategies.</p>
 
-            {/* --- Correctly Placed "Connect Accounts" Card --- */}
-            <div className="profile-card">
-              <h3>Connect Accounts & Wallets</h3>
-              <p className="form-description">
-                Link your social and Web3 accounts to unlock exclusive bounties and rewards.
-              </p>
-              <div className="connection-buttons-container">
-                <button className="btn-secondary connection-button" onClick={handleConnectX}>
-                  <span>Connect X (Twitter)</span>
-                </button>
-                {/* --- THIS IS THE NEW TELEGRAM BUTTON --- */}
-                <div className="telegram-button-wrapper">
-  <TelegramLoginButton onAuth={handleTelegramAuth} />
-</div>
-                <button className="btn-secondary connection-button" disabled>
-                  <span>Connect EVM Wallet</span>
-                </button>
-              </div>
-            </div>
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Sale Progress</CardTitle>
+            <CardDescription>Current Stage: Seed A (30% Filled)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Progress value={30} className="h-4" />
+          </CardContent>
+        </Card>
 
-            {/* --- Preserved Stats & Referrals Card --- */}
-            <div className="profile-card">
-              <h3>{t('profile_page.stats_referrals_title')}</h3>
-              <div className="stat-display tier-display"><span className="stat-label">{t('profile_page.account_tier_label')}</span><span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span></div>
-              {profileData.account_tier >= 2 && (<Link to="/pins-marketplace" className="btn-primary marketplace-button">{t('profile_page.pins_marketplace_button')}</Link>)}
-              <Link to="/xpleaderboard" className="stat-display xp-link"><span className="stat-label">{t('profile_page.xp_label')}</span><span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span><span className="link-indicator">→</span></Link>
-              <Link to="/rewards" className="btn-primary" style={{ width: '100%', textAlign: 'center', marginTop: '16px', marginBottom: '16px' }}>Claim XP / View Bounties</Link>
-              <div className="stat-display"><span className="stat-label">{t('profile_page.xp_rate_label')}</span><span className="stat-value-large xp-rate-value">+{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span></span></div>
-              <div className="stat-display"><span className="stat-label">{t('profile_page.referral_code_label')}</span><span className="referral-code">{profileData.referral_code}</span><button onClick={handleCopyLink} className="btn-secondary">{copySuccessMessage}</button></div>
-              <div className="custom-referral-section">
-                <h4>{t('profile_page.customize_link_title')}</h4>
-                <p className="form-description">{t('profile_page.customize_link_subtitle')}</p>
-                <form onSubmit={handleUpdateReferralCode} className="referral-update-form">
-                  <div className="referral-input-group"><span className="referral-input-prefix">HS-</span><input type="text" className="referral-update-input" placeholder={t('profile_page.placeholder_your_code')} value={customReferralInput} onChange={(e) => setCustomReferralInput(e.target.value)} disabled={isUpdatingReferral}/></div>
-                  <button type="submit" className="btn-primary" disabled={isUpdatingReferral || !customReferralInput}>{isUpdatingReferral ? t('profile_page.saving_button') : t('profile_page.save_code_button')}</button>
-                </form>
-                {referralUpdateMessage.text && (<p className={`referral-message ${referralUpdateMessage.type}`}>{referralUpdateMessage.text}</p>)}
-              </div>
-            </div>
-            
-            <div className="profile-card"><XpHistoryList /></div>
-                <div className="profile-card">
-              <h3>{t('profile_page.edit_details_title')}</h3>
-              <form onSubmit={handleProfileUpdate}>
-                <div className="form-group">
-                  <label htmlFor="username">{t('profile_page.username_label')}</label>
-                  <input
-                    id="username"
-                    type="text"
-                    className="input-field"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </div>
-                <button type="submit" className="btn-primary">{t('profile_page.save_changes_button')}</button>
-                {editMessage.text && (<p className={`edit-message ${editMessage.type}`}>{editMessage.text}</p>)}
-              </form>
-            </div>
-            {/* --- PRESERVED: Your Syndicate Card --- */}
-            <div className="profile-card">
-              <h3>{t('profile_page.syndicate_title')}</h3>
-              <p className="form-description">
-                {t('profile_page.syndicate_description')}
-              </p>
-              <a 
-                href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="btn-primary"
-              >
-                {t('profile_page.learn_more_button')}
-              </a>
-            </div>
-          </div>
+        <div className="presale-grid">
+          <Card>
+            <CardHeader>
+              <CardTitle>Tokenomics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
+                <PieChart>
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                  <Pie data={tokenomicsData} dataKey="value" nameKey="stage" innerRadius={60} strokeWidth={5}>
+                    {tokenomicsData.map((entry) => ( <Cell key={`cell-${entry.stage}`} fill={entry.fill} /> ))}
+                    <Label
+                      content={({ viewBox }) => {
+                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                          return (
+                            <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
+                              <tspan x={viewBox.cx} y={viewBox.cy - 10} className="fill-foreground text-2xl font-bold">1B</tspan>
+                              <tspan x={viewBox.cx} y={viewBox.cy + 10} className="fill-muted-foreground">Total Supply</tspan>
+                            </text>
+                          )
+                        }
+                      }}
+                    />
+                  </Pie>
+                </PieChart>
+              </ChartContainer>
+            </CardContent>
+          </Card>
+
+          <Card className="flex flex-col justify-center items-center text-center">
+            <CardHeader>
+              <CardTitle>Participate in the Presale</CardTitle>
+              <CardDescription>Requires {eligibility.xpRequired.toLocaleString()} XP</CardDescription>
+            </CardHeader>
+            <CardContent className="w-full">
+              {renderBuyButton()}
+            </CardContent>
+          </Card>
         </div>
-      </DragDropContext>
-      <PinDetailModal 
-        isOpen={!!selectedPin}
-        onClose={() => setSelectedPin(null)}
-        pin={selectedPin}
-        isActive={activePins.some(p => p.pin_id === selectedPin?.pin_id)}
-        onEquip={handleEquipPin}
-        onUnequip={handleUnequipPin}
-      />
-        <PinListerModal 
-        isOpen={isListerModalOpen}
-        onClose={() => setIsListerModalOpen(false)}
-        inactivePins={inactivePins}
-        onListSuccess={fetchProfile} // This correctly calls the profile refresh function
-      />
+      </div>
     </Layout>
   );
 };
