@@ -11,8 +11,7 @@ const Layout = ({ children, showInteractiveBackground = true }) => {
   return (
     <>
       <PlasmaEffect />
-      {showInteractive-background && <InteractiveBackground />}
-      
+      {showInteractiveBackground && <InteractiveBackground />}
       <div className="layout-wrapper">
         <Header />
         <main className="main-content">
