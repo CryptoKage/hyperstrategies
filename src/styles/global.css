@@ -2502,66 +2502,12 @@ textarea.input-field { resize: vertical; }
   }
 }
 
-/* --- Global Background Effects Styles --- */
-.interactive-background, .plasma-background {
-  position: fixed; /* Fixed positioning keeps it in place during scroll */
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none; /* User clicks go through it */
-  z-index: -1; /* Sits behind all other content */
-}
-
-.plasma-background {
-  z-index: -2; /* Sits even further behind the network */
-  opacity: 0.5; /* Tone it down a bit so it's not distracting */
-  
-  /* This is the magic for the soft fade effect at the top */
-  mask-image: linear-gradient(to top, white 50%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, white 50%, transparent 100%);
-}
 
 /* ==========================================================================
    GLOBAL LAYOUT, BACKGROUNDS, & FOOTER (Consolidated)
    ========================================================================== */
 
-/* --- 1. Main Layout & Stacking --- */
-.layout-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: #040e21; 
-}
 
-.main-content {
-  flex: 1;
-  position: relative;
-  z-index: 1; /* Elevates content above backgrounds */
-  background-color: transparent; /* Makes content area see-through */
-}
-
-/* --- 2. Animated Backgrounds --- */
-.layout-wrapper > .interactive-background,
-.plasma-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-}
-
-.layout-wrapper > .interactive-background {
-  z-index: -2; /* Sits just behind content */
-}
-
-.plasma-background {
-  z-index: -3; /* Sits behind everything */
-  opacity: 0.6; /* A bit more visible */
-  mask-image: linear-gradient(to top, black 40%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
-}
 
 /* --- 3. Page Container Transparency --- */
 /* This is the key fix: make all page containers transparent */
@@ -2637,32 +2583,42 @@ textarea.input-field { resize: vertical; }
    GLOBAL BACKGROUND & LAYOUT OVERRIDE FIX
    ========================================================================== */
 
-/* 1. Set up the main wrapper as the layering context */
-.layout-wrapper {
-  position: relative; /* Establishes stacking context */
+
+/* This sets up the main stacking context */
+.layout-wrapper.has-animated-bg {
+  position: relative; /* Establishes the stacking context */
   z-index: 0;
-  background-color: var(--color-background); /* Solid fallback color */
+  background-color: var(--color-background); /* A solid fallback */
+  display: flex; /* We need to make it a flex container */
+  flex-direction: column; /* To stack header/main/footer */
+  min-height: 100vh; /* To ensure footer is at the bottom */
 }
 
-/* 2. Position the background effects */
-.interactive-background, .plasma-background {
+/* Position the backgrounds behind everything else */
+.layout-wrapper.has-animated-bg > .interactive-background,
+.layout-wrapper.has-animated-bg > .plasma-background {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  pointer-events: none; /* Clicks go through */
+  pointer-events: none;
+  z-index: -1; /* This is the key: it forces them behind */
 }
 
-.interactive-background {
-  z-index: -2; /* Sits just behind content */
+/* Make sure the main content area is transparent and grows to fill space */
+.layout-wrapper.has-animated-bg > .main-content {
+  background-color: transparent;
+  position: relative; /* Ensure it has its own z-index context */
+  z-index: 1;
+  flex-grow: 1; /* This is crucial for the footer to be pushed down */
 }
 
-.plasma-background {
-  z-index: -3; /* Sits behind everything */
-  opacity: 0.6;
-  mask-image: linear-gradient(to top, black 40%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
+/* Ensure the Header and Footer sit on top */
+.layout-wrapper.has-animated-bg > .header,
+.layout-wrapper.has-animated-bg > .footer {
+  position: relative;
+  z-index: 10;
 }
 
 /* 3. Make the main content area transparent */
