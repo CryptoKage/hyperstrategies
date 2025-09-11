@@ -1,5 +1,5 @@
 // ==============================================================================
-// START: PASTE THIS ENTIRE BLOCK into your src/pages/Presale.jsx FILE
+// FINAL, FULL VERSION: PASTE THIS to replace your entire Presale.jsx file
 // ==============================================================================
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,7 @@ import api from '../api/api';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 
-// Import the shadcn/ui components we installed
+// Import the shadcn/ui components using relative paths
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Progress } from "../components/ui/progress";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../components/ui/chart";
@@ -16,10 +16,10 @@ import { PieChart, Pie, Cell, Label } from 'recharts';
 
 // --- Tokenomics Data ---
 const tokenomicsData = [
-  { stage: 'Seed A', value: 30, fill: 'hsl(var(--primary))' },
-  { stage: 'Seed B', value: 30, fill: 'hsl(var(--primary) / 0.8)' },
-  { stage: 'Private', value: 10, fill: 'hsl(var(--primary) / 0.6)' },
-  { stage: 'Public', value: 30, fill: 'hsl(var(--primary) / 0.4)' },
+  { stage: 'Seed A', value: 30, fill: 'var(--color-primary)' },
+  { stage: 'Seed B', value: 30, fill: 'rgba(63, 186, 243, 0.8)' },
+  { stage: 'Private', value: 10, fill: 'rgba(63, 186, 243, 0.6)' },
+  { stage: 'Public', value: 30, fill: 'rgba(63, 186, 243, 0.4)' },
 ];
 
 const chartConfig = {
@@ -38,7 +38,6 @@ const Presale = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Only fetch eligibility if the user is logged in
     if (user) {
       api.get('/user/presale-eligibility')
         .then(res => setEligibility(res.data))
@@ -76,19 +75,17 @@ const Presale = () => {
         <h1>Platform Token Presale</h1>
         <p className="presale-subtitle">Your XP balance determines your eligibility and allocation. Secure your spot in the future of HyperStrategies.</p>
 
-        {/* --- Segmented Progress Bar --- */}
-        <Card>
+        <Card className="mb-6">
           <CardHeader>
             <CardTitle>Sale Progress</CardTitle>
             <CardDescription>Current Stage: Seed A (30% Filled)</CardDescription>
           </CardHeader>
           <CardContent>
-            <Progress value={30} />
+            <Progress value={30} className="h-4" />
           </CardContent>
         </Card>
 
         <div className="presale-grid">
-          {/* --- Tokenomics Card --- */}
           <Card>
             <CardHeader>
               <CardTitle>Tokenomics</CardTitle>
@@ -96,34 +93,21 @@ const Presale = () => {
             <CardContent>
               <ChartContainer config={chartConfig} className="mx-auto aspect-square h-[250px]">
                 <PieChart>
-                  <ChartTooltip content={<ChartTooltipContent nameKey="stage" hideLabel />} />
-                  <Pie data={tokenomicsData} dataKey="value" nameKey="stage" innerRadius={60}>
-                    {tokenomicsData.map((entry) => ( <Cell key={entry.stage} fill={entry.fill} /> ))}
-                    <Label
-                      content={({ viewBox }) => {
-                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                          return (
-                            <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
-                              <tspan x={viewBox.cx} y={viewBox.cy - 10} className="fill-foreground text-2xl font-bold">1B</tspan>
-                              <tspan x={viewBox.cx} y={viewBox.cy + 10} className="fill-muted-foreground">Total Supply</tspan>
-                            </text>
-                          )
-                        }
-                      }}
-                    />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                  <Pie data={tokenomicsData} dataKey="value" nameKey="stage" innerRadius={60} strokeWidth={5}>
+                    {tokenomicsData.map((entry) => ( <Cell key={`cell-${entry.stage}`} fill={entry.fill} /> ))}
                   </Pie>
                 </PieChart>
               </ChartContainer>
             </CardContent>
           </Card>
 
-          {/* --- Buy/Eligibility Card --- */}
-          <Card className="flex flex-col justify-center items-center">
+          <Card className="flex flex-col justify-center items-center text-center">
             <CardHeader>
               <CardTitle>Participate in the Presale</CardTitle>
               <CardDescription>Requires {eligibility.xpRequired.toLocaleString()} XP</CardDescription>
             </CardHeader>
-            <CardContent className="w-full text-center">
+            <CardContent className="w-full">
               {renderBuyButton()}
             </CardContent>
           </Card>
@@ -134,3 +118,6 @@ const Presale = () => {
 };
 
 export default Presale;
+// ==============================================================================
+// END OF FILE
+// ==============================================================================
