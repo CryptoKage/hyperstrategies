@@ -1,9 +1,10 @@
+t
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import './styles/global.css';
-import App from './app';
+import Router from './pages/Router'; // Changed from App
 import './i18n';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
@@ -12,10 +13,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <Router />
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
-
 serviceWorkerRegistration.register();

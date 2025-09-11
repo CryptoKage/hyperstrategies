@@ -4051,3 +4051,7 @@ opacity: 0.3;
     grid-template-columns: 1fr; /* Stack cards on mobile */
   }
 }
+
+.profile-card.pin-collection-card {
+  overflow: hidden;
+}
