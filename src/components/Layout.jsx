@@ -6,7 +6,7 @@ import PlasmaEffect from './PlasmaEffect';
 
 const Layout = ({ children, showInteractiveBackground = true }) => {
   return (
-    <div className="layout-wrapper">
+    <div className="layout-wrapper" style={{ backgroundColor: 'var(--color-background)' }}>
       <PlasmaEffect />
       {showInteractiveBackground && <InteractiveBackground />}
       <Header />
