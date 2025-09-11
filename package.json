@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@craco/craco": "^7.1.0",
     "@radix-ui/react-progress": "^1.1.7",
     "@react-three/drei": "^9.108.3",
     "@react-three/fiber": "^8.16.8",
@@ -36,9 +35,9 @@
     "typescript": "^3.2.1"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
+"start": "react-scripts start",
+"build": "react-scripts build",
+"test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "node index.js"
   },
