@@ -1,25 +1,24 @@
-// src/index.js
-
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './styles/global.css'; 
-import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import Header from './Header';
+import Footer from './Footer';
+import InteractiveBackground from './InteractiveBackground';
+import PlasmaEffect from './PlasmaEffect';
 
-import './styles/global.css';  
-import Router from './pages/Router';
-import './i18n'; // This still initializes our i18n configuration
+const Layout = ({ children, showInteractiveBackground = true }) => {
+  return (
+    <>
+      <PlasmaEffect />
+      {showInteractiveBackground && <InteractiveBackground />}
+      
+      <div className="layout-wrapper">
+        <Header />
+        <main className="main-content">
+          {children}
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+};
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <Router />
-      </AuthProvider>
-    </BrowserRouter>
-  </React.StrictMode>
-);
-
-serviceWorkerRegistration.register();
+export default Layout;
