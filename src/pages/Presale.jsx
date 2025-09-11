@@ -71,7 +71,7 @@ const Presale = () => {
   
 return (
     <Layout>
-      <div className="presale-container">
+      <div className="presale-container shadcn-theme">
         <h1>Platform Token Presale</h1>
         <p className="presale-subtitle">Your XP balance determines your eligibility and allocation. Secure your spot in the future of HyperStrategies.</p>
 

@@ -2,13 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================================== */
+/* START: REPLACE the @layer base block in global.css                           */
+/* ============================================================================== */
 @layer base {
-  :root {
-    --background: 222.2 47.4% 11.2%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 47.4% 11.2%;
+  /* We are scoping all the shadcn variables inside this class */
+  .shadcn-theme {
+    --background: 222.2 47.4% 11.2%; /* Dark Blue */
+    --foreground: 210 40% 98%;      /* Light Gray/White */
+    --card: 224 71.4% 4.1%;         /* Even Darker Blue for Cards */
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 47.4% 11.2%;
+    --popover: 224 71.4% 4.1%;
     --popover-foreground: 210 40% 98%;
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
@@ -23,11 +27,10 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --radius: 0.5rem;
+    --radius: 0.75rem; /* A slightly more rounded look */
   }
 }
 
-/* Base and reset styles */
 
 /* Universal box sizing */
 *,
