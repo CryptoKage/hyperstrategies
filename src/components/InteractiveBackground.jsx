@@ -26,161 +26,114 @@ const useWindowSize = () => {
 };
 
 // Accept a `seed` prop so each instance can generate a unique node pattern
+
 const InteractiveBackground = ({ seed = Math.random() }) => {
   const [width, height] = useWindowSize();
   const containerRef = useRef(null);
 
-  // --- FIX 2: Use `useRef` for all animation data to prevent re-renders ---
-  const pointsRef = useRef([]);
-  const linesRef = useRef([]);
-  const pointElementsRef = useRef([]);
-  const lineElementsRef = useRef([]);
+  // --- THIS IS THE FIX ---
+  // We will store the points and lines directly in state.
+  // This ensures that whenever they are regenerated, the component MUST re-render.
+  const [points, setPoints] = useState([]);
+  const [lines, setLines] = useState([]);
+  
   const animationFrameIdRef = useRef(null);
-
-  // --- FIX 3: Use a single state to trigger the initial render ---
-  // We only need to render the SVG elements ONCE. After that, we manipulate them directly.
-  const [isInitialized, setIsInitialized] = useState(false);
-
-   const colorPalette = {
-    primary: 'var(--color-primary)', // #3fbaf3
-    buy: '#4ade80',      // A nice, vibrant green
-    sell: '#f87171'      // A complementary red
-  };
-
 
   const generateNetwork = useCallback(() => {
     if (!containerRef.current) return;
     
     const containerWidth = containerRef.current.offsetWidth;
     const containerHeight = containerRef.current.offsetHeight;
-    
     const numPoints = Math.floor((containerWidth * containerHeight) / 15000);
     const connectionDistance = 120;
-
     const rng = createSeededRandom(typeof seed === 'number' ? seed : seed.toString().split('').reduce((a, c) => a + c.charCodeAt(0), 0));
 
-    // Reset element references when regenerating
-    pointElementsRef.current = [];
-    lineElementsRef.current = [];
+    // Generate new point data
+    const newPoints = Array.from({ length: numPoints }, () => ({
+      x: rng() * containerWidth, y: rng() * containerHeight,
+      vx: (rng() - 0.5) * 0.3, vy: (rng() - 0.5) * 0.3,
+    }));
 
-    // Generate points and store them in the ref, NOT state.
-    pointsRef.current = Array.from({ length: numPoints }, () => {
-      // --- THE FIX: Assign a random color to each point on creation ---
-      let color = colorPalette.primary;
-      const rand = rng();
-      if (rand < 0.05) { // 5% chance of being a "buy" node
-        color = colorPalette.buy;
-      } else if (rand > 0.95) { // 5% chance of being a "sell" node
-        color = colorPalette.sell;
-      }
-
-      return {
-        x: rng() * containerWidth,
-        y: rng() * containerHeight,
-        vx: (rng() - 0.5) * 0.3,
-        vy: (rng() - 0.5) * 0.3,
-        color: color // Store the color with the point
-      };
-    });
-
-    // Generate lines and store them in the ref, NOT state.
+    // Generate new line data
     const newLines = [];
-    for (let i = 0; i < pointsRef.current.length; i++) {
-      for (let j = i + 1; j < pointsRef.current.length; j++) {
-        const p1 = pointsRef.current[i];
-        const p2 = pointsRef.current[j];
+    for (let i = 0; i < newPoints.length; i++) {
+      for (let j = i + 1; j < newPoints.length; j++) {
+        const p1 = newPoints[i]; const p2 = newPoints[j];
         const distance = Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
         if (distance < connectionDistance) {
-          newLines.push({
-            p1_index: i, // Store indices instead of object references
-            p2_index: j,
-            opacity: 1 - distance / connectionDistance,
-          });
+          newLines.push({ p1_index: i, p2_index: j, opacity: 1 - distance / connectionDistance });
         }
       }
     }
-    linesRef.current = newLines;
 
-    // Trigger the one-time render
-    setIsInitialized(true);
+    // Set the state, which forces a re-render
+    setPoints(newPoints);
+    setLines(newLines);
   }, [seed]);
 
-  // Regenerate network on resize
   useEffect(() => {
-    // Debounce resize to prevent rapid regeneration
     const timeoutId = setTimeout(() => generateNetwork(), 500);
     return () => clearTimeout(timeoutId);
   }, [width, height, generateNetwork]);
   
-  // --- FIX 4: The new, high-performance animation loop ---
+  // The animation loop now reads from state and uses refs for DOM nodes
   useEffect(() => {
-    if (!isInitialized) return; // Don't start animating until the network is generated
+    const pointElements = Array.from(containerRef.current.querySelectorAll('circle'));
+    const lineElements = Array.from(containerRef.current.querySelectorAll('line'));
+
+    // We still use a ref for the point data inside the animation to avoid dependency issues
+    const pointsDataRef = { current: points };
 
     const animate = () => {
       if (!containerRef.current) return;
       const containerWidth = containerRef.current.offsetWidth;
       const containerHeight = containerRef.current.offsetHeight;
 
-      // Update point positions in the ref
-      pointsRef.current.forEach((p, i) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
+      pointsDataRef.current.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy;
         if (p.x < 0 || p.x > containerWidth) p.vx *= -1;
         if (p.y < 0 || p.y > containerHeight) p.vy *= -1;
-
-        // Directly manipulate the DOM element attributes, bypassing React's render cycle
-        const pointElement = pointElementsRef.current[i];
-        if (pointElement) {
-          pointElement.setAttribute('cx', p.x);
-          pointElement.setAttribute('cy', p.y);
+        if (pointElements[i]) {
+          pointElements[i].setAttribute('cx', p.x);
+          pointElements[i].setAttribute('cy', p.y);
         }
       });
       
-      // Update line positions by reading from the updated points ref
-      linesRef.current.forEach((line, i) => {
-        const p1 = pointsRef.current[line.p1_index];
-        const p2 = pointsRef.current[line.p2_index];
-        const lineElement = lineElementsRef.current[i];
-        if (lineElement && p1 && p2) {
-          lineElement.setAttribute('x1', p1.x);
-          lineElement.setAttribute('y1', p1.y);
-          lineElement.setAttribute('x2', p2.x);
-          lineElement.setAttribute('y2', p2.y);
+      lineElements.forEach((lineEl, i) => {
+        const lineData = lines[i];
+        if (!lineData) return;
+        const p1 = pointsDataRef.current[lineData.p1_index];
+        const p2 = pointsDataRef.current[lineData.p2_index];
+        if (p1 && p2) {
+          lineEl.setAttribute('x1', p1.x); lineEl.setAttribute('y1', p1.y);
+          lineEl.setAttribute('x2', p2.x); lineEl.setAttribute('y2', p2.y);
         }
       });
 
       animationFrameIdRef.current = requestAnimationFrame(animate);
     };
-    animate();
+    
+    if (points.length > 0) {
+        animate();
+    }
     return () => cancelAnimationFrame(animationFrameIdRef.current);
-  }, [isInitialized]);
+  }, [points, lines]); // Re-start the animation if points/lines change
 
   return (
     <div ref={containerRef} className="interactive-background">
       <svg width="100%" height="100%">
-        {/* --- FIX 5: Render based on the refs and populate the element refs --- */}
-        {/* This JSX now only runs ONCE when isInitialized becomes true. */}
-        {isInitialized && linesRef.current.map((line, i) => (
+        {lines.map((line, i) => (
           <line
             key={i}
-            ref={el => lineElementsRef.current[i] = el} // Store the DOM element
-            x1={pointsRef.current[line.p1_index]?.x}
-            y1={pointsRef.current[line.p1_index]?.y}
-            x2={pointsRef.current[line.p2_index]?.x}
-            y2={pointsRef.current[line.p2_index]?.y}
-            stroke="var(--color-border)"
-            strokeOpacity={line.opacity}
+            x1={points[line.p1_index]?.x} y1={points[line.p1_index]?.y}
+            x2={points[line.p2_index]?.x} y2={points[line.p2_index]?.y}
+            stroke="var(--color-border)" strokeOpacity={line.opacity}
           />
         ))}
-        {isInitialized && pointsRef.current.map((point, i) => (
+        {points.map((point, i) => (
           <circle
             key={i}
-            ref={el => pointElementsRef.current[i] = el} // Store the DOM element
-            cx={point.x}
-            cy={point.y}
-            r="2"
-            fill="var(--color-primary)"
+            cx={point.x} cy={point.y} r="2" fill="var(--color-primary)"
           />
         ))}
       </svg>
