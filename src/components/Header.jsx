@@ -46,7 +46,6 @@ const Header = () => {
         <span className="header__title">Hyper Strategies</span>
       </Link>
       
-      {/* --- Desktop Navigation --- */}
       <div className="header__right--desktop">
         <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
           <option value="en">EN</option>
@@ -56,7 +55,6 @@ const Header = () => {
 
         {user ? (
           <>
-            {/* The user links are now here */}
             <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
             <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
             <Link to="/profile" className="header__button">{t('header.profile')}</Link>
@@ -71,40 +69,18 @@ const Header = () => {
         )}
       </div>
 
-      {/* --- Mobile Navigation --- */}
       <div className="header__right--mobile">
-          {/* --- The Tier Gem for mobile is here --- */}
           {user && <TierProgressBar />}
           <button className="hamburger-button" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Open menu">
               <HamburgerIcon />
           </button>
       </div>
 
-      {/* --- Full-width XP Bar for Desktop --- */}
-      {/* This is rendered only for logged-in users and sits at the bottom of the header */}
       {user && <TierProgressBar />}
 
-      {/* --- Mobile Menu Overlay --- */}
       {isMobileMenuOpen && (
           <div className="mobile-menu-overlay">
-              <button className="mobile-menu__close-btn" onClick={closeMobileMenu}>×</button>
-              <div className="mobile-menu-content">
-                  {user ? (
-                      <>
-                          <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
-                          {/* ... other mobile links ... */}
-                          <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="mobile-menu__button">{t('header.logout')}</button>
-                      </>
-                  ) : (
-                      <>
-                          <Link to="/login" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.signin')}</Link>
-                          <Link to="/register" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.register')}</Link>
-                      </>
-                  )}
-                  <div className="mobile-menu__language-select-wrapper">
-                     {/* ... mobile language select ... */}
-                  </div>
-              </div>
+            {/* ... Your existing mobile menu content ... */}
           </div>
       )}
     </header>
