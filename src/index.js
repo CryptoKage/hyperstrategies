@@ -1,24 +1,18 @@
 import React from 'react';
-import Header from './Header';
-import Footer from './Footer';
-import InteractiveBackground from './InteractiveBackground';
-import PlasmaEffect from './PlasmaEffect';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import './styles/global.css'; // Your main styles
+import App from './app'; // Import the main App component
+import './i18n';
 
-const Layout = ({ children, showInteractiveBackground = true }) => {
-  return (
-    <>
-      <PlasmaEffect />
-      {showInteractiveBackground && <InteractiveBackground />}
-      
-      <div className="layout-wrapper">
-        <Header />
-        <main className="main-content">
-          {children}
-        </main>
-        <Footer />
-      </div>
-    </>
-  );
-};
-
-export default Layout;
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);

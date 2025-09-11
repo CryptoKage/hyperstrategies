@@ -1,21 +1,8 @@
 import React from 'react';
-import './styles/global.css';
-import './styles/components.css';
-
-import Header from './components/Header';
-import Hero from './components/Hero';
-import CardSection from './components/CardSection';
-import Footer from './components/Footer';
+import Router from './pages/Router';
 
 function App() {
-  return (
-    <>
-      <Header />
-      <Hero />
-      <CardSection />
-      <Footer />
-    </>
-  );
+  return <Router />;
 }
 
 export default App;
