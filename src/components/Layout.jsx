@@ -1,3 +1,6 @@
+// ==============================================================================
+// FINAL, DEFINITIVE Layout.jsx
+// ==============================================================================
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
@@ -6,21 +9,20 @@ import PlasmaEffect from './PlasmaEffect';
 
 const Layout = ({ children, showInteractiveBackground = true }) => {
   return (
-    // We create a fragment <> to return multiple top-level elements
-    <>
-      {/* The backgrounds are now at the top level, outside the main wrapper */}
+    // We add a new class 'has-animated-bg' to act as our hook
+    <div className="layout-wrapper has-animated-bg">
       <PlasmaEffect />
       {showInteractiveBackground && <InteractiveBackground />}
-      
-      <div className="layout-wrapper">
-        <Header />
-        <main className="main-content">
-          {children}
-        </main>
-        <Footer />
-      </div>
-    </>
+      <Header />
+      <main className="main-content">
+        {children}
+      </main>
+      <Footer />
+    </div>
   );
 };
 
 export default Layout;
+// ==============================================================================
+// END OF REPLACEMENT
+// ==============================================================================
