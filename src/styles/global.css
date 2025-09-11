@@ -5,31 +5,7 @@
 /* ============================================================================== */
 /* START: REPLACE the @layer base block in global.css                           */
 /* ============================================================================== */
-@layer base {
-  /* We are scoping all the shadcn variables inside this class */
-  .shadcn-theme {
-    --background: 222.2 47.4% 11.2%; /* Dark Blue */
-    --foreground: 210 40% 98%;      /* Light Gray/White */
-    --card: 224 71.4% 4.1%;         /* Even Darker Blue for Cards */
-    --card-foreground: 210 40% 98%;
-    --popover: 224 71.4% 4.1%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --radius: 0.75rem; /* A slightly more rounded look */
-  }
-}
+
 
 
 /* Universal box sizing */
