@@ -4055,3 +4055,33 @@ opacity: 0.3;
 .profile-card.pin-collection-card {
   overflow: hidden;
 }
+.presale-progress {
+  width: 100%;
+  background-color: var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  height: 24px;
+  margin-bottom: 24px;
+}
+
+.presale-progress-fill {
+  height: 100%;
+  background-color: var(--color-primary);
+  width: 0%;
+}
+
+.rounds-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 24px;
+}
+
+.rounds-table th,
+.rounds-table td {
+  padding: 8px;
+  text-align: left;
+}
+
+.rounds-table th {
+  border-bottom: 1px solid var(--color-border);
+}
