@@ -178,8 +178,7 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        <div className="admin-actions-card">
-          {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
+        {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
           <div className="admin-actions-card warning">
             <h3>Pending Vault Withdrawals ({stats.pendingVaultWithdrawals.length})</h3>
             <p>ACTION REQUIRED: Ensure funds are returned from the trading desk, then approve for processing.</p>
@@ -216,6 +215,9 @@ const AdminDashboard = () => {
             </div>
           </div>
         )}
+        
+        {/* --- This is the User Lookup card, now separate --- */}
+        <div className="admin-actions-card">
           <h3>User Lookup</h3>
           <p>Search for a user by their username, email, or wallet address.</p>
           <form onSubmit={handleSearch} className="admin-form">
@@ -239,6 +241,7 @@ const AdminDashboard = () => {
             </div>
           )}
         </div>
+
 
         <div className="admin-grid">
           <div className="activity-card">
