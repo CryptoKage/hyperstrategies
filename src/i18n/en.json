@@ -41,7 +41,8 @@
     "unlocked_tooltip": "Request a full withdrawal",
     "available_strategies": "Available Strategies",
     "allocate_funds": "Allocate Funds",
-    "coming_soon": "Coming Soon"
+    "coming_soon": "Coming Soon",
+    "more_info": "More Info"
   },
   "vault_modal": {
     "title": "Allocate to {{vaultName}}",

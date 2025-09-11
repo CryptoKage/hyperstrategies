@@ -41,7 +41,8 @@
     "unlocked_tooltip": "Vollständige Auszahlung anfordern",
     "available_strategies": "Verfügbare Strategien",
     "allocate_funds": "Einzahlen",
-    "coming_soon": "Demnächst verfügbar"
+    "coming_soon": "Demnächst verfügbar",
+    "more_info": "Mehr Infos"
   },
   "vault_modal": {
     "title": "In den \"{{vaultName}}\" einzahlen",

@@ -173,7 +173,7 @@ const Dashboard = () => {
                       </div>
                       <div className="vault-actions">
                         <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
-                        
+                        <button className="btn-secondary" onClick={() => navigate('/vault1')}>               {t('dashboard.more_info')}</button>
                         {/* --- THE FIX: The Withdraw button is now disabled and has a tooltip based on lock status --- */}
                         <button 
                           className="btn-secondary" 
@@ -217,6 +217,9 @@ const Dashboard = () => {
                   )}
 
                   <div className="vault-actions">
+                    <button className="btn-secondary" onClick={() => navigate('/vault1')}>
+                      {t('dashboard.more_info')}
+                    </button>
                     {isActive ? (
                       <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
                         {t('dashboard.allocate_funds')}
