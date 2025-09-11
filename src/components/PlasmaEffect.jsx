@@ -59,7 +59,7 @@ const PlasmaEffect = () => {
         for (let x = 0; x < offscreenCanvas.width; x++) {
           const index = (y * offscreenCanvas.width + x) * 4;
           const noise = simplex(x * noiseScale, y * noiseScale, time * timeScale);
-          const t = Math.min(0.6, (noise + 1) / 2);
+          const t = Math.min(0.9, (noise + 1) / 2);
           
           data[index] = secondaryColor.r + t * (primaryColor.r - secondaryColor.r);
           data[index + 1] = secondaryColor.g + t * (primaryColor.g - secondaryColor.g);
