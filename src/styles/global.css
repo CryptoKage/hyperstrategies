@@ -2553,8 +2553,10 @@ textarea.input-field { resize: vertical; }
   flex-direction: column;
   min-height: 100vh;
   position: relative;
-  z-index: 1; /* Content is above backgrounds */
+  z-index: 1; 
 }
+
+/* --- 2. Animated Backgrounds (The FIX is here) --- */
 .interactive-background, .plasma-background {
   position: fixed;
   top: 0;
@@ -2562,10 +2564,18 @@ textarea.input-field { resize: vertical; }
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: -1; /* Backgrounds are behind content */
+  z-index: -1; 
 }
+
 .main-content {
-  flex-grow: 1; /* Pushes footer down */
+  flex-grow: 1; 
+}
+
+/* --- 3. Card Background Color Fix --- */
+.profile-card, .home-card, .stat-card, .action-card, .vault-card, 
+.balance-card, .rewards-card, .bounty-card, .my-listing-card, 
+.pin-listing-card, .admin-card {
+  background-color: var(--color-surface);
 }
 
 /* --- 2. Card Background Color Fix --- */
