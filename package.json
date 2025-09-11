@@ -36,8 +36,8 @@
     "typescript": "^3.2.1"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
+"start": "react-scripts start",
+"build": "react-scripts build",
     "test": "craco test",
     "eject": "react-scripts eject",
     "server": "node index.js"
