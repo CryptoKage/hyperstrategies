@@ -9,9 +9,9 @@ import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 
 // Import the shadcn/ui components we installed
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Progress } from "../components/ui/progress";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../components/ui/chart";
 import { PieChart, Pie, Cell, Label } from 'recharts';
 
 // --- Tokenomics Data ---
