@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@radix-ui/react-progress": "^1.1.7",
     "@react-three/drei": "^9.108.3",
     "@react-three/fiber": "^8.16.8",
     "axios": "^1.10.0",
@@ -12,6 +13,7 @@
     "framer-motion": "^12.23.12",
     "i18next": "^23.11.5",
     "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.543.0",
     "qrcode.react": "^4.2.0",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
@@ -21,6 +23,7 @@
     "react-rotating-text": "^1.4.1",
     "react-router-dom": "^6.25.1",
     "react-scripts": "5.0.1",
+    "recharts": "^2.15.4",
     "sequelize": "^6.37.1",
     "simplex-noise": "^4.0.3",
     "sqlite3": "^5.1.7",
