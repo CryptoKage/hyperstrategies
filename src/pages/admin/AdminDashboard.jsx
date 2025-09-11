@@ -179,6 +179,43 @@ const AdminDashboard = () => {
         )}
 
         <div className="admin-actions-card">
+          {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
+          <div className="admin-actions-card warning">
+            <h3>Pending Vault Withdrawals ({stats.pendingVaultWithdrawals.length})</h3>
+            <p>ACTION REQUIRED: Ensure funds are returned from the trading desk, then approve for processing.</p>
+            <div className="table-responsive">
+              <table className="activity-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Description</th>
+                    <th className="amount">Amount</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.pendingVaultWithdrawals.map(item => (
+                    <tr key={item.activity_id}>
+                      <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
+                      <td>{item.description}</td>
+                      <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
+                      <td className="actions-cell">
+                        <button 
+                          className="btn-primary btn-sm" 
+                          onClick={() => handleApproveWithdrawal(item.activity_id)}
+                          disabled={approvingId === item.activity_id}
+                        >
+                          {approvingId === item.activity_id ? '...' : 'Approve'}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
+            </div>
+          </div>
+        )}
           <h3>User Lookup</h3>
           <p>Search for a user by their username, email, or wallet address.</p>
           <form onSubmit={handleSearch} className="admin-form">
