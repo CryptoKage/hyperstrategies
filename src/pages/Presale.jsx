@@ -75,19 +75,17 @@ return (
         <h1>Platform Token Presale</h1>
         <p className="presale-subtitle">Your XP balance determines your eligibility and allocation. Secure your spot in the future of HyperStrategies.</p>
 
-        {/* --- Segmented Progress Bar --- */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Sale Progress</CardTitle>
             <CardDescription>Current Stage: Seed A (30% Filled)</CardDescription>
           </CardHeader>
           <CardContent>
-            <Progress value={30} className="h-4" />
+            <Progress value={30} />
           </CardContent>
         </Card>
 
         <div className="presale-grid">
-          {/* --- Tokenomics Card --- */}
           <Card>
             <CardHeader>
               <CardTitle>Tokenomics</CardTitle>
@@ -98,13 +96,24 @@ return (
                   <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
                   <Pie data={tokenomicsData} dataKey="value" nameKey="stage" innerRadius={60} strokeWidth={5}>
                     {tokenomicsData.map((entry) => ( <Cell key={`cell-${entry.stage}`} fill={entry.fill} /> ))}
+                    <Label
+                      content={({ viewBox }) => {
+                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                          return (
+                            <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
+                              <tspan x={viewBox.cx} y={viewBox.cy - 10} className="fill-foreground text-2xl font-bold">1B</tspan>
+                              <tspan x={viewBox.cx} y={viewBox.cy + 10} className="fill-muted-foreground">Total Supply</tspan>
+                            </text>
+                          )
+                        }
+                      }}
+                    />
                   </Pie>
                 </PieChart>
               </ChartContainer>
             </CardContent>
           </Card>
 
-          {/* --- Buy/Eligibility Card --- */}
           <Card className="flex flex-col justify-center items-center text-center">
             <CardHeader>
               <CardTitle>Participate in the Presale</CardTitle>

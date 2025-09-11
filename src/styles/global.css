@@ -2558,51 +2558,26 @@ textarea.input-field { resize: vertical; }
 /* ==========================================================================
    GLOBAL BACKGROUND & LAYOUT OVERRIDE FIX
    ========================================================================== */
-
-
-/* This sets up the main stacking context */
-.layout-wrapper.has-animated-bg {
-  position: relative; /* Establishes the stacking context */
-  z-index: 0;
-  background-color: var(--color-background); /* A solid fallback */
-  display: flex; /* We need to make it a flex container */
-  flex-direction: column; /* To stack header/main/footer */
-  min-height: 100vh; /* To ensure footer is at the bottom */
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  z-index: 1; /* Bring the content wrapper above the backgrounds */
 }
 
-/* Position the backgrounds behind everything else */
-.layout-wrapper.has-animated-bg > .interactive-background,
-.layout-wrapper.has-animated-bg > .plasma-background {
+.interactive-background, .plasma-background {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: -1; /* This is the key: it forces them behind */
+  z-index: -1; /* Place them behind everything */
 }
 
-/* Make sure the main content area is transparent and grows to fill space */
-.layout-wrapper.has-animated-bg > .main-content {
-  background-color: transparent;
-  position: relative; /* Ensure it has its own z-index context */
-  z-index: 1;
-  flex-grow: 1; /* This is crucial for the footer to be pushed down */
-}
-
-/* Ensure the Header and Footer sit on top */
-.layout-wrapper.has-animated-bg > .header,
-.layout-wrapper.has-animated-bg > .footer {
-  position: relative;
-  z-index: 10;
-}
-
-/* 3. Make the main content area transparent */
-/* This is the KEY FIX that will reveal the backgrounds on all pages */
 .main-content {
-  position: relative; /* Ensure it has its own stacking context */
-  z-index: 1; /* Place it on top of the backgrounds */
-  background-color: transparent;
+  flex-grow: 1; /* Push the footer down */
 }
 
 /* 4. Explicitly make page containers transparent */
@@ -4056,6 +4031,7 @@ opacity: 0.3;
   max-width: 900px;
   margin: 40px auto;
   padding: 20px;
+   background-color: var(--color-background);
 }
 .presale-container h1 {
   font-size: 32px;
