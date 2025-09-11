@@ -39,7 +39,7 @@ const Header = () => {
   
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
-  return (
+return (
     <header className="header">
       <Link to="/" className="header__left" onClick={closeMobileMenu}>
         <img src={Logo} alt={t('header.alt_logo')} className="header__logo" />
@@ -78,9 +78,27 @@ const Header = () => {
 
       {user && <TierProgressBar />}
 
+      {/* --- Mobile Menu Overlay --- */}
       {isMobileMenuOpen && (
           <div className="mobile-menu-overlay">
-            {/* ... Your existing mobile menu content ... */}
+              <button className="mobile-menu__close-btn" onClick={closeMobileMenu}>×</button>
+              <div className="mobile-menu-content">
+                  {user ? (
+                      <>
+                          <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
+                          {/* ... other mobile links ... */}
+                          <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="mobile-menu__button">{t('header.logout')}</button>
+                      </>
+                  ) : (
+                      <>
+                          <Link to="/login" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.signin')}</Link>
+                          <Link to="/register" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.register')}</Link>
+                      </>
+                  )}
+                  <div className="mobile-menu__language-select-wrapper">
+                     {/* ... mobile language select ... */}
+                  </div>
+              </div>
           </div>
       )}
     </header>
