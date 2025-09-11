@@ -69,7 +69,7 @@ const Presale = () => {
     );
   };
   
-return (
+ return (
     <Layout>
       <div className="presale-container shadcn-theme">
         <h1>Platform Token Presale</h1>
@@ -81,7 +81,7 @@ return (
             <CardDescription>Current Stage: Seed A (30% Filled)</CardDescription>
           </CardHeader>
           <CardContent>
-            <Progress value={30} />
+            <Progress value={30} className="h-4" />
           </CardContent>
         </Card>
 
