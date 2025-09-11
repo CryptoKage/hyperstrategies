@@ -367,7 +367,7 @@ button {
 :root {
   --color-background: #040e21;
   --color-primary: #3fbaf3;
-  --color-surface: #1b6f7b;
+  --color-surface: #1f486b;
   --color-border: #2c3a4f;
   --color-text-primary: #ffffff;
   --color-text-secondary: #a0aec0;
@@ -2444,16 +2444,6 @@ textarea.input-field { resize: vertical; }
   padding: 80px 24px;
 }
 
-/* The background component itself */
-.interactive-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1; /* Sits behind the content */
-  overflow: hidden;
-}
 
 /* We need to make the content sit on top of the background */
 .hero-section {
@@ -2467,17 +2457,6 @@ textarea.input-field { resize: vertical; }
     padding: 40px 16px;
   }
 }
-
-
-/* ==========================================================================
-   GLOBAL LAYOUT, BACKGROUNDS, & FOOTER (Consolidated)
-   ========================================================================== */
-
-
-
-/* --- 3. Page Container Transparency --- */
-/* This is the key fix: make all page containers transparent */
-
 
 /* --- 5. Footer --- */
 .footer {
@@ -2544,54 +2523,6 @@ textarea.input-field { resize: vertical; }
 }
 .footer__legal .separator {
   color: var(--color-border);
-}
-/* ==========================================================================
-   GLOBAL BACKGROUND & LAYOUT OVERRIDE FIX
-   ========================================================================== */
-.layout-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  position: relative;
-  z-index: 1; 
-}
-
-/* --- 2. Animated Backgrounds (The FIX is here) --- */
-.interactive-background, .plasma-background {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: -1; 
-}
-
-.main-content {
-  flex-grow: 1; 
-}
-
-/* --- 3. Card Background Color Fix --- */
-.profile-card, .home-card, .stat-card, .action-card, .vault-card, 
-.balance-card, .rewards-card, .bounty-card, .my-listing-card, 
-.pin-listing-card, .admin-card {
-  background-color: var(--color-surface);
-}
-
-/* --- 2. Card Background Color Fix --- */
-/* This restores the intended dark blue surface color for all cards */
-
-/* 4. Explicitly make page containers transparent */
-/* This overrides any specific background colors they might have. */
-.dashboard-container,
-.wallet-container,
-.profile-container,
-.admin-container,
-.faq-container,
-.leaderboard-container,
-.hero-section-wrapper,
-.auth-wrapper {
-  background-color: transparent !important; /* Force transparency */
 }
 
 /* --- Fee Structure & Info Page Styles --- */
@@ -4096,3 +4027,40 @@ opacity: 0.3;
 .vault-detail-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 24px; }
 .chart-card { grid-column: 2 / 3; }
 .full-width { grid-column: 1 / -1; }
+
+
+/* ============================================================================== */
+/* FINAL, DEFINITIVE CSS for Global Layout & Backgrounds                        */
+/* ============================================================================== */
+
+/* 1. This ensures the main wrapper can be a "stacking context" */
+.layout-wrapper {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 2. This places the backgrounds behind everything else */
+.plasma-background,
+.interactive-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 3. This ensures the main content area grows and pushes the footer down */
+.main-content {
+  flex-grow: 1;
+}
+
+/* 4. This ensures Header and Footer are visually on top of the content */
+.header, .footer {
+  position: relative;
+  z-index: 10;
+}
