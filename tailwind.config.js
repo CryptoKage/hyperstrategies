@@ -1,10 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx}",
+    "./src/**/*.{js,jsx}", // Scan all your components
   ],
   theme: {
     extend: {
+      // This tells Tailwind how to map shadcn's color names
+      // to YOUR existing CSS variables from global.css
       colors: {
         border: 'var(--color-border)',
         background: 'var(--color-background)',
@@ -23,13 +25,8 @@ module.exports = {
         },
         muted: {
           foreground: 'var(--color-text-secondary)',
-        }
+        },
       },
-      borderRadius: {
-        lg: "0.75rem",
-        md: "0.5rem",
-        sm: "0.25rem",
-      }
     },
   },
   plugins: [require("tailwindcss-animate")],

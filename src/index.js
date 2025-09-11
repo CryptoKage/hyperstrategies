@@ -7,7 +7,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-import './styles/global.css';
+import './styles/tailwind.css'; 
+import './styles/global.css';  
 import Router from './pages/Router';
 import './i18n'; // This still initializes our i18n configuration
 
