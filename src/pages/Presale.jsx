@@ -69,12 +69,13 @@ const Presale = () => {
     );
   };
   
-  return (
+return (
     <Layout>
       <div className="presale-container">
         <h1>Platform Token Presale</h1>
         <p className="presale-subtitle">Your XP balance determines your eligibility and allocation. Secure your spot in the future of HyperStrategies.</p>
 
+        {/* --- Segmented Progress Bar --- */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle>Sale Progress</CardTitle>
@@ -86,6 +87,7 @@ const Presale = () => {
         </Card>
 
         <div className="presale-grid">
+          {/* --- Tokenomics Card --- */}
           <Card>
             <CardHeader>
               <CardTitle>Tokenomics</CardTitle>
@@ -102,6 +104,7 @@ const Presale = () => {
             </CardContent>
           </Card>
 
+          {/* --- Buy/Eligibility Card --- */}
           <Card className="flex flex-col justify-center items-center text-center">
             <CardHeader>
               <CardTitle>Participate in the Presale</CardTitle>

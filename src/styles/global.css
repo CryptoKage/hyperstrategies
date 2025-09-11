@@ -4140,18 +4140,6 @@ opacity: 0.3;
   margin-top: 24px;
 }
 
-/* shadcn/ui Card component overrides */
-.card {
-  background-color: var(--color-surface) !important;
-  border-color: var(--color-border) !important;
-  color: var(--color-text-primary) !important;
-}
-.card-header, .card-content, .card-description {
-  color: var(--color-text-secondary) !important;
-}
-.card-title {
-  color: var(--color-text-primary) !important;
-}
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
