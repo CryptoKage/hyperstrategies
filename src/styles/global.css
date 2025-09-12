@@ -241,6 +241,7 @@ button {
   background-color: var(--color-surface); /* The empty part of the bar */
   transition: height 0.2s ease-in-out;
   cursor: pointer;
+   z-index: 20; 
 }
 
 .xp-bar-fill {

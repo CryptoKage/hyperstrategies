@@ -120,7 +120,7 @@ const AdminDashboard = () => {
     }
   };
   
-  const renderContent = () => {
+const renderContent = () => {
     if (loading) return <p>Loading Admin Dashboard...</p>;
     if (error && !stats) return <p className="error-message">{error}</p>;
     if (!stats) return <p>No data available.</p>;
@@ -140,81 +140,49 @@ const AdminDashboard = () => {
           <StatCard label="Hot Wallet Gas (ETH)" value={parseFloat(stats.hotWalletBalance)} />
         </div>
         
-        {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
-          <div className="admin-actions-card warning">
-            <h3>Pending Vault Withdrawals ({stats.pendingVaultWithdrawals.length})</h3>
-            <p>ACTION REQUIRED: Ensure funds are returned from the trading desk, then approve for processing.</p>
-            <div className="table-responsive">
-              <table className="activity-table">
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Description</th>
-                    <th className="amount">Amount</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.pendingVaultWithdrawals.map(item => (
-                    <tr key={item.activity_id}>
-                      <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
-                      <td>{item.description}</td>
-                      <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
-                      <td className="actions-cell">
-                        <button 
-                          className="btn-primary btn-sm" 
-                          onClick={() => handleApproveWithdrawal(item.activity_id)}
-                          disabled={approvingId === item.activity_id}
-                        >
-                          {approvingId === item.activity_id ? '...' : 'Approve'}
-                        </button>
-                      </td>
+        {/* --- THIS IS THE CORRECTED PENDING WITHDRAWALS CARD --- */}
+        <div className="admin-actions-card">
+          <h3>Pending Vault Withdrawals</h3>
+          
+          {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 ? (
+            <>
+              <p>ACTION REQUIRED: Ensure funds are returned from the trading desk, then approve for processing.</p>
+              <div className="table-responsive">
+                <table className="activity-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Description</th>
+                      <th className="amount">Amount</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              {actionMessage.text && <p className={`admin-message ${actionMessage.type}`} style={{marginTop: '16px'}}>{actionMessage.text}</p>}
-            </div>
-          </div>
-        )}
-
-        {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 && (
-          <div className="admin-actions-card warning">
-            <h3>Pending Vault Withdrawals ({stats.pendingVaultWithdrawals.length})</h3>
-            <p>ACTION REQUIRED: Ensure funds are returned from the trading desk, then approve for processing.</p>
-            <div className="table-responsive">
-              <table className="activity-table">
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Description</th>
-                    <th className="amount">Amount</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.pendingVaultWithdrawals.map(item => (
-                    <tr key={item.activity_id}>
-                      <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
-                      <td>{item.description}</td>
-                      <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
-                      <td className="actions-cell">
-                        <button 
-                          className="btn-primary btn-sm" 
-                          onClick={() => handleApproveWithdrawal(item.activity_id)}
-                          disabled={approvingId === item.activity_id}
-                        >
-                          {approvingId === item.activity_id ? '...' : 'Approve'}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
-            </div>
-          </div>
-        )}
+                  </thead>
+                  <tbody>
+                    {stats.pendingVaultWithdrawals.map(item => (
+                      <tr key={item.activity_id}>
+                        <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
+                        <td>{item.description}</td>
+                        <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
+                        <td className="actions-cell">
+                          <button 
+                            className="btn-primary btn-sm" 
+                            onClick={() => handleApproveWithdrawal(item.activity_id)}
+                            disabled={approvingId === item.activity_id}
+                          >
+                            {approvingId === item.activity_id ? '...' : 'Approve'}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
+              </div>
+            </>
+          ) : (
+            <p>There are currently no pending vault withdrawals to approve.</p>
+          )}
+        </div>
         
         {/* --- This is the User Lookup card, now separate --- */}
         <div className="admin-actions-card">
