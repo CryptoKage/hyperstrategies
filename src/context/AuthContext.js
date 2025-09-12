@@ -34,7 +34,8 @@ export const AuthProvider = ({ children }) => {
   // --- Step 2: Define our new refresh token function ---
   const refreshToken = async () => {
     try {
-      const response = await api.post('/auth/refresh-token');
+      const response = await api.post('/api/auth/refresh-token');
+
       const newToken = response.data.token;
       if (newToken) {
         login(newToken);
