@@ -1,5 +1,5 @@
 // ==============================================================================
-// FINAL, DEFINITIVE VERSION: PASTE THIS to replace your entire AuthContext.js
+// FINAL, RESILIENT VERSION: PASTE THIS to replace your entire AuthContext.js
 // ==============================================================================
 import React, { createContext, useState, useContext, useMemo, useCallback, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
@@ -17,7 +17,8 @@ export const AuthProvider = ({ children }) => {
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     try {
       const decoded = jwtDecode(token);
-      setUser(decoded.user);
+      // --- FIX #1: Handle different JWT payload shapes (as recommended by scanner) ---
+      setUser(decoded.user || decoded);
     } catch (err) {
       console.error("Failed to decode token on login:", err);
       setUser(null);
@@ -41,51 +42,32 @@ export const AuthProvider = ({ children }) => {
         logout();
       }
     } catch (error) {
+      // --- FIX #2: Make logout logic less aggressive (as recommended by scanner) ---
       console.error('Failed to refresh token:', error);
-      logout();
+      // ONLY log out if the error is a 401 Unauthorized, which means the token is truly invalid/expired.
+      // For any other error (like a 403 or 500), we do nothing, allowing the user to stay logged in with their existing token.
+      if (error.response && error.response.status === 401) {
+        logout();
+      }
     }
-  }, [login, logout]); // refreshToken depends on login and logout
+  }, [login, logout]);
 
-  // --- THIS IS THE FIX ---
-  // This effect now only runs ONCE when the entire application first loads.
-  // It no longer depends on login/logout, which prevents the race condition.
   useEffect(() => {
     const bootstrapAuth = async () => {
       const token = localStorage.getItem('token');
       if (token) {
-        // We set the header first, so our subsequent refresh call is authenticated
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        try {
-          // Instead of just decoding, we ask the backend for a fresh token
-          const response = await api.post('/auth/refresh-token');
-          const newToken = response.data.token;
-          if (newToken) {
-            // Use the login function to save the new token and decode the user
-            login(newToken);
-          } else {
-            // If the backend doesn't return a new token, the old one is invalid
-            logout();
-          }
-        } catch (err) {
-          console.error("Token refresh on initial load failed (likely expired):", err);
-          logout();
-        }
+        await refreshToken();
       }
       setLoading(false);
     };
     bootstrapAuth();
-  }, [login, logout]); // We still need login/logout here, but the structure is safer.
+  }, [refreshToken]); // This hook now correctly depends on refreshToken
 
-  const toggleBalanceVisibility = useCallback(() => { /* ... */ }, []);
+  const toggleBalanceVisibility = useCallback(() => { setIsBalanceHidden(prevState => !prevState) }, []);
 
   const value = useMemo(() => ({ 
-    user, 
-    loading,
-    isBalanceHidden,
-    toggleBalanceVisibility,
-    login, 
-    logout,
-    refreshToken
+    user, loading, isBalanceHidden, toggleBalanceVisibility, login, logout, refreshToken
   }), [user, loading, isBalanceHidden, toggleBalanceVisibility, login, logout, refreshToken]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
