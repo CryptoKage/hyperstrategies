@@ -183,7 +183,7 @@ const VaultManagementPage = () => {
 
                   <button type="submit" className="btn-primary" disabled={isProcessingPnl}>{isProcessingPnl ? 'Processing...' : 'Apply PnL to Eligible Capital'}</button>
                 </form>
-                {message.text && <p className={`admin-message ${message.type}`}>{message.text}</p>}
+                {pnlMessage.text && <p className={`admin-message ${pnlMessage.type}`}>{pnlMessage.text}</p>}
               </div>
 
               <div className="admin-actions-card">
