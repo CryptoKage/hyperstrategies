@@ -77,20 +77,20 @@ const VaultManagementPage = () => {
 
  const handleApplyPnl = async (e) => {
     e.preventDefault();
-    setIsProcessing(true);
-    setMessage({ type: '', text: '' });
+    setIsProcessingPnl(true);
+    setPnlMessage({ type: '', text: '' });
     try {
       const response = await api.post(`/admin/vaults/${selectedVaultId}/apply-manual-pnl`, { 
         pnlPercentage,
         beforeTimestamp: new Date(beforeTimestamp).toISOString()
       });
-      setMessage({ type: 'success', text: response.data.message });
+      setPnlMessage({ type: 'success', text: response.data.message });
       setPnlPercentage('');
       fetchVaultDetails();
     } catch(err) {
-      setMessage({ type: 'error', text: err.response?.data?.message || 'Update failed.' });
+      setPnlMessage({ type: 'error', text: err.response?.data?.message || 'Update failed.' });
     } finally {
-      setIsProcessing(false);
+      setIsProcessingPnl(false);
     }
   };
 
@@ -181,7 +181,7 @@ const VaultManagementPage = () => {
                     <input id="before-timestamp" type="datetime-local" value={beforeTimestamp} onChange={e => setBeforeTimestamp(e.target.value)} required />
                   </div>
 
-                  <button type="submit" className="btn-primary" disabled={isProcessing}>{isProcessing ? 'Processing...' : 'Apply PnL to Eligible Capital'}</button>
+                  <button type="submit" className="btn-primary" disabled={isProcessingPnl}>{isProcessingPnl ? 'Processing...' : 'Apply PnL to Eligible Capital'}</button>
                 </form>
                 {message.text && <p className={`admin-message ${message.type}`}>{message.text}</p>}
               </div>
