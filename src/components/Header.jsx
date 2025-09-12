@@ -86,7 +86,11 @@ return (
                   {user ? (
                       <>
                           <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
-                          {/* ... other mobile links ... */}
+                          {/* --- THESE ARE THE MISSING LINKS --- */}
+                          <Link to="/wallet" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.wallet')}</Link>
+                          <Link to="/profile" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.profile')}</Link>
+                          {user.isAdmin && <Link to="/admin" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.admin')}</Link>}
+                          {/* --- END OF MISSING LINKS --- */}
                           <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="mobile-menu__button">{t('header.logout')}</button>
                       </>
                   ) : (
@@ -96,7 +100,11 @@ return (
                       </>
                   )}
                   <div className="mobile-menu__language-select-wrapper">
-                     {/* ... mobile language select ... */}
+                      <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
+                          <option value="en">EN</option>
+                          <option value="de">DE</option>
+                          <option value="troll">Troll</option>
+                      </select>
                   </div>
               </div>
           </div>
