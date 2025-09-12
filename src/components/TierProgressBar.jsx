@@ -8,20 +8,24 @@ import useWindowSize from '../hooks/useWindowSize';
 const TierProgressBar = () => {
   const { user } = useAuth();
   const { width } = useWindowSize();
-  
-  // --- THIS IS THE FIX ---
-  // If the user object hasn't loaded yet, or if a required value is missing,
-  // we render nothing. This prevents the crash.
-  if (!user || typeof user.xp !== 'number' || typeof user.nextTierXp !== 'number') {
-    return null; 
+
+    if (!user) {
+    return null;
+   
   }
 
-  const { account_tier, xp, currentTierXp, nextTierXp } = user;
+   const {
+    account_tier,
+    xp = 0,
+    currentTierXp = 0,
+    nextTierXp = 0,
+  } = user;
+
   const isMobile = width < 900;
   
   const progress = (nextTierXp > currentTierXp)
     ? ((xp - currentTierXp) / (nextTierXp - currentTierXp)) * 100
-    : 100;
+    : 10;
 
   const xpTooltip = `${xp.toFixed(0)} / ${nextTierXp.toLocaleString()} XP`;
 
@@ -42,6 +46,3 @@ const TierProgressBar = () => {
 };
 
 export default TierProgressBar;
-// ==============================================================================
-// END OF REPLACEMENT
-// ==============================================================================

@@ -49,10 +49,19 @@ const Profile = () => {
     finally { setIsLoading(false); }
   }, [t]);
 
-  useEffect(() => {
-    fetchProfile();
+ useEffect(() => {
+    // --- THIS IS THE NEW LOGIC ---
+    // Refresh the token first to ensure all data is up-to-date.
+    if (refreshToken) {
+      refreshToken().then(() => {
+        // Then, fetch the profile data as before.
+        fetchProfile();
+      });
+    } else {
+      fetchProfile();
+    }
     setCopySuccessMessage(t('profile_page.copy_link_button'));
-  }, [fetchProfile, t]);
+  }, [fetchProfile, refreshToken, t]);
 
   const handleToggleAutoEquip = async () => {
     const newState = !isAutoEquip;
