@@ -25,6 +25,11 @@ const VaultManagementPage = () => {
   const [isSweeping, setIsSweeping] = useState(false);
   const [sweepMessage, setSweepMessage] = useState('');
 
+  // --- NEW: State for Asset Management ---
+  const [vaultAssets, setVaultAssets] = useState([]);
+  const [newAsset, setNewAsset] = useState({ symbol: '', weight: '', contract_address: '', chain: 'ETHEREUM' });
+  const [isAssetLoading, setIsAssetLoading] = useState(false);
+
   useEffect(() => {
     const now = new Date();
     const offset = now.getTimezoneOffset();
@@ -41,9 +46,7 @@ const VaultManagementPage = () => {
         if (response.data.vaults.length > 0) {
           setSelectedVaultId(response.data.vaults[0].vault_id);
         }
-      } catch (err) {
-        setError('Could not fetch list of vaults.');
-      }
+      } catch (err) { setError('Could not fetch list of vaults.'); }
     };
     fetchVaults();
   }, []);
@@ -53,9 +56,14 @@ const VaultManagementPage = () => {
     setLoading(true);
     setError('');
     setVaultData(null);
+    setVaultAssets([]); // Clear previous assets
     try {
-      const response = await api.get(`/admin/vaults/${selectedVaultId}/details`);
-      setVaultData(response.data);
+      const [detailsRes, assetsRes] = await Promise.all([
+        api.get(`/admin/vaults/${selectedVaultId}/details`),
+        api.get(`/admin/vaults/${selectedVaultId}/assets`)
+      ]);
+      setVaultData(detailsRes.data);
+      setVaultAssets(assetsRes.data);
     } catch (err) {
       setError(`Failed to fetch details for vault #${selectedVaultId}.`);
     } finally {
@@ -67,7 +75,7 @@ const VaultManagementPage = () => {
     fetchVaultDetails();
   }, [fetchVaultDetails]);
 
-  const handleApplyPnl = async (e) => {
+    const handleApplyPnl = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
     setMessage({ type: '', text: '' });
@@ -99,6 +107,37 @@ const VaultManagementPage = () => {
     }
   };
 
+  const handleAssetInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewAsset(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddAsset = async (e) => {
+    e.preventDefault();
+    setIsAssetLoading(true);
+    try {
+      await api.post(`/admin/vaults/${selectedVaultId}/assets`, newAsset);
+      fetchVaultDetails(); // Refresh all vault data
+      setNewAsset({ symbol: '', weight: '', contract_address: '', chain: 'ETHEREUM' });
+    } catch (err) {
+      alert('Failed to add asset.');
+      console.error(err);
+    } finally {
+      setIsAssetLoading(false);
+    }
+  };
+
+  const handleRemoveAsset = async (symbol) => {
+    if (!window.confirm(`Are you sure you want to remove ${symbol}?`)) return;
+    try {
+      await api.delete(`/admin/vaults/${selectedVaultId}/assets/${symbol}`);
+      fetchVaultDetails(); // Refresh all vault data
+    } catch (err) {
+      alert('Failed to remove asset.');
+      console.error(err);
+    }
+  };
+
   const currentVaultCapital = vaultData?.stats?.totalCapital || 0;
 
   return (
@@ -108,13 +147,10 @@ const VaultManagementPage = () => {
           <h1>Vault Management</h1>
           <Link to="/admin" className="btn-secondary btn-sm">← Back to Mission Control</Link>
         </div>
-
         <div className="admin-card">
           <h3>Select Vault</h3>
           <select value={selectedVaultId} onChange={(e) => setSelectedVaultId(e.target.value)} className="admin-vault-select">
-            {vaults.map(v => (
-              <option key={v.vault_id} value={v.vault_id}>{v.name} (ID: {v.vault_id})</option>
-            ))}
+            {vaults.map(v => (<option key={v.vault_id} value={v.vault_id}>{v.name} (ID: {v.vault_id})</option>))}
           </select>
         </div>
 
@@ -160,9 +196,33 @@ const VaultManagementPage = () => {
               </div>
             </div>
 
+            <div className="admin-actions-card">
+              <h3>Manage Vault Assets</h3>
+              <p>Define the assets and their target weights (e.g., 0.6 for 60%). The automated performance tracker uses this data.</p>
+              <table className="activity-table" style={{ marginBottom: '24px' }}>
+                <thead><tr><th>Symbol</th><th>Weight</th><th>Actions</th></tr></thead>
+                <tbody>
+                  {vaultAssets.map(asset => (
+                    <tr key={asset.asset_id}>
+                      <td>{asset.symbol}</td>
+                      <td>{(asset.weight * 100).toFixed(2)}%</td>
+                      <td><button className="btn-danger-small" onClick={() => handleRemoveAsset(asset.symbol)}>Remove</button></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <form onSubmit={handleAddAsset} className="admin-form-inline">
+                <input name="symbol" value={newAsset.symbol} onChange={handleAssetInputChange} placeholder="Symbol (e.g., BITCOIN)" required />
+                <input name="weight" value={newAsset.weight} onChange={handleAssetInputChange} placeholder="Weight (e.g., 0.6)" type="number" step="0.01" required />
+                <input name="contract_address" value={newAsset.contract_address} onChange={handleAssetInputChange} placeholder="0x... Contract Address" />
+                <input name="chain" value={newAsset.chain} onChange={handleAssetInputChange} placeholder="Chain (e.g., ETHEREUM)" required />
+                <button type="submit" className="btn-primary" disabled={isAssetLoading}>{isAssetLoading ? '...' : 'Add/Update Asset'}</button>
+              </form>
+            </div>
+
             <div className="admin-card" style={{ marginTop: '24px' }}>
               <h3>Participants in {vaultData.vault.name}</h3>
-              <div className="table-responsive">
+         <div className="table-responsive">
                 <table className="activity-table">
                   <thead>
                     <tr>

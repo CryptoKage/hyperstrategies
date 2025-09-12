@@ -3881,12 +3881,19 @@ opacity: 0.3;
   border-bottom: 1px solid var(--color-border);
 }
 
-.vault-detail-container { max-width: 1100px; margin: 40px auto; padding: 20px; }
-.vault-detail-container h1 { font-size: 32px; margin-bottom: 8px; }
+/* ============================================================================== */
+/* CSS for the new Vault Detail Page                                            */
+/* ============================================================================== */
+.vault-detail-container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+.vault-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .vault-detail-subtitle { color: var(--color-text-secondary); margin-bottom: 32px; }
-.vault-detail-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 24px; }
-.chart-card { grid-column: 2 / 3; }
-.full-width { grid-column: 1 / -1; }
+.vault-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.vault-detail-grid .profile-card.full-width { grid-column: 1 / -1; }
+.stat-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--color-border); font-size: 1rem; }
+.stat-item:last-child { border-bottom: none; }
+.stat-item span:first-child { color: var(--color-text-secondary); }
+.stat-item span:last-child { font-weight: 600; }
+/* ============================================================================== */
 
 
 /* ============================================================================== */
@@ -4175,6 +4182,27 @@ opacity: 0.3;
 /* END OF RESTORED CSS                                                          */
 /* ============================================================================== */
 
+.admin-form-inline {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Space between form elements */
+  flex-wrap: wrap; /* Allows the form to wrap on smaller screens */
+}
+
+.admin-form-inline input {
+  flex-grow: 1; /* Allows inputs to grow and fill available space */
+  min-width: 150px; /* Gives each input a minimum width */
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 1rem;
+}
+
+.admin-form-inline button {
+  flex-shrink: 0; 
+}
 
 .card-action-center {
   margin-top: auto; /* This is the magic: it pushes the div to the bottom */
