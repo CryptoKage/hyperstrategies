@@ -1,6 +1,3 @@
-// ==============================================================================
-// START: PASTE THIS ENTIRE BLOCK to replace your full VaultDetailPage.jsx FILE
-// ==============================================================================
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +6,7 @@ import api from '../api/api';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 
-const VaultDetailPage = () => {
+const Vault1Page = () => {
   const { vaultId } = useParams();
   const { t } = useTranslation();
   const { isBalanceHidden } = useAuth();
@@ -115,4 +112,4 @@ const VaultDetailPage = () => {
   );
 };
 
-export default VaultDetailPage;
+export default Vault1Page;

@@ -19,8 +19,8 @@ const VaultManagementPage = () => {
 
   const [pnlPercentage, setPnlPercentage] = useState('');
   const [beforeTimestamp, setBeforeTimestamp] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
+  const [isProcessingPnl, setIsProcessingPnl] = useState(false);
+  const [pnlMessage, setPnlMessage] = useState({ type: '', text: '' });
 
   const [isSweeping, setIsSweeping] = useState(false);
   const [sweepMessage, setSweepMessage] = useState('');
@@ -56,7 +56,7 @@ const VaultManagementPage = () => {
     setLoading(true);
     setError('');
     setVaultData(null);
-    setVaultAssets([]); // Clear previous assets
+    setVaultAssets([]);
     try {
       const [detailsRes, assetsRes] = await Promise.all([
         api.get(`/admin/vaults/${selectedVaultId}/details`),
@@ -75,7 +75,7 @@ const VaultManagementPage = () => {
     fetchVaultDetails();
   }, [fetchVaultDetails]);
 
-    const handleApplyPnl = async (e) => {
+ const handleApplyPnl = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
     setMessage({ type: '', text: '' });
@@ -109,7 +109,7 @@ const VaultManagementPage = () => {
 
   const handleAssetInputChange = (e) => {
     const { name, value } = e.target;
-    setNewAsset(prev => ({ ...prev, [name]: value }));
+    setNewAsset(prev => ({ ...prev, [name]: value.toUpperCase() }));
   };
 
   const handleAddAsset = async (e) => {
@@ -117,10 +117,10 @@ const VaultManagementPage = () => {
     setIsAssetLoading(true);
     try {
       await api.post(`/admin/vaults/${selectedVaultId}/assets`, newAsset);
-      fetchVaultDetails(); // Refresh all vault data
+      fetchVaultDetails();
       setNewAsset({ symbol: '', weight: '', contract_address: '', chain: 'ETHEREUM' });
     } catch (err) {
-      alert('Failed to add asset.');
+      alert('Failed to add/update asset.');
       console.error(err);
     } finally {
       setIsAssetLoading(false);
@@ -131,7 +131,7 @@ const VaultManagementPage = () => {
     if (!window.confirm(`Are you sure you want to remove ${symbol}?`)) return;
     try {
       await api.delete(`/admin/vaults/${selectedVaultId}/assets/${symbol}`);
-      fetchVaultDetails(); // Refresh all vault data
+      fetchVaultDetails();
     } catch (err) {
       alert('Failed to remove asset.');
       console.error(err);
@@ -159,13 +159,13 @@ const VaultManagementPage = () => {
 
         {vaultData && (
           <>
-            <div className="stats-grid" style={{ marginTop: '24px' }}>
+              <div className="stats-grid" style={{ marginTop: '24px' }}>
                 <StatCard label="Total Capital in Vault" value={`$${currentVaultCapital.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
                 <StatCard label="Total Realized PnL" value={`$${(vaultData.stats.totalPnl || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
                 <StatCard label="Participant Count" value={vaultData.stats.participantCount} />
             </div>
-            
-            <div className="admin-grid">
+           
+                <div className="admin-grid">
               <div className="admin-actions-card">
                 <h3>Apply Manual PnL</h3>
                 <p>Distribute a percentage-based PnL to all users whose capital was deposited before the specified cutoff time. This creates a permanent ledger entry.</p>
@@ -198,23 +198,23 @@ const VaultManagementPage = () => {
 
             <div className="admin-actions-card">
               <h3>Manage Vault Assets</h3>
-              <p>Define the assets and their target weights (e.g., 0.6 for 60%). The automated performance tracker uses this data.</p>
+              <p>Define the assets and their target weights (e.g., 0.6 for 60%) for the performance tracker.</p>
               <table className="activity-table" style={{ marginBottom: '24px' }}>
                 <thead><tr><th>Symbol</th><th>Weight</th><th>Actions</th></tr></thead>
                 <tbody>
                   {vaultAssets.map(asset => (
                     <tr key={asset.asset_id}>
                       <td>{asset.symbol}</td>
-                      <td>{(asset.weight * 100).toFixed(2)}%</td>
+                      <td>{(parseFloat(asset.weight) * 100).toFixed(2)}%</td>
                       <td><button className="btn-danger-small" onClick={() => handleRemoveAsset(asset.symbol)}>Remove</button></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
               <form onSubmit={handleAddAsset} className="admin-form-inline">
-                <input name="symbol" value={newAsset.symbol} onChange={handleAssetInputChange} placeholder="Symbol (e.g., BITCOIN)" required />
-                <input name="weight" value={newAsset.weight} onChange={handleAssetInputChange} placeholder="Weight (e.g., 0.6)" type="number" step="0.01" required />
-                <input name="contract_address" value={newAsset.contract_address} onChange={handleAssetInputChange} placeholder="0x... Contract Address" />
+                <input name="symbol" value={newAsset.symbol} onChange={handleAssetInputChange} placeholder="Symbol (e.g., BTC)" required />
+                <input name="weight" value={newAsset.weight} onChange={handleAssetInputChange} placeholder="Weight (0.0 to 1.0)" type="number" step="0.01" required />
+                <input name="contract_address" value={newAsset.contract_address} onChange={handleAssetInputChange} placeholder="0x... Contract Address (Optional)" />
                 <input name="chain" value={newAsset.chain} onChange={handleAssetInputChange} placeholder="Chain (e.g., ETHEREUM)" required />
                 <button type="submit" className="btn-primary" disabled={isAssetLoading}>{isAssetLoading ? '...' : 'Add/Update Asset'}</button>
               </form>
@@ -222,7 +222,7 @@ const VaultManagementPage = () => {
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
               <h3>Participants in {vaultData.vault.name}</h3>
-         <div className="table-responsive">
+               <div className="table-responsive">
                 <table className="activity-table">
                   <thead>
                     <tr>
