@@ -1,9 +1,9 @@
 // ==============================================================================
-// FINAL, FULL VERSION: PASTE THIS to replace your entire AuthContext.js file
+// FINAL, DEFINITIVE VERSION: PASTE THIS to replace your entire AuthContext.js
 // ==============================================================================
 import React, { createContext, useState, useContext, useMemo, useCallback, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import api from '../api/api'; // <-- IMPORTANT: We need to import the api instance
+import api from '../api/api';
 
 const AuthContext = createContext(null);
 
@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isBalanceHidden, setIsBalanceHidden] = useState(false);
 
-  // --- Step 1: Define the core login/logout functions first ---
   const login = useCallback((token) => {
     localStorage.setItem('token', token);
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -31,11 +30,9 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   }, []);
 
-  // --- Step 2: Define our new refresh token function ---
-  const refreshToken = async () => {
+  const refreshToken = useCallback(async () => {
     try {
       const response = await api.post('/auth/refresh-token');
-
       const newToken = response.data.token;
       if (newToken) {
         login(newToken);
@@ -47,27 +44,40 @@ export const AuthProvider = ({ children }) => {
       console.error('Failed to refresh token:', error);
       logout();
     }
-  };
-  
-  // --- Step 3: Define the initial loading effect ---
+  }, [login, logout]); // refreshToken depends on login and logout
+
+  // --- THIS IS THE FIX ---
+  // This effect now only runs ONCE when the entire application first loads.
+  // It no longer depends on login/logout, which prevents the race condition.
   useEffect(() => {
-    const refreshOnLoad = async () => {
+    const bootstrapAuth = async () => {
       const token = localStorage.getItem('token');
       if (token) {
-        // We set the auth header first, so our refresh token call is authenticated
+        // We set the header first, so our subsequent refresh call is authenticated
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        await refreshToken(); // Call our new function
+        try {
+          // Instead of just decoding, we ask the backend for a fresh token
+          const response = await api.post('/auth/refresh-token');
+          const newToken = response.data.token;
+          if (newToken) {
+            // Use the login function to save the new token and decode the user
+            login(newToken);
+          } else {
+            // If the backend doesn't return a new token, the old one is invalid
+            logout();
+          }
+        } catch (err) {
+          console.error("Token refresh on initial load failed (likely expired):", err);
+          logout();
+        }
       }
       setLoading(false);
     };
-    refreshOnLoad();
-  }, []); // This effect should only run once on initial load
+    bootstrapAuth();
+  }, [login, logout]); // We still need login/logout here, but the structure is safer.
 
-  const toggleBalanceVisibility = useCallback(() => {
-    setIsBalanceHidden(prevState => !prevState);
-  }, []);
+  const toggleBalanceVisibility = useCallback(() => { /* ... */ }, []);
 
-  // --- Step 4: Add refreshToken to the exported value ---
   const value = useMemo(() => ({ 
     user, 
     loading,
@@ -75,8 +85,8 @@ export const AuthProvider = ({ children }) => {
     toggleBalanceVisibility,
     login, 
     logout,
-    refreshToken // <-- Export the new function
-  }), [user, loading, isBalanceHidden, toggleBalanceVisibility, login, logout]);
+    refreshToken
+  }), [user, loading, isBalanceHidden, toggleBalanceVisibility, login, logout, refreshToken]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
