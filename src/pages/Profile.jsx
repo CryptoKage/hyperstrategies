@@ -19,6 +19,7 @@ import PinListerModal from '../components/PinListerModal';
 const Profile = () => {
   const { t } = useTranslation();
 
+  const { user, refreshToken } = useAuth();
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
