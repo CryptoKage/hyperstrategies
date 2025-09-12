@@ -5,6 +5,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
 import Layout from '../components/Layout';
 import XpHistoryList from '../components/XpHistoryList';
@@ -18,8 +19,8 @@ import PinListerModal from '../components/PinListerModal';
 
 const Profile = () => {
   const { t } = useTranslation();
-
   const { user, refreshToken } = useAuth();
+  
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
