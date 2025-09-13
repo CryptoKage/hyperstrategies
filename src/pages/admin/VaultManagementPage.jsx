@@ -217,6 +217,15 @@ const VaultManagementPage = () => {
                 <input name="contract_address" value={newAsset.contract_address} onChange={handleAssetInputChange} placeholder="0x... Contract Address (Optional)" />
                 <input name="chain" value={newAsset.chain} onChange={handleAssetInputChange} placeholder="Chain (e.g., ETHEREUM)" required />
                 <button type="submit" className="btn-primary" disabled={isAssetLoading}>{isAssetLoading ? '...' : 'Add/Update Asset'}</button>
+               <h4>Log New Trade</h4> 
+                <input name="asset_symbol" value={newAsset.symbol} onChange={handleAssetInputChange} placeholder="Asset Symbol (e.g., BTC)" required />
+                <input name="quantity" value={newAsset.quantity} onChange={handleAssetInputChange} placeholder="Quantity" type="number" step="any" required />
+                <input name="entry_price" value={newAsset.entry_price} onChange={handleAssetInputChange} placeholder="Entry Price ($)" type="number" step="any" required />
+                <select name="direction" value={newAsset.direction} onChange={handleAssetInputChange} required>
+                    <option value="LONG">LONG</option>
+                    <option value="SHORT">SHORT</option>
+                </select>
+                <button type="submit" className="btn-primary" disabled={isAssetLoading}>{isAssetLoading ? '...' : 'Log Trade'}</button>
               </form>
             </div>
 
