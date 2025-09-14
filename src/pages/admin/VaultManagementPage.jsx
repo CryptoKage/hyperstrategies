@@ -79,10 +79,22 @@ const VaultManagementPage = () => {
     setVaultAssets([]);
 
     try {
-      const [detailsRes, assetsRes] = await Promise.all([
-        api.get(`/admin/vaults/${selectedVaultId}/details`),
+      const [detailsRes, assetsRes, tradesRes] = await Promise.all([
+        // This is the correct endpoint for vault details
+        api.get(`/admin/vaults/${selectedVaultId}/details`), 
         api.get(`/admin/vaults/${selectedVaultId}/assets`),
+        // We also need to fetch the trade data for the new tables
+        api.get(`/admin/vaults/${selectedVaultId}/trades`) 
       ]);
+      
+      const combinedData = {
+        ...detailsRes.data,
+        openTrades: tradesRes.data.openTrades,
+        tradeHistory: tradesRes.data.tradeHistory
+      };
+
+      setVaultData(combinedData);
+      setVaultAssets(assetsRes.data);
 
       // Ensure arrays are at least empty arrays to avoid .map on undefined
       const details = detailsRes?.data || {};
