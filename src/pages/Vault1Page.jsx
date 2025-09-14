@@ -15,17 +15,26 @@ const Vault1Page = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchVaultDetails = useCallback(async () => {
+ const fetchVaultDetails = useCallback(async () => {
     if (!vaultId) return;
     setLoading(true);
+    console.log(`[Debug] Starting fetch for vaultId: ${vaultId}`); // <-- Log 1
     try {
       const response = await api.get(`/vault-details/${vaultId}`);
+      
+      // --- THIS IS THE CRITICAL LOG ---
+      // Let's see the raw data the backend is sending us.
+      console.log("[Debug] Raw API response data:", response.data); // <-- Log 2
+      
       setPageData(response.data);
+      console.log("[Debug] State has been set. Component should re-render."); // <-- Log 3
+
     } catch (err) {
-      console.error(`Failed to fetch details for vault ${vaultId}:`, err);
+      console.error(`[Debug] Failed to fetch details for vault ${vaultId}:`, err);
       setError("Could not load vault details at this time.");
     } finally {
       setLoading(false);
+      console.log("[Debug] Loading state set to false."); // <-- Log 4
     }
   }, [vaultId]);
 
