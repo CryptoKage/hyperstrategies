@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
 
+
 const StatCard = ({ label, value }) => (
   <div className="stat-card">
     <span className="stat-label">{label}</span>
@@ -27,9 +28,18 @@ const VaultManagementPage = () => {
 
   // --- NEW: State for Asset Management ---
   const [vaultAssets, setVaultAssets] = useState([]);
-  const [newAsset, setNewAsset] = useState({ symbol: '', weight: '', contract_address: '', chain: 'ETHEREUM' });
+ const [newAssetWeight, setNewAssetWeight] = useState({ symbol: '', weight: '', contract_address: '', chain: 'ETHEREUM' });
+const [newTrade, setNewTrade] = useState({ asset_symbol: '', direction: 'LONG', quantity: '', entry_price: '' });
   const [isAssetLoading, setIsAssetLoading] = useState(false);
 
+const [isUpdatingPerf, setIsUpdatingPerf] = useState(false);
+const [perfMessage, setPerfMessage] = useState('');
+
+  const [tradeToClose, setTradeToClose] = useState(null); // This will hold the trade object for the modal
+  const [exitPrice, setExitPrice] = useState('');
+  const [isClosingTrade, setIsClosingTrade] = useState(false);
+
+  
   useEffect(() => {
     const now = new Date();
     const offset = now.getTimezoneOffset();
@@ -75,15 +85,12 @@ const VaultManagementPage = () => {
     fetchVaultDetails();
   }, [fetchVaultDetails]);
 
- const handleApplyPnl = async (e) => {
+const handleApplyPnl = async (e) => {
     e.preventDefault();
     setIsProcessingPnl(true);
     setPnlMessage({ type: '', text: '' });
     try {
-      const response = await api.post(`/admin/vaults/${selectedVaultId}/apply-manual-pnl`, { 
-        pnlPercentage,
-        beforeTimestamp: new Date(beforeTimestamp).toISOString()
-      });
+      const response = await api.post(`/admin/vaults/${selectedVaultId}/apply-manual-pnl`, { pnlPercentage, beforeTimestamp: new Date(beforeTimestamp).toISOString() });
       setPnlMessage({ type: 'success', text: response.data.message });
       setPnlPercentage('');
       fetchVaultDetails();
@@ -107,27 +114,37 @@ const VaultManagementPage = () => {
     }
   };
 
-  const handleAssetInputChange = (e) => {
+  const handleTriggerPerformanceUpdate = async () => {
+  setIsUpdatingPerf(true);
+  setPerfMessage('Triggering job...');
+  try {
+    const response = await api.post('/admin/jobs/trigger/vault-performance');
+    setPerfMessage(response.data.message);
+  } catch (err) {
+    setPerfMessage('Failed to trigger job.');
+    console.error(err);
+  } finally {
+    setIsUpdatingPerf(false);
+  }
+};
+
+   const handleAssetWeightChange = (e) => {
     const { name, value } = e.target;
-    setNewAsset(prev => ({ ...prev, [name]: value.toUpperCase() }));
+    setNewAssetWeight(prev => ({ ...prev, [name]: value.toUpperCase() }));
   };
 
-  const handleAddAsset = async (e) => {
+  const handleAddOrUpdateAssetWeight = async (e) => {
     e.preventDefault();
     setIsAssetLoading(true);
     try {
-      await api.post(`/admin/vaults/${selectedVaultId}/assets`, newAsset);
+      await api.post(`/admin/vaults/${selectedVaultId}/assets`, newAssetWeight);
       fetchVaultDetails();
-      setNewAsset({ symbol: '', weight: '', contract_address: '', chain: 'ETHEREUM' });
-    } catch (err) {
-      alert('Failed to add/update asset.');
-      console.error(err);
-    } finally {
-      setIsAssetLoading(false);
-    }
+      setNewAssetWeight({ symbol: '', weight: '', contract_address: '', chain: 'ETHEREUM' });
+    } catch (err) { alert('Failed to add/update asset weight.'); console.error(err); } 
+    finally { setIsAssetLoading(false); }
   };
 
-  const handleRemoveAsset = async (symbol) => {
+   const handleRemoveAssetWeight = async (symbol) => {
     if (!window.confirm(`Are you sure you want to remove ${symbol}?`)) return;
     try {
       await api.delete(`/admin/vaults/${selectedVaultId}/assets/${symbol}`);
@@ -135,6 +152,45 @@ const VaultManagementPage = () => {
     } catch (err) {
       alert('Failed to remove asset.');
       console.error(err);
+    }
+  };
+
+   const handleNewTradeChange = (e) => {
+    const { name, value } = e.target;
+    setNewTrade(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleLogTrade = async (e) => {
+    e.preventDefault();
+    setIsAssetLoading(true);
+    try {
+      await api.post(`/admin/vaults/${selectedVaultId}/trades`, newTrade);
+      fetchVaultDetails();
+      setNewTrade({ asset_symbol: '', direction: 'LONG', quantity: '', entry_price: '' });
+      alert('New trade successfully logged as OPEN.');
+    } catch (err) {
+      alert('Failed to log new trade.');
+      console.error(err);
+    } finally {
+      setIsAssetLoading(false);
+    }
+  };
+  
+  const handleCloseTrade = async (e) => {
+    e.preventDefault();
+    if (!tradeToClose) return;
+    setIsClosingTrade(true);
+    try {
+      await api.patch(`/admin/trades/${tradeToClose.trade_id}/close`, { exit_price: exitPrice });
+      setTradeToClose(null); // Close the modal on success
+      setExitPrice('');
+      fetchVaultDetails(); // Refresh all data
+      alert('Trade successfully closed!');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to close trade.');
+      console.error(err);
+    } finally {
+      setIsClosingTrade(false);
     }
   };
 
@@ -159,46 +215,54 @@ const VaultManagementPage = () => {
 
         {vaultData && (
           <>
-              <div className="stats-grid" style={{ marginTop: '24px' }}>
+            <div className="stats-grid" style={{ marginTop: '24px' }}>
                 <StatCard label="Total Capital in Vault" value={`$${currentVaultCapital.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
                 <StatCard label="Total Realized PnL" value={`$${(vaultData.stats.totalPnl || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
                 <StatCard label="Participant Count" value={vaultData.stats.participantCount} />
             </div>
-           
-                <div className="admin-grid">
+            
+            <div className="admin-grid">
               <div className="admin-actions-card">
                 <h3>Apply Manual PnL</h3>
-                <p>Distribute a percentage-based PnL to all users whose capital was deposited before the specified cutoff time. This creates a permanent ledger entry.</p>
-                
+                <p>Distribute a percentage-based PnL to all users...</p>
                 <form onSubmit={handleApplyPnl} className="admin-form">
-                  <div className="form-group">
-                    <label htmlFor="pnl-percent">PnL to Distribute (%)</label>
-                    <input id="pnl-percent" type="number" step="0.01" value={pnlPercentage} onChange={e => setPnlPercentage(e.target.value)} placeholder="e.g., 5.5 for +5.5% or -2.1 for -2.1%" required/>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="before-timestamp">Apply to deposits made before:</label>
-                    <input id="before-timestamp" type="datetime-local" value={beforeTimestamp} onChange={e => setBeforeTimestamp(e.target.value)} required />
-                  </div>
-
-                  <button type="submit" className="btn-primary" disabled={isProcessingPnl}>{isProcessingPnl ? 'Processing...' : 'Apply PnL to Eligible Capital'}</button>
+                  {/* ... PnL form inputs ... */}
+                  <button type="submit" className="btn-primary" disabled={isProcessingPnl}>{isProcessingPnl ? 'Processing...' : 'Apply PnL'}</button>
                 </form>
                 {pnlMessage.text && <p className={`admin-message ${pnlMessage.type}`}>{pnlMessage.text}</p>}
               </div>
-
               <div className="admin-actions-card">
                 <h3>Capital Sweep</h3>
-                <p>Find all new deposits in the ledger and sweep the total amount to the main trading desk wallet.</p>
-                <button onClick={handleTriggerSweep} className="btn-secondary" disabled={isSweeping}>
-                  {isSweeping ? 'Sweeping...' : 'Sweep Pending Deposits'}
-                </button>
-                {sweepMessage && <p className={`admin-message success`}>{sweepMessage}</p>}
+                <p>Move pending deposits to the trading desk.</p>
+                <button onClick={handleTriggerSweep} className="btn-secondary" disabled={isSweeping}>{isSweeping ? '...' : 'Sweep Deposits'}</button>
+                {sweepMessage && <p className="admin-message success">{sweepMessage}</p>}
+              </div>
+              <div className="admin-actions-card">
+                <h3>Performance Tracker</h3>
+                <p>Manually trigger the hourly job to update the performance chart.</p>
+                 <button onClick={handleTriggerPerformanceUpdate} className="btn-secondary" disabled={isUpdatingPerf}>{isUpdatingPerf ? '...' : 'Update Performance'}</button>
+                {perfMessage && <p className="admin-message success">{perfMessage}</p>}
               </div>
             </div>
 
             <div className="admin-actions-card">
-              <h3>Manage Vault Assets</h3>
-              <p>Define the assets and their target weights (e.g., 0.6 for 60%) for the performance tracker.</p>
+              <h3>Log New Trade</h3>
+              <p>Record a new open position for this vault.</p>
+              <form onSubmit={handleLogTrade} className="admin-form-inline">
+                <input name="asset_symbol" value={newTrade.asset_symbol} onChange={handleNewTradeChange} placeholder="Symbol (e.g., BTC)" required />
+                <input name="quantity" value={newTrade.quantity} onChange={handleNewTradeChange} placeholder="Quantity" type="number" step="any" required />
+                <input name="entry_price" value={newTrade.entry_price} onChange={handleNewTradeChange} placeholder="Entry Price ($)" type="number" step="any" required />
+                <select name="direction" value={newTrade.direction} onChange={handleNewTradeChange} required>
+                  <option value="LONG">LONG</option>
+                  <option value="SHORT">SHORT</option>
+                </select>
+                <button type="submit" className="btn-primary" disabled={isAssetLoading}>{isAssetLoading ? '...' : 'Log Trade'}</button>
+              </form>
+            </div>
+
+            <div className="admin-actions-card">
+              <h3>Manage Target Asset Allocation</h3>
+              <p>Define the target asset weights for display on the vault detail page.</p>
               <table className="activity-table" style={{ marginBottom: '24px' }}>
                 <thead><tr><th>Symbol</th><th>Weight</th><th>Actions</th></tr></thead>
                 <tbody>
@@ -206,26 +270,17 @@ const VaultManagementPage = () => {
                     <tr key={asset.asset_id}>
                       <td>{asset.symbol}</td>
                       <td>{(parseFloat(asset.weight) * 100).toFixed(2)}%</td>
-                      <td><button className="btn-danger-small" onClick={() => handleRemoveAsset(asset.symbol)}>Remove</button></td>
+                      <td><button className="btn-danger-small" onClick={() => handleRemoveAssetWeight(asset.symbol)}>Remove</button></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <form onSubmit={handleAddAsset} className="admin-form-inline">
-                <input name="symbol" value={newAsset.symbol} onChange={handleAssetInputChange} placeholder="Symbol (e.g., BTC)" required />
-                <input name="weight" value={newAsset.weight} onChange={handleAssetInputChange} placeholder="Weight (0.0 to 1.0)" type="number" step="0.01" required />
-                <input name="contract_address" value={newAsset.contract_address} onChange={handleAssetInputChange} placeholder="0x... Contract Address (Optional)" />
-                <input name="chain" value={newAsset.chain} onChange={handleAssetInputChange} placeholder="Chain (e.g., ETHEREUM)" required />
-                <button type="submit" className="btn-primary" disabled={isAssetLoading}>{isAssetLoading ? '...' : 'Add/Update Asset'}</button>
-               <h4>Log New Trade</h4> 
-                <input name="asset_symbol" value={newAsset.symbol} onChange={handleAssetInputChange} placeholder="Asset Symbol (e.g., BTC)" required />
-                <input name="quantity" value={newAsset.quantity} onChange={handleAssetInputChange} placeholder="Quantity" type="number" step="any" required />
-                <input name="entry_price" value={newAsset.entry_price} onChange={handleAssetInputChange} placeholder="Entry Price ($)" type="number" step="any" required />
-                <select name="direction" value={newAsset.direction} onChange={handleAssetInputChange} required>
-                    <option value="LONG">LONG</option>
-                    <option value="SHORT">SHORT</option>
-                </select>
-                <button type="submit" className="btn-primary" disabled={isAssetLoading}>{isAssetLoading ? '...' : 'Log Trade'}</button>
+              <form onSubmit={handleAddOrUpdateAssetWeight} className="admin-form-inline">
+                <input name="symbol" value={newAssetWeight.symbol} onChange={handleAssetWeightChange} placeholder="Symbol (e.g., BTC)" required />
+                <input name="weight" value={newAssetWeight.weight} onChange={handleAssetWeightChange} placeholder="Weight (0.0-1.0)" type="number" step="0.01" required />
+                <input name="contract_address" value={newAssetWeight.contract_address} onChange={handleAssetWeightChange} placeholder="0x... Contract Address" />
+                <input name="chain" value={newAssetWeight.chain} onChange={handleAssetWeightChange} placeholder="Chain (e.g., ETHEREUM)" required />
+                <button type="submit" className="btn-primary" disabled={isAssetLoading}>{isAssetLoading ? '...' : 'Add/Update Weight'}</button>
               </form>
             </div>
 
@@ -253,10 +308,100 @@ const VaultManagementPage = () => {
                   </tbody>
                 </table>
               </div>
+              </div>
+                <div className="admin-card" style={{ marginTop: '24px' }}>
+              <h3>Open Trades</h3>
+              <div className="table-responsive">
+                <table className="activity-table">
+                  <thead>
+                    <tr>
+                      <th>Opened</th><th>Symbol</th><th>Direction</th><th>Quantity</th><th>Entry Price</th><th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vaultData.openTrades.map(trade => (
+                      <tr key={trade.trade_id}>
+                        <td>{new Date(trade.trade_opened_at).toLocaleString()}</td>
+                        <td>{trade.asset_symbol}</td>
+                        <td>{trade.direction}</td>
+                        <td>{parseFloat(trade.quantity)}</td>
+                        <td>${parseFloat(trade.entry_price).toFixed(2)}</td>
+                        <td>
+                          <button className="btn-secondary btn-sm" onClick={() => setTradeToClose(trade)}>
+                            Close
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* --- NEW: Trade History Table --- */}
+            <div className="admin-card" style={{ marginTop: '24px' }}>
+              <h3>Trade History (Last 50)</h3>
+              <div className="table-responsive">
+                <table className="activity-table">
+                  <thead>
+                    <tr>
+                      <th>Closed</th><th>Symbol</th><th>Direction</th><th>Entry</th><th>Exit</th><th>P&L (USD)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vaultData.tradeHistory.slice(0, 50).map(trade => (
+                      <tr key={trade.trade_id}>
+                        <td>{new Date(trade.trade_closed_at).toLocaleString()}</td>
+                        <td>{trade.asset_symbol}</td>
+                        <td>{trade.direction}</td>
+                        <td>${parseFloat(trade.entry_price).toFixed(2)}</td>
+                        <td>${parseFloat(trade.exit_price).toFixed(2)}</td>
+                        <td className={parseFloat(trade.pnl_usd) >= 0 ? 'text-positive' : 'text-negative'}>
+                          {parseFloat(trade.pnl_usd).toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </>
         )}
       </div>
+
+    {tradeToClose && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button onClick={() => setTradeToClose(null)} className="modal-close-btn">×</button>
+            <h3>Close Trade: {tradeToClose.direction} {tradeToClose.asset_symbol}</h3>
+            <p>Enter the exit price to close this position and realize the P&L.</p>
+            <form onSubmit={handleCloseTrade} className="admin-form">
+              <div className="form-group">
+                <label>Entry Price</label>
+                <input type="text" value={`$${parseFloat(tradeToClose.entry_price).toFixed(2)}`} disabled />
+              </div>
+              <div className="form-group">
+                <label htmlFor="exit-price">Exit Price ($)</label>
+                <input 
+                  id="exit-price"
+                  type="number"
+                  step="any"
+                  value={exitPrice}
+                  onChange={(e) => setExitPrice(e.target.value)}
+                  placeholder="Enter the final price"
+                  required 
+                />
+              </div>
+              <div className="modal-actions">
+                <button type="button" onClick={() => setTradeToClose(null)} className="btn-secondary" disabled={isClosingTrade}>Cancel</button>
+                <button type="submit" className="btn-primary" disabled={isClosingTrade}>
+                  {isClosingTrade ? 'Processing...' : 'Confirm & Close Trade'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };
