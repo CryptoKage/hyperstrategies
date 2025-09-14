@@ -65,8 +65,8 @@ const Router = () => {
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/pins-marketplace" element={<TierRoute minTier={2}><PinsMarketplace /></TierRoute>} />
       <Route path="/rewards" element={<ProtectedRoute><RewardsCenter /></ProtectedRoute>} />
-      <Route path="/presale-info" element={<Presale />} />
-      <Route path="/vault1" element={<Vault1Page />} />
+      <Route path="/presale-info" element={<ProtectedRoute><Presale /></ProtectedRoute>} />
+      <Route path="/vaults/:vaultId" element={<ProtectedRoute><Vault1Page /></ProtectedRoute>} />
           
       {/* --- ADMIN-ONLY Protected Routes --- */}
       {/* --- ANNOTATION --- I've standardized the main admin route to just /admin for simplicity */}
