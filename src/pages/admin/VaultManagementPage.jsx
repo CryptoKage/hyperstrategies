@@ -377,47 +377,20 @@ const VaultManagementPage = () => {
               </div>
             </div>
 
-            <div className="admin-actions-card">
+             <div className="admin-actions-card">
               <h3>Log New Trade</h3>
-              <p>Record a new open position for this vault.</p>
+              <p>Record a new open position for this vault. This will be used to calculate unrealized P&L.</p>
               <form onSubmit={handleLogTrade} className="admin-form-inline">
-                <input
-                  name="asset_symbol"
-                  value={newTrade.asset_symbol}
-                  onChange={handleNewTradeChange}
-                  placeholder="Symbol (e.g., BTC)"
-                  required
-                />
-                <input
-                  name="quantity"
-                  value={newTrade.quantity}
-                  onChange={handleNewTradeChange}
-                  placeholder="Quantity"
-                  type="number"
-                  step="any"
-                  required
-                />
-                <input
-                  name="entry_price"
-                  value={newTrade.entry_price}
-                  onChange={handleNewTradeChange}
-                  placeholder="Entry Price ($)"
-                  type="number"
-                  step="any"
-                  required
-                />
-                <select
-                  name="direction"
-                  value={newTrade.direction}
-                  onChange={handleNewTradeChange}
-                  required
-                >
+                <input name="asset_symbol" value={newTrade.asset_symbol} onChange={handleNewTradeChange} placeholder="Symbol (e.g., WBTC)" required />
+                <input name="quantity" value={newTrade.quantity} onChange={handleNewTradeChange} placeholder="Quantity" type="number" step="any" required />
+                <input name="entry_price" value={newTrade.entry_price} onChange={handleNewTradeChange} placeholder="Entry Price ($)" type="number" step="any" required />
+                <select name="direction" value={newTrade.direction} onChange={handleNewTradeChange} required>
                   <option value="LONG">LONG</option>
-                  <option value="SHORT">SHORT</option>
+                  <option value-="SHORT">SHORT</option>
                 </select>
-                <button type="submit" className="btn-primary" disabled={isAssetLoading}>
-                  {isAssetLoading ? '...' : 'Log Trade'}
-                </button>
+                <input name="contract_address" value={newTrade.contract_address} onChange={handleNewTradeChange} placeholder="0x... Contract Address" required />
+                <input name="chain" value={newTrade.chain} onChange={handleNewTradeChange} placeholder="Chain (e.g., ETHEREUM)" required />
+                <button type="submit" className="btn-primary" disabled={isAssetLoading}>{isAssetLoading ? '...' : 'Log Trade'}</button>
               </form>
             </div>
 
