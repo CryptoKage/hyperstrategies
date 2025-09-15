@@ -172,7 +172,7 @@ const renderContent = () => {
         {/* --- THIS IS THE CORRECTED PENDING WITHDRAWALS CARD --- */}
 <div className="admin-actions-card">
   <h3>Withdrawal Workflow</h3>
-  <p>Manage the multi-step process for user vault withdrawals.</p>
+  
   
   {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 ? (
     <div className="table-responsive">
@@ -222,7 +222,7 @@ const renderContent = () => {
     <p>There are currently no pending vault withdrawals.</p>
   )}
 </div>
-        
+        <p>Manage the multi-step process for user vault withdrawals.</p>
         {/* --- This is the User Lookup card, now separate --- */}
         <div className="admin-actions-card">
           <h3>User Lookup</h3>
