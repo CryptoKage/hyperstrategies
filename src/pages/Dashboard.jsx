@@ -9,10 +9,14 @@ import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
 import CountdownTimer from '../components/CountdownTimer';
+import LoadingSpinner from '../components/LoadingSpinner';
+
 
 import coreVaultBg from '../assets/core.png';
 import apecoinVaultBg from '../assets/apecoin.png';
 import pantherVaultBg from '../assets/panther-swarm.jpg';
+
+
 
 const vaultImageMap = {
   'core.png': coreVaultBg,
@@ -106,6 +110,9 @@ const Dashboard = () => {
       <>
         <div className="stats-grid">
           <div className="stat-card">
+             {dashboardData?.pendingVaultWithdrawal && (
+              <div className="balance-loading-icon"><LoadingSpinner /></div>
+            )}
             <span className="stat-label">{t('dashboard.total_value')}</span>
             <div className="stat-main">
               <span className="stat-value">{isBalanceHidden ? '******' : `$${((dashboardData.totalCapitalInVaults || 0) + (dashboardData.totalBonusPoints || 0) + (dashboardData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>

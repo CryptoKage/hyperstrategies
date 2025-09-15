@@ -399,6 +399,7 @@ button {
   padding: 24px;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .stat-label {
@@ -1005,6 +1006,7 @@ button {
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 24px;
+  position: relative;
 }
 
 .balance-label {
@@ -2880,6 +2882,28 @@ input:checked + .slider:before {
   color: #ccc;
   padding: 1rem 0;
 }
+
+.balance-loading-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(18, 170, 109, 0.812);
+  border-top-color: #339cbf;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .breakdown-row {
   display: flex;
   justify-content: space-between;

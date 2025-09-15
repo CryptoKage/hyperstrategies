@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
-import CountdownTimer from './CountdownTimer'; // Assuming you have this component from the handoff docs
+import CountdownTimer from './CountdownTimer'; 
 
 const VaultWithdrawModal = ({ isOpen, onClose, vault, unlockDate, onWithdrawalSuccess }) => {
   const { t } = useTranslation();
@@ -30,6 +30,7 @@ const VaultWithdrawModal = ({ isOpen, onClose, vault, unlockDate, onWithdrawalSu
         vaultId: vault.vault_id,
         amount: parseFloat(amount),
       });
+      alert(t('vault_withdraw_modal.processing_notice'));
       onWithdrawalSuccess();
       onClose();
     } catch (err) {

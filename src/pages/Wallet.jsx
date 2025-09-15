@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 import EyeIcon from '../components/EyeIcon';
 import InfoIcon from '../components/InfoIcon';
 import ActivityHistory from '../components/ActivityHistory';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Wallet = () => {
   const { t } = useTranslation();
@@ -101,6 +102,9 @@ const Wallet = () => {
                       </div>
                     </div>
                     <div className="balance-card">
+                       {walletData?.pendingVaultWithdrawal && (
+                        <div className="balance-loading-icon"><LoadingSpinner /></div>
+                      )}
                       <div className="label-with-icon"><span className="balance-label">{t('wallet.available_balance_card')}</span></div>
                       <div className="balance-value-group">
                         <span className="balance-value">{isBalanceHidden ? '******' : `$${(walletData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
