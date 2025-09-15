@@ -124,6 +124,9 @@ const Dashboard = () => {
               <div className="balance-loading-icon"><LoadingSpinner /></div>
             )}
             <span className="stat-label">{t('dashboard.available_balance')}</span>
+              {walletData?.pendingVaultWithdrawal && (
+                        <div className="balance-loading-icon"><LoadingSpinner /></div>
+                      )}
             <div className="stat-main">
               <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
               <button onClick={() => navigate('/wallet')} className="btn-link">{t('dashboard.manage')}</button>
