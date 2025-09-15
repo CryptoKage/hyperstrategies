@@ -11,12 +11,9 @@ import EyeIcon from '../components/EyeIcon';
 import CountdownTimer from '../components/CountdownTimer';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-
 import coreVaultBg from '../assets/core.png';
 import apecoinVaultBg from '../assets/apecoin.png';
 import pantherVaultBg from '../assets/panther-swarm.jpg';
-
-
 
 const vaultImageMap = {
   'core.png': coreVaultBg,
@@ -109,7 +106,8 @@ const Dashboard = () => {
     return (
       <>
         <div className="stats-grid">
-                     <span className="stat-label">{t('dashboard.total_value')}</span>
+          <div className="stat-card">
+            <span className="stat-label">{t('dashboard.total_value')}</span>
             <div className="stat-main">
               <span className="stat-value">{isBalanceHidden ? '******' : `$${((dashboardData.totalCapitalInVaults || 0) + (dashboardData.totalBonusPoints || 0) + (dashboardData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
               <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
@@ -119,14 +117,10 @@ const Dashboard = () => {
             </span>
           </div>
           <div className="stat-card">
-             <div className="stat-card">
              {dashboardData?.pendingVaultWithdrawal && (
               <div className="balance-loading-icon"><LoadingSpinner /></div>
             )}
             <span className="stat-label">{t('dashboard.available_balance')}</span>
-              {walletData?.pendingVaultWithdrawal && (
-                        <div className="balance-loading-icon"><LoadingSpinner /></div>
-                      )}
             <div className="stat-main">
               <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
               <button onClick={() => navigate('/wallet')} className="btn-link">{t('dashboard.manage')}</button>
