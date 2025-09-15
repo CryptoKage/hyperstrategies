@@ -1,6 +1,7 @@
 {
   "common": {
-    "max": "Max"
+    "max": "Max",
+  "pending_withdrawal_tooltip": "A vault withdrawal is currently being processed. Your balance will update upon completion."
   },
   "header": {
     "dashboard": "Dashboard",
@@ -350,7 +351,37 @@
     "title": "Pins Marketplace",
     "coming_soon_title": "Peer-to-Peer Trading is Coming Soon",
     "coming_soon_desc": "Soon you will be able to list your unique, owned Pins for sale and trade with other users right here. Build your collection, equip your best Pins, and get ready to trade.",
-    "view_my_pins": "View My Pin Collection"
+    "view_my_pins": "View My Pin Collection",
+    "loading": "Loading listings...",
+    "error_loading": "Could not load marketplace data at this time.",
+    "no_listings_title": "No listings found.",
+    "no_listings_desc": "Check back later or list one of your own pins for sale!",
+    "sold_by": "Sold by:",
+    "buy_now": "Buy Now",
+    "filter_label": "Filter by Pin:",
+    "option_all": "All Pins",
+    "sort_label": "Sort by:",
+    "option_newest": "Newest First",
+    "option_price_low_high": "Price: Low to High",
+    "option_price_high_low": "Price: High to Low",
+    "my_listings_title": "My Active Listings",
+    "cancel": "Cancel",
+    "cancel_listing_error": "Could not cancel the listing. Please try again."
+  },
+
+"presale": {
+  "title": "Platform Token Presale",
+  "subtitle": "Your XP balance determines your eligibility and allocation. Secure your spot in the future of HyperStrategies.",
+  "table_round": "Round",
+  "table_allocation": "Allocation",
+  "table_price": "Price",
+  "round_private": "Private",
+  "round_a": "Round A",
+  "round_b": "Round B",
+  "round_public": "Public",
+  "button_buy_tokens": "Buy Tokens",
+  "needs_xp": "You need at least 1,000 XP to participate in the presale.",
+  "login_to_check": "Login to Check Your Eligibility"
 },
   
 "forgot_password_page": {

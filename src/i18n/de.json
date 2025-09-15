@@ -1,6 +1,7 @@
 {
   "common": {
-    "max": "Max"
+    "max": "Max",
+  "pending_withdrawal_tooltip": "Eine Vault-Auszahlung wird derzeit bearbeitet. Ihr Guthaben wird nach Abschluss aktualisiert."
   },
   "header": {
     "dashboard": "Dashboard",
@@ -243,8 +244,8 @@
   "add_to_home_screen": {
     "title": "Hyper-Strategies App installieren",
     "subtitle": "Für das beste Erlebnis, füge unsere App zu deinem Home-Bildschirm hinzu.",
-    "step1": "1. Tippe unten auf das <strong>Teilen</strong>-Symbol.",
-    "step2": "2. Scrolle nach unten und tippe auf <strong>„Zum Home-Bildschirm hinzufügen“</strong>."
+    "step1": "1. Tippe unten auf das Teilen-Symbol.",
+    "step2": "2. Scrolle nach unten und tippe auf „Zum Home-Bildschirm hinzufügen"
   },
   "oauth_success": {
     "logging_in": "Anmeldung läuft..."
@@ -349,7 +350,37 @@
     "title": "Pins-Marktplatz",
     "coming_soon_title": "Peer-to-Peer-Handel in Kürze verfügbar",
     "coming_soon_desc": "Bald können Sie hier Ihre einzigartigen, eigenen Pins zum Verkauf anbieten und mit anderen Benutzern handeln. Bauen Sie Ihre Sammlung auf, rüsten Sie Ihre besten Pins aus und machen Sie sich bereit zum Handeln.",
-    "view_my_pins": "Meine Pin-Sammlung ansehen"
+    "view_my_pins": "Meine Pin-Sammlung ansehen",
+    "loading": "Lade Angebote...",
+    "error_loading": "Marktdaten konnten derzeit nicht geladen werden.",
+    "no_listings_title": "Keine Angebote gefunden.",
+    "no_listings_desc": "Schau später nochmal vorbei oder stelle einen deiner Pins zum Verkauf ein!",
+    "sold_by": "Verkauft von:",
+    "buy_now": "Jetzt kaufen",
+    "filter_label": "Nach Pin filtern:",
+    "option_all": "Alle Pins",
+    "sort_label": "Sortieren nach:",
+    "option_newest": "Neueste zuerst",
+    "option_price_low_high": "Preis: Aufsteigend",
+    "option_price_high_low": "Preis: Absteigend",
+    "my_listings_title": "Meine aktiven Angebote",
+    "cancel": "Abbrechen",
+    "cancel_listing_error": "Angebot konnte nicht storniert werden. Bitte versuche es erneut."
+},
+
+"presale": {
+  "title": "Plattform-Token-Vorverkauf",
+  "subtitle": "Dein XP-Guthaben bestimmt deine Berechtigung und Zuteilung. Sichere dir deinen Platz in der Zukunft von HyperStrategies.",
+  "table_round": "Runde",
+  "table_allocation": "Zuteilung",
+  "table_price": "Preis",
+  "round_private": "Privat",
+  "round_a": "Runde A",
+  "round_b": "Runde B",
+  "round_public": "Öffentlich",
+  "button_buy_tokens": "Tokens kaufen",
+  "needs_xp": "Du benötigst mindestens 1.000 XP, um am Vorverkauf teilzunehmen.",
+  "login_to_check": "Anmelden, um deine Berechtigung zu prüfen"
 },
 "forgot_password_page": {
    "success_message": "Wenn ein Konto mit dieser E-Mail-Adresse existiert, wurde ein Link zum Zurücksetzen des Passworts gesendet.",

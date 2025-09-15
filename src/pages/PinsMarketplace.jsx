@@ -52,7 +52,7 @@ setMyListings(myListingsRes.data);
 
     } catch (err) {
       console.error("Failed to fetch marketplace data:", err);
-      setError("Could not load marketplace data at this time.");
+      setError(t('pins_market.error_loading'));
     } finally {
       setLoading(false);
     }
@@ -85,18 +85,18 @@ const handleCancelListing = async (listingId) => {
     fetchMarketplaceData(); // Refresh all data on success
   } catch (err) {
     console.error("Failed to cancel listing:", err);
-    alert("Could not cancel the listing. Please try again.");
+    alert(t('pins_market.cancel_listing_error'));
   } finally {
     setIsCancelling(null);
   }
 };
 
   const renderContent = () => {
-    if (loading) { return <p>Loading listings...</p>; }
-    if (error) { return <p className="error-message">{error}</p>; }
-    if (listings.length === 0) {
-      return <div className="empty-marketplace"><h3>No listings found.</h3><p>Check back later or list one of your own pins for sale!</p></div>;
-    }
+      if (loading) { return <p>{t('pins_market.loading')}</p>; }
+      if (error) { return <p className="error-message">{error}</p>; }
+      if (listings.length === 0) {
+      return <div className="empty-marketplace"><h3>{t('pins_market.no_listings_title')}</h3><p>{t('pins_market.no_listings_desc')}</p></div>;
+      }
 
     return (
       <div className="market-grid">
@@ -104,15 +104,15 @@ const handleCancelListing = async (listingId) => {
           <div key={listing.listing_id} className="pin-listing-card">
             <PinImage pinName={listing.pin_name} imageFilename={listing.image_filename} />
             <div className="listing-details">
-              <h4>{listing.pin_name}</h4>
-              <p className="seller-info">Sold by: <span>{listing.seller_username}</span></p>
-              <p className="listing-price">${parseFloat(listing.price).toFixed(2)}</p>
-             <button 
-  className="btn-primary" 
-  onClick={() => setSelectedListing(listing)} // <-- This is the change
->
-  Buy Now
-</button>
+                <h4>{listing.pin_name}</h4>
+                <p className="seller-info">{t('pins_market.sold_by')} <span>{listing.seller_username}</span></p>
+                <p className="listing-price">${parseFloat(listing.price).toFixed(2)}</p>
+               <button
+    className="btn-primary"
+    onClick={() => setSelectedListing(listing)} // <-- This is the change
+  >
+    {t('pins_market.buy_now')}
+  </button>
             </div>
           </div>
         ))}
@@ -126,30 +126,30 @@ return (
         <div className="market-header">
           <h1 className="market-title gradient-text">{t('pins_market.title')}</h1>
           <div className="market-controls">
-            <div className="control-group">
-              <label htmlFor="filter-pins">Filter by Pin:</label>
-              <select id="filter-pins" value={filter} onChange={(e) => setFilter(e.target.value)}>
-                <option value="ALL">All Pins</option>
-                {pinDefinitions.map(def => (
-                  <option key={def.pin_name} value={def.pin_name}>{def.pin_name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="control-group">
-              <label htmlFor="sort-pins">Sort by:</label>
-              <select id="sort-pins" value={sort} onChange={(e) => setSort(e.target.value)}>
-                <option value="created_at-DESC">Newest First</option>
-                <option value="price-ASC">Price: Low to High</option>
-                <option value="price-DESC">Price: High to Low</option>
-              </select>
-            </div>
+    <div className="control-group">
+                <label htmlFor="filter-pins">{t('pins_market.filter_label')}</label>
+                <select id="filter-pins" value={filter} onChange={(e) => setFilter(e.target.value)}>
+                  <option value="ALL">{t('pins_market.option_all')}</option>
+                  {pinDefinitions.map(def => (
+                    <option key={def.pin_name} value={def.pin_name}>{def.pin_name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="control-group">
+                <label htmlFor="sort-pins">{t('pins_market.sort_label')}</label>
+                <select id="sort-pins" value={sort} onChange={(e) => setSort(e.target.value)}>
+                  <option value="created_at-DESC">{t('pins_market.option_newest')}</option>
+                  <option value="price-ASC">{t('pins_market.option_price_low_high')}</option>
+                  <option value="price-DESC">{t('pins_market.option_price_high_low')}</option>
+                </select>
+              </div>
           </div>
         </div>
 
         {/* --- THIS IS THE CORRECT PLACEMENT for "My Listings" --- */}
         {myListings.length > 0 && (
           <div className="my-listings-section">
-            <h3>My Active Listings</h3>
+              <h3>{t('pins_market.my_listings_title')}</h3>
             <div className="my-listings-grid">
               {myListings.map(listing => (
                 <div key={listing.listing_id} className="my-listing-card">
@@ -158,16 +158,16 @@ return (
                     <strong>{listing.pin_name}</strong>
                     <span>${parseFloat(listing.price).toFixed(2)}</span>
                   </div>
-                  <button 
-                    className="btn-danger-small"
-                    onClick={() => handleCancelListing(listing.listing_id)}
-                    disabled={isCancelling === listing.listing_id}
-                  >
-                    {isCancelling === listing.listing_id ? '...' : 'Cancel'}
-                  </button>
-                </div>
-              ))}
-            </div>
+                  <button
+                      className="btn-danger-small"
+                      onClick={() => handleCancelListing(listing.listing_id)}
+                      disabled={isCancelling === listing.listing_id}
+                    >
+                      {isCancelling === listing.listing_id ? '...' : t('pins_market.cancel')}
+                    </button>
+                  </div>
+                ))}
+              </div>
           </div>
         )}
         

@@ -2885,17 +2885,44 @@ input:checked + .slider:before {
 
 .balance-loading-icon {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 16px;
+  right: 16px;
+  z-index: 5; /* Ensure it sits on top of other card content */
 }
 
+/* The spinner itself */
 .loading-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(18, 170, 109, 0.812);
-  border-top-color: #339cbf;
+  display: inline-block; /* Correct display type */
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(63, 186, 243, 0.3); /* A subtle blue track */
+  border-top-color: var(--color-primary); /* The main blue spinner color */
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: spin 0.8s linear infinite;
+  cursor: help; /* Show a help cursor on hover */
+}
+
+/* --- NEW: Tooltip for the spinner --- */
+.balance-loading-icon .tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Position above the icon */
+  left: 50%;
+  margin-left: -100px; /* Center the tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.balance-loading-icon:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 
 @keyframes spin {

@@ -109,11 +109,7 @@ const Dashboard = () => {
     return (
       <>
         <div className="stats-grid">
-          <div className="stat-card">
-             {dashboardData?.pendingVaultWithdrawal && (
-              <div className="balance-loading-icon"><LoadingSpinner /></div>
-            )}
-            <span className="stat-label">{t('dashboard.total_value')}</span>
+                     <span className="stat-label">{t('dashboard.total_value')}</span>
             <div className="stat-main">
               <span className="stat-value">{isBalanceHidden ? '******' : `$${((dashboardData.totalCapitalInVaults || 0) + (dashboardData.totalBonusPoints || 0) + (dashboardData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
               <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
@@ -123,6 +119,10 @@ const Dashboard = () => {
             </span>
           </div>
           <div className="stat-card">
+             <div className="stat-card">
+             {dashboardData?.pendingVaultWithdrawal && (
+              <div className="balance-loading-icon"><LoadingSpinner /></div>
+            )}
             <span className="stat-label">{t('dashboard.available_balance')}</span>
             <div className="stat-main">
               <span className="stat-value">{isBalanceHidden ? '******' : `$${(dashboardData.availableBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
