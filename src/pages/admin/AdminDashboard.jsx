@@ -20,6 +20,7 @@ const AdminDashboard = () => {
   const [userToScan, setUserToScan] = useState('');
   const [isScanning, setIsScanning] = useState(false);
   const [scanMessage, setScanMessage] = useState({ type: '', text: '' });
+  const [finalizingId, setFinalizingId] = useState(null);
 
   const navigate = useNavigate();
 
@@ -69,6 +70,34 @@ const AdminDashboard = () => {
       setScanMessage({ type: 'error', text: err.response?.data?.message || 'Failed to scan block.' });
     } finally {
       setIsScanning(false);
+    }
+  };
+
+  const handleSweepToUser = async (activityId) => {
+    setApprovingId(activityId); // We can reuse the 'approving' state for the spinner
+    setActionMessage({ id: activityId, text: 'Initiating sweep...' });
+    try {
+      const response = await api.post(`/admin/withdrawals/${activityId}/sweep`);
+      setActionMessage({ id: activityId, type: 'success', text: 'Sweep started. Awaiting confirmation.' });
+      fetchAdminStats(); // Refresh the dashboard to show the new status
+    } catch (err) {
+      setActionMessage({ id: activityId, type: 'error', text: err.response?.data?.error || 'Sweep failed.' });
+    } finally {
+      setApprovingId(null);
+    }
+  };
+
+  const handleFinalizeWithdrawal = async (activityId) => {
+    setFinalizingId(activityId);
+    setActionMessage({ id: activityId, text: 'Finalizing...' });
+    try {
+      const response = await api.post(`/admin/withdrawals/${activityId}/finalize`);
+      setActionMessage({ id: activityId, type: 'success', text: response.data.message });
+      setTimeout(fetchAdminStats, 1500); // Refresh after a short delay
+    } catch (err) {
+      setActionMessage({ id: activityId, type: 'error', text: err.response?.data?.error || 'Finalization failed.' });
+    } finally {
+      setFinalizingId(null);
     }
   };
 
@@ -141,48 +170,58 @@ const renderContent = () => {
         </div>
         
         {/* --- THIS IS THE CORRECTED PENDING WITHDRAWALS CARD --- */}
-        <div className="admin-actions-card">
-          <h3>Pending Vault Withdrawals</h3>
-          
-          {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 ? (
-            <>
-              <p>ACTION REQUIRED: Ensure funds are returned from the trading desk, then approve for processing.</p>
-              <div className="table-responsive">
-                <table className="activity-table">
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Description</th>
-                      <th className="amount">Amount</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {stats.pendingVaultWithdrawals.map(item => (
-                      <tr key={item.activity_id}>
-                        <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
-                        <td>{item.description}</td>
-                        <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
-                        <td className="actions-cell">
-                          <button 
-                            className="btn-primary btn-sm" 
-                            onClick={() => handleApproveWithdrawal(item.activity_id)}
-                            disabled={approvingId === item.activity_id}
-                          >
-                            {approvingId === item.activity_id ? '...' : 'Approve'}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
-              </div>
-            </>
-          ) : (
-            <p>There are currently no pending vault withdrawals to approve.</p>
-          )}
-        </div>
+<div className="admin-actions-card">
+  <h3>Withdrawal Workflow</h3>
+  <p>Manage the multi-step process for user vault withdrawals.</p>
+  
+  {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 ? (
+    <div className="table-responsive">
+      <table className="activity-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Description</th>
+            <th className="amount">Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stats.pendingVaultWithdrawals.map(item => (
+            <tr key={item.activity_id}>
+              <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
+              <td>{item.description}</td>
+              <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
+              <td><span className={`status-badge status-${item.status.toLowerCase()}`}>{item.status.replace(/_/g, ' ')}</span></td>
+              <td className="actions-cell">
+                {/* --- THIS IS THE NEW CONDITIONAL LOGIC --- */}
+                {item.status === 'PENDING_FUNDING' && (
+                  <button className="btn-primary btn-sm" onClick={() => handleSweepToUser(item.activity_id)} disabled={approvingId === item.activity_id}>
+                    {approvingId === item.activity_id ? '...' : 'Sweep to User'}
+                  </button>
+                )}
+                {item.status === 'PENDING_CONFIRMATION' && (
+                  <button className="btn-secondary btn-sm" disabled>Awaiting B/C</button>
+                )}
+                {item.status === 'SWEEP_CONFIRMED' && (
+                  <button className="btn-positive btn-sm" onClick={() => handleFinalizeWithdrawal(item.activity_id)} disabled={finalizingId === item.activity_id}>
+                    {finalizingId === item.activity_id ? '...' : 'Finalize & Credit'}
+                  </button>
+                )}
+                {item.status === 'SWEEP_FAILED' && (
+                  <button className="btn-danger-small" onClick={() => handleSweepToUser(item.activity_id)}>Retry Sweep</button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
+    </div>
+  ) : (
+    <p>There are currently no pending vault withdrawals.</p>
+  )}
+</div>
         
         {/* --- This is the User Lookup card, now separate --- */}
         <div className="admin-actions-card">
