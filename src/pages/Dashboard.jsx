@@ -14,11 +14,13 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import coreVaultBg from '../assets/core.png';
 import apecoinVaultBg from '../assets/apecoin.png';
 import pantherVaultBg from '../assets/panther-swarm.jpg';
+import btcVaultBg from '../assets/btcvault.png';
 
 const vaultImageMap = {
   'core.png': coreVaultBg,
   'apecoin.png': apecoinVaultBg,
   'panther-swarm.jpg': pantherVaultBg,
+  'btcvault.png': btcVaultBg,
 };
 
 const Dashboard = () => {
