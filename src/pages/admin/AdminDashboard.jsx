@@ -172,7 +172,7 @@ const renderContent = () => {
         {/* --- THIS IS THE CORRECTED PENDING WITHDRAWALS CARD --- */}
 <div className="admin-actions-card">
   <h3>Withdrawal Workflow</h3>
-  
+  <p>Manage the multi-step process for user vault withdrawals.</p>
   
   {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 ? (
     <div className="table-responsive">
@@ -192,7 +192,7 @@ const renderContent = () => {
               <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
               <td>{item.description}</td>
               <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
-              <td><span className={`status-badge status-${item.status.toLowerCase()}`}>{item.status.replace(/_/g, ' ')}</span></td>
+              <td><span className={`status-badge status-${(item.status || 'unknown').toLowerCase()}`}>{(item.status || 'UNKNOWN').replace(/_/g, ' ')}</span></td>
               <td className="actions-cell">
                 {/* --- THIS IS THE NEW CONDITIONAL LOGIC --- */}
                 {item.status === 'PENDING_FUNDING' && (
@@ -222,7 +222,7 @@ const renderContent = () => {
     <p>There are currently no pending vault withdrawals.</p>
   )}
 </div>
-        <p>Manage the multi-step process for user vault withdrawals.</p>
+        
         {/* --- This is the User Lookup card, now separate --- */}
         <div className="admin-actions-card">
           <h3>User Lookup</h3>
