@@ -19,8 +19,10 @@ const XPLeaderboard = () => {
   const [copiedLink, setCopiedLink] = useState(null);
 
   const fetchData = useCallback(async () => {
+    // --- BUG FIX: Removed 'user' from the dependency array to prevent a potential loop ---
     setLoading(true);
     try {
+      // We can safely read 'user' from the outer scope here without listing it as a dependency.
       const [leaderboardRes, myRankRes] = await Promise.all([
         api.get('/user/leaderboard'),
         user ? api.get('/user/my-rank') : Promise.resolve(null)
@@ -34,11 +36,7 @@ const XPLeaderboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  }, []);
   
   // --- NEW: Function to handle copying a specific referral link ---
   const handleCopyLink = (referralCode) => {

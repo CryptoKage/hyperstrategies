@@ -42,7 +42,8 @@ const Dashboard = () => {
   // --- NEW: State to store the lock status for each vault ---
   const [vaultLockStatuses, setVaultLockStatuses] = useState({});
 
-  const fetchDashboardData = useCallback(async () => {
+   const fetchDashboardData = useCallback(async () => {
+    // --- BUG FIX: Removed the data state from the dependency array to prevent an infinite loop ---
     try {
       const response = await api.get('/dashboard');
       setDashboardData(response.data);
@@ -53,7 +54,6 @@ const Dashboard = () => {
           initialCompoundState[p.vault_id] = p.auto_compound ?? true;
         });
 
-        // --- NEW LOGIC: After fetching positions, fetch their lock statuses ---
         const lockStatusPromises = response.data.userPositions.map(p =>
           api.get(`/vaults/${p.vault_id}/lock-status`)
         );

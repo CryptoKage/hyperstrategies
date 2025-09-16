@@ -52,18 +52,23 @@ const Profile = () => {
   }, [t]);
 
  useEffect(() => {
-    // --- THIS IS THE NEW LOGIC ---
-    // Refresh the token first to ensure all data is up-to-date.
-    if (refreshToken) {
-      refreshToken().then(() => {
-        // Then, fetch the profile data as before.
-        fetchProfile();
-      });
-    } else {
-      fetchProfile();
-    }
+    const loadProfile = async () => {
+      try {
+        await refreshToken(); // Wait for the token to be fresh
+        await fetchProfile(); // Then fetch the profile data
+      } catch (error) {
+        // Handle potential token refresh errors if necessary
+        console.error("Failed to refresh token or fetch profile", error);
+        setError(t('profile_page.error_load'));
+      }
+    };
+  
+    loadProfile();
     setCopySuccessMessage(t('profile_page.copy_link_button'));
-  }, [fetchProfile, refreshToken, t]);
+  
+    // By providing an empty dependency array, we tell React to run this effect
+    // only a single time, just like componentDidMount.
+  }, []);
 
   const handleToggleAutoEquip = async () => {
     const newState = !isAutoEquip;
