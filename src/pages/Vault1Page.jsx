@@ -51,14 +51,11 @@ const Vault1Page = () => {
     })).reverse();
   };
   
-  // ==============================================================================
-  // --- BUG FIX: This is the clean, correct version of the function ---
-  // ==============================================================================
   const getCoinGeckoLink = (asset) => {
     if (asset && asset.coingecko_id) {
         return `https://www.coingecko.com/en/coins/${asset.coingecko_id}`;
     }
-    return null; // Return null if there's no ID, so no link will be rendered
+    return null;
   };
 
   if (loading) {
@@ -89,72 +86,109 @@ const Vault1Page = () => {
         </div>
         <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
         
-        <div className="vault-detail-grid single-col">
-            <StatCard label="Capital in Transit" value={vaultStats.capitalInTransit} subtext="User deposits waiting to be swept into trades." />
-        </div>
-
         <div className="vault-detail-grid">
-          {isInvested && (
+          {/* Column 1: Your Position & Capital Status */}
+          <div className="vault-detail-column">
+            {isInvested && (
+              <div className="profile-card">
+                <h3>Your Position</h3>
+                <div className="stat-item"><span>Total Capital</span><span>{isBalanceHidden ? '******' : `$${userPosition.totalCapital.toFixed(2)}`}</span></div>
+                <div className="stat-item"><span>Total Unrealized P&L</span><span className={userPosition.totalPnl >= 0 ? 'text-positive' : 'text-negative'}>{isBalanceHidden ? '******' : `${userPosition.totalPnl >= 0 ? '+' : ''}$${userPosition.totalPnl.toFixed(2)}`}</span></div>
+              </div>
+            )}
+            {vaultStats.capitalInTransit > 0 && (
+                <StatCard label="Your Capital in Transit" value={vaultStats.capitalInTransit} subtext="Deposits waiting to be swept into trades." />
+            )}
+            {vaultStats.pendingWithdrawals > 0 && (
+                <StatCard label="Your Pending Withdrawals" value={vaultStats.pendingWithdrawals} subtext="Funds being processed for withdrawal from this vault." />
+            )}
+          </div>
+
+          {/* Column 2: Asset Breakdown */}
+          <div className="vault-detail-column">
             <div className="profile-card">
-              <h3>Your Position</h3>
-              <div className="stat-item"><span>Total Capital</span><span>{isBalanceHidden ? '******' : `$${userPosition.totalCapital.toFixed(2)}`}</span></div>
-              <div className="stat-item"><span>Unrealized P&L</span><span className={userPosition.totalPnl >= 0 ? 'text-positive' : 'text-negative'}>{isBalanceHidden ? '******' : `${userPosition.totalPnl >= 0 ? '+' : ''}$${userPosition.totalPnl.toFixed(2)}`}</span></div>
-            </div>
-          )}
-          
-          <div className="profile-card">
-            <h3>Asset Breakdown</h3>
-            <div className="table-responsive-wrapper">
-                <table className="asset-table">
-                    <thead>
-                        <tr><th>Asset</th><th className="amount">Live Price</th><th className="amount">Target Weight</th></tr>
-                    </thead>
-                    {/* --- BUG FIX: Removed the extra '<' before tbody --- */}
-                    <tbody>
-                        {assetBreakdown.length > 0 ? (
-                        assetBreakdown.map(asset => {
-                          const cgLink = getCoinGeckoLink(asset);
-                          return (
-                            <tr key={asset.symbol}>
-                                <td>
-                                  {cgLink ? (
-                                    <a href={cgLink} target="_blank" rel="noopener noreferrer" className="asset-link">{asset.symbol} ↗</a>
-                                  ) : (
-                                    <span>{asset.symbol}</span>
-                                  )}
-                                </td>
-                                <td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}</td>
-                                <td className="amount">{(asset.weight * 100).toFixed(0)}%</td>
+                <h3>Asset Breakdown</h3>
+                <div className="table-responsive-wrapper">
+                    <table className="asset-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th className="amount">Live Price</th>
+                                {isInvested && <th className="amount">Your P&L</th>}
                             </tr>
-                          );
-                        })
-                        ) : (<tr><td colSpan="3">Asset allocation is not currently specified.</td></tr>)}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {assetBreakdown.map(asset => {
+                                const cgLink = getCoinGeckoLink(asset);
+                                const userPnlForAsset = userPosition?.pnlByAsset?.[asset.symbol] || 0;
+                                return (
+                                <tr key={asset.symbol}>
+                                    <td>
+                                    {cgLink ? (<a href={cgLink} target="_blank" rel="noopener noreferrer" className="asset-link">{asset.symbol} ↗</a>) : (<span>{asset.symbol}</span>)}
+                                    </td>
+                                    <td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 }) : 'N/A'}</td>
+                                    {isInvested && (
+                                        <td className={`amount ${userPnlForAsset >= 0 ? 'text-positive' : 'text-negative'}`}>
+                                            {isBalanceHidden ? '******' : `${userPnlForAsset >= 0 ? '+' : ''}$${userPnlForAsset.toFixed(2)}`}
+                                        </td>
+                                    )}
+                                </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
             </div>
           </div>
-
-          <div className="profile-card full-width">
-            <h3>Performance (Last 30 Days)</h3>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={formatChartData(performanceHistory)} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="date" stroke="var(--color-text-secondary)" />
-                <YAxis stroke="var(--color-text-secondary)" unit="%" />
-                <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }} />
-                <Legend />
-                <Line type="monotone" dataKey="pnl" name="Vault P&L (%)" stroke="#4ade80" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          {isInvested && userLedger && userLedger.length > 0 && (
-            <div className="profile-card full-width">
-              <h3>Your Transaction History</h3>
-              {/* Table was omitted for brevity, but it goes here */}
-            </div>
-          )}
         </div>
+
+        <div className="profile-card full-width">
+          <h3>Overall Vault Performance (Last 30 Days)</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={formatChartData(performanceHistory)} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+              <XAxis dataKey="date" stroke="var(--color-text-secondary)" />
+              <YAxis stroke="var(--color-text-secondary)" unit="%" />
+              <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }} />
+              <Legend />
+              <Line type="monotone" dataKey="pnl" name="Vault P&L (%)" stroke="#4ade80" strokeWidth={2} dot={false} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {isInvested && userLedger && userLedger.length > 0 && (
+          <div className="profile-card full-width">
+              <h3>Your Transaction History</h3>
+              <div className="table-responsive-wrapper">
+                <table className="activity-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th className="amount">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userLedger.map(entry => (
+                      <tr key={entry.entry_id}>
+                        <td>{new Date(entry.created_at).toLocaleString()}</td>
+                        <td>{entry.entry_type.replace(/_/g, ' ')}</td>
+                        <td>
+                          <span className={`status-badge status-${entry.status.toLowerCase()}`}>
+                            {entry.status.replace(/_/g, ' ')}
+                          </span>
+                        </td>
+                        <td className={`amount ${parseFloat(entry.amount) >= 0 ? 'text-positive' : 'text-negative'}`}>
+                          {`${parseFloat(entry.amount) > 0 ? '+' : ''}${parseFloat(entry.amount).toFixed(2)}`}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+        )}
       </div>
     </Layout>
   );
