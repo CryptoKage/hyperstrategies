@@ -25,7 +25,8 @@ const TreasuryPage = () => {
   const [buybackMessage, setBuybackMessage] = useState({ type: '', text: '' });
 
   const fetchReport = useCallback(async () => {
-    if (!report) setLoading(true);
+    // --- BUG FIX: Removed 'report' from the dependency array to prevent an infinite loop ---
+    setLoading(true); // Set loading true at the start, removed the conditional
     try {
       const response = await api.get('/admin/treasury-report');
       setReport(response.data);
@@ -35,7 +36,7 @@ const TreasuryPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [report]);
+  }, []);
 
   useEffect(() => {
     fetchReport();

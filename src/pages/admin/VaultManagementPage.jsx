@@ -398,7 +398,7 @@ const VaultManagementPage = () => {
                 <input name="entry_price" value={newTrade.entry_price} onChange={handleNewTradeChange} placeholder="Entry Price ($)" type="number" step="any" required />
                 <select name="direction" value={newTrade.direction} onChange={handleNewTradeChange} required>
                   <option value="LONG">LONG</option>
-                  <option value-="SHORT">SHORT</option>
+                  <option value="SHORT">SHORT</option>
                 </select>
                 <input name="contract_address" value={newTrade.contract_address} onChange={handleNewTradeChange} placeholder="0x... Contract Address" required />
                 <input name="chain" value={newTrade.chain} onChange={handleNewTradeChange} placeholder="Chain (e.g., ETHEREUM)" required />
