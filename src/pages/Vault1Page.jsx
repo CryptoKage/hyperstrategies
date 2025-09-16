@@ -8,12 +8,11 @@ import api from '../api/api';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 
-// Helper component for the new stats cards
 const StatCard = ({ label, value, subtext = null, isCurrency = true }) => (
   <div className="profile-card">
     <h3>{label}</h3>
     <p className="stat-value-large">
-      {isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}
+      {isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}
     </p>
     {subtext && <p className="stat-subtext">{subtext}</p>}
   </div>
@@ -54,7 +53,6 @@ const Vault1Page = () => {
   };
   
   const getCoinGeckoLink = (symbol) => {
-      // Basic mapping, can be expanded
       const cgMap = {
           'BTC': 'bitcoin',
           'ETH': 'ethereum',
@@ -68,25 +66,40 @@ const Vault1Page = () => {
   if (loading) {
     return <Layout><div className="vault-detail-container"><h1>Loading Vault Details...</h1></div></Layout>;
   }
+  
+  // ==============================================================================
+  // --- BUG FIX: Add a more robust check to prevent rendering with null data ---
+  // This ensures that even if loading is false, we don't try to render until pageData exists.
+  // ==============================================================================
   if (error || !pageData) {
     return <Layout><div className="vault-detail-container"><p className="error-message">{error || 'No data found for this vault.'}</p></div></Layout>;
   }
 
-  const { vaultInfo, userPosition, performanceHistory, assetBreakdown, userLedger, vaultStats } = pageData;
+  // --- BUG FIX: Provide default empty values when destructuring ---
+  // This prevents the app from crashing if any part of the API response is missing.
+  const { 
+    vaultInfo = {}, 
+    userPosition = null, // Can be null if not invested
+    performanceHistory = [], 
+    assetBreakdown = [], 
+    userLedger = [], 
+    vaultStats = {} 
+  } = pageData;
+  // ==============================================================================
+  // --- END OF FIX ---
+  // ==============================================================================
+
   const isInvested = userPosition && userPosition.totalCapital > 0;
 
   return (
     <Layout>
       <div className="vault-detail-container">
         <div className="vault-detail-header">
-          <h1>{vaultInfo.name}</h1>
+          <h1>{vaultInfo.name || 'Vault Details'}</h1>
           <Link to="/dashboard" className="btn-secondary btn-sm">← Back to Dashboard</Link>
         </div>
         <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
         
-        {/* ============================================================================== */}
-        {/* --- NEW: Capital Status Grid --- */}
-        {/* ============================================================================== */}
         <div className="vault-detail-grid three-col">
             <StatCard label="Total Value Locked" value={vaultStats.totalValueLocked} subtext="The current Net Asset Value (NAV) of the vault." />
             <StatCard label="Capital in Transit" value={vaultStats.capitalInTransit} subtext="User deposits waiting to be swept into trades." />
@@ -94,9 +107,6 @@ const Vault1Page = () => {
         </div>
 
         <div className="vault-detail-grid">
-          {/* ============================================================================== */}
-          {/* --- NEW: Conditional Rendering for "Your Position" --- */}
-          {/* ============================================================================== */}
           {isInvested && (
             <div className="profile-card">
               <h3>Your Position</h3>
@@ -105,28 +115,19 @@ const Vault1Page = () => {
             </div>
           )}
           
-          {/* ============================================================================== */}
-          {/* --- NEW: Overhauled Asset Breakdown Card with Live Prices --- */}
-          {/* ============================================================================== */}
           <div className="profile-card">
             <h3>Asset Breakdown</h3>
             <div className="table-responsive-wrapper">
                 <table className="asset-table">
                     <thead>
-                        <tr>
-                            <th>Asset</th>
-                            <th className="amount">Live Price</th>
-                            <th className="amount">Target Weight</th>
-                        </tr>
+                        <tr><th>Asset</th><th className="amount">Live Price</th><th className="amount">Target Weight</th></tr>
                     </thead>
                     <tbody>
                         {assetBreakdown.length > 0 ? (
                         assetBreakdown.map(asset => (
                             <tr key={asset.symbol}>
                                 <td>
-                                    <a href={getCoinGeckoLink(asset.symbol)} target="_blank" rel="noopener noreferrer" className="asset-link">
-                                        {asset.symbol} ↗
-                                    </a>
+                                    <a href={getCoinGeckoLink(asset.symbol)} target="_blank" rel="noopener noreferrer" className="asset-link">{asset.symbol} ↗</a>
                                 </td>
                                 <td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}</td>
                                 <td className="amount">{(asset.weight * 100).toFixed(0)}%</td>
@@ -152,9 +153,6 @@ const Vault1Page = () => {
             </ResponsiveContainer>
           </div>
 
-          {/* ============================================================================== */}
-          {/* --- NEW: Conditional Rendering for "Your Transaction History" --- */}
-          {/* ============================================================================== */}
           {isInvested && userLedger.length > 0 && (
             <div className="profile-card full-width">
               <h3>Your Transaction History</h3>
