@@ -23,8 +23,9 @@ const Wallet = () => {
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
-  const fetchWalletData = useCallback(async () => {
-    if (!walletData) setLoading(true); 
+ const fetchWalletData = useCallback(async () => {
+    // We can remove the `if (!walletData)` check and just always set loading to true.
+    setLoading(true); 
     try {
       const [walletRes, historyRes] = await Promise.all([
         api.get('/user/wallet'),
@@ -39,7 +40,7 @@ const Wallet = () => {
     } finally {
       setLoading(false);
     }
-  }, [t, walletData]);
+  }, [t]);
 
   useEffect(() => {
     fetchWalletData();
