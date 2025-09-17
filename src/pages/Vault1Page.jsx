@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import api from '../api/api';
 import Layout from '../components/Layout';
@@ -20,7 +19,6 @@ const StatCard = ({ label, value, subtext = null, isCurrency = true }) => (
 
 const Vault1Page = () => {
   const { vaultId } = useParams();
-  const { t } = useTranslation();
   const { isBalanceHidden } = useAuth();
 
   const [pageData, setPageData] = useState(null);
@@ -34,7 +32,8 @@ const Vault1Page = () => {
       const response = await api.get(`/vault-details/${vaultId}`);
       setPageData(response.data);
     } catch (err) {
-      setError("Could not load vault details.");
+      console.error(`Failed to fetch details for vault ${vaultId}:`, err);
+      setError("Could not load vault details at this time.");
     } finally {
       setLoading(false);
     }
@@ -44,11 +43,24 @@ const Vault1Page = () => {
     fetchVaultDetails();
   }, [fetchVaultDetails]);
 
-  const formatChartData = (data = []) => {
-    return data.map(item => ({
-      date: new Date(item.record_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-      pnl: parseFloat(item.pnl_percentage).toFixed(2),
-    })).reverse();
+  const formatChartData = (data = [], assets = []) => {
+    const assetSymbols = assets.map(a => a.symbol.toUpperCase());
+
+    return data.map(item => {
+      const formattedItem = {
+        date: new Date(item.record_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }),
+        pnl: parseFloat(item.pnl_percentage),
+      };
+
+      if (item.asset_prices_snapshot) {
+        for (const symbol of assetSymbols) {
+          if (item.asset_prices_snapshot[symbol]) {
+            formattedItem[symbol] = item.asset_prices_snapshot[symbol];
+          }
+        }
+      }
+      return formattedItem;
+    }).reverse();
   };
   
   const getCoinGeckoLink = (asset) => {
@@ -76,6 +88,15 @@ const Vault1Page = () => {
   } = pageData;
 
   const isInvested = userPosition && userPosition.totalCapital > 0;
+  const chartData = formatChartData(performanceHistory, assetBreakdown);
+  const chartAssets = assetBreakdown.filter(a => a.symbol !== 'USDC').map(a => a.symbol.toUpperCase());
+
+  const lineColors = {
+      BTC: '#F7931A',
+      ETH: '#8884d8',
+      SOL: '#9945FF',
+      HYPE: '#38BDF8'
+  };
 
   return (
     <Layout>
@@ -87,7 +108,6 @@ const Vault1Page = () => {
         <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
         
         <div className="vault-detail-grid">
-          {/* Column 1: Your Position & Capital Status */}
           <div className="vault-detail-column">
             {isInvested && (
               <div className="profile-card">
@@ -104,7 +124,6 @@ const Vault1Page = () => {
             )}
           </div>
 
-          {/* Column 2: Asset Breakdown */}
           <div className="vault-detail-column">
             <div className="profile-card">
                 <h3>Asset Breakdown</h3>
@@ -142,11 +161,39 @@ const Vault1Page = () => {
           </div>
         </div>
 
-
-    
+        <div className="profile-card full-width">
+          <h3>Overall Vault Performance</h3>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+              <XAxis dataKey="date" stroke="var(--color-text-secondary)" />
+              <YAxis yAxisId="left" label={{ value: 'Vault P&L (%)', angle: -90, position: 'insideLeft' }} stroke="#4ade80" />
+              <YAxis yAxisId="right" orientation="right" label={{ value: 'Asset Price ($)', angle: 90, position: 'insideRight' }} stroke="var(--color-text-secondary)" domain={['dataMin - 1000', 'dataMax + 1000']} />
+              <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }} />
+              <Legend />
+              
+              <Line yAxisId="left" type="monotone" dataKey="pnl" name="Vault P&L" unit="%" stroke="#4ade80" strokeWidth={3} dot={false} />
+              
+              {chartAssets.map(symbol => (
+                <Line 
+                  key={symbol}
+                  yAxisId="right" 
+                  type="monotone" 
+                  dataKey={symbol} 
+                  name={`${symbol} Price`}
+                  unit="$"
+                  stroke={lineColors[symbol] || '#ffffff'} 
+                  strokeWidth={1} 
+                  strokeDasharray="3 3" 
+                  dot={false} 
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
         {isInvested && userLedger && userLedger.length > 0 && (
-          <div className="profile-card full-width">
+            <div className="profile-card full-width">
               <h3>Your Transaction History</h3>
               <div className="table-responsive-wrapper">
                 <table className="activity-table">
@@ -177,7 +224,7 @@ const Vault1Page = () => {
                 </table>
               </div>
             </div>
-        )}
+          )}
       </div>
     </Layout>
   );
