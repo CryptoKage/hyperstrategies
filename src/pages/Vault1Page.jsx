@@ -39,45 +39,57 @@ const Vault1Page = () => {
         fetchVaultDetails();
     }, [fetchVaultDetails]);
     
-    // ==============================================================================
-    // --- FINAL UPGRADE: Normalize all chart data to percentage change ---
-    // ==============================================================================
     const formatChartData = (data = [], assets = []) => {
-        const reversedData = [...data].reverse(); // Oldest data first
+        console.log("[Chart Debug] Received raw history data points:", data.length);
+        const reversedData = [...data].reverse();
         if (reversedData.length === 0) return [];
 
         const assetSymbols = assets.map(a => a.symbol.toUpperCase());
-        const firstPoint = reversedData[0];
         
-        // Establish the baseline "Day 0" values
-        const basePnl = parseFloat(firstPoint.pnl_percentage);
-        const basePrices = {};
-        if (firstPoint.asset_prices_snapshot) {
-            for (const symbol of assetSymbols) {
-                basePrices[symbol] = firstPoint.asset_prices_snapshot[symbol];
+        // Find the first valid baseline point
+        let firstValidPoint = null;
+        for (const point of reversedData) {
+            if (point.asset_prices_snapshot) {
+                firstValidPoint = point;
+                break;
             }
         }
 
-        return reversedData.map(item => {
+        if (!firstValidPoint) {
+            console.error("[Chart Debug] Could not find any historical data with an asset price snapshot to use as a baseline.");
+            return []; // Return empty if no valid baseline is found
+        }
+        
+        const basePnl = parseFloat(firstValidPoint.pnl_percentage);
+        const basePrices = {};
+        for (const symbol of assetSymbols) {
+            basePrices[symbol] = firstValidPoint.asset_prices_snapshot[symbol.toUpperCase()];
+        }
+        
+        console.log("[Chart Debug] Established baseline:", { basePnl, basePrices });
+
+        const formatted = reversedData.map(item => {
             const formattedItem = {
                 date: new Date(item.record_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }),
-                // Normalize Vault P&L against the first day's P&L
                 "Vault P&L": parseFloat(item.pnl_percentage) - basePnl,
             };
             
             if (item.asset_prices_snapshot) {
                 for (const symbol of assetSymbols) {
-                    const currentPrice = item.asset_prices_snapshot[symbol];
+                    const currentPrice = item.asset_prices_snapshot[symbol.toUpperCase()];
                     const basePrice = basePrices[symbol];
-                    if (currentPrice && basePrice > 0) {
-                        // Normalize asset price to percentage change
+                    if (typeof currentPrice === 'number' && typeof basePrice === 'number' && basePrice > 0) {
                         formattedItem[symbol] = ((currentPrice / basePrice) - 1) * 100;
                     }
                 }
             }
             return formattedItem;
         });
+        
+        console.log("[Chart Debug] Processed chart data:", formatted);
+        return formatted;
     };
+
 
     const getCoinGeckoLink = (asset) => {
         if (asset && asset.coingecko_id) {
