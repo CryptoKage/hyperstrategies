@@ -170,33 +170,7 @@ const Vault1Page = () => {
                     </div>
                 </div>
 
-                <div className="profile-card full-width">
-                    <h3>Overall Vault Performance</h3>
-                    <ResponsiveContainer width="100%" height={400}>
-                        <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                            <XAxis dataKey="date" stroke="var(--color-text-secondary)" />
-                            <YAxis label={{ value: 'Performance (%)', angle: -90, position: 'insideLeft' }} stroke="var(--color-text-secondary)" unit="%" />
-                            <Tooltip contentStyle={{ backgroundColor: 'var(--color-surface)', border: '1px solid var(--color-border)' }} formatter={(value) => `${value.toFixed(2)}%`} />
-                            <Legend />
-                            
-                            <Line type="monotone" dataKey="Vault P&L" stroke="#4ade80" strokeWidth={3} dot={false} />
-                            
-                            {chartAssets.map(symbol => (
-                                <Line 
-                                key={symbol}
-                                type="monotone" 
-                                dataKey={symbol.toUpperCase()}
-                                name={`${symbol} % Change`}
-                                stroke={lineColors[symbol] || '#ffffff'} 
-                                strokeWidth={1} 
-                                strokeDasharray="3 3" 
-                                dot={false} 
-                                />
-                            ))}
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
+            
 
                 {isInvested && userLedger && userLedger.length > 0 && (
                     <div className="profile-card full-width">
