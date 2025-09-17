@@ -1,5 +1,3 @@
-// PASTE THIS ENTIRE CONTENT TO REPLACE: hyperstrategies/src/pages/Vault1Page.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -7,98 +5,106 @@ import api from '../api/api';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 
+// StatCard component remains the same
 const StatCard = ({ label, value, subtext = null, isCurrency = true }) => (
-  <div className="profile-card">
-    <h3>{label}</h3>
-    <p className="stat-value-large">
-      {isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}
-    </p>
-    {subtext && <p className="stat-subtext">{subtext}</p>}
-  </div>
+    <div className="profile-card">
+        <h3>{label}</h3>
+        <p className="stat-value-large">{isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</p>
+        {subtext && <p className="stat-subtext">{subtext}</p>}
+    </div>
 );
 
+
 const Vault1Page = () => {
-  const { vaultId } = useParams();
-  const { isBalanceHidden } = useAuth();
+    const { vaultId } = useParams();
+    const { isBalanceHidden } = useAuth();
+    const [pageData, setPageData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-  const [pageData, setPageData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const fetchVaultDetails = useCallback(async () => {
-    if (!vaultId) return;
-    setLoading(true);
-    try {
-      const response = await api.get(`/vault-details/${vaultId}`);
-      setPageData(response.data);
-    } catch (err) {
-      console.error(`Failed to fetch details for vault ${vaultId}:`, err);
-      setError("Could not load vault details at this time.");
-    } finally {
-      setLoading(false);
-    }
-  }, [vaultId]);
-
-  useEffect(() => {
-    fetchVaultDetails();
-  }, [fetchVaultDetails]);
-
-  const formatChartData = (data = [], assets = []) => {
-    const assetSymbols = assets.map(a => a.symbol.toUpperCase());
-
-    return data.map(item => {
-      const formattedItem = {
-        date: new Date(item.record_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }),
-        pnl: parseFloat(item.pnl_percentage),
-      };
-
-      if (item.asset_prices_snapshot) {
-        for (const symbol of assetSymbols) {
-          if (item.asset_prices_snapshot[symbol]) {
-            formattedItem[symbol] = item.asset_prices_snapshot[symbol];
-          }
+    const fetchVaultDetails = useCallback(async () => {
+        if (!vaultId) return;
+        setLoading(true);
+        try {
+            const response = await api.get(`/vault-details/${vaultId}`);
+            setPageData(response.data);
+        } catch (err) {
+            setError("Could not load vault details.");
+        } finally {
+            setLoading(false);
         }
-      }
-      return formattedItem;
-    }).reverse();
-  };
-  
-  const getCoinGeckoLink = (asset) => {
-    if (asset && asset.coingecko_id) {
-        return `https://www.coingecko.com/en/coins/${asset.coingecko_id}`;
-    }
-    return null;
-  };
+    }, [vaultId]);
 
-  if (loading) {
-    return <Layout><div className="vault-detail-container"><h1>Loading Vault Details...</h1></div></Layout>;
-  }
-  
-  if (error || !pageData) {
-    return <Layout><div className="vault-detail-container"><p className="error-message">{error || 'No data found for this vault.'}</p></div></Layout>;
-  }
+    useEffect(() => {
+        fetchVaultDetails();
+    }, [fetchVaultDetails]);
+    
+    // ==============================================================================
+    // --- FINAL UPGRADE: Normalize all chart data to percentage change ---
+    // ==============================================================================
+    const formatChartData = (data = [], assets = []) => {
+        const reversedData = [...data].reverse(); // Oldest data first
+        if (reversedData.length === 0) return [];
 
-  const { 
-    vaultInfo = {}, 
-    userPosition = null, 
-    performanceHistory = [], 
-    assetBreakdown = [], 
-    userLedger = [], 
-    vaultStats = {} 
-  } = pageData;
+        const assetSymbols = assets.map(a => a.symbol.toUpperCase());
+        const firstPoint = reversedData[0];
+        
+        // Establish the baseline "Day 0" values
+        const basePnl = parseFloat(firstPoint.pnl_percentage);
+        const basePrices = {};
+        if (firstPoint.asset_prices_snapshot) {
+            for (const symbol of assetSymbols) {
+                basePrices[symbol] = firstPoint.asset_prices_snapshot[symbol];
+            }
+        }
 
-  const isInvested = userPosition && userPosition.totalCapital > 0;
-  const chartData = formatChartData(performanceHistory, assetBreakdown);
-  const chartAssets = assetBreakdown.filter(a => a.symbol !== 'USDC').map(a => a.symbol.toUpperCase());
+        return reversedData.map(item => {
+            const formattedItem = {
+                date: new Date(item.record_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }),
+                // Normalize Vault P&L against the first day's P&L
+                "Vault P&L": parseFloat(item.pnl_percentage) - basePnl,
+            };
+            
+            if (item.asset_prices_snapshot) {
+                for (const symbol of assetSymbols) {
+                    const currentPrice = item.asset_prices_snapshot[symbol];
+                    const basePrice = basePrices[symbol];
+                    if (currentPrice && basePrice > 0) {
+                        // Normalize asset price to percentage change
+                        formattedItem[symbol] = ((currentPrice / basePrice) - 1) * 100;
+                    }
+                }
+            }
+            return formattedItem;
+        });
+    };
 
-  const lineColors = {
-      BTC: '#F7931A',
-      ETH: '#8884d8',
-      SOL: '#9945FF',
-      HYPE: '#38BDF8'
-  };
+    const getCoinGeckoLink = (asset) => {
+        if (asset && asset.coingecko_id) {
+            return `https://www.coingecko.com/en/coins/${asset.coingecko_id}`;
+        }
+        return null;
+    };
+    
+    if (loading) return <Layout><div className="vault-detail-container"><h1>Loading...</h1></div></Layout>;
+    if (error || !pageData) return <Layout><div className="vault-detail-container"><p className="error-message">{error || 'No data.'}</p></div></Layout>;
 
-  return (
+    const { 
+        vaultInfo = {}, 
+        userPosition = null, 
+        performanceHistory = [], 
+        assetBreakdown = [], 
+        userLedger = [], 
+        vaultStats = {} 
+    } = pageData;
+
+    const isInvested = userPosition && userPosition.totalCapital > 0;
+    const chartData = formatChartData(performanceHistory, assetBreakdown);
+    const chartAssets = assetBreakdown.filter(a => a.symbol !== 'USDC').map(a => a.symbol.toUpperCase());
+
+    const lineColors = { BTC: '#F7931A', ETH: '#8884d8', SOL: '#9945FF', HYPE: '#38BDF8' };
+
+    return (
     <Layout>
       <div className="vault-detail-container">
         <div className="vault-detail-header">
