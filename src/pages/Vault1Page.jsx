@@ -1,3 +1,5 @@
+// /src/pages/Vault1Page.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -35,7 +37,6 @@ const Vault1Page = () => {
         if (!vaultId) return;
         setLoading(true);
         try {
-            // Fetch both user-specific data and market-wide data in parallel
             const [userResponse, marketResponse] = await Promise.all([
                 api.get(`/vault-details/${vaultId}`),
                 api.get(`/market-data/${vaultId}`)
@@ -81,15 +82,25 @@ const Vault1Page = () => {
                 combinedData[date].VAULT = point.value;
             });
 
-            for (const symbol in marketData.assetPerformance) {
-                marketData.assetPerformance[symbol].forEach(point => {
-                    const date = new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-                    if (!combinedData[date]) combinedData[date] = { date };
-                    combinedData[date][symbol] = point.value;
-                });
+            if (marketData && marketData.assetPerformance) {
+                for (const symbol in marketData.assetPerformance) {
+                    marketData.assetPerformance[symbol].forEach(point => {
+                        const date = new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                        if (!combinedData[date]) combinedData[date] = { date };
+                        combinedData[date][symbol] = point.value;
+                    });
+                }
             }
             return Object.values(combinedData);
         }
+    };
+
+    // Helper to get CoinGecko link
+    const getCoinGeckoLink = (asset) => {
+        if (asset && asset.coingecko_id) {
+            return `https://www.coingecko.com/en/coins/${asset.coingecko_id}`;
+        }
+        return null;
     };
 
     if (loading) {
@@ -167,8 +178,7 @@ const Vault1Page = () => {
                                 <p>Insufficient historical data to render chart.</p>
                             )}
                         </div>
-
-                        {/* Asset and Transaction Tables */}
+                        
                         <div className="vault-detail-grid">
                             <div className="profile-card">
                                 <h3>Asset Breakdown</h3>
@@ -178,11 +188,13 @@ const Vault1Page = () => {
                                             <tr><th>Asset</th><th className="amount">Live Price</th></tr>
                                         </thead>
                                         <tbody>
-                                            {assetBreakdown.map(asset => (
+                                            {assetBreakdown.map(asset => {
+                                                const cgLink = getCoinGeckoLink(asset);
+                                                return (
                                                 <tr key={asset.symbol}>
                                                     <td>
-                                                        {getCoinGeckoLink(asset) ? (
-                                                            <a href={getCoinGeckoLink(asset)} target="_blank" rel="noopener noreferrer" className="asset-link">
+                                                        {cgLink ? (
+                                                            <a href={cgLink} target="_blank" rel="noopener noreferrer" className="asset-link">
                                                                 {asset.symbol} ↗
                                                             </a>
                                                         ) : (
@@ -191,7 +203,8 @@ const Vault1Page = () => {
                                                     </td>
                                                     <td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 }) : 'N/A'}</td>
                                                 </tr>
-                                            ))}
+                                                );
+                                            })}
                                         </tbody>
                                     </table>
                                 </div>
