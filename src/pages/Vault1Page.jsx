@@ -1,4 +1,4 @@
-// PASTE THIS ENTIRE CONTENT TO REPLACE: hyperstrategies/src/pages/Vault1Page.jsx
+// /src/pages/Vault1Page.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
@@ -7,8 +7,9 @@ import api from '../api/api';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 
-const StatCard = ({ label, value, subtext = null, isCurrency = true }) => (
-    <div className="profile-card">
+// A reusable component for displaying key stats
+const StatCard = ({ label, value, subtext = null, isCurrency = true, className = '' }) => (
+    <div className={`profile-card ${className}`}>
         <h3>{label}</h3>
         <p className="stat-value-large">{isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</p>
         {subtext && <p className="stat-subtext">{subtext}</p>}
@@ -22,6 +23,7 @@ const Vault1Page = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
+    // Fetch all vault data from our new, powerful API endpoint
     const fetchVaultDetails = useCallback(async () => {
         if (!vaultId) return;
         setLoading(true);
@@ -29,7 +31,8 @@ const Vault1Page = () => {
             const response = await api.get(`/vault-details/${vaultId}`);
             setPageData(response.data);
         } catch (err) {
-            setError("Could not load vault details.");
+            setError("Could not load vault details. This vault may be inactive or you may not have a position yet.");
+            console.error("Vault details fetch error:", err);
         } finally {
             setLoading(false);
         }
@@ -38,51 +41,32 @@ const Vault1Page = () => {
     useEffect(() => {
         fetchVaultDetails();
     }, [fetchVaultDetails]);
-    
-    const formatChartData = (data = [], assets = []) => {
-        const reversedData = [...data].reverse();
-        if (reversedData.length === 0) return [];
 
-        const assetSymbols = assets.map(a => a.symbol.toUpperCase());
-        
-        let firstValidPoint = reversedData.find(p => p.asset_prices_snapshot);
-        if (!firstValidPoint) {
-            console.error("[Chart Debug] Could not find any historical data with an asset price snapshot to use as a baseline.");
-            return [];
-        }
-        
-        const basePnl = parseFloat(firstValidPoint.pnl_percentage);
-        const basePrices = {};
-        if (firstValidPoint.asset_prices_snapshot) {
-            for (const symbol of assetSymbols) {
-                basePrices[symbol] = firstValidPoint.asset_prices_snapshot[symbol.toUpperCase()];
-            }
-        }
+    // This function processes the data from the API to format it for the chart
+    const formatChartData = (history = [], currentUnrealizedPnl = 0) => {
+        if (!history || history.length === 0) return [];
 
-        return reversedData.map(item => {
-            const formattedItem = {
-                date: new Date(item.record_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }),
-                "Vault P&L": parseFloat(item.pnl_percentage) - basePnl,
-            };
+        // The API sends a time series of the user's historical "settled" balance.
+        // We use the first point as the baseline to calculate percentage growth.
+        const baseValue = parseFloat(history[0].balance);
+        if (isNaN(baseValue) || baseValue <= 0) return [];
+
+        return history.map(point => {
+            const settledBalance = parseFloat(point.balance);
             
-            if (item.asset_prices_snapshot) {
-                for (const symbol of assetSymbols) {
-                    const currentPrice = item.asset_prices_snapshot[symbol.toUpperCase()];
-                    const basePrice = basePrices[symbol];
-                    if (typeof currentPrice === 'number' && typeof basePrice === 'number' && basePrice > 0) {
-                        formattedItem[symbol.toUpperCase()] = ((currentPrice / basePrice) - 1) * 100;
-                    }
-                }
-            }
-            return formattedItem;
-        });
-    };
+            // The main blue line: shows the % growth of the settled balance
+            const performance = ((settledBalance / baseValue) - 1) * 100;
+            
+            // The yellow line: shows the projected total value including current unrealized P&L
+            const projectedTotal = settledBalance + currentUnrealizedPnl;
+            const projectedPerformance = ((projectedTotal / baseValue) - 1) * 100;
 
-    const getCoinGeckoLink = (asset) => {
-        if (asset && asset.coingecko_id) {
-            return `https://www.coingecko.com/en/coins/${asset.coingecko_id}`;
-        }
-        return null;
+            return {
+                date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }),
+                "Settled Performance": performance,
+                "Projected Performance": projectedPerformance,
+            };
+        });
     };
     
     if (loading) {
@@ -90,22 +74,20 @@ const Vault1Page = () => {
     }
     
     if (error || !pageData) {
-        return <Layout><div className="vault-detail-container"><p className="error-message">{error || 'No data found for this vault.'}</p></div></Layout>;
+        return <Layout><div className="vault-detail-container"><p className="error-message">{error}</p></div></Layout>;
     }
 
     const { 
         vaultInfo = {}, 
         userPosition = null, 
-        performanceHistory = [], 
         assetBreakdown = [], 
         userLedger = [], 
+        userPerformanceHistory = [],
         vaultStats = {} 
     } = pageData;
 
-    const isInvested = userPosition && userPosition.totalCapital > 0;
-    const chartData = formatChartData(performanceHistory, assetBreakdown);
-    const chartAssets = assetBreakdown.filter(a => a.symbol.toUpperCase() !== 'USDC').map(a => a.symbol.toUpperCase());
-    const lineColors = { BTC: '#F7931A', ETH: '#8884d8', SOL: '#9945FF', HYPE: '#38BDF8' };
+    const isInvested = userPosition && userPosition.principal > 0;
+    const chartData = formatChartData(userPerformanceHistory, userPosition?.unrealizedPnl);
 
     return (
         <Layout>
@@ -116,93 +98,97 @@ const Vault1Page = () => {
                 </div>
                 <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
                 
-                <div className="vault-detail-grid">
-                    <div className="vault-detail-column">
-                        {isInvested && (
+                {isInvested ? (
+                    <>
+                        <div className="vault-detail-grid">
+                            {/* Column 1: Main Position Stats */}
+                            <div className="vault-detail-column">
+                                <StatCard label="Your Total Capital" value={userPosition.totalCapital} subtext="Principal + Realized & Unrealized P&L" />
+                                {vaultStats.capitalInTransit > 0 && (
+                                    <StatCard label="Deposits in Transit" value={vaultStats.capitalInTransit} subtext="Waiting to be swept into the vault." />
+                                )}
+                            </div>
+
+                            {/* Column 2: P&L Breakdown */}
+                            <div className="vault-detail-column">
+                                <StatCard label="Realized P&L" value={userPosition.realizedPnl} subtext="Profits from closed trades." />
+                                <StatCard label="Unrealized P&L" value={userPosition.unrealizedPnl} subtext="From currently open trades." className={userPosition.unrealizedPnl >= 0 ? 'text-positive' : 'text-negative'}/>
+                            </div>
+                        </div>
+
+                        {/* The Performance Chart */}
+                        <div className="profile-card full-width">
+                            <h3>Your Performance Journey</h3>
+                            {chartData.length > 1 ? (
+                                <ResponsiveContainer width="100%" height={400}>
+                                    <LineChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                                        <XAxis dataKey="date" stroke="#888" />
+                                        <YAxis stroke="#888" tickFormatter={(tick) => `${tick.toFixed(1)}%`} />
+                                        <Tooltip
+                                            contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }}
+                                            labelStyle={{ color: '#fff' }}
+                                            formatter={(value, name) => [`${value.toFixed(2)}%`, name]}
+                                        />
+                                        <Legend />
+                                        <Line type="monotone" dataKey="Settled Performance" name="Your Settled Balance" stroke="#8884d8" strokeWidth={2} dot={false} />
+                                        <Line type="monotone" dataKey="Projected Performance" name="Projected Total (with Unrealized P&L)" stroke="#facc15" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            ) : (
+                                <p>Your performance chart will appear here after your first P&L distribution.</p>
+                            )}
+                        </div>
+
+                        {/* Asset and Transaction Tables */}
+                        <div className="vault-detail-grid">
                             <div className="profile-card">
-                                <h3>Your Position</h3>
-                                <div className="stat-item"><span>Total Capital</span><span>{isBalanceHidden ? '******' : `$${userPosition.totalCapital.toFixed(2)}`}</span></div>
-                                <div className="stat-item"><span>Total Unrealized P&L</span><span className={userPosition.totalPnl >= 0 ? 'text-positive' : 'text-negative'}>{isBalanceHidden ? '******' : `${userPosition.totalPnl >= 0 ? '+' : ''}$${userPosition.totalPnl.toFixed(2)}`}</span></div>
+                                <h3>Asset Breakdown</h3>
+                                <div className="table-responsive-wrapper">
+                                    <table className="asset-table">
+                                        <thead>
+                                            <tr><th>Asset</th><th className="amount">Live Price</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            {assetBreakdown.map(asset => (
+                                                <tr key={asset.symbol}>
+                                                    <td>{asset.symbol}</td>
+                                                    <td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 }) : 'N/A'}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        )}
-                        {vaultStats.capitalInTransit > 0 && (
-                            <StatCard label="Your Capital in Transit" value={vaultStats.capitalInTransit} subtext="Deposits waiting to be swept into trades." />
-                        )}
-                        {vaultStats.pendingWithdrawals > 0 && (
-                            <StatCard label="Your Pending Withdrawals" value={vaultStats.pendingWithdrawals} subtext="Funds being processed for withdrawal from this vault." />
-                        )}
-                    </div>
 
-                    <div className="vault-detail-column">
-                        <div className="profile-card">
-                            <h3>Asset Breakdown</h3>
-                            <div className="table-responsive-wrapper">
-                                <table className="asset-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Asset</th>
-                                            <th className="amount">Live Price</th>
-                                            {isInvested && <th className="amount">Your P&L</th>}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {assetBreakdown.map(asset => {
-                                            const cgLink = getCoinGeckoLink(asset);
-                                            const userPnlForAsset = userPosition?.pnlByAsset?.[asset.symbol] || 0;
-                                            return (
-                                            <tr key={asset.symbol}>
-                                                <td>
-                                                {cgLink ? (<a href={cgLink} target="_blank" rel="noopener noreferrer" className="asset-link">{asset.symbol} ↗</a>) : (<span>{asset.symbol}</span>)}
-                                                </td>
-                                                <td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 }) : 'N/A'}</td>
-                                                {isInvested && (
-                                                    <td className={`amount ${userPnlForAsset >= 0 ? 'text-positive' : 'text-negative'}`}>
-                                                        {isBalanceHidden ? '******' : `${userPnlForAsset >= 0 ? '+' : ''}$${userPnlForAsset.toFixed(2)}`}
+                            <div className="profile-card">
+                                <h3>Your Ledger</h3>
+                                <div className="table-responsive-wrapper">
+                                    <table className="activity-table">
+                                        <thead>
+                                            <tr><th>Date</th><th>Type</th><th className="amount">Amount</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            {userLedger.map(entry => (
+                                                <tr key={entry.entry_id}>
+                                                    <td>{new Date(entry.created_at).toLocaleDateString()}</td>
+                                                    <td>{entry.entry_type.replace(/_/g, ' ')}</td>
+                                                    <td className={`amount ${parseFloat(entry.amount) >= 0 ? 'text-positive' : 'text-negative'}`}>
+                                                        {`${parseFloat(entry.amount) >= 0 ? '+' : ''}${parseFloat(entry.amount).toFixed(2)}`}
                                                     </td>
-                                                )}
-                                            </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-            
-
-                {isInvested && userLedger && userLedger.length > 0 && (
-                    <div className="profile-card full-width">
-                        <h3>Your Transaction History</h3>
-                        <div className="table-responsive-wrapper">
-                            <table className="activity-table">
-                                <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Type</th>
-                                    <th>Status</th>
-                                    <th className="amount">Amount</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {userLedger.map(entry => (
-                                    <tr key={entry.entry_id}>
-                                    <td>{new Date(entry.created_at).toLocaleString()}</td>
-                                    <td>{entry.entry_type.replace(/_/g, ' ')}</td>
-                                    <td>
-                                        <span className={`status-badge status-${entry.status.toLowerCase()}`}>
-                                        {entry.status.replace(/_/g, ' ')}
-                                        </span>
-                                    </td>
-                                    <td className={`amount ${parseFloat(entry.amount) >= 0 ? 'text-positive' : 'text-negative'}`}>
-                                        {`${parseFloat(entry.amount) > 0 ? '+' : ''}${parseFloat(entry.amount).toFixed(2)}`}
-                                    </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        </div>
+                    </>
+                ) : (
+                    <div className="profile-card text-center">
+                        <h2>You are not currently invested in this vault.</h2>
+                        <p>To see your performance, make a deposit from your dashboard.</p>
+                        <Link to="/dashboard" className="btn-primary mt-4">Go to Dashboard</Link>
                     </div>
                 )}
             </div>
