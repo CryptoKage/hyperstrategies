@@ -18,7 +18,7 @@ const StatCard = ({ label, value, subtext = null, isCurrency = true, className =
 
 const Vault1Page = () => {
     const { vaultId } = useParams();
-    const { isBalanceHidden } = useAuth();
+    const { isBalanceHidden } = useAuth(); // Assuming useAuth provides this
     const [pageData, setPageData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -43,32 +43,42 @@ const Vault1Page = () => {
     }, [fetchVaultDetails]);
 
     // This function processes the data from the API to format it for the chart
+    // It now calculates percentage change relative to the first point AND includes the projected line
     const formatChartData = (history = [], currentUnrealizedPnl = 0) => {
-        if (!history || history.length === 0) return [];
+        if (!history || history.length < 2) return [];
 
-        // The API sends a time series of the user's historical "settled" balance.
-        // We use the first point as the baseline to calculate percentage growth.
         const baseValue = parseFloat(history[0].balance);
-        if (isNaN(baseValue) || baseValue <= 0) return [];
+        if (isNaN(baseValue) || baseValue <= 0) return []; // Cannot calculate % change from zero or invalid base
 
         return history.map(point => {
             const settledBalance = parseFloat(point.balance);
             
-            // The main blue line: shows the % growth of the settled balance
-            const performance = ((settledBalance / baseValue) - 1) * 100;
+            // Main line: % growth of the settled balance relative to the first point
+            const settledPerformance = ((settledBalance / baseValue) - 1) * 100;
             
-            // The yellow line: shows the projected total value including current unrealized P&L
+            // Projected line: settled balance + current unrealized P&L, all relative to the initial base value
+            // This visually represents what the "performance" would look like if current P&L was baked in historically
             const projectedTotal = settledBalance + currentUnrealizedPnl;
             const projectedPerformance = ((projectedTotal / baseValue) - 1) * 100;
 
             return {
                 date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }),
-                "Settled Performance": performance,
+                "Settled Performance": settledPerformance,
                 "Projected Performance": projectedPerformance,
             };
         });
     };
     
+    // Helper to get CoinGecko link
+    const getCoinGeckoLink = (asset) => {
+        // You'll need to store a coingecko_id in vault_assets for this to work
+        if (asset && asset.coingecko_id) {
+            return `https://www.coingecko.com/en/coins/${asset.coingecko_id}`;
+        }
+        return null;
+    };
+
+
     if (loading) {
         return <Layout><div className="vault-detail-container"><h1>Loading Vault Details...</h1></div></Layout>;
     }
@@ -86,8 +96,9 @@ const Vault1Page = () => {
         vaultStats = {} 
     } = pageData;
 
-    const isInvested = userPosition && userPosition.principal > 0;
-    const chartData = formatChartData(userPerformanceHistory, userPosition?.unrealizedPnl);
+    // Determine if the user has any principal invested (actual deposits)
+    const hasPrincipal = userPosition && userPosition.principal > 0;
+    const chartData = formatChartData(userPerformanceHistory, userPosition?.unrealizedPnl || 0);
 
     return (
         <Layout>
@@ -98,7 +109,7 @@ const Vault1Page = () => {
                 </div>
                 <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
                 
-                {isInvested ? (
+                {hasPrincipal ? (
                     <>
                         <div className="vault-detail-grid">
                             {/* Column 1: Main Position Stats */}
@@ -113,6 +124,9 @@ const Vault1Page = () => {
                             <div className="vault-detail-column">
                                 <StatCard label="Realized P&L" value={userPosition.realizedPnl} subtext="Profits from closed trades." />
                                 <StatCard label="Unrealized P&L" value={userPosition.unrealizedPnl} subtext="From currently open trades." className={userPosition.unrealizedPnl >= 0 ? 'text-positive' : 'text-negative'}/>
+                                {vaultStats.pendingWithdrawals > 0 && (
+                                    <StatCard label="Pending Withdrawals" value={vaultStats.pendingWithdrawals} subtext="Funds being processed for withdrawal." />
+                                )}
                             </div>
                         </div>
 
@@ -132,11 +146,11 @@ const Vault1Page = () => {
                                         />
                                         <Legend />
                                         <Line type="monotone" dataKey="Settled Performance" name="Your Settled Balance" stroke="#8884d8" strokeWidth={2} dot={false} />
-                                        <Line type="monotone" dataKey="Projected Performance" name="Projected Total (with Unrealized P&L)" stroke="#facc15" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                                        <Line type="monotone" dataKey="Projected Performance" name="Projected Total (with Current Unrealized P&L)" stroke="#facc15" strokeWidth={2} strokeDasharray="5 5" dot={false} />
                                     </LineChart>
                                 </ResponsiveContainer>
                             ) : (
-                                <p>Your performance chart will appear here after your first P&L distribution.</p>
+                                <p>Your performance chart will appear here after your first deposit and a P&L distribution.</p>
                             )}
                         </div>
 
@@ -152,7 +166,15 @@ const Vault1Page = () => {
                                         <tbody>
                                             {assetBreakdown.map(asset => (
                                                 <tr key={asset.symbol}>
-                                                    <td>{asset.symbol}</td>
+                                                    <td>
+                                                        {getCoinGeckoLink(asset) ? (
+                                                            <a href={getCoinGeckoLink(asset)} target="_blank" rel="noopener noreferrer" className="asset-link">
+                                                                {asset.symbol} ↗
+                                                            </a>
+                                                        ) : (
+                                                            <span>{asset.symbol}</span>
+                                                        )}
+                                                    </td>
                                                     <td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 }) : 'N/A'}</td>
                                                 </tr>
                                             ))}
