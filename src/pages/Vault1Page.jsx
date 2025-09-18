@@ -164,7 +164,7 @@ const Vault1Page = () => {
                                         <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                                         <XAxis dataKey="date" stroke="#888" />
                                         <YAxis stroke="#888" tickFormatter={(tick) => `${tick.toFixed(1)}%`} />
-                                        <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }} labelStyle={{ color: '#fff' }} formatter={(value) => `${value.toFixed(2)}%`} />
+                                        <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }} labelStyle={{ color: '#fff' }} formatter={(value) => `${value?.toFixed(2)}%`} />
                                         <Legend />
                                         
                                         {chartView === 'accountValue' ? (
@@ -172,6 +172,7 @@ const Vault1Page = () => {
                                         ) : (
                                             <>
                                                 <Line type="monotone" dataKey="VAULT" name={`${vaultInfo.name} Index`} stroke={CHART_COLORS.VAULT} strokeWidth={2} dot={false} />
+                                                {/* --- THIS IS THE FIX: ASSET LINES ARE NOW DOTTED --- */}
                                                 <Line type="monotone" dataKey="BTC" name="BTC Performance" stroke={CHART_COLORS.BTC} strokeWidth={1} dot={false} strokeDasharray="3 3" />
                                                 <Line type="monotone" dataKey="ETH" name="ETH Performance" stroke={CHART_COLORS.ETH} strokeWidth={1} dot={false} strokeDasharray="3 3" />
                                                 <Line type="monotone" dataKey="SOL" name="SOL Performance" stroke={CHART_COLORS.SOL} strokeWidth={1} dot={false} strokeDasharray="3 3" />
