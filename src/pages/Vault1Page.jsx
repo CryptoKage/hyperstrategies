@@ -57,6 +57,7 @@ const Vault1Page = () => {
 
     // --- Chart Data Processing ---
     const formatChartData = () => {
+        console.log("formatChartData is running. chartView:", chartView, "marketData:", marketData);
         if (chartView === 'accountValue') {
             const history = pageData?.userPerformanceHistory || [];
             if (history.length < 2) return [];
