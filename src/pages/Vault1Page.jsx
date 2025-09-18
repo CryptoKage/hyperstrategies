@@ -1,11 +1,8 @@
-// /src/pages/Vault1Page.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import api from '../api/api';
 import Layout from '../components/Layout';
-import { useAuth } from '../context/AuthContext';
 
 // A reusable component for displaying key stats
 const StatCard = ({ label, value, subtext = null, isCurrency = true, className = '' }) => (
@@ -16,20 +13,35 @@ const StatCard = ({ label, value, subtext = null, isCurrency = true, className =
     </div>
 );
 
+// Define chart colors for consistency
+const CHART_COLORS = {
+    ACCOUNT: '#8884d8',
+    VAULT: '#82ca9d',
+    BTC: '#f7931a',
+    ETH: '#627eea',
+    SOL: '#9945FF',
+};
+
 const Vault1Page = () => {
     const { vaultId } = useParams();
-    const { isBalanceHidden } = useAuth(); // Assuming useAuth provides this
     const [pageData, setPageData] = useState(null);
+    const [marketData, setMarketData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [chartView, setChartView] = useState('accountValue'); // 'accountValue' or 'performanceIndex'
 
-    // Fetch all vault data from our new, powerful API endpoint
-    const fetchVaultDetails = useCallback(async () => {
+    // --- Data Fetching ---
+    const fetchPageData = useCallback(async () => {
         if (!vaultId) return;
         setLoading(true);
         try {
-            const response = await api.get(`/vault-details/${vaultId}`);
-            setPageData(response.data);
+            // Fetch both user-specific data and market-wide data in parallel
+            const [userResponse, marketResponse] = await Promise.all([
+                api.get(`/vault-details/${vaultId}`),
+                api.get(`/market-data/${vaultId}`)
+            ]);
+            setPageData(userResponse.data);
+            setMarketData(marketResponse.data);
         } catch (err) {
             setError("Could not load vault details. This vault may be inactive or you may not have a position yet.");
             console.error("Vault details fetch error:", err);
@@ -39,45 +51,46 @@ const Vault1Page = () => {
     }, [vaultId]);
 
     useEffect(() => {
-        fetchVaultDetails();
-    }, [fetchVaultDetails]);
+        fetchPageData();
+    }, [fetchPageData]);
 
-    // This function processes the data from the API to format it for the chart
-    // It now calculates percentage change relative to the first point AND includes the projected line
-    const formatChartData = (history = [], currentUnrealizedPnl = 0) => {
-        if (!history || history.length < 2) return [];
+    // --- Chart Data Processing ---
+    const formatChartData = () => {
+        if (chartView === 'accountValue') {
+            const history = pageData?.userPerformanceHistory || [];
+            if (history.length < 2) return [];
 
-        const baseValue = parseFloat(history[0].balance);
-        if (isNaN(baseValue) || baseValue <= 0) return []; // Cannot calculate % change from zero or invalid base
+            const baseValue = parseFloat(history[0].balance);
+            if (isNaN(baseValue) || baseValue <= 0) return [];
 
-        return history.map(point => {
-            const settledBalance = parseFloat(point.balance);
-            
-            // Main line: % growth of the settled balance relative to the first point
-            const settledPerformance = ((settledBalance / baseValue) - 1) * 100;
-            
-            // Projected line: settled balance + current unrealized P&L, all relative to the initial base value
-            // This visually represents what the "performance" would look like if current P&L was baked in historically
-            const projectedTotal = settledBalance + currentUnrealizedPnl;
-            const projectedPerformance = ((projectedTotal / baseValue) - 1) * 100;
+            return history.map(point => {
+                const settledBalance = parseFloat(point.balance);
+                return {
+                    date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+                    value: ((settledBalance / baseValue) - 1) * 100,
+                };
+            });
+        } else { // performanceIndex view
+            const vaultHistory = marketData?.vaultPerformance || [];
+            if (vaultHistory.length < 2) return [];
 
-            return {
-                date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }),
-                "Settled Performance": settledPerformance,
-                "Projected Performance": projectedPerformance,
-            };
-        });
-    };
-    
-    // Helper to get CoinGecko link
-    const getCoinGeckoLink = (asset) => {
-        // You'll need to store a coingecko_id in vault_assets for this to work
-        if (asset && asset.coingecko_id) {
-            return `https://www.coingecko.com/en/coins/${asset.coingecko_id}`;
+            const combinedData = {};
+            vaultHistory.forEach(point => {
+                const date = new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                if (!combinedData[date]) combinedData[date] = { date };
+                combinedData[date].VAULT = point.value;
+            });
+
+            for (const symbol in marketData.assetPerformance) {
+                marketData.assetPerformance[symbol].forEach(point => {
+                    const date = new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                    if (!combinedData[date]) combinedData[date] = { date };
+                    combinedData[date][symbol] = point.value;
+                });
+            }
+            return Object.values(combinedData);
         }
-        return null;
     };
-
 
     if (loading) {
         return <Layout><div className="vault-detail-container"><h1>Loading Vault Details...</h1></div></Layout>;
@@ -92,14 +105,12 @@ const Vault1Page = () => {
         userPosition = null, 
         assetBreakdown = [], 
         userLedger = [], 
-        userPerformanceHistory = [],
         vaultStats = {} 
     } = pageData;
 
-    // Determine if the user has any principal invested (actual deposits)
     const hasPrincipal = userPosition && userPosition.principal > 0;
-    const chartData = formatChartData(userPerformanceHistory, userPosition?.unrealizedPnl || 0);
-
+    const chartData = formatChartData();
+    
     return (
         <Layout>
             <div className="vault-detail-container">
@@ -112,45 +123,48 @@ const Vault1Page = () => {
                 {hasPrincipal ? (
                     <>
                         <div className="vault-detail-grid">
-                            {/* Column 1: Main Position Stats */}
-                            <div className="vault-detail-column">
+                             <div className="vault-detail-column">
                                 <StatCard label="Your Total Capital" value={userPosition.totalCapital} subtext="Principal + Realized & Unrealized P&L" />
                                 {vaultStats.capitalInTransit > 0 && (
                                     <StatCard label="Deposits in Transit" value={vaultStats.capitalInTransit} subtext="Waiting to be swept into the vault." />
                                 )}
                             </div>
-
-                            {/* Column 2: P&L Breakdown */}
                             <div className="vault-detail-column">
                                 <StatCard label="Realized P&L" value={userPosition.realizedPnl} subtext="Profits from closed trades." />
                                 <StatCard label="Unrealized P&L" value={userPosition.unrealizedPnl} subtext="From currently open trades." className={userPosition.unrealizedPnl >= 0 ? 'text-positive' : 'text-negative'}/>
-                                {vaultStats.pendingWithdrawals > 0 && (
-                                    <StatCard label="Pending Withdrawals" value={vaultStats.pendingWithdrawals} subtext="Funds being processed for withdrawal." />
-                                )}
                             </div>
                         </div>
 
-                        {/* The Performance Chart */}
                         <div className="profile-card full-width">
-                            <h3>Your Performance Journey</h3>
+                            <h3>Performance Journey</h3>
+                            <div className="chart-toggle">
+                                <button onClick={() => setChartView('accountValue')} className={chartView === 'accountValue' ? 'active' : ''}>My Account Value</button>
+                                <button onClick={() => setChartView('performanceIndex')} className={chartView === 'performanceIndex' ? 'active' : ''}>Vault Performance Index</button>
+                            </div>
+                            
                             {chartData.length > 1 ? (
                                 <ResponsiveContainer width="100%" height={400}>
-                                    <LineChart data={chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                                    <LineChart data={chartData} margin={{ top: 20, right: 20, left: -10, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                                         <XAxis dataKey="date" stroke="#888" />
                                         <YAxis stroke="#888" tickFormatter={(tick) => `${tick.toFixed(1)}%`} />
-                                        <Tooltip
-                                            contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }}
-                                            labelStyle={{ color: '#fff' }}
-                                            formatter={(value, name) => [`${value.toFixed(2)}%`, name]}
-                                        />
+                                        <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }} labelStyle={{ color: '#fff' }} formatter={(value) => `${value.toFixed(2)}%`} />
                                         <Legend />
-                                        <Line type="monotone" dataKey="Settled Performance" name="Your Settled Balance" stroke="#8884d8" strokeWidth={2} dot={false} />
-                                        <Line type="monotone" dataKey="Projected Performance" name="Projected Total (with Current Unrealized P&L)" stroke="#facc15" strokeWidth={2} strokeDasharray="5 5" dot={false} />
+                                        
+                                        {chartView === 'accountValue' ? (
+                                            <Line type="monotone" dataKey="value" name="My Account Value" stroke={CHART_COLORS.ACCOUNT} strokeWidth={2} dot={false} />
+                                        ) : (
+                                            <>
+                                                <Line type="monotone" dataKey="VAULT" name={`${vaultInfo.name} Index`} stroke={CHART_COLORS.VAULT} strokeWidth={2} dot={false} />
+                                                <Line type="monotone" dataKey="BTC" name="BTC Performance" stroke={CHART_COLORS.BTC} strokeWidth={1} dot={false} strokeDasharray="3 3" />
+                                                <Line type="monotone" dataKey="ETH" name="ETH Performance" stroke={CHART_COLORS.ETH} strokeWidth={1} dot={false} strokeDasharray="3 3" />
+                                                <Line type="monotone" dataKey="SOL" name="SOL Performance" stroke={CHART_COLORS.SOL} strokeWidth={1} dot={false} strokeDasharray="3 3" />
+                                            </>
+                                        )}
                                     </LineChart>
                                 </ResponsiveContainer>
                             ) : (
-                                <p>Your performance chart will appear here after your first deposit and a P&L distribution.</p>
+                                <p>Insufficient historical data to render chart.</p>
                             )}
                         </div>
 
