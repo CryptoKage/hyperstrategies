@@ -113,7 +113,7 @@ const Vault1Page = () => {
     }
     
     if (error || !pageData) {
-        return <Layout><div className="vault-detail-container"><p className="error-message">{error}</p></div></Layout>;
+        return <Layout><div className="vault-detail-container"><p className="error-message">{error || 'No data available for this vault.'}</p></div></Layout>;
     }
 
     const { 
