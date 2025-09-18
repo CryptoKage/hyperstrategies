@@ -1,7 +1,7 @@
 // /src/pages/Vault1Page.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import api from '../api/api';
 import Layout from '../components/Layout';
@@ -26,30 +26,40 @@ const CHART_COLORS = {
 
 const Vault1Page = () => {
     const { vaultId } = useParams();
+    const location = useLocation();
+
     const [pageData, setPageData] = useState(null);
     const [marketData, setMarketData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [chartView, setChartView] = useState('accountValue'); // 'accountValue' or 'performanceIndex'
+    const [chartView, setChartView] = useState('accountValue');
+    const [showAssetLines, setShowAssetLines] = useState(false); // State for the new toggle
 
     // --- Data Fetching ---
     const fetchPageData = useCallback(async () => {
         if (!vaultId) return;
+
+        const queryParams = new URLSearchParams(location.search);
+        const impersonateUserId = queryParams.get('userId');
+        const userApiUrl = impersonateUserId 
+            ? `/vault-details/${vaultId}?userId=${impersonateUserId}` 
+            : `/vault-details/${vaultId}`;
+
         setLoading(true);
         try {
             const [userResponse, marketResponse] = await Promise.all([
-                api.get(`/vault-details/${vaultId}`),
+                api.get(userApiUrl),
                 api.get(`/market-data/${vaultId}`)
             ]);
             setPageData(userResponse.data);
             setMarketData(marketResponse.data);
         } catch (err) {
-            setError("Could not load vault details. This vault may be inactive or you may not have a position yet.");
+            setError("Could not load vault details.");
             console.error("Vault details fetch error:", err);
         } finally {
             setLoading(false);
         }
-    }, [vaultId]);
+    }, [vaultId, location.search]);
 
     useEffect(() => {
         fetchPageData();
@@ -57,49 +67,42 @@ const Vault1Page = () => {
 
     // --- Chart Data Processing ---
     const formatChartData = () => {
-    if (chartView === 'accountValue') {
-        const history = pageData?.userPerformanceHistory || [];
-        if (history.length < 2) return [];
-        const baseValue = parseFloat(history[0].balance);
-        if (isNaN(baseValue) || baseValue <= 0) return [];
+        if (chartView === 'accountValue') {
+            const history = pageData?.userPerformanceHistory || [];
+            if (history.length < 2) return [];
+            const baseValue = parseFloat(history[0].balance);
+            if (isNaN(baseValue) || baseValue <= 0) return [];
 
-        return history.map(point => ({
-            date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-            value: ((parseFloat(point.balance) / baseValue) - 1) * 100,
-        }));
-    } else { // performanceIndex view
-        const vaultHistory = marketData?.vaultPerformance || [];
-        if (vaultHistory.length < 2) return [];
+            return history.map(point => ({
+                date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                value: ((parseFloat(point.balance) / baseValue) - 1) * 100,
+            }));
+        } else { // performanceIndex view
+            const vaultHistory = marketData?.vaultPerformance || [];
+            if (vaultHistory.length < 2) return [];
 
-        const combinedData = {};
-        
-        // THE FIX: Use a more granular date format for the key
-        const getGranularDate = (dateStr) => new Date(dateStr).toLocaleString(undefined, {
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit'
-        });
+            const combinedData = {};
+            const getGranularDate = (dateStr) => new Date(dateStr).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
-        vaultHistory.forEach(point => {
-            const date = getGranularDate(point.date);
-            if (!combinedData[date]) combinedData[date] = { date };
-            combinedData[date].VAULT = point.value;
-        });
+            vaultHistory.forEach(point => {
+                const date = getGranularDate(point.date);
+                if (!combinedData[date]) combinedData[date] = { date };
+                combinedData[date].VAULT = point.value;
+            });
 
-        if (marketData && marketData.assetPerformance) {
-            for (const symbol in marketData.assetPerformance) {
-                marketData.assetPerformance[symbol].forEach(point => {
-                    const date = getGranularDate(point.date);
-                    if (!combinedData[date]) combinedData[date] = { date };
-                    combinedData[date][symbol] = point.value;
-                });
+            if (marketData && marketData.assetPerformance) {
+                for (const symbol in marketData.assetPerformance) {
+                    marketData.assetPerformance[symbol].forEach(point => {
+                        const date = getGranularDate(point.date);
+                        if (!combinedData[date]) combinedData[date] = { date };
+                        combinedData[date][symbol] = point.value;
+                    });
+                }
             }
+            return Object.values(combinedData);
         }
-        return Object.values(combinedData);
-    }
-};
-
+    };
+    
     // Helper to get CoinGecko link
     const getCoinGeckoLink = (asset) => {
         if (asset && asset.coingecko_id) {
@@ -116,14 +119,7 @@ const Vault1Page = () => {
         return <Layout><div className="vault-detail-container"><p className="error-message">{error || 'No data available for this vault.'}</p></div></Layout>;
     }
 
-    const { 
-        vaultInfo = {}, 
-        userPosition = null, 
-        assetBreakdown = [], 
-        userLedger = [], 
-        vaultStats = {} 
-    } = pageData;
-
+    const { vaultInfo = {}, userPosition = null, assetBreakdown = [], userLedger = [], vaultStats = {} } = pageData;
     const hasPrincipal = userPosition && userPosition.principal > 0;
     const chartData = formatChartData();
     
@@ -138,12 +134,11 @@ const Vault1Page = () => {
                 
                 {hasPrincipal ? (
                     <>
+                        {/* Stat Cards Section */}
                         <div className="vault-detail-grid">
-                             <div className="vault-detail-column">
+                            <div className="vault-detail-column">
                                 <StatCard label="Your Total Capital" value={userPosition.totalCapital} subtext="Principal + Realized & Unrealized P&L" />
-                                {vaultStats.capitalInTransit > 0 && (
-                                    <StatCard label="Deposits in Transit" value={vaultStats.capitalInTransit} subtext="Waiting to be swept into the vault." />
-                                )}
+                                {vaultStats.capitalInTransit > 0 && <StatCard label="Deposits in Transit" value={vaultStats.capitalInTransit} />}
                             </div>
                             <div className="vault-detail-column">
                                 <StatCard label="Realized P&L" value={userPosition.realizedPnl} subtext="Profits from closed trades." />
@@ -151,11 +146,25 @@ const Vault1Page = () => {
                             </div>
                         </div>
 
+                        {/* Chart Section */}
                         <div className="profile-card full-width">
                             <h3>Performance Journey</h3>
                             <div className="chart-toggle">
-                                <button onClick={() => setChartView('accountValue')} className={chartView === 'accountValue' ? 'active' : ''}>My Account Value</button>
-                                <button onClick={() => setChartView('performanceIndex')} className={chartView === 'performanceIndex' ? 'active' : ''}>Vault Performance Index</button>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button onClick={() => setChartView('accountValue')} className={chartView === 'accountValue' ? 'active' : ''}>My Account Value</button>
+                                    <button onClick={() => setChartView('performanceIndex')} className={chartView === 'performanceIndex' ? 'active' : ''}>Vault Performance Index</button>
+                                </div>
+                                {chartView === 'performanceIndex' && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ccc' }}>
+                                        <input
+                                            type="checkbox"
+                                            id="asset-toggle"
+                                            checked={showAssetLines}
+                                            onChange={(e) => setShowAssetLines(e.target.checked)}
+                                        />
+                                        <label htmlFor="asset-toggle">Compare Assets</label>
+                                    </div>
+                                )}
                             </div>
                             
                             {chartData.length > 1 ? (
@@ -172,10 +181,13 @@ const Vault1Page = () => {
                                         ) : (
                                             <>
                                                 <Line type="monotone" dataKey="VAULT" name={`${vaultInfo.name} Index`} stroke={CHART_COLORS.VAULT} strokeWidth={2} dot={false} />
-                                                {/* --- THIS IS THE FIX: ASSET LINES ARE NOW DOTTED --- */}
-                                                <Line type="monotone" dataKey="BTC" name="BTC Performance" stroke={CHART_COLORS.BTC} strokeWidth={1} dot={false} strokeDasharray="3 3" />
-                                                <Line type="monotone" dataKey="ETH" name="ETH Performance" stroke={CHART_COLORS.ETH} strokeWidth={1} dot={false} strokeDasharray="3 3" />
-                                                <Line type="monotone" dataKey="SOL" name="SOL Performance" stroke={CHART_COLORS.SOL} strokeWidth={1} dot={false} strokeDasharray="3 3" />
+                                                {showAssetLines && (
+                                                    <>
+                                                        <Line type="monotone" dataKey="BTC" name="BTC Performance" stroke={CHART_COLORS.BTC} strokeWidth={1} dot={false} strokeDasharray="3 3" />
+                                                        <Line type="monotone" dataKey="ETH" name="ETH Performance" stroke={CHART_COLORS.ETH} strokeWidth={1} dot={false} strokeDasharray="3 3" />
+                                                        <Line type="monotone" dataKey="SOL" name="SOL Performance" stroke={CHART_COLORS.SOL} strokeWidth={1} dot={false} strokeDasharray="3 3" />
+                                                    </>
+                                                )}
                                             </>
                                         )}
                                     </LineChart>
@@ -185,44 +197,31 @@ const Vault1Page = () => {
                             )}
                         </div>
                         
+                        {/* Tables Section */}
                         <div className="vault-detail-grid">
                             <div className="profile-card">
                                 <h3>Asset Breakdown</h3>
                                 <div className="table-responsive-wrapper">
                                     <table className="asset-table">
-                                        <thead>
-                                            <tr><th>Asset</th><th className="amount">Live Price</th></tr>
-                                        </thead>
+                                        <thead><tr><th>Asset</th><th className="amount">Live Price</th></tr></thead>
                                         <tbody>
-                                            {assetBreakdown.map(asset => {
-                                                const cgLink = getCoinGeckoLink(asset);
-                                                return (
+                                            {assetBreakdown.map(asset => (
                                                 <tr key={asset.symbol}>
                                                     <td>
-                                                        {cgLink ? (
-                                                            <a href={cgLink} target="_blank" rel="noopener noreferrer" className="asset-link">
-                                                                {asset.symbol} ↗
-                                                            </a>
-                                                        ) : (
-                                                            <span>{asset.symbol}</span>
-                                                        )}
+                                                        {getCoinGeckoLink(asset) ? (<a href={getCoinGeckoLink(asset)} target="_blank" rel="noopener noreferrer" className="asset-link">{asset.symbol} ↗</a>) : (<span>{asset.symbol}</span>)}
                                                     </td>
                                                     <td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 }) : 'N/A'}</td>
                                                 </tr>
-                                                );
-                                            })}
+                                            ))}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-
                             <div className="profile-card">
                                 <h3>Your Ledger</h3>
                                 <div className="table-responsive-wrapper">
                                     <table className="activity-table">
-                                        <thead>
-                                            <tr><th>Date</th><th>Type</th><th className="amount">Amount</th></tr>
-                                        </thead>
+                                        <thead><tr><th>Date</th><th>Type</th><th className="amount">Amount</th></tr></thead>
                                         <tbody>
                                             {userLedger.map(entry => (
                                                 <tr key={entry.entry_id}>
