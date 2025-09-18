@@ -25,6 +25,8 @@ const VaultManagementPage = () => {
   const [isSweeping, setIsSweeping] = useState(false);
   const [sweepMessage, setSweepMessage] = useState('');
 
+  const [impersonateUserId, setImpersonateUserId] = useState('');
+
   // --- Asset Management ---
   const [vaultAssets, setVaultAssets] = useState([]);
   const [newAssetWeight, setNewAssetWeight] = useState({
@@ -478,57 +480,81 @@ const VaultManagementPage = () => {
             </div>
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
-              <h3>Participants in {vaultData?.vault?.name ?? 'Vault'}</h3>
-              <div className="table-responsive">
-                <table className="activity-table">
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Principal Capital</th>
-                      <th>Total PnL</th>
-                      <th>Total Capital</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {vaultData.participants.map((p) => {
-                      const principal = Number(p.principal) || 0;
-                      const pnl = Number(p.pnl) || 0;
-                      const total = Number(p.total_capital) || 0;
-                      return (
-                        <tr key={p.user_id}>
-                          <td>
-                            <Link to={`/admin/user/${p.user_id}`} className="admin-table-link">
-                              {p.username}
-                            </Link>
-                          </td>
-                          <td>
-                            $
-                            {principal.toLocaleString('en-US', {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}
-                          </td>
-                          <td className={pnl >= 0 ? 'text-positive' : 'text-negative'}>
-                            $
-                            {pnl.toLocaleString('en-US', {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}
-                          </td>
-                          <td>
-                            $
-                            {total.toLocaleString('en-US', {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+    <h3>Participants in {vaultData?.vault?.name ?? 'Vault'}</h3>
+    
+    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+      <select 
+        value={impersonateUserId}
+        onChange={(e) => setImpersonateUserId(e.target.value)}
+        style={{ padding: '8px', borderRadius: '4px' }}
+      >
+        <option value="">Select a user to view as...</option>
+        {vaultData.participants.map((p) => (
+          <option key={p.user_id} value={p.user_id}>
+            {p.username}
+          </option>
+        ))}
+      </select>
+      <a
+        href={impersonateUserId ? `/vault/${selectedVaultId}?userId=${impersonateUserId}` : '#'}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`btn-primary btn-sm ${!impersonateUserId ? 'disabled' : ''}`}
+        onClick={(e) => !impersonateUserId && e.preventDefault()}
+      >
+        View as User
+      </a>
+    </div>
+  </div>
+
+  <div className="table-responsive">
+    <table className="activity-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Principal Capital</th>
+          <th>Total PnL</th>
+          <th>Total Capital</th>
+        </tr>
+      </thead>
+      <tbody>
+        {vaultData.participants.map((p) => {
+          const principal = Number(p.principal) || 0;
+          const pnl = Number(p.pnl) || 0;
+          const total = Number(p.total_capital) || 0;
+          return (
+            <tr key={p.user_id}>
+              <td>
+                <Link to={`/admin/user/${p.user_id}`} className="admin-table-link">
+                  {p.username}
+                </Link>
+              </td>
+              <td>
+                ${principal.toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </td>
+              <td className={pnl >= 0 ? 'text-positive' : 'text-negative'}>
+                ${pnl.toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </td>
+              <td>
+                ${total.toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+</div>
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
               <h3>Open Trades</h3>
