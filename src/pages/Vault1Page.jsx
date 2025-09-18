@@ -57,44 +57,48 @@ const Vault1Page = () => {
 
     // --- Chart Data Processing ---
     const formatChartData = () => {
-        console.log("formatChartData is running. chartView:", chartView, "marketData:", marketData);
-        if (chartView === 'accountValue') {
-            const history = pageData?.userPerformanceHistory || [];
-            if (history.length < 2) return [];
+    if (chartView === 'accountValue') {
+        const history = pageData?.userPerformanceHistory || [];
+        if (history.length < 2) return [];
+        const baseValue = parseFloat(history[0].balance);
+        if (isNaN(baseValue) || baseValue <= 0) return [];
 
-            const baseValue = parseFloat(history[0].balance);
-            if (isNaN(baseValue) || baseValue <= 0) return [];
+        return history.map(point => ({
+            date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+            value: ((parseFloat(point.balance) / baseValue) - 1) * 100,
+        }));
+    } else { // performanceIndex view
+        const vaultHistory = marketData?.vaultPerformance || [];
+        if (vaultHistory.length < 2) return [];
 
-            return history.map(point => {
-                const settledBalance = parseFloat(point.balance);
-                return {
-                    date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
-                    value: ((settledBalance / baseValue) - 1) * 100,
-                };
-            });
-        } else { // performanceIndex view
-            const vaultHistory = marketData?.vaultPerformance || [];
-            if (vaultHistory.length < 2) return [];
+        const combinedData = {};
+        
+        // THE FIX: Use a more granular date format for the key
+        const getGranularDate = (dateStr) => new Date(dateStr).toLocaleString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit'
+        });
 
-            const combinedData = {};
-            vaultHistory.forEach(point => {
-                const date = new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-                if (!combinedData[date]) combinedData[date] = { date };
-                combinedData[date].VAULT = point.value;
-            });
+        vaultHistory.forEach(point => {
+            const date = getGranularDate(point.date);
+            if (!combinedData[date]) combinedData[date] = { date };
+            combinedData[date].VAULT = point.value;
+        });
 
-            if (marketData && marketData.assetPerformance) {
-                for (const symbol in marketData.assetPerformance) {
-                    marketData.assetPerformance[symbol].forEach(point => {
-                        const date = new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-                        if (!combinedData[date]) combinedData[date] = { date };
-                        combinedData[date][symbol] = point.value;
-                    });
-                }
+        if (marketData && marketData.assetPerformance) {
+            for (const symbol in marketData.assetPerformance) {
+                marketData.assetPerformance[symbol].forEach(point => {
+                    const date = getGranularDate(point.date);
+                    if (!combinedData[date]) combinedData[date] = { date };
+                    combinedData[date][symbol] = point.value;
+                });
             }
-            return Object.values(combinedData);
         }
-    };
+        return Object.values(combinedData);
+    }
+};
 
     // Helper to get CoinGecko link
     const getCoinGeckoLink = (asset) => {
