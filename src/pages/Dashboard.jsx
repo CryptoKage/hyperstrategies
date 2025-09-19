@@ -1,3 +1,5 @@
+// /src/pages/Dashboard.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +10,6 @@ import VaultModal from '../components/VaultModal';
 import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
-import CountdownTimer from '../components/CountdownTimer';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 import coreVaultBg from '../assets/core.png';
@@ -38,25 +39,21 @@ const Dashboard = () => {
 
   const [autoCompoundState, setAutoCompoundState] = useState({});
   const [isUpdatingCompound, setIsUpdatingCompound] = useState({});
-
-  // --- NEW: State to store the lock status for each vault ---
   const [vaultLockStatuses, setVaultLockStatuses] = useState({});
 
-   const fetchDashboardData = useCallback(async () => {
-    // --- BUG FIX: Removed the data state from the dependency array to prevent an infinite loop ---
+  const fetchDashboardData = useCallback(async () => {
     try {
       const response = await api.get('/dashboard');
       setDashboardData(response.data);
 
-      const initialCompoundState = {};
       if (response.data.userPositions) {
+        const initialCompoundState = {};
         response.data.userPositions.forEach(p => {
           initialCompoundState[p.vault_id] = p.auto_compound ?? true;
         });
+        setAutoCompoundState(initialCompoundState);
 
-        const lockStatusPromises = response.data.userPositions.map(p =>
-          api.get(`/vaults/${p.vault_id}/lock-status`)
-        );
+        const lockStatusPromises = response.data.userPositions.map(p => api.get(`/vaults/${p.vault_id}/lock-status`));
         const lockStatusResults = await Promise.all(lockStatusPromises);
         
         const newLockStatuses = {};
@@ -65,7 +62,6 @@ const Dashboard = () => {
         });
         setVaultLockStatuses(newLockStatuses);
       }
-      setAutoCompoundState(initialCompoundState);
       setError('');
     } catch (err) {
       console.error('[Dashboard] API call failed:', err);
@@ -75,9 +71,7 @@ const Dashboard = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, [fetchDashboardData]);
+  useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
 
   const handleToggleAutoCompound = async (vaultId) => {
     const currentState = autoCompoundState[vaultId];
@@ -165,16 +159,14 @@ const Dashboard = () => {
                           {isBalanceHidden ? '******' : `${pnl >= 0 ? '+' : ''}$${pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                         </span>
                       </div>
-                      {/* --- NEW STAT FOR INVESTED USERS --- */}
                       {vaultInfo.performance && (
                         <div className="vault-stat marketing-stat">
                           <span>{t('dashboard.avg_monthly_return')}</span>
-                          <span className={vaultInfo.performance.monthly >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
+                          <span className={vaultInfo.performance.monthly >= 0 ? 'text-positive' : 'text-negative'}>
                             {vaultInfo.performance.monthly > 0 ? '+' : ''}{vaultInfo.performance.monthly}%
                           </span>
                         </div>
                       )}
-                      {/* --- END OF NEW STAT --- */}
                       <div className="auto-compound-toggle">
                         <div className="label-group">
                           <label htmlFor={`compound-toggle-${position.vault_id}`}>{isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}</label>
@@ -219,16 +211,14 @@ const Dashboard = () => {
                   <h3>{vault.name}</h3>
                   <p className="cta-text">{vault.description}</p>
                   
-                  {/* --- THE FIX: Use the new, accurate performance data --- */}
                   {isActive && vault.performance && (
                     <div className="vault-stat marketing-stat">
                       <span>{t('dashboard.all_time_pnl')}</span>
-                      <span className={vault.performance.total >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
+                      <span className={vault.performance.total >= 0 ? 'text-positive' : 'text-negative'}>
                         {vault.performance.total > 0 ? '+' : ''}{vault.performance.total}%
                       </span>
                     </div>
                   )}
-                  {/* --- END OF FIX --- */}
 
                   <div className="vault-actions">
                    <button className="btn-secondary" onClick={() => navigate(`/vaults/${vault.vault_id}`)}>
@@ -248,8 +238,39 @@ const Dashboard = () => {
           })}
         </div>
       </>
-  
     );
+  };
+
+  return (
+    <>
+      <Layout>
+        <div className="dashboard-container">
+          <h1>{t('dashboard.welcome', { username: user?.username || 'User' })}</h1>
+          {renderContent()}
+        </div>
+      </Layout>
+      
+      {dashboardData && (
+        <VaultModal 
+          isOpen={isAllocateModalOpen} 
+          onClose={() => setAllocateModalOpen(false)} 
+          vault={selectedVault} 
+          availableBalance={dashboardData.availableBalance} 
+          userTier={dashboardData.accountTier} 
+          onAllocationSuccess={handleActionSuccess} 
+        />
+      )}
+      {dashboardData && (
+        <VaultWithdrawModal 
+          isOpen={isWithdrawModalOpen} 
+          onClose={() => setWithdrawModalOpen(false)} 
+          vault={selectedVault}
+          unlockDate={vaultLockStatuses[selectedVault?.vault_id]?.unlockDate}
+          onWithdrawalSuccess={handleActionSuccess} 
+        />
+      )}
+    </>
+  );
 };
-}
+
 export default Dashboard;
