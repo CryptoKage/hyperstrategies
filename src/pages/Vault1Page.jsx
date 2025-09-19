@@ -9,7 +9,7 @@ const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, class
     const { t } = useTranslation();
     return (<div className={`profile-card ${className}`}><h3>{t(labelKey)}</h3><p className="stat-value-large">{isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</p>{subtextKey && <p className="stat-subtext">{t(subtextKey)}</p>}</div>);
 };
-const CHART_COLORS = { ACCOUNT: '#8884d8', VAULT: '#82ca9d', PROJECTION: '#82ca9d', BTC: '#f7931a', ETH: '#627eea', SOL: '#9945FF' };
+const CHART_COLORS = { ACCOUNT: '#8884d8', VAULT: '#82ca9d', PROJECTION: '#d0dd41ff', BTC: '#f7931a', ETH: '#627eea', SOL: '#9945FF' };
 const KNOWN_ASSETS = { '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': 'BTC', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': 'ETH', '0xd31a59c85ae9d8edefec411e448fd2e703a42e99': 'SOL' };
 
 const Vault1Page = () => {
@@ -21,8 +21,8 @@ const Vault1Page = () => {
     const [performanceSnapshot, setPerformanceSnapshot] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [chartView, setChartView] = useState('accountValue');
-    const [showAssetLines, setShowAssetLines] = useState(false);
+    const [chartView, setChartView] = useState('performanceIndex');
+    const [showAssetLines, setShowAssetLines] = useState(true);
 
     const fetchPageData = useCallback(async () => {
         if (!vaultId) return;
@@ -164,7 +164,7 @@ const Vault1Page = () => {
                             
                             {chartData.length > 1 ? (
                                 <ResponsiveContainer width="100%" height={400}>
-                                    <LineChart data={chartData} margin={{ top: 20, right: 20, left: -10, bottom: 5 }}>
+                                    <LineChart data={chartData} margin={{ top: 20, right: 25, left: 20, bottom: 10 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                                         <XAxis dataKey="date" stroke="#888" />
                                         <YAxis stroke="#888" tickFormatter={(tick) => chartView === 'accountValue' ? `$${Math.round(tick)}` : `${tick.toFixed(1)}%`} />

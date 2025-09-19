@@ -4260,6 +4260,46 @@ opacity: 0.3;
   font-weight: bold;
 }
 
+/* CSS for the new condensed performance snapshot card */
+.performance-snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Always 4 columns */
+  gap: 20px;
+  text-align: center;
+}
+
+.performance-snapshot-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.performance-snapshot-item .label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.performance-snapshot-item .value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.performance-snapshot-item .value::after {
+  content: '%';
+  font-size: 18px;
+  margin-left: 2px;
+  color: var(--color-text-secondary);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .performance-snapshot-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2x2 grid on mobile */
+    gap: 24px;
+  }
+}
 /* ============================================================================== */
 
 
