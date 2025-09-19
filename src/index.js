@@ -7,13 +7,16 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './styles/global.css'; // Your main styles
 import Router from './pages/Router';
 import './i18n'; // Initializes i18next
+import { AnimationSettingsProvider } from './context/AnimationSettingsContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <Router />
+        <AnimationSettingsProvider>
+          <Router />
+        </AnimationSettingsProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

@@ -32,6 +32,7 @@ import XPAwardsPage from './admin/XPAwardsPage';
 import RewardsCenter from './RewardsCenter';
 import Presale from './Presale';
 import Vault1Page from './Vault1Page';
+import AnimationControlsPage from './admin/AnimationControlsPage';
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -96,6 +97,8 @@ const Router = () => {
             element={<AdminRoute><PinManagementPage /></AdminRoute>}
       />
       <Route path="/admin/xp-awards" element={<AdminRoute><XPAwardsPage /></AdminRoute>} />
+       <Route path="/admin/animations" element={<AdminRoute><AnimationControlsPage /></AdminRoute>} />
+       
     </Routes>
   );
 };

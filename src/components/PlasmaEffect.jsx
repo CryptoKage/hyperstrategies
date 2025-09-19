@@ -1,24 +1,47 @@
 // src/components/PlasmaEffect.jsx
 
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { createNoise3D } from 'simplex-noise';
+import { useAnimationSettings } from '../context/AnimationSettingsContext';
 
-// --- OPTIMIZATION 1: Define constants outside the component ---
-// This prevents them from being redefined on every render.
-const SCALING_FACTOR = 8; // Render at 1/8th resolution. Higher number = better performance.
-const primaryColor = { r: 63, g: 186, b: 243 };
-const secondaryColor = { r: 4, g: 14, b: 33 };
-const noiseScale = 0.005;
-const timeScale = 0.0005;
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+const hexToRgb = (hex) => {
+  const sanitized = hex.replace('#', '');
+  if (sanitized.length !== 6) {
+    return { r: 255, g: 255, b: 255 };
+  }
+
+  const r = parseInt(sanitized.slice(0, 2), 16);
+  const g = parseInt(sanitized.slice(2, 4), 16);
+  const b = parseInt(sanitized.slice(4, 6), 16);
+  return { r, g, b };
+};
 
 const PlasmaEffect = () => {
   const mainCanvasRef = useRef(null);
-  
+
   // --- OPTIMIZATION 2: Use refs for everything that doesn't trigger a re-render ---
   const offscreenCanvasRef = useRef(document.createElement('canvas'));
   const imageDataRef = useRef(null);
   const simplexRef = useRef(createNoise3D());
   const animationFrameIdRef = useRef(null);
+  const { settings } = useAnimationSettings();
+
+  const plasmaSettings = settings.plasma;
+
+  const scalingFactor = clamp(Number(plasmaSettings.scalingFactor) || 1, 1, 32);
+  const heightRatio = clamp(Number(plasmaSettings.heightRatio) || 0.6, 0.1, 1);
+  const noiseScale = clamp(Number(plasmaSettings.noiseScale) || 0.005, 0.0001, 0.05);
+  const timeScale = clamp(Number(plasmaSettings.timeScale) || 0.0005, 0.00001, 0.01);
+
+  const { primaryColor, secondaryColor } = useMemo(
+    () => ({
+      primaryColor: hexToRgb(plasmaSettings.primaryColor),
+      secondaryColor: hexToRgb(plasmaSettings.secondaryColor),
+    }),
+    [plasmaSettings.primaryColor, plasmaSettings.secondaryColor],
+  );
 
   useEffect(() => {
     const mainCanvas = mainCanvasRef.current;
@@ -32,12 +55,12 @@ const PlasmaEffect = () => {
     const resizeCanvas = () => {
       // Set the size of the main, visible canvas
       mainCanvas.width = window.innerWidth;
-      mainCanvas.height = window.innerHeight * 0.6;
-      
+      mainCanvas.height = window.innerHeight * heightRatio;
+
       // Set the size of the small, off-screen canvas
-      offscreenCanvas.width = mainCanvas.width / SCALING_FACTOR;
-      offscreenCanvas.height = mainCanvas.height / SCALING_FACTOR;
-      
+      offscreenCanvas.width = Math.max(1, Math.floor(mainCanvas.width / scalingFactor));
+      offscreenCanvas.height = Math.max(1, Math.floor(mainCanvas.height / scalingFactor));
+
       // --- OPTIMIZATION 3: Allocate image data ONLY ONCE during resize ---
       imageDataRef.current = offscreenCtx.createImageData(offscreenCanvas.width, offscreenCanvas.height);
     };
@@ -53,14 +76,14 @@ const PlasmaEffect = () => {
       const simplex = simplexRef.current;
 
       // --- OPTIMIZATION 4: Loop over the SMALL canvas size ---
-      // This loop now runs (SCALING_FACTOR * SCALING_FACTOR) times less.
+      // This loop now runs (scalingFactor * scalingFactor) times less.
       // e.g., for a scaling factor of 8, this is 64x fewer calculations!
       for (let y = 0; y < offscreenCanvas.height; y++) {
         for (let x = 0; x < offscreenCanvas.width; x++) {
           const index = (y * offscreenCanvas.width + x) * 4;
           const noise = simplex(x * noiseScale, y * noiseScale, time * timeScale);
-          const t = Math.min(0.9, (noise + 1) / 2);
-          
+          const t = Math.min(0.95, (noise + 1) / 2);
+
           data[index] = secondaryColor.r + t * (primaryColor.r - secondaryColor.r);
           data[index + 1] = secondaryColor.g + t * (primaryColor.g - secondaryColor.g);
           data[index + 2] = secondaryColor.b + t * (primaryColor.b - secondaryColor.b);
@@ -94,7 +117,7 @@ const PlasmaEffect = () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameIdRef.current);
     };
-  }, []);
+  }, [heightRatio, scalingFactor, noiseScale, timeScale, primaryColor, secondaryColor]);
 
   return <canvas ref={mainCanvasRef} className="plasma-background" />;
 };

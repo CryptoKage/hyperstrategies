@@ -345,6 +345,7 @@ const renderContent = () => {
             <Link to="/admin/vaults" className="btn-primary btn-sm">Vault Management</Link>
             <Link to="/admin/pins" className="btn-primary btn-sm">Pin Management</Link>
             <Link to="/admin/xp-awards" className="btn-primary btn-sm">XP Awards</Link>
+             <Link to="/admin/animations" className="btn-primary btn-sm">Animation Controls</Link>
           </div>
         </div>
         {renderContent()}
