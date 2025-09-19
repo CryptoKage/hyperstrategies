@@ -1,7 +1,5 @@
-// ==============================================================================
-// FINAL, FULL VERSION (v3): PASTE THIS to replace your entire Profile.jsx file
-// This version preserves all functions and fixes the disabled toggle bug.
-// ==============================================================================
+// PASTE THIS ENTIRE CONTENT TO REPLACE: hyperstrategies/src/pages/Profile.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +13,6 @@ import { PinImage } from '../components/UserPins';
 import { createPkcePair } from '../utils/pkce';
 import TelegramLoginButton from '../components/TelegramLoginButton';
 import PinListerModal from '../components/PinListerModal';
-
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -51,24 +48,19 @@ const Profile = () => {
     finally { setIsLoading(false); }
   }, [t]);
 
- useEffect(() => {
+  useEffect(() => {
     const loadProfile = async () => {
       try {
-        await refreshToken(); // Wait for the token to be fresh
-        await fetchProfile(); // Then fetch the profile data
+        await refreshToken();
+        await fetchProfile();
       } catch (error) {
-        // Handle potential token refresh errors if necessary
         console.error("Failed to refresh token or fetch profile", error);
         setError(t('profile_page.error_load'));
       }
     };
-  
     loadProfile();
     setCopySuccessMessage(t('profile_page.copy_link_button'));
-  
-    // By providing an empty dependency array, we tell React to run this effect
-    // only a single time, just like componentDidMount.
-  }, []);
+  }, [fetchProfile, refreshToken, t]);
 
   const handleToggleAutoEquip = async () => {
     const newState = !isAutoEquip;
@@ -135,11 +127,12 @@ const Profile = () => {
     e.preventDefault();
     setEditMessage({ type: '', text: '' });
     try {
-      await api.put('/user/profile', { username });
-      setEditMessage({ type: 'success', text: t('profile_page.success_update') });
+      const response = await api.put('/user/profile', { username });
+      setEditMessage({ type: 'success', text: t(response.data.messageKey) });
+      refreshToken(); // Refresh token to get updated username in header
     } catch (err) {
-      const errorMessage = err.response?.data?.error || t('profile_page.error_update');
-      setEditMessage({ type: 'error', text: errorMessage });
+      const messageKey = err.response?.data?.messageKey || 'profile_page.error_unexpected';
+      setEditMessage({ type: 'error', text: t(messageKey) });
     }
   };
 
@@ -149,12 +142,12 @@ const Profile = () => {
     setReferralUpdateMessage({ type: '', text: '' });
     try {
       const response = await api.put('/user/referral-code', { desiredCode: customReferralInput });
-      setReferralUpdateMessage({ type: 'success', text: response.data.message });
+      setReferralUpdateMessage({ type: 'success', text: t(response.data.messageKey) });
       setProfileData(prevData => ({ ...prevData, referral_code: response.data.referralCode }));
       setCustomReferralInput('');
     } catch (error) {
-      const message = error.response?.data?.message || t('profile_page.error_unexpected');
-      setReferralUpdateMessage({ type: 'error', text: message });
+      const messageKey = error.response?.data?.messageKey || 'profile_page.error_unexpected';
+      setReferralUpdateMessage({ type: 'error', text: t(messageKey) });
     } finally {
       setIsUpdatingReferral(false);
     }
@@ -169,45 +162,34 @@ const Profile = () => {
     }, 2000);
   };
 
-const handleConnectX = async () => {
+  const handleConnectX = async () => {
     try {
-      // 1. Generate the verifier and challenge
       const { verifier, challenge } = await createPkcePair();
-
-      // 2. IMPORTANT: Save the verifier to the backend session
-      // This is a new, simple endpoint we will need to add.
       await api.post('/user/session-store', { key: 'x_code_verifier', value: verifier });
-
-      // 3. Construct the authorization URL
       const params = new URLSearchParams({
         response_type: 'code',
-        client_id: process.env.REACT_APP_X_CLIENT_ID, // Your X Client ID from .env
-        redirect_uri: process.env.REACT_APP_X_CALLBACK_URL, // Your callback URL from .env
+        client_id: process.env.REACT_APP_X_CLIENT_ID,
+        redirect_uri: process.env.REACT_APP_X_CALLBACK_URL,
         scope: 'tweet.read users.read like.read offline.access',
-        state: 'state', // A random string for security
+        state: 'state',
         code_challenge: challenge,
         code_challenge_method: 'S256'
       });
-      
-      // 4. Redirect the user to X to authorize the app
       window.location.href = `https://twitter.com/i/oauth2/authorize?${params}`;
     } catch (error) {
       console.error("Failed to start X connection flow:", error);
-      // You could set an error message state here to show the user
     }
   };
 
   const handleTelegramAuth = async (user) => {
-  try {
-    await api.post('/user/link-telegram', user);
-    // On success, refresh the profile to show the "Connected" state
-    fetchProfile();
-  } catch (error) {
-    console.error("Telegram linking failed:", error);
-    alert("Failed to link Telegram account.");
-  }
-};
-
+    try {
+      await api.post('/user/link-telegram', user);
+      fetchProfile();
+    } catch (error) {
+      console.error("Telegram linking failed:", error);
+      alert("Failed to link Telegram account.");
+    }
+  };
 
   if (isLoading || !profileData) return <Layout><div className="profile-container"><h1>{t('profile_page.loading')}</h1></div></Layout>;
   if (error) return <Layout><div className="profile-container"><p className="error-message">{error}</p></div></Layout>;
@@ -222,9 +204,9 @@ const handleConnectX = async () => {
           <div className="profile-pin-layout-grid">
             
             <div className="profile-card pin-manager-card">
-              <h3>Pin Loadout</h3>
+              <h3>{t('profile_page.pin_loadout_title')}</h3>
               <div className="auto-equip-toggle-wrapper">
-                <span>Auto-Equip Best Pins</span>
+                <span>{t('profile_page.auto_equip_label')}</span>
                 <label className="switch">
                   <input type="checkbox" checked={isAutoEquip} onChange={handleToggleAutoEquip} />
                   <span className="slider round"></span>
@@ -232,8 +214,8 @@ const handleConnectX = async () => {
               </div>
               
               <div className={`loadout-content-wrapper ${isAutoEquip ? 'disabled' : ''}`}>
-                <p>Equip pins to activate their bonuses. Slots are unlocked by your Account Tier.</p>
-                <h4>Active Slots ({activePins.length} / {profileData.totalPinSlots})</h4>
+                <p>{t('profile_page.loadout_description')}</p>
+                <h4>{t('profile_page.active_slots_label', { count: activePins.length, total: profileData.totalPinSlots })}</h4>
                 <div className="active-slots-container">
                   {Array.from({ length: profileData.totalPinSlots }).map((_, index) => {
                     const pinInSlot = activePins[index];
@@ -241,31 +223,28 @@ const handleConnectX = async () => {
                       <Droppable key={`slot-${index}`} droppableId={`active-slot-${index}`} isDropDisabled={isAutoEquip}>
                         {(provided, snapshot) => (
                           <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => !isAutoEquip && pinInSlot && setSelectedPin(pinInSlot)}>
-                            {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index} isDragDisabled={isAutoEquip}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} imageFilename={pinInSlot.image_filename} /></div>)}</Draggable>) : (<span className="empty-slot-text">Empty Slot</span>)}
+                            {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index} isDragDisabled={isAutoEquip}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} imageFilename={pinInSlot.image_filename} /></div>)}</Draggable>) : (<span className="empty-slot-text">{t('profile_page.empty_slot')}</span>)}
                             {provided.placeholder}
                           </div>
                         )}
                       </Droppable>
                     );
                   })}
-                  {profileData.account_tier < 10 && (<div className="pin-slot locked" title={`Unlocks at Tier ${profileData.account_tier + 1}`}><span>Locked</span></div>)}
+                  {profileData.account_tier < 10 && (<div className="pin-slot locked" title={t('profile_page.locked_slot_tooltip', { tier: profileData.account_tier + 1 })}><span>{t('profile_page.locked_slot_label')}</span></div>)}
                 </div>
                 <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout || isAutoEquip}>
-                  {isSavingLoadout ? 'Saving...' : 'Save Loadout'}
+                  {isSavingLoadout ? t('profile_page.saving_button') : t('profile_page.save_loadout_button')}
                 </button>
               </div>
             </div>
-             <div className={`profile-card pin-collection-card ${isAutoEquip ? 'disabled' : ''}`}>
+
+            <div className={`profile-card pin-collection-card ${isAutoEquip ? 'disabled' : ''}`}>
               <div className="card-header-with-button">
-  <h3>Your Pin Collection ({inactivePins.length})</h3>
-  <button 
-    className="btn-secondary btn-sm" 
-    onClick={() => setIsListerModalOpen(true)}
-    disabled={isAutoEquip || inactivePins.length === 0}
-  >
-    List a Pin
-  </button>
-</div>
+                <h3>{t('profile_page.pin_collection_title', { count: inactivePins.length })}</h3>
+                <button className="btn-secondary btn-sm" onClick={() => setIsListerModalOpen(true)} disabled={isAutoEquip || inactivePins.length === 0}>
+                  {t('profile_page.list_pin_button')}
+                </button>
+              </div>
               <Droppable droppableId="inactive" direction="horizontal" isDropDisabled={isAutoEquip}>
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps} className="inactive-pins-container">
@@ -275,39 +254,34 @@ const handleConnectX = async () => {
                       </Draggable>
                     ))}
                     {provided.placeholder}
-                    {inactivePins.length === 0 && <p>You have no inactive pins.</p>}
+                    {inactivePins.length === 0 && <p>{t('profile_page.no_inactive_pins')}</p>}
                   </div>
                 )}
               </Droppable>
             </div>
 
-            {/* --- Correctly Placed "Connect Accounts" Card --- */}
             <div className="profile-card">
-              <h3>Connect Accounts & Wallets</h3>
-              <p className="form-description">
-                Link your social and Web3 accounts to unlock exclusive bounties and rewards.
-              </p>
+              <h3>{t('profile_page.connect_title')}</h3>
+              <p className="form-description">{t('profile_page.connect_description')}</p>
               <div className="connection-buttons-container">
                 <button className="btn-secondary connection-button" onClick={handleConnectX}>
-                  <span>Connect X (Twitter)</span>
+                  <span>{t('profile_page.connect_x_button')}</span>
                 </button>
-                {/* --- THIS IS THE NEW TELEGRAM BUTTON --- */}
                 <div className="telegram-button-wrapper">
-  <TelegramLoginButton onAuth={handleTelegramAuth} />
-</div>
+                  <TelegramLoginButton onAuth={handleTelegramAuth} />
+                </div>
                 <button className="btn-secondary connection-button" disabled>
-                  <span>Connect EVM Wallet</span>
+                  <span>{t('profile_page.connect_evm_button')}</span>
                 </button>
               </div>
             </div>
 
-            {/* --- Preserved Stats & Referrals Card --- */}
             <div className="profile-card">
               <h3>{t('profile_page.stats_referrals_title')}</h3>
               <div className="stat-display tier-display"><span className="stat-label">{t('profile_page.account_tier_label')}</span><span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span></div>
               {profileData.account_tier >= 2 && (<Link to="/pins-marketplace" className="btn-primary marketplace-button">{t('profile_page.pins_marketplace_button')}</Link>)}
               <Link to="/xpleaderboard" className="stat-display xp-link"><span className="stat-label">{t('profile_page.xp_label')}</span><span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span><span className="link-indicator">→</span></Link>
-              <Link to="/rewards" className="btn-primary" style={{ width: '100%', textAlign: 'center', marginTop: '16px', marginBottom: '16px' }}>Claim XP / View Bounties</Link>
+              <Link to="/rewards" className="btn-primary" style={{ width: '100%', textAlign: 'center', marginTop: '16px', marginBottom: '16px' }}>{t('profile_page.claim_xp_button')}</Link>
               <div className="stat-display"><span className="stat-label">{t('profile_page.xp_rate_label')}</span><span className="stat-value-large xp-rate-value">+{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span></span></div>
               <div className="stat-display"><span className="stat-label">{t('profile_page.referral_code_label')}</span><span className="referral-code">{profileData.referral_code}</span><button onClick={handleCopyLink} className="btn-secondary">{copySuccessMessage}</button></div>
               <div className="custom-referral-section">
@@ -322,7 +296,8 @@ const handleConnectX = async () => {
             </div>
             
             <div className="profile-card"><XpHistoryList /></div>
-                <div className="profile-card">
+
+            <div className="profile-card">
               <h3>{t('profile_page.edit_details_title')}</h3>
               <form onSubmit={handleProfileUpdate}>
                 <div className="form-group">
@@ -339,12 +314,10 @@ const handleConnectX = async () => {
                 {editMessage.text && (<p className={`edit-message ${editMessage.type}`}>{editMessage.text}</p>)}
               </form>
             </div>
-            {/* --- PRESERVED: Your Syndicate Card --- */}
+
             <div className="profile-card">
               <h3>{t('profile_page.syndicate_title')}</h3>
-              <p className="form-description">
-                {t('profile_page.syndicate_description')}
-              </p>
+              <p className="form-description">{t('profile_page.syndicate_description')}</p>
               <a 
                 href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
                 target="_blank" 
@@ -369,7 +342,7 @@ const handleConnectX = async () => {
         isOpen={isListerModalOpen}
         onClose={() => setIsListerModalOpen(false)}
         inactivePins={inactivePins}
-        onListSuccess={fetchProfile} // This correctly calls the profile refresh function
+        onListSuccess={fetchProfile}
       />
     </Layout>
   );
