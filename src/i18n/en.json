@@ -436,8 +436,18 @@
   "referral_bonus": "Earned {{amount}} XP from your referral ({{username}}) making their first deposit."
 },
 "bounties": {
-  "connect_telegram.title": "Completed Bounty #5: Connect Your Telegram Account",
-  "connect_telegram.description": "Connect your Telegram account to earn an XP reward.",
+  "x_follow": {
+    "title": "Follow @hyperstrats on X",
+    "description": "Follow our official X account for the latest updates and announcements."
+  },
+  "connect_telegram": {
+    "title": "Connect Your Telegram Account",
+    "description": "Link your Telegram account to participate in community-specific rewards."
+  },
+  "connect_x": {
+    "title": "Connect Your X Account",
+    "description": "Link your X (Twitter) account to prepare for future bounties."
+  },
   "success_verify": "Bounty verified! Your XP reward is now available to claim.",
   "error_not_complete": "Bounty not yet completed. Please try again after completing the action.",
   "error_already_completed": "You have already completed this bounty.",

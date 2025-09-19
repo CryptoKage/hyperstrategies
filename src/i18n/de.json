@@ -435,8 +435,18 @@
   "referral_bonus": "Du hast {{amount}} EP erhalten, da dein geworbener Nutzer ({{username}}) seine erste Einzahlung getätigt hat."
 },
 "bounties": {
-  "connect_telegram.title": "Bonus #5 abgeschlossen: Verbinde dein Telegram-Konto",
-  "connect_telegram.description": "Verbinde dein Telegram-Konto, um eine XP-Belohnung zu erhalten.",
+  "x_follow": {
+    "title": "Folge @hyperstrats auf X",
+    "description": "Folge unserem offiziellen X-Konto für die neuesten Updates und Ankündigungen."
+  },
+  "connect_telegram": {
+    "title": "Verbinde dein Telegram-Konto",
+    "description": "Verbinde dein Telegram-Konto, um an Community-spezifischen Belohnungen teilzunehmen."
+  },
+  "connect_x": {
+    "title": "Verbinde dein X-Konto",
+    "description": "Verbinde dein X (Twitter)-Konto, um dich auf zukünftige Boni vorzubereiten."
+  },
   "success_verify": "Bonus überprüft! Deine XP-Belohnung kann jetzt eingefordert werden.",
   "error_not_complete": "Bonus noch nicht abgeschlossen. Bitte versuchen Sie es nach Abschluss der Aktion erneut.",
   "error_already_completed": "Du hast diesen Bonus bereits abgeschlossen.",

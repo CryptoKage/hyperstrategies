@@ -3,11 +3,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { useTranslation } from 'react-i18next'; // <-- 1. Import the translation hook
+import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import Layout from '../components/Layout';
 
-// StatCard now uses the `t` function for its labels
+// A reusable component for displaying key stats
 const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, className = '' }) => {
     const { t } = useTranslation();
     return (
@@ -19,11 +19,12 @@ const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, class
     );
 };
 
+// Define chart colors and asset mappings for consistency
 const CHART_COLORS = { ACCOUNT: '#8884d8', VAULT: '#82ca9d', PROJECTION: '#82ca9d', BTC: '#f7931a', ETH: '#627eea', SOL: '#9945FF' };
 const KNOWN_ASSETS = { '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': 'BTC', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': 'ETH', '0xd31a59c85ae9d8edefec411e448fd2e703a42e99': 'SOL' };
 
 const Vault1Page = () => {
-    const { t } = useTranslation(); // <-- 2. Initialize the translation function
+    const { t } = useTranslation();
     const { vaultId } = useParams();
     const location = useLocation();
 
@@ -35,6 +36,7 @@ const Vault1Page = () => {
     const [chartView, setChartView] = useState('accountValue');
     const [showAssetLines, setShowAssetLines] = useState(false);
 
+    // --- Data Fetching ---
     const fetchPageData = useCallback(async () => {
         if (!vaultId) return;
         const queryParams = new URLSearchParams(location.search);
@@ -45,7 +47,7 @@ const Vault1Page = () => {
             const [userResponse, marketResponse, snapshotResponse] = await Promise.all([ 
                 api.get(userApiUrl), 
                 api.get(`/market-data/${vaultId}`),
-                api.get(`/performance/${vaultId}/snapshot`) 
+                api.get(`/performance/${vaultId}/snapshot`)
             ]);
             setPageData(userResponse.data);
             setMarketData(marketResponse.data);
@@ -55,8 +57,70 @@ const Vault1Page = () => {
 
     useEffect(() => { fetchPageData(); }, [fetchPageData]);
 
-    const formatChartData = () => { /* ... Unchanged ... */ };
-    const getCoinGeckoLink = (asset) => { /* ... Unchanged ... */ };
+    // --- Chart Data Processing ---
+    const formatChartData = () => {
+        // --- THE FIX: Add safety checks for null data before processing ---
+        if (chartView === 'accountValue') {
+            if (!pageData || !pageData.userPerformanceHistory) return [];
+            const history = pageData.userPerformanceHistory;
+            if (history.length === 0) return [];
+            return history.map(point => ({ date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }), value: parseFloat(point.balance) }));
+        } else { // performanceIndex view
+            if (!marketData || !marketData.vaultPerformance) return [];
+            // --- END OF FIX ---
+            
+            const rawIndexHistory = marketData.vaultPerformance;
+            const rawAssetHistory = marketData.assetPerformance || [];
+            if (rawIndexHistory.length < 2) return [];
+
+            const chartPoints = {};
+            const getChartDate = (dateStr) => new Date(dateStr).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+
+            const baseIndex = parseFloat(rawIndexHistory[0].index_value);
+            rawIndexHistory.forEach(point => {
+                const date = getChartDate(point.record_date);
+                if (!chartPoints[date]) chartPoints[date] = { date };
+                chartPoints[date].VAULT = ((parseFloat(point.index_value) / baseIndex) - 1) * 100;
+            });
+            
+            const assetBaselines = {};
+            for (const address in KNOWN_ASSETS) {
+                const firstPoint = rawAssetHistory.find(p => p.asset_prices_snapshot && p.asset_prices_snapshot[address]);
+                if (firstPoint) assetBaselines[address] = parseFloat(firstPoint.asset_prices_snapshot[address]);
+            }
+            rawAssetHistory.forEach(point => {
+                if (point.asset_prices_snapshot) {
+                    const date = getChartDate(point.record_date);
+                    if (!chartPoints[date]) chartPoints[date] = { date };
+                    for (const address in assetBaselines) {
+                        const symbol = KNOWN_ASSETS[address];
+                        if (point.asset_prices_snapshot[address]) {
+                            const currentPrice = parseFloat(point.asset_prices_snapshot[address]);
+                            chartPoints[date][symbol] = ((currentPrice / assetBaselines[address]) - 1) * 100;
+                        }
+                    }
+                }
+            });
+            
+            if (pageData?.projectedIndexValue) {
+                const lastPoint = rawIndexHistory[rawIndexHistory.length - 1];
+                const lastDate = getChartDate(lastPoint.record_date);
+                if (chartPoints[lastDate]) chartPoints[lastDate].PROJECTION = chartPoints[lastDate].VAULT;
+                const projectionDate = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+                if (!chartPoints[projectionDate]) chartPoints[projectionDate] = { date: projectionDate };
+                chartPoints[projectionDate].PROJECTION = ((pageData.projectedIndexValue / baseIndex) - 1) * 100;
+            }
+
+            return Object.values(chartPoints).sort((a,b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        }
+    };
+    
+    const getCoinGeckoLink = (asset) => {
+        if (asset && asset.coingecko_id) {
+            return `https://www.coingecko.com/en/coins/${asset.coingecko_id}`;
+        }
+        return null;
+    };
 
     if (loading) { return <Layout><div className="vault-detail-container"><h1>{t('common.loading')}</h1></div></Layout>; }
     if (error || !pageData) { return <Layout><div className="vault-detail-container"><p className="error-message">{error || t('vault.errors.noData')}</p></div></Layout>; }
