@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import api from '../api/api';
 import Layout from '../components/Layout';
 
+// A reusable component for displaying key stats
 const StatCard = ({ label, value, subtext = null, isCurrency = true, className = '' }) => (
     <div className={`profile-card ${className}`}>
         <h3>{label}</h3>
@@ -14,6 +15,7 @@ const StatCard = ({ label, value, subtext = null, isCurrency = true, className =
     </div>
 );
 
+// Define chart colors for consistency
 const CHART_COLORS = { ACCOUNT: '#8884d8', VAULT: '#82ca9d', PROJECTION: '#82ca9d', BTC: '#f7931a', ETH: '#627eea', SOL: '#9945FF' };
 
 const Vault1Page = () => {
@@ -27,18 +29,25 @@ const Vault1Page = () => {
     const [chartView, setChartView] = useState('accountValue');
     const [showAssetLines, setShowAssetLines] = useState(false);
 
+    // --- Data Fetching ---
     const fetchPageData = useCallback(async () => {
         if (!vaultId) return;
+
         const queryParams = new URLSearchParams(location.search);
         const impersonateUserId = queryParams.get('userId');
         const userApiUrl = impersonateUserId ? `/vault-details/${vaultId}?userId=${impersonateUserId}` : `/vault-details/${vaultId}`;
+        
         setLoading(true);
         try {
-            const [userResponse, marketResponse] = await Promise.all([ api.get(userApiUrl), api.get(`/market-data/${vaultId}`) ]);
+            const [userResponse, marketResponse] = await Promise.all([ 
+                api.get(userApiUrl), 
+                api.get(`/market-data/${vaultId}`) 
+            ]);
             setPageData(userResponse.data);
             setMarketData(marketResponse.data);
         } catch (err) {
             setError("Could not load vault details.");
+            console.error("Vault details fetch error:", err);
         } finally {
             setLoading(false);
         }
@@ -46,8 +55,8 @@ const Vault1Page = () => {
 
     useEffect(() => { fetchPageData(); }, [fetchPageData]);
 
+    // --- Chart Data Processing ---
     const formatChartData = () => {
-        // --- THE FIX: Return raw USD for Account Value ---
         if (chartView === 'accountValue') {
             const history = pageData?.userPerformanceHistory || [];
             if (history.length === 0) return [];
@@ -58,37 +67,40 @@ const Vault1Page = () => {
         } else { // performanceIndex view
             const vaultHistory = marketData?.vaultPerformance || [];
             if (vaultHistory.length < 2) return [];
-            
+
             const combinedData = {};
             const getGranularDate = (dateStr) => new Date(dateStr).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
-            // Normalize the main index line
-            const baseIndexValue = parseFloat(vaultHistory[0].value) + 100;
+            const baseIndexValue = vaultHistory[0].value;
             vaultHistory.forEach(point => {
                 const date = getGranularDate(point.date);
                 if (!combinedData[date]) combinedData[date] = { date };
-                combinedData[date].VAULT = ((parseFloat(point.value) + 100) / baseIndexValue * 100) - 100;
+                combinedData[date].VAULT = point.value - baseIndexValue;
             });
 
-            // Normalize asset lines
-            if (marketData && marketData.assetPerformance) {
+            if (marketData?.assetPerformance) {
                 for (const symbol in marketData.assetPerformance) {
                     const assetHistory = marketData.assetPerformance[symbol];
-                    if(assetHistory.length > 0) {
-                        const baseAssetValue = parseFloat(assetHistory[0].value) + 100;
+                    if (assetHistory.length > 0) {
+                        const baseAssetValue = assetHistory[0].value;
                         assetHistory.forEach(point => {
                             const date = getGranularDate(point.date);
                             if (!combinedData[date]) combinedData[date] = { date };
-                            combinedData[date][symbol] = ((parseFloat(point.value) + 100) / baseAssetValue * 100) - 100;
+                            combinedData[date][symbol] = point.value - baseAssetValue;
                         });
                     }
                 }
             }
-
-            // --- ADD THE PROJECTION LINE ---
+            
+            // --- DEFINITIVE PROJECTION LOGIC ---
             if (pageData && pageData.projectedIndexValue && vaultHistory.length > 0) {
                 const lastHistoricalPoint = vaultHistory[vaultHistory.length - 1];
-                const normalizedProjection = ((pageData.projectedIndexValue / baseIndexValue) * 100) - 100;
+                const lastHistoricalIndex = parseFloat(lastHistoricalPoint.value) + 1000; // Denormalize
+                
+                // We need the original base index to normalize the projection
+                const originalBaseIndex = lastHistoricalIndex / (1 + (lastHistoricalPoint.value / 100));
+                
+                const normalizedProjection = ((pageData.projectedIndexValue / originalBaseIndex) - 1) * 100;
                 
                 const todayStr = new Date().toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
                 if (!combinedData[todayStr]) combinedData[todayStr] = { date: todayStr };
@@ -99,11 +111,11 @@ const Vault1Page = () => {
                     combinedData[lastDate].PROJECTION = combinedData[lastDate].VAULT;
                 }
             }
+
             return Object.values(combinedData);
         }
     };
-    
-    // Helper to get CoinGecko link
+
     const getCoinGeckoLink = (asset) => {
         if (asset && asset.coingecko_id) {
             return `https://www.coingecko.com/en/coins/${asset.coingecko_id}`;
@@ -111,10 +123,10 @@ const Vault1Page = () => {
         return null;
     };
 
-      if (loading) { return <Layout><h1>Loading...</h1></Layout>; }
-    if (error || !pageData) { return <Layout><p className="error-message">{error}</p></Layout>; }
+    if (loading) { return <Layout><div className="vault-detail-container"><h1>Loading Vault Details...</h1></div></Layout>; }
+    if (error || !pageData) { return <Layout><div className="vault-detail-container"><p className="error-message">{error || 'No data available for this vault.'}</p></div></Layout>; }
 
-    const { vaultInfo = {}, userPosition = null, assetBreakdown = [], userLedger = [] } = pageData;
+    const { vaultInfo = {}, userPosition = null, assetBreakdown = [], userLedger = [], vaultStats = {} } = pageData;
     const hasPrincipal = userPosition && userPosition.principal > 0;
     const chartData = formatChartData();
     
@@ -132,7 +144,6 @@ const Vault1Page = () => {
                         <div className="vault-detail-grid">
                             <div className="vault-detail-column">
                                 <StatCard label="Your Total Capital" value={userPosition.totalCapital} subtext="Principal + Realized & Unrealized P&L" />
-                                {/* --- THE FIX: Comment out the Deposits in Transit card --- */}
                                 {/* {vaultStats.capitalInTransit > 0 && <StatCard label="Deposits in Transit" value={vaultStats.capitalInTransit} />} */}
                             </div>
                             <div className="vault-detail-column">
@@ -161,7 +172,6 @@ const Vault1Page = () => {
                                     <LineChart data={chartData} margin={{ top: 20, right: 20, left: -10, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                                         <XAxis dataKey="date" stroke="#888" />
-                                        {/* --- THE FIX: Dynamic Y-Axis --- */}
                                         <YAxis stroke="#888" tickFormatter={(tick) => chartView === 'accountValue' ? `$${Math.round(tick)}` : `${tick.toFixed(1)}%`} />
                                         <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }} labelStyle={{ color: '#fff' }} formatter={(value) => chartView === 'accountValue' ? `$${value?.toFixed(2)}` : `${value?.toFixed(2)}%`} />
                                         <Legend />
@@ -186,7 +196,6 @@ const Vault1Page = () => {
                             ) : ( <p>Insufficient historical data to render chart.</p> )}
                         </div>
                         
-                        {/* Tables Section */}
                         <div className="vault-detail-grid">
                             <div className="profile-card">
                                 <h3>Asset Breakdown</h3>
@@ -194,14 +203,7 @@ const Vault1Page = () => {
                                     <table className="asset-table">
                                         <thead><tr><th>Asset</th><th className="amount">Live Price</th></tr></thead>
                                         <tbody>
-                                            {assetBreakdown.map(asset => (
-                                                <tr key={asset.symbol}>
-                                                    <td>
-                                                        {getCoinGeckoLink(asset) ? (<a href={getCoinGeckoLink(asset)} target="_blank" rel="noopener noreferrer" className="asset-link">{asset.symbol} ↗</a>) : (<span>{asset.symbol}</span>)}
-                                                    </td>
-                                                    <td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 }) : 'N/A'}</td>
-                                                </tr>
-                                            ))}
+                                            {assetBreakdown.map(asset => (<tr key={asset.symbol}><td>{getCoinGeckoLink(asset) ? (<a href={getCoinGeckoLink(asset)} target="_blank" rel="noopener noreferrer" className="asset-link">{asset.symbol} ↗</a>) : (<span>{asset.symbol}</span>)}</td><td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 }) : 'N/A'}</td></tr>))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -212,28 +214,14 @@ const Vault1Page = () => {
                                     <table className="activity-table">
                                         <thead><tr><th>Date</th><th>Type</th><th className="amount">Amount</th></tr></thead>
                                         <tbody>
-                                            {userLedger.map(entry => (
-                                                <tr key={entry.entry_id}>
-                                                    <td>{new Date(entry.created_at).toLocaleDateString()}</td>
-                                                    <td>{entry.entry_type.replace(/_/g, ' ')}</td>
-                                                    <td className={`amount ${parseFloat(entry.amount) >= 0 ? 'text-positive' : 'text-negative'}`}>
-                                                        {`${parseFloat(entry.amount) >= 0 ? '+' : ''}${parseFloat(entry.amount).toFixed(2)}`}
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                            {userLedger.map(entry => (<tr key={entry.entry_id}><td>{new Date(entry.created_at).toLocaleDateString()}</td><td>{entry.entry_type.replace(/_/g, ' ')}</td><td className={`amount ${parseFloat(entry.amount) >= 0 ? 'text-positive' : 'text-negative'}`}>{`${parseFloat(entry.amount) >= 0 ? '+' : ''}${parseFloat(entry.amount).toFixed(2)}`}</td></tr>))}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </>
-                ) : (
-                    <div className="profile-card text-center">
-                        <h2>You are not currently invested in this vault.</h2>
-                        <p>To see your performance, make a deposit from your dashboard.</p>
-                        <Link to="/dashboard" className="btn-primary mt-4">Go to Dashboard</Link>
-                    </div>
-                )}
+                ) : ( <div className="profile-card text-center"><h2>You are not currently invested in this vault.</h2><p>To see your performance, make a deposit from your dashboard.</p><Link to="/dashboard" className="btn-primary mt-4">Go to Dashboard</Link></div> )}
             </div>
         </Layout>
     );
