@@ -1,4 +1,4 @@
-// PASTE THIS TO REPLACE: hyperstrategies/src/components/XpHistoryList.jsx
+// PASTE THIS ENTIRE CONTENT TO REPLACE: hyperstrategies/src/components/XpHistoryList.jsx
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,14 +8,17 @@ const XpHistoryList = () => {
   const { t } = useTranslation();
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchXpHistory = async () => {
+      setIsLoading(true);
       try {
         const response = await api.get('/user/xp-history');
         setHistory(response.data);
       } catch (err) {
-        // Error handling is unchanged
+        console.error("Failed to fetch XP history:", err);
+        setError('Could not load your XP history at this time.');
       } finally {
         setIsLoading(false);
       }
@@ -23,23 +26,31 @@ const XpHistoryList = () => {
     fetchXpHistory();
   }, []);
 
-  // --- NEW: Helper function to parse and translate descriptions ---
+  // Helper function to parse and translate descriptions from the database
   const renderDescription = (description) => {
     try {
+      // Try to parse the description as JSON.
       const payload = JSON.parse(description);
-      // Use the 't' function with the key and variables from the database
+      // If successful, use the 't' function with the key and variables.
+      // Example payload: { key: 'xp_history.deposit_bonus', vars: { amount: 30, vaultId: 1 } }
       return t(payload.key, payload.vars);
     } catch (e) {
       // If it's not valid JSON, it's an old, plain text description.
-      // Display it as-is for backward compatibility.
+      // We display it as-is for backward compatibility.
       return description;
     }
   };
 
   const renderContent = () => {
-    if (isLoading) return <p>{t('profile_page.history_loading')}</p>;
-    if (history.length === 0) return <p>{t('profile_page.history_empty')}</p>;
-    
+    if (isLoading) {
+      return <p>{t('profile_page.history_loading')}</p>;
+    }
+    if (error) {
+      return <p className="error-message">{error}</p>;
+    }
+    if (history.length === 0) {
+      return <p>{t('profile_page.history_empty')}</p>;
+    }
     return (
       <ul className="xp-history-list">
         {history.map((item) => (
@@ -53,7 +64,10 @@ const XpHistoryList = () => {
               </span>
             </div>
             <span className="history-date">
-              {new Date(item.created_at).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+              {new Date(item.created_at).toLocaleString(undefined, { 
+                dateStyle: 'medium', 
+                timeStyle: 'short' 
+              })}
             </span>
           </li>
         ))}

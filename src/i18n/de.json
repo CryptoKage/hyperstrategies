@@ -428,5 +428,18 @@
   "error_failed": "Ein unerwarteter Fehler ist aufgetreten. Der Link ist möglicherweise abgelaufen.",
   "success_title": "Erfolg!",
   "login_now": "Jetzt einloggen"
+},
+
+"xp_history": {
+  "deposit_bonus": "Du hast {{amount}} EP für die Einzahlung in Vault {{vaultId}} erhalten.",
+  "referral_bonus": "Du hast {{amount}} EP erhalten, da dein geworbener Nutzer ({{username}}) seine erste Einzahlung getätigt hat."
+},
+"bounties": {
+  "connect_telegram.title": "Bonus #5 abgeschlossen: Verbinde dein Telegram-Konto",
+  "connect_telegram.description": "Verbinde dein Telegram-Konto, um eine XP-Belohnung zu erhalten.",
+  "success_verify": "Bonus überprüft! Deine XP-Belohnung kann jetzt eingefordert werden.",
+  "error_not_complete": "Bonus noch nicht abgeschlossen. Bitte versuchen Sie es nach Abschluss der Aktion erneut.",
+  "error_already_completed": "Du hast diesen Bonus bereits abgeschlossen.",
+  "error_unexpected": "Bei der Überprüfung ist ein Fehler aufgetreten."
 }
 }
