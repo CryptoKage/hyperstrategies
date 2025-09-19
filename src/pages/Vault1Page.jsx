@@ -6,7 +6,6 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import api from '../api/api';
 import Layout from '../components/Layout';
 
-// A reusable component for displaying key stats
 const StatCard = ({ label, value, subtext = null, isCurrency = true, className = '' }) => (
     <div className={`profile-card ${className}`}>
         <h3>{label}</h3>
@@ -15,14 +14,7 @@ const StatCard = ({ label, value, subtext = null, isCurrency = true, className =
     </div>
 );
 
-// Define chart colors for consistency
-const CHART_COLORS = {
-    ACCOUNT: '#8884d8',
-    VAULT: '#82ca9d',
-    BTC: '#f7931a',
-    ETH: '#627eea',
-    SOL: '#9945FF',
-};
+const CHART_COLORS = { ACCOUNT: '#8884d8', VAULT: '#82ca9d', PROJECTION: '#82ca9d', BTC: '#f7931a', ETH: '#627eea', SOL: '#9945FF' };
 
 const Vault1Page = () => {
     const { vaultId } = useParams();
@@ -33,70 +25,78 @@ const Vault1Page = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [chartView, setChartView] = useState('accountValue');
-    const [showAssetLines, setShowAssetLines] = useState(false); // State for the new toggle
+    const [showAssetLines, setShowAssetLines] = useState(false);
 
-    // --- Data Fetching ---
     const fetchPageData = useCallback(async () => {
         if (!vaultId) return;
-
         const queryParams = new URLSearchParams(location.search);
         const impersonateUserId = queryParams.get('userId');
-        const userApiUrl = impersonateUserId 
-            ? `/vault-details/${vaultId}?userId=${impersonateUserId}` 
-            : `/vault-details/${vaultId}`;
-
+        const userApiUrl = impersonateUserId ? `/vault-details/${vaultId}?userId=${impersonateUserId}` : `/vault-details/${vaultId}`;
         setLoading(true);
         try {
-            const [userResponse, marketResponse] = await Promise.all([
-                api.get(userApiUrl),
-                api.get(`/market-data/${vaultId}`)
-            ]);
+            const [userResponse, marketResponse] = await Promise.all([ api.get(userApiUrl), api.get(`/market-data/${vaultId}`) ]);
             setPageData(userResponse.data);
             setMarketData(marketResponse.data);
         } catch (err) {
             setError("Could not load vault details.");
-            console.error("Vault details fetch error:", err);
         } finally {
             setLoading(false);
         }
     }, [vaultId, location.search]);
 
-    useEffect(() => {
-        fetchPageData();
-    }, [fetchPageData]);
+    useEffect(() => { fetchPageData(); }, [fetchPageData]);
 
-    // --- Chart Data Processing ---
     const formatChartData = () => {
+        // --- THE FIX: Return raw USD for Account Value ---
         if (chartView === 'accountValue') {
             const history = pageData?.userPerformanceHistory || [];
-            if (history.length < 2) return [];
-            const baseValue = parseFloat(history[0].balance);
-            if (isNaN(baseValue) || baseValue <= 0) return [];
-
+            if (history.length === 0) return [];
             return history.map(point => ({
-                date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                value: ((parseFloat(point.balance) / baseValue) - 1) * 100,
+                date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }),
+                value: parseFloat(point.balance),
             }));
         } else { // performanceIndex view
             const vaultHistory = marketData?.vaultPerformance || [];
             if (vaultHistory.length < 2) return [];
-
+            
             const combinedData = {};
             const getGranularDate = (dateStr) => new Date(dateStr).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
+            // Normalize the main index line
+            const baseIndexValue = parseFloat(vaultHistory[0].value) + 100;
             vaultHistory.forEach(point => {
                 const date = getGranularDate(point.date);
                 if (!combinedData[date]) combinedData[date] = { date };
-                combinedData[date].VAULT = point.value;
+                combinedData[date].VAULT = ((parseFloat(point.value) + 100) / baseIndexValue * 100) - 100;
             });
 
+            // Normalize asset lines
             if (marketData && marketData.assetPerformance) {
                 for (const symbol in marketData.assetPerformance) {
-                    marketData.assetPerformance[symbol].forEach(point => {
-                        const date = getGranularDate(point.date);
-                        if (!combinedData[date]) combinedData[date] = { date };
-                        combinedData[date][symbol] = point.value;
-                    });
+                    const assetHistory = marketData.assetPerformance[symbol];
+                    if(assetHistory.length > 0) {
+                        const baseAssetValue = parseFloat(assetHistory[0].value) + 100;
+                        assetHistory.forEach(point => {
+                            const date = getGranularDate(point.date);
+                            if (!combinedData[date]) combinedData[date] = { date };
+                            combinedData[date][symbol] = ((parseFloat(point.value) + 100) / baseAssetValue * 100) - 100;
+                        });
+                    }
+                }
+            }
+
+            // --- ADD THE PROJECTION LINE ---
+            if (pageData && pageData.projectedIndexValue && vaultHistory.length > 0) {
+                const lastHistoricalPoint = vaultHistory[vaultHistory.length - 1];
+                const normalizedProjection = ((pageData.projectedIndexValue / baseIndexValue) * 100) - 100;
+                
+                const todayStr = new Date().toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+                if (!combinedData[todayStr]) combinedData[todayStr] = { date: todayStr };
+                combinedData[todayStr].PROJECTION = normalizedProjection;
+
+                const lastDate = getGranularDate(lastHistoricalPoint.date);
+                if (combinedData[lastDate]) {
+                    combinedData[lastDate].PROJECTION = combinedData[lastDate].VAULT;
                 }
             }
             return Object.values(combinedData);
@@ -111,15 +111,10 @@ const Vault1Page = () => {
         return null;
     };
 
-    if (loading) {
-        return <Layout><div className="vault-detail-container"><h1>Loading Vault Details...</h1></div></Layout>;
-    }
-    
-    if (error || !pageData) {
-        return <Layout><div className="vault-detail-container"><p className="error-message">{error || 'No data available for this vault.'}</p></div></Layout>;
-    }
+      if (loading) { return <Layout><h1>Loading...</h1></Layout>; }
+    if (error || !pageData) { return <Layout><p className="error-message">{error}</p></Layout>; }
 
-    const { vaultInfo = {}, userPosition = null, assetBreakdown = [], userLedger = [], vaultStats = {} } = pageData;
+    const { vaultInfo = {}, userPosition = null, assetBreakdown = [], userLedger = [] } = pageData;
     const hasPrincipal = userPosition && userPosition.principal > 0;
     const chartData = formatChartData();
     
@@ -134,11 +129,11 @@ const Vault1Page = () => {
                 
                 {hasPrincipal ? (
                     <>
-                        {/* Stat Cards Section */}
                         <div className="vault-detail-grid">
                             <div className="vault-detail-column">
                                 <StatCard label="Your Total Capital" value={userPosition.totalCapital} subtext="Principal + Realized & Unrealized P&L" />
-                                {vaultStats.capitalInTransit > 0 && <StatCard label="Deposits in Transit" value={vaultStats.capitalInTransit} />}
+                                {/* --- THE FIX: Comment out the Deposits in Transit card --- */}
+                                {/* {vaultStats.capitalInTransit > 0 && <StatCard label="Deposits in Transit" value={vaultStats.capitalInTransit} />} */}
                             </div>
                             <div className="vault-detail-column">
                                 <StatCard label="Realized P&L" value={userPosition.realizedPnl} subtext="Profits from closed trades." />
@@ -146,7 +141,6 @@ const Vault1Page = () => {
                             </div>
                         </div>
 
-                        {/* Chart Section */}
                         <div className="profile-card full-width">
                             <h3>Performance Journey</h3>
                             <div className="chart-toggle">
@@ -156,24 +150,20 @@ const Vault1Page = () => {
                                 </div>
                                 {chartView === 'performanceIndex' && (
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ccc' }}>
-                                        <input
-                                            type="checkbox"
-                                            id="asset-toggle"
-                                            checked={showAssetLines}
-                                            onChange={(e) => setShowAssetLines(e.target.checked)}
-                                        />
+                                        <input type="checkbox" id="asset-toggle" checked={showAssetLines} onChange={(e) => setShowAssetLines(e.target.checked)} />
                                         <label htmlFor="asset-toggle">Compare Assets</label>
                                     </div>
                                 )}
                             </div>
                             
-                            {chartData.length > 1 ? (
+                            {chartData.length > (chartView === 'accountValue' ? 0 : 1) ? (
                                 <ResponsiveContainer width="100%" height={400}>
                                     <LineChart data={chartData} margin={{ top: 20, right: 20, left: -10, bottom: 5 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#333" />
                                         <XAxis dataKey="date" stroke="#888" />
-                                        <YAxis stroke="#888" tickFormatter={(tick) => `${tick.toFixed(1)}%`} />
-                                        <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }} labelStyle={{ color: '#fff' }} formatter={(value) => `${value?.toFixed(2)}%`} />
+                                        {/* --- THE FIX: Dynamic Y-Axis --- */}
+                                        <YAxis stroke="#888" tickFormatter={(tick) => chartView === 'accountValue' ? `$${Math.round(tick)}` : `${tick.toFixed(1)}%`} />
+                                        <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }} labelStyle={{ color: '#fff' }} formatter={(value) => chartView === 'accountValue' ? `$${value?.toFixed(2)}` : `${value?.toFixed(2)}%`} />
                                         <Legend />
                                         
                                         {chartView === 'accountValue' ? (
@@ -181,6 +171,7 @@ const Vault1Page = () => {
                                         ) : (
                                             <>
                                                 <Line type="monotone" dataKey="VAULT" name={`${vaultInfo.name} Index`} stroke={CHART_COLORS.VAULT} strokeWidth={2} dot={false} />
+                                                <Line type="monotone" dataKey="PROJECTION" name="With Unrealized P&L" stroke={CHART_COLORS.PROJECTION} strokeWidth={2} dot={false} strokeDasharray="2 6" />
                                                 {showAssetLines && (
                                                     <>
                                                         <Line type="monotone" dataKey="BTC" name="BTC Performance" stroke={CHART_COLORS.BTC} strokeWidth={1} dot={false} strokeDasharray="3 3" />
@@ -192,9 +183,7 @@ const Vault1Page = () => {
                                         )}
                                     </LineChart>
                                 </ResponsiveContainer>
-                            ) : (
-                                <p>Insufficient historical data to render chart.</p>
-                            )}
+                            ) : ( <p>Insufficient historical data to render chart.</p> )}
                         </div>
                         
                         {/* Tables Section */}
