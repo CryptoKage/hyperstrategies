@@ -211,12 +211,20 @@ const Dashboard = () => {
                   <h3>{vault.name}</h3>
                   <p className="cta-text">{vault.description}</p>
                   
-                  {isActive && vault.performance && (
-                    <div className="vault-stat marketing-stat">
-                      <span>{t('dashboard.all_time_pnl')}</span>
-                      <span className={vault.performance.total >= 0 ? 'text-positive' : 'text-negative'}>
-                        {vault.performance.total > 0 ? '+' : ''}{vault.performance.total}%
-                      </span>
+ {isActive && vault.performance && (
+                    <div className="performance-stats-container">
+                      <div className="vault-stat marketing-stat">
+                        <span>{t('dashboard.all_time_pnl')}</span>
+                        <span className={vault.performance.total >= 0 ? 'text-positive' : 'text-negative'}>
+                          {vault.performance.total > 0 ? '+' : ''}{vault.performance.total}%
+                        </span>
+                      </div>
+                      <div className="vault-stat marketing-stat">
+                        <span>{t('dashboard.avg_monthly_return')}</span>
+                        <span className={vault.performance.monthly >= 0 ? 'text-positive' : 'text-negative'}>
+                          {vault.performance.monthly > 0 ? '+' : ''}{vault.performance.monthly}%
+                        </span>
+                      </div>
                     </div>
                   )}
 
