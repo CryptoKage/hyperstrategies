@@ -478,5 +478,61 @@
   "ledger_title": "XP Ledger",
   "ledger_description": "A chronological history of all XP you have earned.",
   "ledger_empty": "You have no claimed XP history yet."
-}
+},
+"vault": {
+    "title": "Vault Details",
+    "stats": {
+      "totalCapital": "Your Total Capital",
+      "totalCapitalSubtext": "Principal + Realized & Unrealized P&L",
+      "realizedPnl": "Realized P&L",
+      "realizedPnlSubtext": "Profits from closed trades.",
+      "unrealizedPnl": "Unrealized P&L",
+      "unrealizedPnlSubtext": "From currently open trades.",
+      "dailyReturn": "Avg. Daily Return",
+      "weeklyReturn": "Avg. Weekly Return",
+      "monthlyReturn": "Avg. Monthly Return",
+      "totalReturn": "Total Return (All-Time)"
+    },
+    "performanceSnapshotTitle": "Historical Performance Snapshot",
+    "performanceSnapshotSubtext": "Based on the average realized performance since vault inception.",
+    "chart": {
+      "title": "Performance Journey",
+      "myAccountValue": "My Account Value",
+      "vaultPerformanceIndex": "Vault Performance Index",
+      "compareAssets": "Compare Assets",
+      "legend": {
+        "myAccountValue": "My Account Value",
+        "vaultIndex": "{{vaultName}} Index",
+        "withUnrealized": "With Unrealized P&L",
+        "btc": "BTC Performance",
+        "eth": "ETH Performance",
+        "sol": "SOL Performance"
+      }
+    },
+    "assetBreakdown": {
+      "title": "Asset Breakdown",
+      "asset": "Asset",
+      "livePrice": "Live Price"
+    },
+    "ledger": {
+      "title": "Your Ledger",
+      "date": "Date",
+      "type": "Type",
+      "amount": "Amount"
+    },
+    "notInvested": {
+      "title": "You are not currently invested in this vault.",
+      "description": "To see your performance, make a deposit from your dashboard."
+    },
+    "errors": {
+      "loadDetails": "Could not load vault details. This vault may be inactive or you may not have a position yet.",
+      "noData": "No data available for this vault.",
+      "noChartData": "Insufficient historical data to render chart."
+    }
+  },
+  "ledgerTypes": {
+    "DEPOSIT": "Deposit",
+    "WITHDRAWAL_REQUEST": "Withdrawal Request",
+    "PNL_DISTRIBUTION": "P&L Distribution"
+  }
 }

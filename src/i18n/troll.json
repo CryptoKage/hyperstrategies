@@ -1,7 +1,8 @@
 {
   "common": {
     "max": "ALL OF IT!",
-    "pending_withdrawal_tooltip": "DA MEKBOY IS GETTIN' YER TEEF. HOLD ON."
+    "pending_withdrawal_tooltip": "DA MEKBOY IS GETTIN' YER TEEF. HOLD ON.",
+     "goToDashboard": "To the Dashboard!"
   },
   "header": {
     "dashboard": "DA BOSS HUT",
@@ -131,5 +132,20 @@
   "xp_history": {
     "deposit_bonus": "Got {{amount}} WAAAGH! for sendin' boyz to Stompa {{vaultId}}.",
     "referral_bonus": "Got {{amount}} WAAAGH! cuz yer boy {{username}} joined da fight."
+  },
+    "vault": {
+    "title": "Magic Money Pot",
+    "stats": {
+      "totalCapital": "Yer Hoard",
+      "totalCapitalSubtext": "Shinies + Imaginary Shinies",
+      "realizedPnl": "Real Shinies",
+      "realizedPnlSubtext": "From victorious raids.",
+      "unrealizedPnl": "Imaginary Shinies",
+      "unrealizedPnlSubtext": "From ongoing shenanigans.",
+      "dailyReturn": "Daily Shenanigan Score",
+      "weeklyReturn": "Weekly Shenanigan Score",
+      "monthlyReturn": "Monthly Shenanigan Score",
+      "totalReturn": "Total Shenanigans"
+    }
   }
 }

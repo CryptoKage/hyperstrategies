@@ -1,7 +1,8 @@
 {
   "common": {
     "max": "Max",
-  "pending_withdrawal_tooltip": "Eine Vault-Auszahlung wird derzeit bearbeitet. Ihr Guthaben wird nach Abschluss aktualisiert."
+  "pending_withdrawal_tooltip": "Eine Vault-Auszahlung wird derzeit bearbeitet. Ihr Guthaben wird nach Abschluss aktualisiert.",
+  "goToDashboard": "Zum Dashboard"
   },
   "header": {
     "dashboard": "Dashboard",
@@ -477,5 +478,36 @@
   "ledger_title": "XP-Verlauf",
   "ledger_description": "Eine chronologische Übersicht aller von dir verdienten XP.",
   "ledger_empty": "Du hast noch keinen eingeforderten XP-Verlauf."
-}
+},
+ "vault": {
+    "title": "Vault-Details",
+    "stats": {
+      "totalCapital": "Ihr Gesamtkapital",
+      "totalCapitalSubtext": "Kapital + realisierter & unrealisierter P&L",
+      "realizedPnl": "Realisierter P&L",
+      "realizedPnlSubtext": "Gewinne aus geschlossenen Trades.",
+      "unrealizedPnl": "Unrealisierter P&L",
+      "unrealizedPnlSubtext": "Aus aktuell offenen Trades.",
+      "dailyReturn": "Ø Tägliche Rendite",
+      "weeklyReturn": "Ø Wöchentliche Rendite",
+      "monthlyReturn": "Ø Monatliche Rendite",
+      "totalReturn": "Gesamtrendite (seit Beginn)"
+    },
+    "performanceSnapshotTitle": "Historische Leistungsübersicht",
+    "performanceSnapshotSubtext": "Basierend auf der durchschnittlichen realisierten Leistung seit Vault-Gründung.",
+    "chart": {
+      "title": "Performance-Verlauf",
+      "myAccountValue": "Mein Kontostand",
+      "vaultPerformanceIndex": "Vault Performance-Index",
+      "compareAssets": "Assets vergleichen",
+      "legend": {
+        "myAccountValue": "Mein Kontostand",
+        "vaultIndex": "{{vaultName}} Index",
+        "withUnrealized": "Mit unrealisiertem P&L",
+        "btc": "BTC-Performance",
+        "eth": "ETH-Performance",
+        "sol": "SOL-Performance"
+      }
+    }
+  }
 }
