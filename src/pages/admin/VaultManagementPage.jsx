@@ -497,7 +497,7 @@ const VaultManagementPage = () => {
         ))}
       </select>
       <a
-        href={impersonateUserId ? `/vault/${selectedVaultId}?userId=${impersonateUserId}` : '#'}
+        href={impersonateUserId ? `/vaults/${selectedVaultId}?userId=${impersonateUserId}` : '#'}
         target="_blank"
         rel="noopener noreferrer"
         className={`btn-primary btn-sm ${!impersonateUserId ? 'disabled' : ''}`}
