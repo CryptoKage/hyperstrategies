@@ -482,6 +482,8 @@
   "ledger_empty": "You have no claimed XP history yet."
 },
 "vault": {
+      "yourPerformanceSnapshotTitle": "Your Performance Snapshot",
+  "yourPerformanceSnapshotSubtext": "Based on your personal realized performance since your first deposit.",
     "title": "Vault Details",
     "stats": {
       "totalCapital": "Your Total Capital",

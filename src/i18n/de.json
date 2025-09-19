@@ -482,6 +482,8 @@
   "ledger_empty": "Du hast noch keinen eingeforderten XP-Verlauf."
 },
  "vault": {
+    "yourPerformanceSnapshotTitle": "Dein Performance-Überblick",
+  "yourPerformanceSnapshotSubtext": "Basierend auf deiner realisierten Performance seit deiner ersten Einzahlung.",
     "title": "Vault-Details",
     "stats": {
       "totalCapital": "Ihr Gesamtkapital",
