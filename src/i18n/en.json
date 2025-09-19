@@ -22,6 +22,8 @@
     "terms_link": "Legal"
   },
   "dashboard": {
+    "avg_monthly_return": "Avg. Monthly Return",
+    "all_time_pnl": "All-Time Performance",
     "unrealized_pnl": "Unrealized PnL",
     "welcome": "Welcome back, {{username}}",
     "no_data": "Could not fetch dashboard data.",

@@ -23,6 +23,8 @@
     "terms_link": "Rechtliches"
   },
   "dashboard": {
+      "avg_monthly_return": "Durchschn. monatliche Rendite",
+  "all_time_pnl": "Gesamtperformance",
     "unrealized_pnl": "Nicht realisierter G/V",
     "welcome": "Willkommen zurück, {{username}}",
     "no_data": "Dashboard-Daten konnten nicht geladen werden.",
