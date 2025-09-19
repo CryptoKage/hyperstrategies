@@ -1,3 +1,5 @@
+// /src/pages/Vault1Page.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -5,11 +7,30 @@ import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import Layout from '../components/Layout';
 
+// Main StatCard for top-level stats
 const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, className = '' }) => {
     const { t } = useTranslation();
-    return (<div className={`profile-card ${className}`}><h3>{t(labelKey)}</h3><p className="stat-value-large">{isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</p>{subtextKey && <p className="stat-subtext">{t(subtextKey)}</p>}</div>);
+    return (
+        <div className={`profile-card ${className}`}>
+            <h3>{t(labelKey)}</h3>
+            <p className="stat-value-large">{isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</p>
+            {subtextKey && <p className="stat-subtext">{t(subtextKey)}</p>}
+        </div>
+    );
 };
-const CHART_COLORS = { ACCOUNT: '#8884d8', VAULT: '#82ca9d', PROJECTION: '#d0dd41ff', BTC: '#f7931a', ETH: '#627eea', SOL: '#9945FF' };
+
+// A smaller component for the new condensed snapshot grid
+const SnapshotItem = ({ labelKey, value, className = '' }) => {
+    const { t } = useTranslation();
+    return (
+        <div className="performance-snapshot-item">
+            <span className={`value ${className}`}>{value?.toFixed(2)}</span>
+            <span className="label">{t(labelKey)}</span>
+        </div>
+    );
+};
+
+const CHART_COLORS = { ACCOUNT: '#8884d8', VAULT: '#82ca9d', PROJECTION: '#facc15', BTC: '#f7931a', ETH: '#627eea', SOL: '#9945FF' };
 const KNOWN_ASSETS = { '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': 'BTC', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': 'ETH', '0xd31a59c85ae9d8edefec411e448fd2e703a42e99': 'SOL' };
 
 const Vault1Page = () => {
@@ -106,7 +127,7 @@ const Vault1Page = () => {
         return null;
     };
 
-    if (loading) { return <Layout><div className="vault-detail-container"><h1>{t('common.loading')}</h1></div></Layout>; }
+ if (loading) { return <Layout><div className="vault-detail-container"><h1>{t('common.loading')}</h1></div></Layout>; }
     if (error || !pageData) { return <Layout><div className="vault-detail-container"><p className="error-message">{error || t('vault.errors.noData')}</p></div></Layout>; }
 
     const { vaultInfo = {}, userPosition = null, assetBreakdown = [], userLedger = [] } = pageData;
@@ -125,23 +146,19 @@ const Vault1Page = () => {
                 {hasPrincipal ? (
                     <>
                         <div className="vault-detail-grid">
-                            <div className="vault-detail-column">
-                                <StatCard labelKey="vault.stats.totalCapital" value={userPosition.totalCapital} subtextKey="vault.stats.totalCapitalSubtext" />
-                            </div>
-                            <div className="vault-detail-column">
-                                <StatCard labelKey="vault.stats.realizedPnl" value={userPosition.realizedPnl} subtextKey="vault.stats.realizedPnlSubtext" />
-                                <StatCard labelKey="vault.stats.unrealizedPnl" value={userPosition.unrealizedPnl} subtextKey="vault.stats.unrealizedPnlSubtext" className={userPosition.unrealizedPnl >= 0 ? 'text-positive' : 'text-negative'}/>
-                            </div>
+                            <div className="vault-detail-column"><StatCard labelKey="vault.stats.totalCapital" value={userPosition.totalCapital} subtextKey="vault.stats.totalCapitalSubtext" /></div>
+                            <div className="vault-detail-column"><StatCard labelKey="vault.stats.realizedPnl" value={userPosition.realizedPnl} subtextKey="vault.stats.realizedPnlSubtext" /><StatCard labelKey="vault.stats.unrealizedPnl" value={userPosition.unrealizedPnl} subtextKey="vault.stats.unrealizedPnlSubtext" className={userPosition.unrealizedPnl >= 0 ? 'text-positive' : 'text-negative'}/></div>
                         </div>
 
+                        {/* --- THE FINAL UI: The new, condensed performance card --- */}
                         {performanceSnapshot && (
                             <div className="profile-card full-width">
                                 <h3>{t('vault.performanceSnapshotTitle')}</h3>
-                                <div className="stats-grid-condensed">
-                                    <StatCard labelKey="vault.stats.dailyReturn" value={performanceSnapshot.daily} isCurrency={false} className={performanceSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <StatCard labelKey="vault.stats.weeklyReturn" value={performanceSnapshot.weekly} isCurrency={false} className={performanceSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <StatCard labelKey="vault.stats.monthlyReturn" value={performanceSnapshot.monthly} isCurrency={false} className={performanceSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <StatCard labelKey="vault.stats.totalReturn" value={performanceSnapshot.total} isCurrency={false} className={performanceSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
+                                <div className="performance-snapshot-grid">
+                                    <SnapshotItem labelKey="vault.stats.dailyReturn" value={performanceSnapshot.daily} className={performanceSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
+                                    <SnapshotItem labelKey="vault.stats.weeklyReturn" value={performanceSnapshot.weekly} className={performanceSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+                                    <SnapshotItem labelKey="vault.stats.monthlyReturn" value={performanceSnapshot.monthly} className={performanceSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+                                    <SnapshotItem labelKey="vault.stats.totalReturn" value={performanceSnapshot.total} className={performanceSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
                                 </div>
                                 <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.performanceSnapshotSubtext')}</p>
                             </div>

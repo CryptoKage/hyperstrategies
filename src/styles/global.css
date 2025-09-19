@@ -4263,9 +4263,10 @@ opacity: 0.3;
 /* CSS for the new condensed performance snapshot card */
 .performance-snapshot-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Always 4 columns */
+  grid-template-columns: repeat(4, 1fr); /* Always 4 columns on desktop */
   gap: 20px;
   text-align: center;
+  padding: 16px 0;
 }
 
 .performance-snapshot-item {
@@ -4281,16 +4282,18 @@ opacity: 0.3;
 }
 
 .performance-snapshot-item .value {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
+  line-height: 1.2;
   color: var(--color-text-primary);
 }
 
 .performance-snapshot-item .value::after {
   content: '%';
-  font-size: 18px;
+  font-size: 20px;
   margin-left: 2px;
   color: var(--color-text-secondary);
+  font-weight: 500;
 }
 
 /* Responsive adjustments for smaller screens */
