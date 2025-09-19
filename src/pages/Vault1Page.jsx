@@ -1,5 +1,3 @@
-// /src/pages/Vault1Page.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -7,19 +5,10 @@ import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import Layout from '../components/Layout';
 
-// A reusable component for displaying key stats
 const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, className = '' }) => {
     const { t } = useTranslation();
-    return (
-        <div className={`profile-card ${className}`}>
-            <h3>{t(labelKey)}</h3>
-            <p className="stat-value-large">{isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</p>
-            {subtextKey && <p className="stat-subtext">{t(subtextKey)}</p>}
-        </div>
-    );
+    return (<div className={`profile-card ${className}`}><h3>{t(labelKey)}</h3><p className="stat-value-large">{isCurrency && '$'}{typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}</p>{subtextKey && <p className="stat-subtext">{t(subtextKey)}</p>}</div>);
 };
-
-// Define chart colors and asset mappings for consistency
 const CHART_COLORS = { ACCOUNT: '#8884d8', VAULT: '#82ca9d', PROJECTION: '#82ca9d', BTC: '#f7931a', ETH: '#627eea', SOL: '#9945FF' };
 const KNOWN_ASSETS = { '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599': 'BTC', '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2': 'ETH', '0xd31a59c85ae9d8edefec411e448fd2e703a42e99': 'SOL' };
 
@@ -27,7 +16,6 @@ const Vault1Page = () => {
     const { t } = useTranslation();
     const { vaultId } = useParams();
     const location = useLocation();
-
     const [pageData, setPageData] = useState(null);
     const [marketData, setMarketData] = useState(null);
     const [performanceSnapshot, setPerformanceSnapshot] = useState(null);
@@ -36,7 +24,6 @@ const Vault1Page = () => {
     const [chartView, setChartView] = useState('accountValue');
     const [showAssetLines, setShowAssetLines] = useState(false);
 
-    // --- Data Fetching ---
     const fetchPageData = useCallback(async () => {
         if (!vaultId) return;
         const queryParams = new URLSearchParams(location.search);
@@ -57,20 +44,16 @@ const Vault1Page = () => {
 
     useEffect(() => { fetchPageData(); }, [fetchPageData]);
 
-    // --- Chart Data Processing ---
     const formatChartData = () => {
-        // --- THE FIX: Add safety checks for null data before processing ---
         if (chartView === 'accountValue') {
-            if (!pageData || !pageData.userPerformanceHistory) return [];
-            const history = pageData.userPerformanceHistory;
+            const history = pageData?.userPerformanceHistory || [];
             if (history.length === 0) return [];
             return history.map(point => ({ date: new Date(point.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit' }), value: parseFloat(point.balance) }));
-        } else { // performanceIndex view
+        } else {
             if (!marketData || !marketData.vaultPerformance) return [];
-            // --- END OF FIX ---
             
             const rawIndexHistory = marketData.vaultPerformance;
-            const rawAssetHistory = marketData.assetPerformance || [];
+            const rawAssetHistory = marketData.assetPerformance || []; // This is now a correct array
             if (rawIndexHistory.length < 2) return [];
 
             const chartPoints = {};
@@ -85,6 +68,7 @@ const Vault1Page = () => {
             
             const assetBaselines = {};
             for (const address in KNOWN_ASSETS) {
+                // This line will now work because rawAssetHistory is an array.
                 const firstPoint = rawAssetHistory.find(p => p.asset_prices_snapshot && p.asset_prices_snapshot[address]);
                 if (firstPoint) assetBaselines[address] = parseFloat(firstPoint.asset_prices_snapshot[address]);
             }

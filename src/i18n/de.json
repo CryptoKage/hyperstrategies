@@ -451,5 +451,31 @@
   "error_not_complete": "Bonus noch nicht abgeschlossen. Bitte versuchen Sie es nach Abschluss der Aktion erneut.",
   "error_already_completed": "Du hast diesen Bonus bereits abgeschlossen.",
   "error_unexpected": "Bei der Überprüfung ist ein Fehler aufgetreten."
+},
+"rewards_center": {
+  "title": "Belohnungszentrum",
+  "total_xp_label": "Insgesamt auf der Plattform vergebene XP",
+  "leaderboard_button": "Bestenliste ansehen",
+  "unclaimed_xp_title": "Nicht eingeforderte XP",
+  "unclaimed_xp_description": "Dies sind XP, die du durch Boni und besondere Ereignisse verdient hast. Fordere sie an, um sie deinem Gesamtguthaben hinzuzufügen.",
+  "claim_button": "Alle XP einfordern",
+  "claiming_button": "Wird eingefordert...",
+  "claim_success": "XP eingefordert!",
+  "claim_failed": "XP konnte nicht eingefordert werden.",
+  "presale_title": "Plattform-Vorverkauf",
+  "presale_description": "Dein gesamter XP-Stand bestimmt deine Zuteilung in unserem bevorstehenden Token-Vorverkauf. Sichere dir deinen Platz!",
+  "learn_more_button": "Mehr über den Vorverkauf erfahren",
+  "bounties_title": "Verfügbare Boni",
+  "bounties_description": "Schließe diese Aufgaben ab, um mehr XP zu verdienen, die zu deinem 'Nicht eingeforderten XP'-Guthaben hinzugefügt werden.",
+  "bounty_task_link": "Zur Aufgabe →",
+  "bounty_verify_button": "Überprüfen",
+  "bounty_verifying_button": "...",
+  "bounty_success": "Bonus überprüft! Deine XP-Belohnung kann jetzt eingefordert werden.",
+  "bounty_not_complete": "Bonus noch nicht abgeschlossen. Bitte versuche es nach Abschluss der Aktion erneut.",
+  "bounty_failed": "Überprüfung fehlgeschlagen.",
+  "no_bounties": "Derzeit sind keine neuen Boni verfügbar. Schau bald wieder vorbei!",
+  "ledger_title": "XP-Verlauf",
+  "ledger_description": "Eine chronologische Übersicht aller von dir verdienten XP.",
+  "ledger_empty": "Du hast noch keinen eingeforderten XP-Verlauf."
 }
 }
