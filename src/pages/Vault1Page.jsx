@@ -40,6 +40,7 @@ const Vault1Page = () => {
     const [pageData, setPageData] = useState(null);
     const [marketData, setMarketData] = useState(null);
     const [performanceSnapshot, setPerformanceSnapshot] = useState(null);
+    const [personalSnapshot, setPersonalSnapshot] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [chartView, setChartView] = useState('performanceIndex');
@@ -55,11 +56,13 @@ const Vault1Page = () => {
             const [userResponse, marketResponse, snapshotResponse] = await Promise.all([ 
                 api.get(userApiUrl), 
                 api.get(`/market-data/${vaultId}`),
-                api.get(`/performance/${vaultId}/snapshot`)
+                api.get(`/performance/${vaultId}/snapshot`),
+                api.get(`/performance/${vaultId}/user-snapshot`)
             ]);
             setPageData(userResponse.data);
             setMarketData(marketResponse.data);
             setPerformanceSnapshot(snapshotResponse.data);
+            setPersonalSnapshot(personalSnapshotResponse.data);
         } catch (err) { setError(t('vault.errors.loadDetails')); } finally { setLoading(false); }
     }, [vaultId, location.search, t]);
 
@@ -150,20 +153,7 @@ const Vault1Page = () => {
                             <div className="vault-detail-column"><StatCard labelKey="vault.stats.realizedPnl" value={userPosition.realizedPnl} subtextKey="vault.stats.realizedPnlSubtext" /><StatCard labelKey="vault.stats.unrealizedPnl" value={userPosition.unrealizedPnl} subtextKey="vault.stats.unrealizedPnlSubtext" className={userPosition.unrealizedPnl >= 0 ? 'text-positive' : 'text-negative'}/></div>
                         </div>
 
-                        {/* --- THE FINAL UI: The new, condensed performance card --- */}
-                        {performanceSnapshot && (
-                            <div className="profile-card full-width">
-                                <h3>{t('vault.performanceSnapshotTitle')}</h3>
-                                <div className="performance-snapshot-grid">
-                                    <SnapshotItem labelKey="vault.stats.dailyReturn" value={performanceSnapshot.daily} className={performanceSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <SnapshotItem labelKey="vault.stats.weeklyReturn" value={performanceSnapshot.weekly} className={performanceSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <SnapshotItem labelKey="vault.stats.monthlyReturn" value={performanceSnapshot.monthly} className={performanceSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <SnapshotItem labelKey="vault.stats.totalReturn" value={performanceSnapshot.total} className={performanceSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
-                                </div>
-                                <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.performanceSnapshotSubtext')}</p>
-                            </div>
-                        )}
-
+                      
                         <div className="profile-card full-width">
                             <h3>{t('vault.chart.title')}</h3>
                             <div className="chart-toggle">
@@ -231,7 +221,37 @@ const Vault1Page = () => {
                                 </div>
                             </div>
                         </div>
-                    </>
+                   
+                      {/* --- THE FINAL UI: The new, condensed performance card --- */}
+                        {performanceSnapshot && (
+                            <div className="profile-card full-width">
+                                <h3>{t('vault.performanceSnapshotTitle')}</h3>
+                                <div className="performance-snapshot-grid">
+                                    <SnapshotItem labelKey="vault.stats.dailyReturn" value={performanceSnapshot.daily} className={performanceSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
+                                    <SnapshotItem labelKey="vault.stats.weeklyReturn" value={performanceSnapshot.weekly} className={performanceSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+                                    <SnapshotItem labelKey="vault.stats.monthlyReturn" value={performanceSnapshot.monthly} className={performanceSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+                                    <SnapshotItem labelKey="vault.stats.totalReturn" value={performanceSnapshot.total} className={performanceSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
+                                </div>
+                                <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.performanceSnapshotSubtext')}</p>
+                            </div>
+                        )}
+                        {personalSnapshot && (
+    <div className="profile-card full-width">
+        <h3>{t('vault.yourPerformanceSnapshotTitle')}</h3>
+        <div className="performance-snapshot-grid">
+            <SnapshotItem labelKey="vault.stats.dailyReturn" value={personalSnapshot.daily} className={personalSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
+            <SnapshotItem labelKey="vault.stats.weeklyReturn" value={personalSnapshot.weekly} className={personalSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+            <SnapshotItem labelKey="vault.stats.monthlyReturn" value={personalSnapshot.monthly} className={personalSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+            <SnapshotItem labelKey="vault.stats.totalReturn" value={personalSnapshot.total} className={personalSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
+        </div>
+        <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.yourPerformanceSnapshotSubtext')}</p>
+    </div>
+)}
+
+<div className="profile-card full-width">
+    
+</div>
+                         </>
                 ) : ( <div className="profile-card text-center"><h2>{t('vault.notInvested.title')}</h2><p>{t('vault.notInvested.description')}</p><Link to="/dashboard" className="btn-primary mt-4">{t('common.goToDashboard')}</Link></div> )}
             </div>
         </Layout>
