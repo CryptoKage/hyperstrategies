@@ -45,7 +45,7 @@ const Vault1Page = () => {
             const [userResponse, marketResponse, snapshotResponse] = await Promise.all([ 
                 api.get(userApiUrl), 
                 api.get(`/market-data/${vaultId}`),
-                api.get(`/api/performance/${vaultId}/snapshot`)
+                api.get(`/performance/${vaultId}/snapshot`) 
             ]);
             setPageData(userResponse.data);
             setMarketData(marketResponse.data);
