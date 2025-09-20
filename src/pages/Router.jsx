@@ -4,7 +4,6 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // --- Page Components ---
-import HomePage from './HomePage';
 import Home from './Home';
 import XPLeaderboard from './XPLeaderboard';
 import Profile from './Profile';
@@ -46,7 +45,6 @@ const Router = () => {
   return (
     <Routes>
       {/* --- Publicly Accessible Routes --- */}
-       <Route path="/" element={<HomePage />} />
       <Route path="/" element={<Home />} />
       <Route path="/self-serve" element={<SelfServe />} />
       <Route path="/managed" element={<Managed />} />

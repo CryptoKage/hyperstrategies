@@ -1,27 +1,21 @@
-// src/components/GalaxyCanvas.jsx
+// /src/components/GalaxyCanvas.jsx
+
 import React, { Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { ScrollControls, Stars, useScroll } from '@react-three/drei';
+import { Stars } from '@react-three/drei';
 import FloatingCard from './FloatingCard';
 import { useTranslation } from 'react-i18next';
 
 const CARD_SPACING = 7;
 
-// This new component is our "scene" and contains the animation logic.
-const Scene = ({ onScrollUpdate }) => {
-  const scroll = useScroll(); // This hook gives us the scroll progress
+// The Scene now just renders objects and animates based on a prop.
+const Scene = ({ scrollProgress }) => {
   const { t } = useTranslation();
   const cards = ['managed', 'airdrop', 'self'];
 
   useFrame((state) => {
-    // This function runs on every frame
-    const scrollOffset = scroll.offset;
-    // Animate the camera's Z position
-    state.camera.position.z = 5 - scrollOffset * (cards.length * CARD_SPACING);
-    // Pass the scroll offset up to the Home component
-    if (onScrollUpdate) {
-      onScrollUpdate(scrollOffset);
-    }
+    // Animate the camera's Z position based on the scroll progress from the parent
+    state.camera.position.z = 5 - scrollProgress * (cards.length * CARD_SPACING);
   });
 
   return (
@@ -39,21 +33,14 @@ const Scene = ({ onScrollUpdate }) => {
   );
 };
 
-const GalaxyCanvas = ({ onScrollUpdate }) => {
-  const { t } = useTranslation();
-  const cards = ['managed', 'airdrop', 'self'];
-
+const GalaxyCanvas = ({ scrollProgress }) => {
   return (
-    // --- THE FIX: Add the new CSS class ---
-    <div className="home-3d-canvas">
-      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-        <Suspense fallback={null}>
-          <ScrollControls pages={cards.length} damping={0.25}>
-            <Scene onScrollUpdate={onScrollUpdate} />
-          </ScrollControls>
-        </Suspense>
-      </Canvas>
-    </div>
+    <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+      <Suspense fallback={null}>
+        <Scene scrollProgress={scrollProgress} />
+      </Suspense>
+    </Canvas>
   );
 };
+
 export default GalaxyCanvas;
