@@ -3054,42 +3054,41 @@ input:checked + .slider:before {
 
 /* This is the main container for the entire page */
 .home-3d-wrapper {
-  position: fixed; /* Fix the entire component to the viewport */
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
   background-color: var(--color-background);
 }
 
-/* The Canvas component MUST have a lower z-index to sit behind the UI */
-/* This is the key to fixing the overlapping text. */
 .home-3d-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1; /* Layer 1 (Bottom) */
-}
-
-/* The UI container MUST have a higher z-index to sit on top */
-.home-3d-ui-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2; /* Layer 2 (Top) */
-  /* This is crucial: it allows the mouse scroll to "pass through" to the canvas below */
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
   pointer-events: none;
-  /* This ensures its children can still be scrolled if the content overflows */
-  overflow: auto;
 }
 
-/* We re-enable pointer events ONLY for the direct children of the UI container */
+.home-3d-ui-container {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(4rem, 8vw, 8rem) 0;
+}
+
 .home-3d-ui-container > * {
   pointer-events: auto;
+  width: 100%;
+}
+
+.home-3d-scroll-space {
+  width: 100%;
+  pointer-events: none;
+  min-height: 140vh;
 }
 
 /* --- THE FIX for the Suffix Color --- */
@@ -3145,9 +3144,24 @@ input:checked + .slider:before {
   padding: 4rem 2rem;
 }
 
+.home-container--floating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4rem, 10vh, 7rem);
+  padding: 0 2rem;
+}
+
 .hero-section {
   text-align: center;
   padding: 4rem 0;
+}
+
+.home-container--floating .hero-section {
+  padding: 0;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 .hero-headline {
@@ -3164,6 +3178,10 @@ input:checked + .slider:before {
   margin: 0 auto 2.5rem auto;
 }
 
+.home-container--floating .hero-subtext {
+  margin-bottom: clamp(1.5rem, 4vh, 2.5rem);
+}
+
 .button-row {
   display: flex;
   justify-content: center;
@@ -3177,11 +3195,10 @@ input:checked + .slider:before {
   margin-top: 4rem;
 }
 
-.card-section {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
-  margin-top: 4rem;
+.card-section--floating {
+  margin-top: 0;
+  width: 100%;
+  max-width: 960px;
 }
 
 /* This removes the underline from the link that wraps the card */
@@ -3200,10 +3217,16 @@ a.card-link-wrapper {
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
+.home-card--active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 35px rgba(63, 186, 243, 0.35);
+  transform: translateY(-8px);
+}
+
 .home-card:hover {
   transform: translateY(-5px);
   border-color: var(--color-primary);
-  box-shadow: 0 0 25px rgba(63, 186, 243, 0.2); 
+  box-shadow: 0 0 25px rgba(63, 186, 243, 0.2);
 }
 
 .home-card h3 {
