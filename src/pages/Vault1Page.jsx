@@ -198,18 +198,7 @@ const Vault1Page = () => {
                                 <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.yourPerformanceSnapshotSubtext')}</p>
                             </div>
                         )}
-                        {performanceSnapshot && (
-                            <div className="profile-card full-width">
-                                <h3>{t('vault.performanceSnapshotTitle')}</h3>
-                                <div className="performance-snapshot-grid">
-                                    <SnapshotItem labelKey="vault.stats.dailyReturn" value={performanceSnapshot.daily} className={performanceSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <SnapshotItem labelKey="vault.stats.weeklyReturn" value={performanceSnapshot.weekly} className={performanceSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <SnapshotItem labelKey="vault.stats.monthlyReturn" value={performanceSnapshot.monthly} className={performanceSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <SnapshotItem labelKey="vault.stats.totalReturn" value={performanceSnapshot.total} className={performanceSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
-                                </div>
-                                <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.performanceSnapshotSubtext')}</p>
-                            </div>
-                        )}
+                      
                          </>
                 ) : ( <div className="profile-card text-center"><h2>{t('vault.notInvested.title')}</h2><p>{t('vault.notInvested.description')}</p><Link to="/dashboard" className="btn-primary mt-4">{t('common.goToDashboard')}</Link></div> )}
             </div>
@@ -218,3 +207,15 @@ const Vault1Page = () => {
 };
 
 export default Vault1Page;
+//   {performanceSnapshot && (
+    //                        <div className="profile-card full-width">
+  //                              <h3>{t('vault.performanceSnapshotTitle')}</h3>
+    //                            <div className="performance-snapshot-grid">
+      //                              <SnapshotItem labelKey="vault.stats.dailyReturn" value={performanceSnapshot.daily} className={performanceSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
+        //                            <SnapshotItem labelKey="vault.stats.weeklyReturn" value={performanceSnapshot.weekly} className={performanceSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+          //                          <SnapshotItem labelKey="vault.stats.monthlyReturn" value={performanceSnapshot.monthly} className={performanceSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+            //                       <SnapshotItem labelKey="vault.stats.totalReturn" value={performanceSnapshot.total} className={performanceSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
+               //                 </div>
+                 //               <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.performanceSnapshotSubtext')}</p>
+      //                      </div>
+        //                )}
