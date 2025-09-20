@@ -185,19 +185,6 @@ const Vault1Page = () => {
                             </div>
                         </div>
                    
-                        {/* --- THE FINAL LAYOUT: BOTH SNAPSHOTS AT THE BOTTOM --- */}
-                        {personalSnapshot && (
-                            <div className="profile-card full-width">
-                                <h3>{t('vault.yourPerformanceSnapshotTitle')}</h3>
-                                <div className="performance-snapshot-grid">
-                                    <SnapshotItem labelKey="vault.stats.dailyReturn" value={personalSnapshot.daily} className={personalSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <SnapshotItem labelKey="vault.stats.weeklyReturn" value={personalSnapshot.weekly} className={personalSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <SnapshotItem labelKey="vault.stats.monthlyReturn" value={personalSnapshot.monthly} className={personalSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
-                                    <SnapshotItem labelKey="vault.stats.totalReturn" value={personalSnapshot.total} className={personalSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
-                                </div>
-                                <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.yourPerformanceSnapshotSubtext')}</p>
-                            </div>
-                        )}
                       
                          </>
                 ) : ( <div className="profile-card text-center"><h2>{t('vault.notInvested.title')}</h2><p>{t('vault.notInvested.description')}</p><Link to="/dashboard" className="btn-primary mt-4">{t('common.goToDashboard')}</Link></div> )}
@@ -219,3 +206,19 @@ export default Vault1Page;
                  //               <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.performanceSnapshotSubtext')}</p>
       //                      </div>
         //                )}
+
+
+        // 
+        //                {/* --- THE FINAL LAYOUT: BOTH SNAPSHOTS AT THE BOTTOM --- */}
+          //              {personalSnapshot && (
+            //                <div className="profile-card full-width">
+              //                  <h3>{t('vault.yourPerformanceSnapshotTitle')}</h3>
+                //                <div className="performance-snapshot-grid">
+                  //                  <SnapshotItem labelKey="vault.stats.dailyReturn" value={personalSnapshot.daily} className={personalSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
+                    //                <SnapshotItem labelKey="vault.stats.weeklyReturn" value={personalSnapshot.weekly} className={personalSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+                      //              <SnapshotItem labelKey="vault.stats.monthlyReturn" value={personalSnapshot.monthly} className={personalSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+                        //            <SnapshotItem labelKey="vault.stats.totalReturn" value={personalSnapshot.total} className={personalSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
+                          ///      </div>
+                             //   <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.yourPerformanceSnapshotSubtext')}</p>
+              //              </div>
+                //        )}
