@@ -4,6 +4,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 // --- Page Components ---
+import HomePage from './HomePage';
 import Home from './Home';
 import XPLeaderboard from './XPLeaderboard';
 import Profile from './Profile';
@@ -34,6 +35,7 @@ import Presale from './Presale';
 import Vault1Page from './Vault1Page';
 import AnimationControlsPage from './admin/AnimationControlsPage';
 
+
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
 import GuestRoute from '../components/GuestRoute';
@@ -44,6 +46,7 @@ const Router = () => {
   return (
     <Routes>
       {/* --- Publicly Accessible Routes --- */}
+       <Route path="/" element={<HomePage />} />
       <Route path="/" element={<Home />} />
       <Route path="/self-serve" element={<SelfServe />} />
       <Route path="/managed" element={<Managed />} />
