@@ -1,59 +1,43 @@
 // src/components/GalaxyCanvas.jsx
 import React, { Suspense } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { ScrollControls, Stars, useScroll } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
+import { Stars } from '@react-three/drei';
 import FloatingCard from './FloatingCard';
-import { useTranslation } from 'react-i18next';
+import ScrollManager from './ScrollManager';
 
 const CARD_SPACING = 7;
 
-// This new component is our "scene" and contains the animation logic.
-const Scene = ({ onScrollUpdate }) => {
-  const scroll = useScroll(); // This hook gives us the scroll progress
-  const { t } = useTranslation();
-  const cards = ['managed', 'airdrop', 'self'];
+const Scene = ({ cards }) => (
+  <>
+    <color attach="background" args={['#020617']} />
+    <ambientLight intensity={0.6} />
+    <Stars radius={80} depth={40} count={4000} factor={4} saturation={0} fade speed={0.6} />
+    {cards.map((card, index) => (
+      <FloatingCard
+        key={card.key}
+        title={card.title}
+        description={card.description}
+        position={[0, 0, -index * CARD_SPACING]}
+        delay={index * 0.2}
+      />
+    ))}
+  </>
+);
 
-  useFrame((state) => {
-    // This function runs on every frame
-    const scrollOffset = scroll.offset;
-    // Animate the camera's Z position
-    state.camera.position.z = 5 - scrollOffset * (cards.length * CARD_SPACING);
-    // Pass the scroll offset up to the Home component
-    if (onScrollUpdate) {
-      onScrollUpdate(scrollOffset);
-    }
-  });
-
-  return (
-    <>
-      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
-      {cards.map((key, index) => (
-        <FloatingCard
-          key={key}
-          title={t(`home.cards.${key}.title`)}
-          description={t(`home.cards.${key}.text`)}
-          position={[0, 0, -index * CARD_SPACING]}
-        />
-      ))}
-    </>
-  );
-};
-
-const GalaxyCanvas = ({ onScrollUpdate }) => {
-  const { t } = useTranslation();
-  const cards = ['managed', 'airdrop', 'self'];
+const GalaxyCanvas = ({ cards = [], onScrollUpdate }) => {
+  const safeCards = cards.filter(Boolean);
+  const travelDistance = safeCards.length * CARD_SPACING;
 
   return (
-    // --- THE FIX: Add the new CSS class ---
     <div className="home-3d-canvas">
-      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 60 }} dpr={[1, 1.5]}>
         <Suspense fallback={null}>
-          <ScrollControls pages={cards.length} damping={0.25}>
-            <Scene onScrollUpdate={onScrollUpdate} />
-          </ScrollControls>
+          <ScrollManager distance={travelDistance} onScrollUpdate={onScrollUpdate} />
+          <Scene cards={safeCards} />
         </Suspense>
       </Canvas>
     </div>
   );
 };
+
 export default GalaxyCanvas;
