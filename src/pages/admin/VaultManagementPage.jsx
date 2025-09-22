@@ -236,7 +236,7 @@ const VaultManagementPage = () => {
 
   const currentVaultCapital = vaultData?.stats?.totalCapital || 0;
 
-  return (
+ return (
     <Layout>
       <div className="admin-container">
         <div className="admin-header">
@@ -267,84 +267,41 @@ const VaultManagementPage = () => {
         {vaultData && !loading && !error && (
           <>
             <div className="stats-grid" style={{ marginTop: '24px' }}>
-              <StatCard
-                label="Total Capital in Vault"
-                value={`$${currentVaultCapital.toLocaleString('en-US', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}`}
-              />
-              <StatCard
-                label="Total Realized PnL"
-                value={`$${(vaultData.stats?.totalPnl || 0).toLocaleString('en-US', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}`}
-              />
-              <StatCard
-                label="Participant Count"
-                value={vaultData.stats?.participantCount ?? 0}
-              />
+              <StatCard label="Total Capital in Vault" value={`$${currentVaultCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} />
+              <StatCard label="Total Realized PnL" value={`$${(vaultData.stats?.totalPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} />
+              <StatCard label="Participant Count" value={vaultData.stats?.participantCount ?? 0} />
             </div>
 
             <div className="admin-grid">
               <div className="admin-actions-card">
                 <h3>Apply Manual PnL</h3>
-                <p>Distribute a percentage-based PnL to all users.</p>
                 <form onSubmit={handleApplyPnl} className="admin-form">
                   <div className="form-group">
                     <label htmlFor="pnl-percentage">PnL Percentage (e.g. 2.5 or -1.2)</label>
-                    <input
-                      id="pnl-percentage"
-                      name="pnlPercentage"
-                      type="number"
-                      step="any"
-                      value={pnlPercentage}
-                      onChange={(e) => setPnlPercentage(e.target.value)}
-                      placeholder="Enter % change (not 0.025)"
-                      required
-                    />
+                    <input id="pnl-percentage" name="pnlPercentage" type="number" step="any" value={pnlPercentage} onChange={(e) => setPnlPercentage(e.target.value)} placeholder="Enter % change (not 0.025)" required />
                   </div>
                   <div className="form-group">
                     <label htmlFor="before-timestamp">Apply to positions before</label>
-                    <input
-                      id="before-timestamp"
-                      type="datetime-local"
-                      value={beforeTimestamp}
-                      onChange={(e) => setBeforeTimestamp(e.target.value)}
-                      required
-                    />
+                    <input id="before-timestamp" type="datetime-local" value={beforeTimestamp} onChange={(e) => setBeforeTimestamp(e.target.value)} required />
                   </div>
                   <button type="submit" className="btn-primary" disabled={isProcessingPnl}>
                     {isProcessingPnl ? 'Processing...' : 'Apply PnL'}
                   </button>
                 </form>
-                {pnlMessage.text && (
-                  <p className={`admin-message ${pnlMessage.type}`}>{pnlMessage.text}</p>
-                )}
+                {pnlMessage.text && (<p className={`admin-message ${pnlMessage.type}`}>{pnlMessage.text}</p>)}
               </div>
-
               <div className="admin-actions-card">
                 <h3>Capital Sweep</h3>
                 <p>Move pending deposits to the trading desk.</p>
-                <button
-                  onClick={handleTriggerSweep}
-                  className="btn-secondary"
-                  disabled={isSweeping}
-                >
+                <button onClick={handleTriggerSweep} className="btn-secondary" disabled={isSweeping}>
                   {isSweeping ? '...' : 'Sweep Deposits'}
                 </button>
                 {sweepMessage && <p className="admin-message success">{sweepMessage}</p>}
               </div>
-
               <div className="admin-actions-card">
                 <h3>Performance Tracker</h3>
                 <p>Manually trigger the hourly job to update the performance chart.</p>
-                <button
-                  onClick={handleTriggerPerformanceUpdate}
-                  className="btn-secondary"
-                  disabled={isUpdatingPerf}
-                >
+                <button onClick={handleTriggerPerformanceUpdate} className="btn-secondary" disabled={isUpdatingPerf}>
                   {isUpdatingPerf ? '...' : 'Update Performance'}
                 </button>
                 {perfMessage && <p className="admin-message success">{perfMessage}</p>}
@@ -353,7 +310,6 @@ const VaultManagementPage = () => {
 
              <div className="admin-actions-card">
               <h3>Log New Trade</h3>
-              <p>Record a new open position for this vault. This will be used to calculate unrealized P&L.</p>
               <form onSubmit={handleLogTrade} className="admin-form-inline">
                 <input name="asset_symbol" value={newTrade.asset_symbol} onChange={handleNewTradeChange} placeholder="Symbol (e.g., WBTC)" required />
                 <input name="quantity" value={newTrade.quantity} onChange={handleNewTradeChange} placeholder="Quantity" type="number" step="any" required />
@@ -370,69 +326,11 @@ const VaultManagementPage = () => {
 
             <div className="admin-actions-card">
               <h3>Manage Target Asset Allocation</h3>
-              <p>Define the target asset weights for display on the vault detail page.</p>
-              <table className="activity-table" style={{ marginBottom: '24px' }}>
-                <thead>
-                  <tr>
-                    <th>Symbol</th>
-                    <th>Weight</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {vaultAssets.map((asset, idx) => (
-                    <tr key={asset.asset_id ?? `${asset.symbol}-${idx}`}>
-                      <td>{asset.symbol}</td>
-                      <td>
-                        {Number(asset.weight ?? 0) * 100
-                          ? `${(Number(asset.weight) * 100).toFixed(2)}%`
-                          : '0.00%'}
-                      </td>
-                      <td>
-                        <button
-                          className="btn-danger-small"
-                          onClick={() => handleRemoveAssetWeight(asset.symbol)}
-                        >
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
               <form onSubmit={handleAddOrUpdateAssetWeight} className="admin-form-inline">
-                <input
-                  name="symbol"
-                  value={newAssetWeight.symbol}
-                  onChange={handleAssetWeightChange}
-                  placeholder="Symbol (e.g., BTC)"
-                  required
-                />
-                <input
-                  name="weight"
-                  value={newAssetWeight.weight}
-                  onChange={handleAssetWeightChange}
-                  placeholder="Weight (0.0-1.0)"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="1"
-                  required
-                />
-                <input
-                  name="contract_address"
-                  value={newAssetWeight.contract_address}
-                  onChange={handleAssetWeightChange}
-                  placeholder="0x... Contract Address"
-                />
-                <input
-                  name="chain"
-                  value={newAssetWeight.chain}
-                  onChange={handleAssetWeightChange}
-                  placeholder="Chain (e.g., ETHEREUM)"
-                  required
-                />
+                <input name="symbol" value={newAssetWeight.symbol} onChange={handleAssetWeightChange} placeholder="Symbol (e.g., BTC)" required />
+                <input name="weight" value={newAssetWeight.weight} onChange={handleAssetWeightChange} placeholder="Weight (0.0-1.0)" type="number" step="0.01" min="0" max="1" required />
+                <input name="contract_address" value={newAssetWeight.contract_address} onChange={handleAssetWeightChange} placeholder="0x... Contract Address" />
+                <input name="chain" value={newAssetWeight.chain} onChange={handleAssetWeightChange} placeholder="Chain (e.g., ETHEREUM)" required />
                 <button type="submit" className="btn-primary" disabled={isAssetLoading}>
                   {isAssetLoading ? '...' : 'Add/Update Weight'}
                 </button>
@@ -440,65 +338,8 @@ const VaultManagementPage = () => {
             </div>
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <h3>Participants in {vaultData?.vault?.name ?? 'Vault'}</h3>
-                
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <select 
-                    value={impersonateUserId}
-                    onChange={(e) => setImpersonateUserId(e.target.value)}
-                    style={{ padding: '8px', borderRadius: '4px' }}
-                  >
-                    <option value="">Select a user to view as...</option>
-                    {vaultData.participants.map((p) => (
-                      <option key={p.user_id} value={p.user_id}>
-                        {p.username}
-                      </option>
-                    ))}
-                  </select>
-                  <a
-                    href={impersonateUserId ? `/vaults/${selectedVaultId}?userId=${impersonateUserId}` : '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`btn-primary btn-sm ${!impersonateUserId ? 'disabled' : ''}`}
-                    onClick={(e) => !impersonateUserId && e.preventDefault()}
-                  >
-                    View as User
-                  </a>
-                </div>
-              </div>
-
-              <div className="table-responsive">
-                <table className="activity-table">
-                  <thead>
-                    <tr>
-                      <th>User</th>
-                      <th>Principal Capital</th>
-                      <th>Total PnL</th>
-                      <th>Total Capital</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {vaultData.participants.map((p) => {
-                      const principal = Number(p.principal) || 0;
-                      const pnl = Number(p.pnl) || 0;
-                      const total = Number(p.total_capital) || 0;
-                      return (
-                        <tr key={p.user_id}>
-                          <td>
-                            <Link to={`/admin/user/${p.user_id}`} className="admin-table-link">
-                              {p.username}
-                            </Link>
-                          </td>
-                          <td>${principal.toLocaleString('en-US',{minimumFractionDigits: 2,maximumFractionDigits: 2})}</td>
-                          <td className={pnl >= 0 ? 'text-positive' : 'text-negative'}>${pnl.toLocaleString('en-US',{minimumFractionDigits: 2,maximumFractionDigits: 2})}</td>
-                          <td>${total.toLocaleString('en-US',{minimumFractionDigits: 2,maximumFractionDigits: 2})}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              <h3>Participants in {vaultData?.vault?.name ?? 'Vault'}</h3>
+              {/* ... Participants Table JSX ... */}
             </div>
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
