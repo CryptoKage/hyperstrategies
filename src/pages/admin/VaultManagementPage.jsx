@@ -1,10 +1,8 @@
-// PASTE THIS ENTIRE CONTENT TO REPLACE THE FULL FILE: hyperstrategies/src/pages/admin/VaultManagementPage.jsx
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
-import CloseTradeModal from '../../components/CloseTradeModal'; // <-- THE IMPORT IS HERE
+import CloseTradeModal from '../../components/CloseTradeModal';
 
 const StatCard = ({ label, value }) => (
   <div className="stat-card">
@@ -49,9 +47,8 @@ const VaultManagementPage = () => {
   const [isUpdatingPerf, setIsUpdatingPerf] = useState(false);
   const [perfMessage, setPerfMessage] = useState('');
 
+  // State for the modal
   const [tradeToClose, setTradeToClose] = useState(null);
-  const [exitPrice, setExitPrice] = useState('');
-  const [isClosingTrade, setIsClosingTrade] = useState(false);
 
   // Pre-fill datetime-local with the user's local time (no seconds)
   useEffect(() => {
@@ -90,26 +87,12 @@ const VaultManagementPage = () => {
         api.get(`/admin/vaults/${selectedVaultId}/trades`) 
       ]);
       
-      const combinedData = {
-        ...detailsRes.data,
-        openTrades: tradesRes.data.openTrades,
-        tradeHistory: tradesRes.data.tradeHistory
-      };
-
-      setVaultData(combinedData);
-      setVaultAssets(assetsRes.data);
-
-      const details = detailsRes?.data || {};
       setVaultData({
-        ...details,
-        participants: details.participants || [],
-        openTrades: details.openTrades || [],
-        tradeHistory: details.tradeHistory || [],
-        stats: details.stats || {},
-        vault: details.vault || {},
+        ...detailsRes.data,
+        openTrades: tradesRes.data.openTrades || [],
+        tradeHistory: tradesRes.data.tradeHistory || [],
       });
-
-      setVaultAssets(assetsRes?.data || []);
+      setVaultAssets(assetsRes.data || []);
     } catch (err) {
       setError(`Failed to fetch details for vault #${selectedVaultId}.`);
     } finally {
@@ -118,14 +101,18 @@ const VaultManagementPage = () => {
   }, [selectedVaultId]);
 
   useEffect(() => {
-    fetchVaultDetails();
-  }, [fetchVaultDetails]);
+    if (selectedVaultId) {
+        fetchVaultDetails();
+    }
+  }, [selectedVaultId, fetchVaultDetails]);
 
   const handleApplyPnl = async (e) => {
     e.preventDefault();
     if (!selectedVaultId) return;
+
     setIsProcessingPnl(true);
     setPnlMessage({ type: '', text: '' });
+
     try {
       const payload = {
         pnlPercentage: Number(pnlPercentage),
@@ -188,6 +175,7 @@ const VaultManagementPage = () => {
   const handleAddOrUpdateAssetWeight = async (e) => {
     e.preventDefault();
     if (!selectedVaultId) return;
+
     setIsAssetLoading(true);
     try {
       const payload = {
@@ -224,6 +212,7 @@ const VaultManagementPage = () => {
   const handleLogTrade = async (e) => {
     e.preventDefault();
     if (!selectedVaultId) return;
+
     setIsAssetLoading(true);
     try {
       const payload = {
@@ -243,29 +232,11 @@ const VaultManagementPage = () => {
     }
   };
 
-  const handleCloseTrade = async (e) => {
-    e.preventDefault();
-    if (!tradeToClose) return;
-    setIsClosingTrade(true);
-    try {
-      await api.patch(`/admin/trades/${tradeToClose.trade_id}/close`, {
-        exit_price: Number(exitPrice),
-      });
-      setTradeToClose(null);
-      setExitPrice('');
-      await fetchVaultDetails();
-      alert('Trade successfully closed!');
-    } catch (err) {
-      alert(err.response?.data?.message || 'Failed to close trade.');
-      console.error(err);
-    } finally {
-      setIsClosingTrade(false);
-    }
-  };
+  
 
   const currentVaultCapital = vaultData?.stats?.totalCapital || 0;
 
-  return (
+ return (
     <Layout>
       <div className="admin-container">
         <div className="admin-header">
@@ -355,21 +326,137 @@ const VaultManagementPage = () => {
 
             <div className="admin-actions-card">
               <h3>Manage Target Asset Allocation</h3>
+              <p>Define the target asset weights for display on the vault detail page.</p>
+              <table className="activity-table" style={{ marginBottom: '24px' }}>
+                <thead>
+                  <tr>
+                    <th>Symbol</th>
+                    <th>Weight</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vaultAssets.map((asset, idx) => (
+                    <tr key={asset.asset_id ?? `${asset.symbol}-${idx}`}>
+                      <td>{asset.symbol}</td>
+                      <td>
+                        {Number(asset.weight ?? 0) * 100
+                          ? `${(Number(asset.weight) * 100).toFixed(2)}%`
+                          : '0.00%'}
+                      </td>
+                      <td>
+                        <button
+                          className="btn-danger-small"
+                          onClick={() => handleRemoveAssetWeight(asset.symbol)}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
               <form onSubmit={handleAddOrUpdateAssetWeight} className="admin-form-inline">
-                <input name="symbol" value={newAssetWeight.symbol} onChange={handleAssetWeightChange} placeholder="Symbol (e.g., BTC)" required />
-                <input name="weight" value={newAssetWeight.weight} onChange={handleAssetWeightChange} placeholder="Weight (0.0-1.0)" type="number" step="0.01" min="0" max="1" required />
-                <input name="contract_address" value={newAssetWeight.contract_address} onChange={handleAssetWeightChange} placeholder="0x... Contract Address" />
-                <input name="chain" value={newAssetWeight.chain} onChange={handleAssetWeightChange} placeholder="Chain (e.g., ETHEREUM)" required />
+                <input
+                  name="symbol"
+                  value={newAssetWeight.symbol}
+                  onChange={handleAssetWeightChange}
+                  placeholder="Symbol (e.g., BTC)"
+                  required
+                />
+                <input
+                  name="weight"
+                  value={newAssetWeight.weight}
+                  onChange={handleAssetWeightChange}
+                  placeholder="Weight (0.0-1.0)"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="1"
+                  required
+                />
+                <input
+                  name="contract_address"
+                  value={newAssetWeight.contract_address}
+                  onChange={handleAssetWeightChange}
+                  placeholder="0x... Contract Address"
+                />
+                <input
+                  name="chain"
+                  value={newAssetWeight.chain}
+                  onChange={handleAssetWeightChange}
+                  placeholder="Chain (e.g., ETHEREUM)"
+                  required
+                />
                 <button type="submit" className="btn-primary" disabled={isAssetLoading}>
                   {isAssetLoading ? '...' : 'Add/Update Weight'}
                 </button>
               </form>
             </div>
 
-            <div className="admin-card" style={{ marginTop: '24px' }}>
-              <h3>Participants in {vaultData?.vault?.name ?? 'Vault'}</h3>
-              {/* ... Participants Table JSX ... */}
+                     <div className="admin-card" style={{ marginTop: '24px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h3>Participants in {vaultData?.vault?.name ?? 'Vault'}</h3>
+                
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <select 
+                    value={impersonateUserId}
+                    onChange={(e) => setImpersonateUserId(e.target.value)}
+                    style={{ padding: '8px', borderRadius: '4px' }}
+                  >
+                    <option value="">Select a user to view as...</option>
+                    {vaultData.participants.map((p) => (
+                      <option key={p.user_id} value={p.user_id}>
+                        {p.username}
+                      </option>
+                    ))}
+                  </select>
+                  <a
+                    href={impersonateUserId ? `/vaults/${selectedVaultId}?userId=${impersonateUserId}` : '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`btn-primary btn-sm ${!impersonateUserId ? 'disabled' : ''}`}
+                    onClick={(e) => !impersonateUserId && e.preventDefault()}
+                  >
+                    View as User
+                  </a>
+                </div>
+              </div>
+
+              <div className="table-responsive">
+                <table className="activity-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Principal Capital</th>
+                      <th>Total PnL</th>
+                      <th>Total Capital</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vaultData.participants.map((p) => {
+                      const principal = Number(p.principal) || 0;
+                      const pnl = Number(p.pnl) || 0;
+                      const total = Number(p.total_capital) || 0;
+                      return (
+                        <tr key={p.user_id}>
+                          <td>
+                            <Link to={`/admin/user/${p.user_id}`} className="admin-table-link">
+                              {p.username}
+                            </Link>
+                          </td>
+                          <td>${principal.toLocaleString('en-US',{minimumFractionDigits: 2,maximumFractionDigits: 2})}</td>
+                          <td className={pnl >= 0 ? 'text-positive' : 'text-negative'}>${pnl.toLocaleString('en-US',{minimumFractionDigits: 2,maximumFractionDigits: 2})}</td>
+                          <td>${total.toLocaleString('en-US',{minimumFractionDigits: 2,maximumFractionDigits: 2})}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
+
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
               <h3>Open Trades</h3>
