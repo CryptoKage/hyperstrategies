@@ -1,3 +1,5 @@
+// PASTE THIS AS THE FIRST PART OF THE FILE, DOWN TO THE `return` STATEMENT
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
@@ -47,9 +49,8 @@ const VaultManagementPage = () => {
   const [isUpdatingPerf, setIsUpdatingPerf] = useState(false);
   const [perfMessage, setPerfMessage] = useState('');
 
+  // State for the modal
   const [tradeToClose, setTradeToClose] = useState(null);
-  const [exitPrice, setExitPrice] = useState('');
-  const [isClosingTrade, setIsClosingTrade] = useState(false);
 
   // Pre-fill datetime-local with the user's local time (no seconds)
   useEffect(() => {
@@ -83,34 +84,17 @@ const VaultManagementPage = () => {
 
     try {
       const [detailsRes, assetsRes, tradesRes] = await Promise.all([
-        // This is the correct endpoint for vault details
         api.get(`/admin/vaults/${selectedVaultId}/details`), 
         api.get(`/admin/vaults/${selectedVaultId}/assets`),
-        // We also need to fetch the trade data for the new tables
         api.get(`/admin/vaults/${selectedVaultId}/trades`) 
       ]);
       
-      const combinedData = {
-        ...detailsRes.data,
-        openTrades: tradesRes.data.openTrades,
-        tradeHistory: tradesRes.data.tradeHistory
-      };
-
-      setVaultData(combinedData);
-      setVaultAssets(assetsRes.data);
-
-      // Ensure arrays are at least empty arrays to avoid .map on undefined
-      const details = detailsRes?.data || {};
       setVaultData({
-        ...details,
-        participants: details.participants || [],
-        openTrades: details.openTrades || [],
-        tradeHistory: details.tradeHistory || [],
-        stats: details.stats || {},
-        vault: details.vault || {},
+        ...detailsRes.data,
+        openTrades: tradesRes.data.openTrades || [],
+        tradeHistory: tradesRes.data.tradeHistory || [],
       });
-
-      setVaultAssets(assetsRes?.data || []);
+      setVaultAssets(assetsRes.data || []);
     } catch (err) {
       setError(`Failed to fetch details for vault #${selectedVaultId}.`);
     } finally {
@@ -119,8 +103,10 @@ const VaultManagementPage = () => {
   }, [selectedVaultId]);
 
   useEffect(() => {
-    fetchVaultDetails();
-  }, [fetchVaultDetails]);
+    if (selectedVaultId) {
+        fetchVaultDetails();
+    }
+  }, [selectedVaultId, fetchVaultDetails]);
 
   const handleApplyPnl = async (e) => {
     e.preventDefault();
@@ -131,7 +117,7 @@ const VaultManagementPage = () => {
 
     try {
       const payload = {
-        pnlPercentage: Number(pnlPercentage), // ensure numeric
+        pnlPercentage: Number(pnlPercentage),
         beforeTimestamp: new Date(beforeTimestamp).toISOString(),
       };
       const response = await api.post(
@@ -178,7 +164,6 @@ const VaultManagementPage = () => {
     }
   };
 
-  // Only uppercase SYMBOL and CHAIN; keep weight/address as entered (bug fix)
   const handleAssetWeightChange = (e) => {
     const { name, value } = e.target;
     setNewAssetWeight((prev) => {
@@ -249,27 +234,6 @@ const VaultManagementPage = () => {
     }
   };
 
-  const handleCloseTrade = async (e) => {
-    e.preventDefault();
-    if (!tradeToClose) return;
-
-    setIsClosingTrade(true);
-    try {
-      await api.patch(`/admin/trades/${tradeToClose.trade_id}/close`, {
-        exit_price: Number(exitPrice),
-      });
-      setTradeToClose(null);
-      setExitPrice('');
-      await fetchVaultDetails();
-      alert('Trade successfully closed!');
-    } catch (err) {
-      alert(err.response?.data?.message || 'Failed to close trade.');
-      console.error(err);
-    } finally {
-      setIsClosingTrade(false);
-    }
-  };
-
   const currentVaultCapital = vaultData?.stats?.totalCapital || 0;
 
   return (
@@ -327,8 +291,6 @@ const VaultManagementPage = () => {
               <div className="admin-actions-card">
                 <h3>Apply Manual PnL</h3>
                 <p>Distribute a percentage-based PnL to all users.</p>
-
-                {/* PnL form inputs were missing before */}
                 <form onSubmit={handleApplyPnl} className="admin-form">
                   <div className="form-group">
                     <label htmlFor="pnl-percentage">PnL Percentage (e.g. 2.5 or -1.2)</label>
@@ -343,7 +305,6 @@ const VaultManagementPage = () => {
                       required
                     />
                   </div>
-
                   <div className="form-group">
                     <label htmlFor="before-timestamp">Apply to positions before</label>
                     <input
@@ -354,12 +315,10 @@ const VaultManagementPage = () => {
                       required
                     />
                   </div>
-
                   <button type="submit" className="btn-primary" disabled={isProcessingPnl}>
                     {isProcessingPnl ? 'Processing...' : 'Apply PnL'}
                   </button>
                 </form>
-
                 {pnlMessage.text && (
                   <p className={`admin-message ${pnlMessage.type}`}>{pnlMessage.text}</p>
                 )}
@@ -481,115 +440,104 @@ const VaultManagementPage = () => {
             </div>
 
             <div className="admin-card" style={{ marginTop: '24px' }}>
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-    <h3>Participants in {vaultData?.vault?.name ?? 'Vault'}</h3>
-    
-    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-      <select 
-        value={impersonateUserId}
-        onChange={(e) => setImpersonateUserId(e.target.value)}
-        style={{ padding: '8px', borderRadius: '4px' }}
-      >
-        <option value="">Select a user to view as...</option>
-        {vaultData.participants.map((p) => (
-          <option key={p.user_id} value={p.user_id}>
-            {p.username}
-          </option>
-        ))}
-      </select>
-      <a
-        href={impersonateUserId ? `/vaults/${selectedVaultId}?userId=${impersonateUserId}` : '#'}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`btn-primary btn-sm ${!impersonateUserId ? 'disabled' : ''}`}
-        onClick={(e) => !impersonateUserId && e.preventDefault()}
-      >
-        View as User
-      </a>
-    </div>
-  </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h3>Participants in {vaultData?.vault?.name ?? 'Vault'}</h3>
+                
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <select 
+                    value={impersonateUserId}
+                    onChange={(e) => setImpersonateUserId(e.target.value)}
+                    style={{ padding: '8px', borderRadius: '4px' }}
+                  >
+                    <option value="">Select a user to view as...</option>
+                    {vaultData.participants.map((p) => (
+                      <option key={p.user_id} value={p.user_id}>
+                        {p.username}
+                      </option>
+                    ))}
+                  </select>
+                  <a
+                    href={impersonateUserId ? `/vaults/${selectedVaultId}?userId=${impersonateUserId}` : '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`btn-primary btn-sm ${!impersonateUserId ? 'disabled' : ''}`}
+                    onClick={(e) => !impersonateUserId && e.preventDefault()}
+                  >
+                    View as User
+                  </a>
+                </div>
+              </div>
 
-  <div className="table-responsive">
-    <table className="activity-table">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Principal Capital</th>
-          <th>Total PnL</th>
-          <th>Total Capital</th>
-        </tr>
-      </thead>
-      <tbody>
-        {vaultData.participants.map((p) => {
-          const principal = Number(p.principal) || 0;
-          const pnl = Number(p.pnl) || 0;
-          const total = Number(p.total_capital) || 0;
-          return (
-            <tr key={p.user_id}>
-              <td>
-                <Link to={`/admin/user/${p.user_id}`} className="admin-table-link">
-                  {p.username}
-                </Link>
-              </td>
-              <td>
-                ${principal.toLocaleString('en-US', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </td>
-              <td className={pnl >= 0 ? 'text-positive' : 'text-negative'}>
-                ${pnl.toLocaleString('en-US', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </td>
-              <td>
-                ${total.toLocaleString('en-US', {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  </div>
-</div>
+              <div className="table-responsive">
+                <table className="activity-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Principal Capital</th>
+                      <th>Total PnL</th>
+                      <th>Total Capital</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vaultData.participants.map((p) => {
+                      const principal = Number(p.principal) || 0;
+                      const pnl = Number(p.pnl) || 0;
+                      const total = Number(p.total_capital) || 0;
+                      return (
+                        <tr key={p.user_id}>
+                          <td>
+                            <Link to={`/admin/user/${p.user_id}`} className="admin-table-link">
+                              {p.username}
+                            </Link>
+                          </td>
+                          <td>${principal.toLocaleString('en-US',{minimumFractionDigits: 2,maximumFractionDigits: 2})}</td>
+                          <td className={pnl >= 0 ? 'text-positive' : 'text-negative'}>${pnl.toLocaleString('en-US',{minimumFractionDigits: 2,maximumFractionDigits: 2})}</td>
+                          <td>${total.toLocaleString('en-US',{minimumFractionDigits: 2,maximumFractionDigits: 2})}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-           <div className="table-responsive">
-            <table className="activity-table">
-              <thead>
-                <tr>
-                  <th>Opened</th>
-                  <th>Symbol</th>
-                  <th>Direction</th>
-                  <th>Quantity</th>
-                  <th>Entry Price</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {vaultData?.openTrades.map((trade) => (
-                  <tr key={trade.trade_id}>
-                    <td>{trade.trade_opened_at ? new Date(trade.trade_opened_at).toLocaleString() : '-'}</td>
-                    <td>{trade.asset_symbol}</td>
-                    <td>{trade.direction}</td>
-                    <td>{Number(trade.quantity)}</td>
-                    <td>${Number(trade.entry_price).toFixed(2)}</td>
-                    <td>
-                      <button className="btn-secondary btn-sm" onClick={() => setTradeToClose(trade)}>
-                        Close
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        
+            <div className="admin-card" style={{ marginTop: '24px' }}>
+              <h3>Open Trades</h3>
+              <div className="table-responsive">
+                <table className="activity-table">
+                  <thead>
+                    <tr>
+                      <th>Opened</th>
+                      <th>Symbol</th>
+                      <th>Direction</th>
+                      <th>Quantity</th>
+                      <th>Entry Price</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vaultData.openTrades.map((trade) => (
+                      <tr key={trade.trade_id}>
+                        <td>{trade.trade_opened_at ? new Date(trade.trade_opened_at).toLocaleString() : '-'}</td>
+                        <td>{trade.asset_symbol}</td>
+                        <td>{trade.direction}</td>
+                        <td>{Number(trade.quantity)}</td>
+                        <td>${Number(trade.entry_price).toFixed(2)}</td>
+                        <td>
+                          <button
+                            className="btn-secondary btn-sm"
+                            onClick={() => setTradeToClose(trade)}
+                          >
+                            Close
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-            {/* Trade History */}
             <div className="admin-card" style={{ marginTop: '24px' }}>
               <h3>Trade History (Last 50)</h3>
               <div className="table-responsive">
@@ -611,11 +559,7 @@ const VaultManagementPage = () => {
                       const pnl = Number(trade.pnl_usd);
                       return (
                         <tr key={trade.trade_id}>
-                          <td>
-                            {trade.trade_closed_at
-                              ? new Date(trade.trade_closed_at).toLocaleString()
-                              : '-'}
-                          </td>
+                          <td>{trade.trade_closed_at ? new Date(trade.trade_closed_at).toLocaleString() : '-'}</td>
                           <td>{trade.asset_symbol}</td>
                           <td>{trade.direction}</td>
                           <td>${isFinite(entry) ? entry.toFixed(2) : '0.00'}</td>
@@ -634,13 +578,12 @@ const VaultManagementPage = () => {
         )}
       </div>
 
-      {/* Render the new, clean modal component at the top level of the page */}
       <CloseTradeModal 
         isOpen={!!tradeToClose}
         onClose={() => setTradeToClose(null)}
         trade={tradeToClose}
         onSuccess={() => {
-          fetchVaultDetails(); // This tells the page to refresh its data
+          fetchVaultDetails();
           alert('Trade successfully closed!');
         }}
       />
