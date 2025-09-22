@@ -234,6 +234,26 @@ const VaultManagementPage = () => {
     }
   };
 
+  const handleCloseTrade = async (e) => {
+    e.preventDefault();
+    if (!tradeToClose) return;
+    setIsClosingTrade(true);
+    try {
+      await api.patch(`/admin/trades/${tradeToClose.trade_id}/close`, {
+        exit_price: Number(exitPrice),
+      });
+      setTradeToClose(null);
+      setExitPrice('');
+      await fetchVaultDetails();
+      alert('Trade successfully closed!');
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to close trade.');
+      console.error(err);
+    } finally {
+      setIsClosingTrade(false);
+    }
+  };
+
   const currentVaultCapital = vaultData?.stats?.totalCapital || 0;
 
  return (
