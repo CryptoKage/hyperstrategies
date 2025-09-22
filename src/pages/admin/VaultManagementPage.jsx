@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
+import CloseTradeModal from '../../components/CloseTradeModal';
 
 const StatCard = ({ label, value }) => (
   <div className="stat-card">
@@ -556,42 +557,37 @@ const VaultManagementPage = () => {
   </div>
 </div>
 
-            <div className="admin-card" style={{ marginTop: '24px' }}>
-              <h3>Open Trades</h3>
-              <div className="table-responsive">
-                <table className="activity-table">
-                  <thead>
-                    <tr>
-                      <th>Opened</th>
-                      <th>Symbol</th>
-                      <th>Direction</th>
-                      <th>Quantity</th>
-                      <th>Entry Price</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {vaultData.openTrades.map((trade) => (
-                      <tr key={trade.trade_id}>
-                        <td>{trade.trade_opened_at ? new Date(trade.trade_opened_at).toLocaleString() : '-'}</td>
-                        <td>{trade.asset_symbol}</td>
-                        <td>{trade.direction}</td>
-                        <td>{Number(trade.quantity)}</td>
-                        <td>${Number(trade.entry_price).toFixed(2)}</td>
-                        <td>
-                          <button
-                            className="btn-secondary btn-sm"
-                            onClick={() => setTradeToClose(trade)}
-                          >
-                            Close
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+           <div className="table-responsive">
+            <table className="activity-table">
+              <thead>
+                <tr>
+                  <th>Opened</th>
+                  <th>Symbol</th>
+                  <th>Direction</th>
+                  <th>Quantity</th>
+                  <th>Entry Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {vaultData?.openTrades.map((trade) => (
+                  <tr key={trade.trade_id}>
+                    <td>{trade.trade_opened_at ? new Date(trade.trade_opened_at).toLocaleString() : '-'}</td>
+                    <td>{trade.asset_symbol}</td>
+                    <td>{trade.direction}</td>
+                    <td>{Number(trade.quantity)}</td>
+                    <td>${Number(trade.entry_price).toFixed(2)}</td>
+                    <td>
+                      <button className="btn-secondary btn-sm" onClick={() => setTradeToClose(trade)}>
+                        Close
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        
 
             {/* Trade History */}
             <div className="admin-card" style={{ marginTop: '24px' }}>
@@ -638,54 +634,16 @@ const VaultManagementPage = () => {
         )}
       </div>
 
-      {tradeToClose && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button onClick={() => setTradeToClose(null)} className="modal-close-btn">
-              ×
-            </button>
-            <h3>
-              Close Trade: {tradeToClose.direction} {tradeToClose.asset_symbol}
-            </h3>
-            <p>Enter the exit price to close this position and realize the P&amp;L.</p>
-            <form onSubmit={handleCloseTrade} className="admin-form">
-              <div className="form-group">
-                <label>Entry Price</label>
-                <input
-                  type="text"
-                  value={`$${Number(tradeToClose.entry_price).toFixed(2)}`}
-                  disabled
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="exit-price">Exit Price ($)</label>
-                <input
-                  id="exit-price"
-                  type="number"
-                  step="any"
-                  value={exitPrice}
-                  onChange={(e) => setExitPrice(e.target.value)}
-                  placeholder="Enter the final price"
-                  required
-                />
-              </div>
-              <div className="modal-actions">
-                <button
-                  type="button"
-                  onClick={() => setTradeToClose(null)}
-                  className="btn-secondary"
-                  disabled={isClosingTrade}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn-primary" disabled={isClosingTrade}>
-                  {isClosingTrade ? 'Processing...' : 'Confirm & Close Trade'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Render the new, clean modal component at the top level of the page */}
+      <CloseTradeModal 
+        isOpen={!!tradeToClose}
+        onClose={() => setTradeToClose(null)}
+        trade={tradeToClose}
+        onSuccess={() => {
+          fetchVaultDetails(); // This tells the page to refresh its data
+          alert('Trade successfully closed!');
+        }}
+      />
     </Layout>
   );
 };
