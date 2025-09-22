@@ -1,10 +1,10 @@
-// PASTE THIS AS THE FIRST PART OF THE FILE, DOWN TO THE `return` STATEMENT
+// PASTE THIS ENTIRE CONTENT TO REPLACE THE FULL FILE: hyperstrategies/src/pages/admin/VaultManagementPage.jsx
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
-import CloseTradeModal from '../../components/CloseTradeModal';
+import CloseTradeModal from '../../components/CloseTradeModal'; // <-- THE IMPORT IS HERE
 
 const StatCard = ({ label, value }) => (
   <div className="stat-card">
@@ -49,8 +49,9 @@ const VaultManagementPage = () => {
   const [isUpdatingPerf, setIsUpdatingPerf] = useState(false);
   const [perfMessage, setPerfMessage] = useState('');
 
-  // State for the modal
   const [tradeToClose, setTradeToClose] = useState(null);
+  const [exitPrice, setExitPrice] = useState('');
+  const [isClosingTrade, setIsClosingTrade] = useState(false);
 
   // Pre-fill datetime-local with the user's local time (no seconds)
   useEffect(() => {
@@ -89,12 +90,26 @@ const VaultManagementPage = () => {
         api.get(`/admin/vaults/${selectedVaultId}/trades`) 
       ]);
       
-      setVaultData({
+      const combinedData = {
         ...detailsRes.data,
-        openTrades: tradesRes.data.openTrades || [],
-        tradeHistory: tradesRes.data.tradeHistory || [],
+        openTrades: tradesRes.data.openTrades,
+        tradeHistory: tradesRes.data.tradeHistory
+      };
+
+      setVaultData(combinedData);
+      setVaultAssets(assetsRes.data);
+
+      const details = detailsRes?.data || {};
+      setVaultData({
+        ...details,
+        participants: details.participants || [],
+        openTrades: details.openTrades || [],
+        tradeHistory: details.tradeHistory || [],
+        stats: details.stats || {},
+        vault: details.vault || {},
       });
-      setVaultAssets(assetsRes.data || []);
+
+      setVaultAssets(assetsRes?.data || []);
     } catch (err) {
       setError(`Failed to fetch details for vault #${selectedVaultId}.`);
     } finally {
@@ -103,18 +118,14 @@ const VaultManagementPage = () => {
   }, [selectedVaultId]);
 
   useEffect(() => {
-    if (selectedVaultId) {
-        fetchVaultDetails();
-    }
-  }, [selectedVaultId, fetchVaultDetails]);
+    fetchVaultDetails();
+  }, [fetchVaultDetails]);
 
   const handleApplyPnl = async (e) => {
     e.preventDefault();
     if (!selectedVaultId) return;
-
     setIsProcessingPnl(true);
     setPnlMessage({ type: '', text: '' });
-
     try {
       const payload = {
         pnlPercentage: Number(pnlPercentage),
@@ -177,7 +188,6 @@ const VaultManagementPage = () => {
   const handleAddOrUpdateAssetWeight = async (e) => {
     e.preventDefault();
     if (!selectedVaultId) return;
-
     setIsAssetLoading(true);
     try {
       const payload = {
@@ -214,7 +224,6 @@ const VaultManagementPage = () => {
   const handleLogTrade = async (e) => {
     e.preventDefault();
     if (!selectedVaultId) return;
-
     setIsAssetLoading(true);
     try {
       const payload = {
@@ -256,7 +265,7 @@ const VaultManagementPage = () => {
 
   const currentVaultCapital = vaultData?.stats?.totalCapital || 0;
 
- return (
+  return (
     <Layout>
       <div className="admin-container">
         <div className="admin-header">
