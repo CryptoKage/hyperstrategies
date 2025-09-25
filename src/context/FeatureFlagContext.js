@@ -3,31 +3,30 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import api from '../api/api';
 
-// Create the context with a default empty object
-const FeatureFlagContext = createContext({});
+// Create the context with a default value that includes a loading state
+const FeatureFlagContext = createContext({
+    flags: {},
+    isLoading: true, // Default to loading
+});
 
 export const FeatureFlagProvider = ({ children }) => {
     const [flags, setFlags] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Fetch the flags from our backend API when the app first loads
         api.get('/system/feature-flags')
             .then(response => {
                 setFlags(response.data);
             })
             .catch(err => {
                 console.error("CRITICAL: Could not load feature flags from the server.", err);
-                // In case of an error, we default to an empty object,
-                // which means all features will appear "off" by default.
-                setFlags({});
+                setFlags({}); // Default to off on error
             })
             .finally(() => {
-                setIsLoading(false);
+                setIsLoading(false); // Set loading to false only after the API call is complete
             });
-    }, []); // This empty array ensures the effect runs only once on mount
+    }, []);
 
-    // We use useMemo to prevent unnecessary re-renders of child components
     const value = useMemo(() => ({ flags, isLoading }), [flags, isLoading]);
 
     return (
@@ -37,12 +36,11 @@ export const FeatureFlagProvider = ({ children }) => {
     );
 };
 
-// This is a custom hook that makes it easy for components to access the flags
-export const useFeatureFlags = () => {
+// The hook now returns the entire context object, including the loading state
+export const useFeatureFlagsContext = () => {
     const context = useContext(FeatureFlagContext);
     if (context === undefined) {
-        throw new Error('useFeatureFlags must be used within a FeatureFlagProvider');
+        throw new Error('useFeatureFlagsContext must be used within a FeatureFlagProvider');
     }
-    // Return only the flags object for cleaner usage in components
-    return context.flags;
+    return context;
 };
