@@ -185,4 +185,4 @@ const handleCancelListing = async (listingId) => {
   );
 };
 
-export default PinsMarketplacePage;
+export default PinsMarketplace;
