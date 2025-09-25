@@ -1,24 +1,28 @@
-import React from 'react';
+// /src/index.js
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import { FeatureFlagProvider } from './context/FeatureFlagContext'; 
-
-import './styles/global.css'; // Your main styles
-import Router from './pages/Router';
-import './i18n'; // Initializes i18next
+import { FeatureFlagProvider } from './context/FeatureFlagContext';
 import { AnimationSettingsProvider } from './context/AnimationSettingsContext';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import './styles/global.css';
+import Router from './pages/Router';
+import './i18n';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <AuthProvider>
-        <AnimationSettingsProvider>
-          <Router />
-        </AnimationSettingsProvider>
-      </AuthProvider>
+      <Suspense fallback={<div>Loading...</div>}>
+        <AuthProvider>
+          <FeatureFlagProvider>
+            <AnimationSettingsProvider>
+              <Router />
+            </AnimationSettingsProvider>
+          </FeatureFlagProvider>
+        </AuthProvider>
+      </Suspense>
     </BrowserRouter>
   </React.StrictMode>
 );
