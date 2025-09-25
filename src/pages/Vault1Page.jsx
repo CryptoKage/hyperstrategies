@@ -230,3 +230,5 @@ const Vault1Page = () => {
         </Layout>
     );
 };
+
+export default Vault1Page;
