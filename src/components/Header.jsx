@@ -1,6 +1,5 @@
-// ==============================================================================
-// FINAL, DEFINITIVE version of Header.jsx with the new XP Bar
-// ==============================================================================
+// /src/components/Header.jsx
+
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
@@ -25,9 +24,7 @@ const Header = () => {
   const changeLanguage = (e) => {
     const selectedLang = e.target.value;
     if (selectedLang === 'troll' && user) {
-      api.post('/user/mint-troll-pin')
-        .then(response => { alert(response.data.message); })
-        .catch(err => { console.error("Troll pin minting failed:", err); });
+      api.post('/user/mint-troll-pin').catch(err => console.error("Troll pin minting failed:", err));
     }
     i18n.changeLanguage(selectedLang);
   };
@@ -39,7 +36,7 @@ const Header = () => {
   
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
-return (
+  return (
     <header className="header">
       <Link to="/" className="header__left" onClick={closeMobileMenu}>
         <img src={Logo} alt={t('header.alt_logo')} className="header__logo" />
@@ -52,6 +49,7 @@ return (
             <>
               <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
               <Link to="/pins" className="header__button">{t('header.pins', 'Pins')}</Link>
+              <Link to="/marketplace" className="header__button">{t('nav.marketplace')}</Link>
               <Link to="/shop" className="header__button">{t('nav.shop')}</Link>
               <Link to="/rewards" className="header__button">{t('header.rewards', 'Rewards')}</Link>
               <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
@@ -68,6 +66,9 @@ return (
             </>
           )}
         </nav>
+
+        {/* --- THE FIX: Place the XP Bar inside the right-hand container for stability --- */}
+        {user && <TierProgressBar />}
 
         <div className="header__cta-group">
           <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
@@ -93,10 +94,7 @@ return (
               <HamburgerIcon />
           </button>
       </div>
-
-      {user && <TierProgressBar />}
-
-      {/* --- Mobile Menu Overlay --- */}
+      
       {isMobileMenuOpen && (
           <div className="mobile-menu-overlay">
               <button className="mobile-menu__close-btn" onClick={closeMobileMenu}>×</button>
@@ -105,6 +103,8 @@ return (
                       <>
                           <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
                           <Link to="/pins" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.pins', 'Pins')}</Link>
+                          <Link to="/marketplace" className="mobile-menu__link" onClick={closeMobileMenu}>{t('nav.marketplace')}</Link>
+                          <Link to="/shop" className="mobile-menu__link" onClick={closeMobileMenu}>{t('nav.shop')}</Link>
                           <Link to="/rewards" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.rewards', 'Rewards')}</Link>
                           <Link to="/wallet" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.wallet')}</Link>
                           <Link to="/profile" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.profile')}</Link>
@@ -135,6 +135,3 @@ return (
 };
 
 export default Header;
-// ==============================================================================
-// END OF FILE REPLACEMENT
-// ==============================================================================
