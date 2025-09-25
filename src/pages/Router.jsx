@@ -7,6 +7,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import XPLeaderboard from './XPLeaderboard';
 import Profile from './Profile';
+import Pins from './Pins';
 import SelfServe from './SelfServe';
 import Managed from './Managed';
 import Investor from './Investor';
@@ -64,6 +65,7 @@ const Router = () => {
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <Route path="/pins" element={<ProtectedRoute><Pins /></ProtectedRoute>} />
       <Route path="/pins-marketplace" element={<TierRoute minTier={2}><PinsMarketplace /></TierRoute>} />
       <Route path="/rewards" element={<ProtectedRoute><RewardsCenter /></ProtectedRoute>} />
       <Route path="/presale-info" element={<ProtectedRoute><Presale /></ProtectedRoute>} />

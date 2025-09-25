@@ -47,26 +47,43 @@ return (
       </Link>
       
       <div className="header__right--desktop">
-        <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
-          <option value="en">EN</option>
-          <option value="de">DE</option>
-          <option value="troll">Troll</option>
-        </select>
+        <nav className="header__nav">
+          {user ? (
+            <>
+              <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
+              <Link to="/pins" className="header__button">{t('header.pins', 'Pins')}</Link>
+              <Link to="/rewards" className="header__button">{t('header.rewards', 'Rewards')}</Link>
+              <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
+              <Link to="/profile" className="header__button">{t('header.profile')}</Link>
+              {user.isAdmin && (
+                <Link to="/admin" className="header__button header__button--admin">{t('header.admin')}</Link>
+              )}
+            </>
+          ) : (
+            <>
+              <Link to="/self-serve" className="header__button">{t('header.self_serve', 'Self-Serve')}</Link>
+              <Link to="/managed" className="header__button">{t('header.managed', 'Managed')}</Link>
+              <Link to="/investor" className="header__button">{t('header.investor', 'Investor')}</Link>
+            </>
+          )}
+        </nav>
 
-        {user ? (
-          <>
-            <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
-            <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
-            <Link to="/profile" className="header__button">{t('header.profile')}</Link>
-            {user.isAdmin && (<Link to="/admin" className="header__button header__button--admin">{t('header.admin')}</Link>)}
+        <div className="header__cta-group">
+          <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
+            <option value="en">EN</option>
+            <option value="de">DE</option>
+            <option value="troll">Troll</option>
+          </select>
+
+          {user ? (
             <button onClick={handleLogout} className="header__button header__button--primary">{t('header.logout')}</button>
-          </>
-        ) : (
-          <>
-            <Link to="/login" className="header__button">{t('header.signin')}</Link>
-            <Link to="/register" className="header__button header__button--primary">{t('header.register')}</Link>
-          </>
-        )}
+          ) : (
+            <>
+              <Link to="/login" className="header__button">{t('header.signin')}</Link>
+              <Link to="/register" className="header__button header__button--primary">{t('header.register')}</Link>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="header__right--mobile">
@@ -86,15 +103,18 @@ return (
                   {user ? (
                       <>
                           <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
-                          {/* --- THESE ARE THE MISSING LINKS --- */}
+                          <Link to="/pins" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.pins', 'Pins')}</Link>
+                          <Link to="/rewards" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.rewards', 'Rewards')}</Link>
                           <Link to="/wallet" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.wallet')}</Link>
                           <Link to="/profile" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.profile')}</Link>
                           {user.isAdmin && <Link to="/admin" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.admin')}</Link>}
-                          {/* --- END OF MISSING LINKS --- */}
                           <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="mobile-menu__button">{t('header.logout')}</button>
                       </>
                   ) : (
                       <>
+                          <Link to="/self-serve" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.self_serve', 'Self-Serve')}</Link>
+                          <Link to="/managed" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.managed', 'Managed')}</Link>
+                          <Link to="/investor" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.investor', 'Investor')}</Link>
                           <Link to="/login" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.signin')}</Link>
                           <Link to="/register" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.register')}</Link>
                       </>
