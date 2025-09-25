@@ -33,6 +33,7 @@ import XPAwardsPage from './admin/XPAwardsPage';
 import RewardsCenter from './RewardsCenter';
 import Presale from './Presale';
 import Vault1Page from './Vault1Page';
+import ShopPage from './ShopPage';
 import AnimationControlsPage from './admin/AnimationControlsPage';
 
 
@@ -71,6 +72,7 @@ const Router = () => {
       <Route path="/rewards" element={<ProtectedRoute><RewardsCenter /></ProtectedRoute>} />
       <Route path="/presale-info" element={<ProtectedRoute><Presale /></ProtectedRoute>} />
       <Route path="/vaults/:vaultId" element={<ProtectedRoute><Vault1Page /></ProtectedRoute>} />
+      <Route path="/shop" element={<ShopPage />} />
           
       {/* --- ADMIN-ONLY Protected Routes --- */}
       {/* --- ANNOTATION --- I've standardized the main admin route to just /admin for simplicity */}
