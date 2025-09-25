@@ -68,7 +68,7 @@ const Router = () => {
       <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/pins" element={<ProtectedRoute><Pins /></ProtectedRoute>} />
-      <Route path="/pins-marketplace" element={<TierRoute minTier={2}><PinsMarketplace /></TierRoute>} />
+      <Route path="/marketplace" element={<TierRoute minTier={2}><PinsMarketplace /></TierRoute>} />
       <Route path="/rewards" element={<ProtectedRoute><RewardsCenter /></ProtectedRoute>} />
       <Route path="/presale-info" element={<ProtectedRoute><Presale /></ProtectedRoute>} />
       <Route path="/vaults/:vaultId" element={<ProtectedRoute><Vault1Page /></ProtectedRoute>} />
