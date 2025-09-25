@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useFeatureFlags } from '../context/FeatureFlagContext';
-import './ComingSoonWrapper.css'; // Import the styles we just created
 
 const ComingSoonWrapper = ({ flagName, children }) => {
     const flags = useFeatureFlags();
