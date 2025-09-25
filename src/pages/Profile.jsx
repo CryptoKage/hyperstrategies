@@ -1,38 +1,26 @@
-// PASTE THIS ENTIRE CONTENT TO REPLACE: hyperstrategies/src/pages/Profile.jsx
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
-import Layout from '../components/Layout';
 import XpHistoryList from '../components/XpHistoryList';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import PinDetailModal from '../components/PinDetailModal';
-import { PinImage } from '../components/UserPins';
 import { createPkcePair } from '../utils/pkce';
 import TelegramLoginButton from '../components/TelegramLoginButton';
-import PinListerModal from '../components/PinListerModal';
 
 const Profile = () => {
   const { t } = useTranslation();
-  const { user, refreshToken } = useAuth();
-  
+  const { refreshToken } = useAuth();
+
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activePins, setActivePins] = useState([]);
-  const [inactivePins, setInactivePins] = useState([]);
-  const [isSavingLoadout, setIsSavingLoadout] = useState(false);
-  const [selectedPin, setSelectedPin] = useState(null);
-  const [isAutoEquip, setIsAutoEquip] = useState(true);
   const [username, setUsername] = useState('');
   const [editMessage, setEditMessage] = useState({ type: '', text: '' });
   const [customReferralInput, setCustomReferralInput] = useState('');
   const [isUpdatingReferral, setIsUpdatingReferral] = useState(false);
   const [referralUpdateMessage, setReferralUpdateMessage] = useState({ type: '', text: '' });
   const [copySuccessMessage, setCopySuccessMessage] = useState('');
-  const [isListerModalOpen, setIsListerModalOpen] = useState(false);
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -40,12 +28,12 @@ const Profile = () => {
       const data = response.data;
       setProfileData(data);
       setUsername(data.username);
-      setIsAutoEquip(data.auto_equip_pins);
-      const activeIds = new Set(data.activePinIds);
-      setActivePins(data.ownedPins.filter(p => activeIds.has(p.pin_id)));
-      setInactivePins(data.ownedPins.filter(p => !activeIds.has(p.pin_id)));
-    } catch (err) { setError(t('profile_page.error_load')); } 
-    finally { setIsLoading(false); }
+    } catch (err) {
+      console.error('Failed to load profile', err);
+      setError(t('profile_page.error_load'));
+    } finally {
+      setIsLoading(false);
+    }
   }, [t]);
 
   useEffect(() => {
@@ -53,83 +41,25 @@ const Profile = () => {
       try {
         await refreshToken();
         await fetchProfile();
-      } catch (error) {
-        console.error("Failed to refresh token or fetch profile", error);
+      } catch (err) {
+        console.error('Failed to refresh token before fetching profile', err);
         setError(t('profile_page.error_load'));
+        setIsLoading(false);
       }
     };
+
     loadProfile();
     setCopySuccessMessage(t('profile_page.copy_link_button'));
-  }, [fetchProfile, refreshToken, t]);
-
-  const handleToggleAutoEquip = async () => {
-    const newState = !isAutoEquip;
-    setIsAutoEquip(newState);
-    try {
-      await api.put('/user/pins/auto-equip', { isEnabled: newState });
-      if (newState) { fetchProfile(); }
-    } catch (error) {
-      console.error("Failed to toggle auto-equip", error);
-      setIsAutoEquip(!newState);
-    }
-  };
-
-  const handleEquipPin = (pinToEquip) => {
-    if (activePins.length >= profileData.totalPinSlots) {
-      alert("All slots are full. Unequip a pin first.");
-      return;
-    }
-    setActivePins([...activePins, pinToEquip]);
-    setInactivePins(inactivePins.filter(p => p.pin_id !== pinToEquip.pin_id));
-    setSelectedPin(null);
-  };
-
-  const handleUnequipPin = (pinToUnequip) => {
-    setInactivePins([...inactivePins, pinToUnequip]);
-    setActivePins(activePins.filter(p => p.pin_id !== pinToUnequip.pin_id));
-    setSelectedPin(null);
-  };
-
-  const onDragEnd = (result) => {
-    const { source, destination } = result;
-    if (!destination) return;
-    if (source.droppableId === 'inactive' && destination.droppableId.startsWith('active-slot')) {
-      if (activePins.length >= profileData.totalPinSlots) return;
-      const itemToMove = inactivePins[source.index];
-      const newInactive = Array.from(inactivePins); newInactive.splice(source.index, 1);
-      const newActive = Array.from(activePins); newActive.push(itemToMove);
-      setActivePins(newActive); setInactivePins(newInactive);
-    }
-    if (source.droppableId.startsWith('active-slot') && destination.droppableId === 'inactive') {
-      const itemToMove = activePins[source.index];
-      const newActive = Array.from(activePins); newActive.splice(source.index, 1);
-      const newInactive = Array.from(inactivePins); newInactive.push(itemToMove);
-      setActivePins(newActive); setInactivePins(newInactive);
-    }
-  };
-
-  const handleSaveChanges = async () => {
-    setIsSavingLoadout(true);
-    setEditMessage({ type: '', text: '' });
-    try {
-      const activePinIds = activePins.map(p => p.pin_id);
-      await api.post('/user/active-pins', { activePinIds });
-      setEditMessage({ type: 'success', text: 'Pin loadout saved successfully!' });
-    } catch (error) {
-      setEditMessage({ type: 'error', text: 'Failed to save loadout. Please try again.' });
-      console.error("Failed to save pin loadout", error);
-    } finally {
-      setIsSavingLoadout(false);
-    }
-  };
+  }, [refreshToken, fetchProfile, t]);
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setEditMessage({ type: '', text: '' });
+
     try {
       const response = await api.put('/user/profile', { username });
       setEditMessage({ type: 'success', text: t(response.data.messageKey) });
-      refreshToken(); // Refresh token to get updated username in header
+      refreshToken();
     } catch (err) {
       const messageKey = err.response?.data?.messageKey || 'profile_page.error_unexpected';
       setEditMessage({ type: 'error', text: t(messageKey) });
@@ -140,13 +70,14 @@ const Profile = () => {
     e.preventDefault();
     setIsUpdatingReferral(true);
     setReferralUpdateMessage({ type: '', text: '' });
+
     try {
       const response = await api.put('/user/referral-code', { desiredCode: customReferralInput });
       setReferralUpdateMessage({ type: 'success', text: t(response.data.messageKey) });
-      setProfileData(prevData => ({ ...prevData, referral_code: response.data.referralCode }));
+      setProfileData((prev) => ({ ...prev, referral_code: response.data.referralCode }));
       setCustomReferralInput('');
-    } catch (error) {
-      const messageKey = error.response?.data?.messageKey || 'profile_page.error_unexpected';
+    } catch (err) {
+      const messageKey = err.response?.data?.messageKey || 'profile_page.error_unexpected';
       setReferralUpdateMessage({ type: 'error', text: t(messageKey) });
     } finally {
       setIsUpdatingReferral(false);
@@ -173,11 +104,11 @@ const Profile = () => {
         scope: 'tweet.read users.read like.read offline.access',
         state: 'state',
         code_challenge: challenge,
-        code_challenge_method: 'S256'
+        code_challenge_method: 'S256',
       });
       window.location.href = `https://twitter.com/i/oauth2/authorize?${params}`;
-    } catch (error) {
-      console.error("Failed to start X connection flow:", error);
+    } catch (err) {
+      console.error('Failed to start X connection flow:', err);
     }
   };
 
@@ -185,165 +116,255 @@ const Profile = () => {
     try {
       await api.post('/user/link-telegram', user);
       fetchProfile();
-    } catch (error) {
-      console.error("Telegram linking failed:", error);
-      alert("Failed to link Telegram account.");
+    } catch (err) {
+      console.error('Telegram linking failed:', err);
+      alert('Failed to link Telegram account.');
     }
   };
 
-  if (isLoading || !profileData) return <Layout><div className="profile-container"><h1>{t('profile_page.loading')}</h1></div></Layout>;
-  if (error) return <Layout><div className="profile-container"><p className="error-message">{error}</p></div></Layout>;
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="profile-container">
+          <h1>{t('profile_page.loading')}</h1>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !profileData) {
+    return (
+      <Layout>
+        <div className="profile-container">
+          <p className="error-message">{error || t('profile_page.error_load')}</p>
+        </div>
+      </Layout>
+    );
+  }
 
   const dailyXpRate = (profileData?.total_staked_capital || 0) / 300;
 
   return (
     <Layout>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="profile-container">
-          <h1>{t('profile_page.title')}</h1>
-          <div className="profile-pin-layout-grid">
-            
-            <div className="profile-card pin-manager-card">
-              <h3>{t('profile_page.pin_loadout_title')}</h3>
-              <div className="auto-equip-toggle-wrapper">
-                <span>{t('profile_page.auto_equip_label')}</span>
-                <label className="switch">
-                  <input type="checkbox" checked={isAutoEquip} onChange={handleToggleAutoEquip} />
-                  <span className="slider round"></span>
-                </label>
-              </div>
-              
-              <div className={`loadout-content-wrapper ${isAutoEquip ? 'disabled' : ''}`}>
-                <p>{t('profile_page.loadout_description')}</p>
-                <h4>{t('profile_page.active_slots_label', { count: activePins.length, total: profileData.totalPinSlots })}</h4>
-                <div className="active-slots-container">
-                  {Array.from({ length: profileData.totalPinSlots }).map((_, index) => {
-                    const pinInSlot = activePins[index];
-                    return (
-                      <Droppable key={`slot-${index}`} droppableId={`active-slot-${index}`} isDropDisabled={isAutoEquip}>
-                        {(provided, snapshot) => (
-                          <div ref={provided.innerRef} {...provided.droppableProps} className={`pin-slot ${snapshot.isDraggingOver ? 'over' : ''}`} onClick={() => !isAutoEquip && pinInSlot && setSelectedPin(pinInSlot)}>
-                            {pinInSlot ? (<Draggable draggableId={pinInSlot.pin_id.toString()} index={index} isDragDisabled={isAutoEquip}>{(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps}><PinImage pinName={pinInSlot.pin_name} imageFilename={pinInSlot.image_filename} /></div>)}</Draggable>) : (<span className="empty-slot-text">{t('profile_page.empty_slot')}</span>)}
-                            {provided.placeholder}
-                          </div>
-                        )}
-                      </Droppable>
-                    );
-                  })}
-                  {profileData.account_tier < 10 && (<div className="pin-slot locked" title={t('profile_page.locked_slot_tooltip', { tier: profileData.account_tier + 1 })}><span>{t('profile_page.locked_slot_label')}</span></div>)}
-                </div>
-                <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout || isAutoEquip}>
-                  {isSavingLoadout ? t('profile_page.saving_button') : t('profile_page.save_loadout_button')}
-                </button>
-              </div>
-            </div>
+      <div className="profile-container profile-container--modern">
+        <header className="profile-page-header">
+          <span className="eyebrow-text">{t('profile_page.eyebrow', 'Your journey')}</span>
+          <h1>{t('profile_page.modern_title', 'Shape your Hyper Strategies identity')}</h1>
+          <p>
+            {t(
+              'profile_page.modern_subtitle',
+              'Complete the steps below to unlock the full ecosystem — from personalised referrals to collectible pins and seasonal rewards.'
+            )}
+          </p>
+        </header>
 
-            <div className={`profile-card pin-collection-card ${isAutoEquip ? 'disabled' : ''}`}>
-              <div className="card-header-with-button">
-                <h3>{t('profile_page.pin_collection_title', { count: inactivePins.length })}</h3>
-                <button className="btn-secondary btn-sm" onClick={() => setIsListerModalOpen(true)} disabled={isAutoEquip || inactivePins.length === 0}>
-                  {t('profile_page.list_pin_button')}
-                </button>
-              </div>
-              <Droppable droppableId="inactive" direction="horizontal" isDropDisabled={isAutoEquip}>
-                {(provided) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps} className="inactive-pins-container">
-                    {inactivePins.map((pin, index) => (
-                      <Draggable key={pin.pin_id} draggableId={pin.pin_id.toString()} index={index} isDragDisabled={isAutoEquip}>
-                        {(p) => (<div ref={p.innerRef} {...p.draggableProps} {...p.dragHandleProps} onClick={() => !isAutoEquip && setSelectedPin(pin)}><PinImage pinName={pin.pin_name} imageFilename={pin.image_filename} /></div>)}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                    {inactivePins.length === 0 && <p>{t('profile_page.no_inactive_pins')}</p>}
-                  </div>
-                )}
-              </Droppable>
-            </div>
-
-            <div className="profile-card">
-              <h3>{t('profile_page.connect_title')}</h3>
-              <p className="form-description">{t('profile_page.connect_description')}</p>
-              <div className="connection-buttons-container">
-                <button className="btn-secondary connection-button" onClick={handleConnectX}>
-                  <span>{t('profile_page.connect_x_button')}</span>
-                </button>
-                <div className="telegram-button-wrapper">
-                  <TelegramLoginButton onAuth={handleTelegramAuth} />
-                </div>
-                <button className="btn-secondary connection-button" disabled>
-                  <span>{t('profile_page.connect_evm_button')}</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="profile-card">
-              <h3>{t('profile_page.stats_referrals_title')}</h3>
-              <div className="stat-display tier-display"><span className="stat-label">{t('profile_page.account_tier_label')}</span><span className="stat-value-large tier-value">{t('profile_page.tier_prefix', { tier: profileData.account_tier })}</span></div>
-              {profileData.account_tier >= 2 && (<Link to="/pins-marketplace" className="btn-primary marketplace-button">{t('profile_page.pins_marketplace_button')}</Link>)}
-              <Link to="/xpleaderboard" className="stat-display xp-link"><span className="stat-label">{t('profile_page.xp_label')}</span><span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span><span className="link-indicator">→</span></Link>
-              <Link to="/rewards" className="btn-primary" style={{ width: '100%', textAlign: 'center', marginTop: '16px', marginBottom: '16px' }}>{t('profile_page.claim_xp_button')}</Link>
-              <div className="stat-display"><span className="stat-label">{t('profile_page.xp_rate_label')}</span><span className="stat-value-large xp-rate-value">+{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span></span></div>
-              <div className="stat-display"><span className="stat-label">{t('profile_page.referral_code_label')}</span><span className="referral-code">{profileData.referral_code}</span><button onClick={handleCopyLink} className="btn-secondary">{copySuccessMessage}</button></div>
-              <div className="custom-referral-section">
-                <h4>{t('profile_page.customize_link_title')}</h4>
-                <p className="form-description">{t('profile_page.customize_link_subtitle')}</p>
-                <form onSubmit={handleUpdateReferralCode} className="referral-update-form">
-                  <div className="referral-input-group"><span className="referral-input-prefix">HS-</span><input type="text" className="referral-update-input" placeholder={t('profile_page.placeholder_your_code')} value={customReferralInput} onChange={(e) => setCustomReferralInput(e.target.value)} disabled={isUpdatingReferral}/></div>
-                  <button type="submit" className="btn-primary" disabled={isUpdatingReferral || !customReferralInput}>{isUpdatingReferral ? t('profile_page.saving_button') : t('profile_page.save_code_button')}</button>
-                </form>
-                {referralUpdateMessage.text && (<p className={`referral-message ${referralUpdateMessage.type}`}>{referralUpdateMessage.text}</p>)}
-              </div>
-            </div>
-            
-            <div className="profile-card"><XpHistoryList /></div>
-
-            <div className="profile-card">
-              <h3>{t('profile_page.edit_details_title')}</h3>
-              <form onSubmit={handleProfileUpdate}>
-                <div className="form-group">
-                  <label htmlFor="username">{t('profile_page.username_label')}</label>
-                  <input
-                    id="username"
-                    type="text"
-                    className="input-field"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                </div>
-                <button type="submit" className="btn-primary">{t('profile_page.save_changes_button')}</button>
-                {editMessage.text && (<p className={`edit-message ${editMessage.type}`}>{editMessage.text}</p>)}
-              </form>
-            </div>
-
-            <div className="profile-card">
-              <h3>{t('profile_page.syndicate_title')}</h3>
-              <p className="form-description">{t('profile_page.syndicate_description')}</p>
-              <a 
-                href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="btn-primary"
-              >
-                {t('profile_page.learn_more_button')}
-              </a>
-            </div>
+        <section className="profile-journey" aria-labelledby="profile-journey-title">
+          <div className="profile-section-heading">
+            <h2 id="profile-journey-title">{t('profile_page.journey_title', 'Your activation journey')}</h2>
+            <p>
+              {t(
+                'profile_page.journey_caption',
+                'We curated three simple milestones so you always know the next best action to take.'
+              )}
+            </p>
           </div>
-        </div>
-      </DragDropContext>
-      <PinDetailModal 
-        isOpen={!!selectedPin}
-        onClose={() => setSelectedPin(null)}
-        pin={selectedPin}
-        isActive={activePins.some(p => p.pin_id === selectedPin?.pin_id)}
-        onEquip={handleEquipPin}
-        onUnequip={handleUnequipPin}
-      />
-        <PinListerModal 
-        isOpen={isListerModalOpen}
-        onClose={() => setIsListerModalOpen(false)}
-        inactivePins={inactivePins}
-        onListSuccess={fetchProfile}
-      />
+          <div className="profile-journey__grid">
+            <article className="profile-journey__step">
+              <span className="profile-journey__badge">1</span>
+              <h3>{t('profile_page.journey_step_one', 'Complete your profile')}</h3>
+              <p>
+                {t(
+                  'profile_page.journey_step_one_copy',
+                  'Update your username and link messaging accounts so teammates can recognise you instantly.'
+                )}
+              </p>
+              <div className="profile-journey__actions">
+                <a href="#profile-settings" className="btn-link">
+                  {t('profile_page.journey_step_one_cta', 'Edit details')}
+                </a>
+              </div>
+            </article>
+            <article className="profile-journey__step">
+              <span className="profile-journey__badge">2</span>
+              <h3>{t('profile_page.journey_step_two', 'Curate your pins')}</h3>
+              <p>
+                {t(
+                  'profile_page.journey_step_two_copy',
+                  'Move pins into your loadout, list duplicates, and prepare for seasonal challenges from one dedicated hub.'
+                )}
+              </p>
+              <div className="profile-journey__actions">
+                <Link to="/pins" className="btn-link">
+                  {t('profile_page.journey_step_two_cta', 'Go to pins hub')}
+                </Link>
+              </div>
+            </article>
+            <article className="profile-journey__step">
+              <span className="profile-journey__badge">3</span>
+              <h3>{t('profile_page.journey_step_three', 'Earn & celebrate')}</h3>
+              <p>
+                {t(
+                  'profile_page.journey_step_three_copy',
+                  'Track XP momentum, claim seasonal drops, and share your referral link once everything is set.'
+                )}
+              </p>
+              <div className="profile-journey__actions">
+                <Link to="/rewards" className="btn-link">
+                  {t('profile_page.journey_step_three_cta', 'Open rewards center')}
+                </Link>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section className="profile-overview-grid" aria-labelledby="profile-overview-title">
+          <h2 id="profile-overview-title" className="sr-only">
+            {t('profile_page.overview_title', 'Account overview')}
+          </h2>
+          <article className="profile-card profile-card--spotlight" aria-labelledby="profile-stats-heading">
+            <h3 id="profile-stats-heading">{t('profile_page.stats_referrals_title')}</h3>
+            <div className="stat-display tier-display">
+              <span className="stat-label">{t('profile_page.account_tier_label')}</span>
+              <span className="stat-value-large tier-value">
+                {t('profile_page.tier_prefix', { tier: profileData.account_tier })}
+              </span>
+            </div>
+            <div className="stat-display">
+              <span className="stat-label">{t('profile_page.xp_label')}</span>
+              <span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span>
+            </div>
+            <div className="stat-display">
+              <span className="stat-label">{t('profile_page.xp_rate_label')}</span>
+              <span className="stat-value-large xp-rate-value">
+                +{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span>
+              </span>
+            </div>
+            <Link to="/xpleaderboard" className="btn-secondary btn-sm">
+              {t('profile_page.view_leaderboard', 'View XP leaderboard')}
+            </Link>
+            <Link to="/rewards" className="btn-primary">
+              {t('profile_page.claim_xp_button')}
+            </Link>
+          </article>
+
+          <article className="profile-card profile-card--referral" aria-labelledby="profile-referral-heading">
+            <h3 id="profile-referral-heading">{t('profile_page.referral_title', 'Referral toolkit')}</h3>
+            <p className="form-description">
+              {t(
+                'profile_page.referral_copy',
+                'Share your personalised link and customise your invite code to match your brand.'
+              )}
+            </p>
+            <div className="stat-display">
+              <span className="stat-label">{t('profile_page.referral_code_label')}</span>
+              <span className="referral-code">{profileData.referral_code}</span>
+            </div>
+            <button onClick={handleCopyLink} className="btn-secondary">
+              {copySuccessMessage}
+            </button>
+            <form onSubmit={handleUpdateReferralCode} className="referral-update-form">
+              <div className="referral-input-group">
+                <span className="referral-input-prefix">HS-</span>
+                <input
+                  type="text"
+                  className="referral-update-input"
+                  placeholder={t('profile_page.placeholder_your_code')}
+                  value={customReferralInput}
+                  onChange={(event) => setCustomReferralInput(event.target.value)}
+                  disabled={isUpdatingReferral}
+                />
+              </div>
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={isUpdatingReferral || !customReferralInput}
+              >
+                {isUpdatingReferral
+                  ? t('profile_page.saving_button')
+                  : t('profile_page.save_code_button')}
+              </button>
+            </form>
+            {referralUpdateMessage.text && (
+              <p className={`referral-message ${referralUpdateMessage.type}`}>
+                {referralUpdateMessage.text}
+              </p>
+            )}
+          </article>
+
+          <article
+            className="profile-card profile-card--connections"
+            aria-labelledby="profile-connections-heading"
+          >
+            <h3 id="profile-connections-heading">{t('profile_page.connect_title')}</h3>
+            <p className="form-description">
+              {t(
+                'profile_page.connect_description',
+                'Link social accounts so we can deliver alerts, announcements, and bonus missions.'
+              )}
+            </p>
+            <div className="connection-buttons-container">
+              <button className="btn-secondary connection-button" onClick={handleConnectX}>
+                <span>{t('profile_page.connect_x_button')}</span>
+              </button>
+              <div className="telegram-button-wrapper">
+                <TelegramLoginButton onAuth={handleTelegramAuth} />
+              </div>
+              <button className="btn-secondary connection-button" disabled>
+                <span>{t('profile_page.connect_evm_button')}</span>
+              </button>
+            </div>
+          </article>
+
+          <article
+            id="profile-settings"
+            className="profile-card profile-card--form"
+            aria-labelledby="profile-settings-heading"
+          >
+            <h3 id="profile-settings-heading">{t('profile_page.edit_details_title')}</h3>
+            <p className="form-description">
+              {t(
+                'profile_page.profile_form_copy',
+                'Your username is visible in leaderboards and on the upcoming social layers.'
+              )}
+            </p>
+            <form onSubmit={handleProfileUpdate} className="profile-form">
+              <div className="form-group">
+                <label htmlFor="username">{t('profile_page.username_label')}</label>
+                <input
+                  id="username"
+                  type="text"
+                  className="input-field"
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
+                />
+              </div>
+              <button type="submit" className="btn-primary">
+                {t('profile_page.save_changes_button')}
+              </button>
+              {editMessage.text && (
+                <p className={`edit-message ${editMessage.type}`}>{editMessage.text}</p>
+              )}
+            </form>
+          </article>
+
+          <article className="profile-card profile-card--syndicate" aria-labelledby="profile-syndicate-heading">
+            <h3 id="profile-syndicate-heading">{t('profile_page.syndicate_title')}</h3>
+            <p className="form-description">{t('profile_page.syndicate_description')}</p>
+            <a
+              href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary"
+            >
+              {t('profile_page.learn_more_button')}
+            </a>
+          </article>
+
+          <article className="profile-card profile-card--history" aria-label={t('profile_page.history_heading', 'Recent XP activity')}>
+            <XpHistoryList />
+          </article>
+        </section>
+      </div>
     </Layout>
   );
 };
