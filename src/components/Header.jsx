@@ -49,7 +49,7 @@ const Header = () => {
             <>
               <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
               <Link to="/pins" className="header__button">{t('header.pins', 'Pins')}</Link>
-              <Link to="/marketplace" className="header__button">{t('nav.marketplace')}</Link>
+              <Link to="/pins-marketplace" className="header__button">{t('nav.marketplace')}</Link>
               <Link to="/shop" className="header__button">{t('nav.shop')}</Link>
               <Link to="/rewards" className="header__button">{t('header.rewards', 'Rewards')}</Link>
               <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
@@ -59,11 +59,7 @@ const Header = () => {
               )}
             </>
           ) : (
-            <>
-              <Link to="/self-serve" className="header__button">{t('header.self_serve', 'Self-Serve')}</Link>
-              <Link to="/managed" className="header__button">{t('header.managed', 'Managed')}</Link>
-              <Link to="/investor" className="header__button">{t('header.investor', 'Investor')}</Link>
-            </>
+         
           )}
         </nav>
 
