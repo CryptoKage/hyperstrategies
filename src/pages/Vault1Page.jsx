@@ -6,6 +6,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { useTranslation } from 'react-i18next';
 import api from '../api/api';
 import Layout from '../components/Layout';
+import ComingSoonWrapper from '../components/ComingSoonWrapper';
 
 // Main StatCard for top-level stats
 const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, className = '' }) => {
@@ -131,6 +132,10 @@ const Vault1Page = () => {
     const hasPrincipal = userPosition && userPosition.principal > 0;
     const chartData = formatChartData();
     
+    // /src/pages/Vault1Page.jsx
+
+// ... (All the code above the return statement is correct and remains the same)
+
     return (
         <Layout>
             <div className="vault-detail-container">
@@ -147,33 +152,55 @@ const Vault1Page = () => {
                             <div className="vault-detail-column"><StatCard labelKey="vault.stats.realizedPnl" value={userPosition.realizedPnl} subtextKey="vault.stats.realizedPnlSubtext" /><StatCard labelKey="vault.stats.unrealizedPnl" value={userPosition.unrealizedPnl} subtextKey="vault.stats.unrealizedPnlSubtext" className={userPosition.unrealizedPnl >= 0 ? 'text-positive' : 'text-negative'}/></div>
                         </div>
 
-                        <div className="profile-card full-width">
-                            <h3>{t('vault.chart.title')}</h3>
-                            <div className="chart-toggle">
-                                <div style={{display: 'flex', gap: '10px'}}><button onClick={() => setChartView('accountValue')} className={chartView === 'accountValue' ? 'active' : ''}>{t('vault.chart.myAccountValue')}</button><button onClick={() => setChartView('performanceIndex')} className={chartView === 'performanceIndex' ? 'active' : ''}>{t('vault.chart.vaultPerformanceIndex')}</button></div>
-                                {chartView === 'performanceIndex' && (<div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#ccc'}}><input type="checkbox" id="asset-toggle" checked={showAssetLines} onChange={(e) => setShowAssetLines(e.target.checked)} /><label htmlFor="asset-toggle">{t('vault.chart.compareAssets')}</label></div>)}
+                        {/* ==================================================================== */}
+                        {/* --- THIS IS THE "COMING SOON" WRAPPER FOR ALL ANALYTICS --- */}
+                        {/* ==================================================================== */}
+                        <ComingSoonWrapper flagName="showPerformanceCharts">
+
+                            {personalSnapshot && (
+                                <div className="profile-card full-width">
+                                    <h3>{t('vault.yourPerformanceSnapshotTitle')}</h3>
+                                    <div className="performance-snapshot-grid">
+                                        <SnapshotItem labelKey="vault.stats.dailyReturn" value={personalSnapshot.daily} className={personalSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
+                                        <SnapshotItem labelKey="vault.stats.weeklyReturn" value={personalSnapshot.weekly} className={personalSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+                                        <SnapshotItem labelKey="vault.stats.monthlyReturn" value={personalSnapshot.monthly} className={personalSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+                                        <SnapshotItem labelKey="vault.stats.totalReturn" value={personalSnapshot.total} className={personalSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
+                                    </div>
+                                    <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.yourPerformanceSnapshotSubtext')}</p>
+                                </div>
+                            )}
+
+                            <div className="profile-card full-width">
+                                <h3>{t('vault.chart.title')}</h3>
+                                <div className="chart-toggle">
+                                    <div style={{display: 'flex', gap: '10px'}}><button onClick={() => setChartView('accountValue')} className={chartView === 'accountValue' ? 'active' : ''}>{t('vault.chart.myAccountValue')}</button><button onClick={() => setChartView('performanceIndex')} className={chartView === 'performanceIndex' ? 'active' : ''}>{t('vault.chart.vaultPerformanceIndex')}</button></div>
+                                    {chartView === 'performanceIndex' && (<div style={{display: 'flex', alignItems: 'center', gap: '8px', color: '#ccc'}}><input type="checkbox" id="asset-toggle" checked={showAssetLines} onChange={(e) => setShowAssetLines(e.target.checked)} /><label htmlFor="asset-toggle">{t('vault.chart.compareAssets')}</label></div>)}
+                                </div>
+                                
+                                {chartData.length > 1 ? (
+                                    <ResponsiveContainer width="100%" height={400}>
+                                        <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#333" /><XAxis dataKey="date" stroke="#888" /><YAxis stroke="#888" tickFormatter={(tick) => chartView === 'accountValue' ? `$${Math.round(tick)}` : `${tick.toFixed(1)}%`} /><Tooltip contentStyle={{backgroundColor: '#1a1a1a', border: '1px solid #333'}} labelStyle={{color: '#fff'}} formatter={(value) => chartView === 'accountValue' ? `$${value?.toFixed(2)}` : `${value?.toFixed(2)}%`} /><Legend />
+                                            {chartView === 'accountValue' ? (<Line type="monotone" dataKey="value" name={t('vault.chart.legend.myAccountValue')} stroke={CHART_COLORS.ACCOUNT} dot={false} />) : (
+                                                <>
+                                                    <Line type="monotone" dataKey="VAULT" name={t('vault.chart.legend.vaultIndex', { vaultName: vaultInfo.name })} stroke={CHART_COLORS.VAULT} dot={false} />
+                                                    <Line type="monotone" dataKey="PROJECTION" name={t('vault.chart.legend.withUnrealized')} stroke={CHART_COLORS.PROJECTION} dot={false} strokeDasharray="2 6" connectNulls />
+                                                    {showAssetLines && (<>
+                                                        <Line type="monotone" dataKey="BTC" name={t('vault.chart.legend.btc')} stroke={CHART_COLORS.BTC} dot={false} strokeDasharray="3 3" connectNulls />
+                                                        <Line type="monotone" dataKey="ETH" name={t('vault.chart.legend.eth')} stroke={CHART_COLORS.ETH} dot={false} strokeDasharray="3 3" connectNulls />
+                                                        <Line type="monotone" dataKey="SOL" name={t('vault.chart.legend.sol')} stroke={CHART_COLORS.SOL} dot={false} strokeDasharray="3 3" connectNulls />
+                                                    </>)}
+                                                </>
+                                            )}
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                ) : ( <p>{t('vault.errors.noChartData')}</p> )}
                             </div>
-                            
-                            {chartData.length > 1 ? (
-                                <ResponsiveContainer width="100%" height={400}>
-                                    <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#333" /><XAxis dataKey="date" stroke="#888" /><YAxis stroke="#888" tickFormatter={(tick) => chartView === 'accountValue' ? `$${Math.round(tick)}` : `${tick.toFixed(1)}%`} /><Tooltip contentStyle={{backgroundColor: '#1a1a1a', border: '1px solid #333'}} labelStyle={{color: '#fff'}} formatter={(value) => chartView === 'accountValue' ? `$${value?.toFixed(2)}` : `${value?.toFixed(2)}%`} /><Legend />
-                                        {chartView === 'accountValue' ? (<Line type="monotone" dataKey="value" name={t('vault.chart.legend.myAccountValue')} stroke={CHART_COLORS.ACCOUNT} dot={false} />) : (
-                                            <>
-                                                <Line type="monotone" dataKey="VAULT" name={t('vault.chart.legend.vaultIndex', { vaultName: vaultInfo.name })} stroke={CHART_COLORS.VAULT} dot={false} />
-                                                <Line type="monotone" dataKey="PROJECTION" name={t('vault.chart.legend.withUnrealized')} stroke={CHART_COLORS.PROJECTION} dot={false} strokeDasharray="2 6" connectNulls />
-                                                {showAssetLines && (<>
-                                                    <Line type="monotone" dataKey="BTC" name={t('vault.chart.legend.btc')} stroke={CHART_COLORS.BTC} dot={false} strokeDasharray="3 3" connectNulls />
-                                                    <Line type="monotone" dataKey="ETH" name={t('vault.chart.legend.eth')} stroke={CHART_COLORS.ETH} dot={false} strokeDasharray="3 3" connectNulls />
-                                                    <Line type="monotone" dataKey="SOL" name={t('vault.chart.legend.sol')} stroke={CHART_COLORS.SOL} dot={false} strokeDasharray="3 3" connectNulls />
-                                                </>)}
-                                            </>
-                                        )}
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            ) : ( <p>{t('vault.errors.noChartData')}</p> )}
-                        </div>
-                        
+                        </ComingSoonWrapper>
+                        {/* ==================================================================== */}
+                        {/* --- END OF WRAPPER --- */}
+                        {/* ==================================================================== */}
+
                         <div className="vault-detail-grid">
                             <div className="profile-card">
                                 <h3>{t('vault.assetBreakdown.title')}</h3>
@@ -185,40 +212,21 @@ const Vault1Page = () => {
                             </div>
                         </div>
                    
-                      
-                         </>
+                        {performanceSnapshot && (
+                            <div className="profile-card full-width">
+                                <h3>{t('vault.performanceSnapshotTitle')}</h3>
+                                <div className="performance-snapshot-grid">
+                                    <SnapshotItem labelKey="vault.stats.dailyReturn" value={performanceSnapshot.daily} className={performanceSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
+                                    <SnapshotItem labelKey="vault.stats.weeklyReturn" value={performanceSnapshot.weekly} className={performanceSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+                                    <SnapshotItem labelKey="vault.stats.monthlyReturn" value={performanceSnapshot.monthly} className={performanceSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+                                    <SnapshotItem labelKey="vault.stats.totalReturn" value={performanceSnapshot.total} className={performanceSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
+                                </div>
+                                <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.yourPerformanceSnapshotSubtext')}</p>
+                            </div>
+                        )}
+                    </>
                 ) : ( <div className="profile-card text-center"><h2>{t('vault.notInvested.title')}</h2><p>{t('vault.notInvested.description')}</p><Link to="/dashboard" className="btn-primary mt-4">{t('common.goToDashboard')}</Link></div> )}
             </div>
         </Layout>
     );
 };
-
-export default Vault1Page;
-//   {performanceSnapshot && (
-    //                        <div className="profile-card full-width">
-  //                              <h3>{t('vault.performanceSnapshotTitle')}</h3>
-    //                            <div className="performance-snapshot-grid">
-      //                              <SnapshotItem labelKey="vault.stats.dailyReturn" value={performanceSnapshot.daily} className={performanceSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
-        //                            <SnapshotItem labelKey="vault.stats.weeklyReturn" value={performanceSnapshot.weekly} className={performanceSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
-          //                          <SnapshotItem labelKey="vault.stats.monthlyReturn" value={performanceSnapshot.monthly} className={performanceSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
-            //                       <SnapshotItem labelKey="vault.stats.totalReturn" value={performanceSnapshot.total} className={performanceSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
-               //                 </div>
-                 //               <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.performanceSnapshotSubtext')}</p>
-      //                      </div>
-        //                )}
-
-
-        // 
-        //                {/* --- THE FINAL LAYOUT: BOTH SNAPSHOTS AT THE BOTTOM --- */}
-          //              {personalSnapshot && (
-            //                <div className="profile-card full-width">
-              //                  <h3>{t('vault.yourPerformanceSnapshotTitle')}</h3>
-                //                <div className="performance-snapshot-grid">
-                  //                  <SnapshotItem labelKey="vault.stats.dailyReturn" value={personalSnapshot.daily} className={personalSnapshot.daily >= 0 ? 'text-positive' : 'text-negative'} />
-                    //                <SnapshotItem labelKey="vault.stats.weeklyReturn" value={personalSnapshot.weekly} className={personalSnapshot.weekly >= 0 ? 'text-positive' : 'text-negative'} />
-                      //              <SnapshotItem labelKey="vault.stats.monthlyReturn" value={personalSnapshot.monthly} className={personalSnapshot.monthly >= 0 ? 'text-positive' : 'text-negative'} />
-                        //            <SnapshotItem labelKey="vault.stats.totalReturn" value={personalSnapshot.total} className={personalSnapshot.total >= 0 ? 'text-positive' : 'text-negative'} />
-                          ///      </div>
-                             //   <p className="stat-subtext" style={{textAlign: 'center', marginTop: '1rem'}}>{t('vault.yourPerformanceSnapshotSubtext')}</p>
-              //              </div>
-                //        )}
