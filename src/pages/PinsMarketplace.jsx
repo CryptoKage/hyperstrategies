@@ -7,6 +7,7 @@ import api from '../api/api';
 import Layout from '../components/Layout';
 import { PinImage } from '../components/UserPins'; // We'll reuse our PinImage component
 import BuyPinModal from '../components/BuyPinModal';
+import ComingSoonWrapper from '../components/ComingSoonWrapper';
 
 const PinsMarketplace = () => {
   const { t } = useTranslation();
@@ -94,85 +95,82 @@ const handleCancelListing = async (listingId) => {
   const renderContent = () => {
       if (loading) { return <p>{t('pins_market.loading')}</p>; }
       if (error) { return <p className="error-message">{error}</p>; }
-      if (listings.length === 0) {
-      return <div className="empty-marketplace"><h3>{t('pins_market.no_listings_title')}</h3><p>{t('pins_market.no_listings_desc')}</p></div>;
+      if (listings.length === 0 && filter === 'ALL') {
+          return <div className="empty-marketplace"><h3>{t('pins_market.no_listings_title')}</h3><p>{t('pins_market.no_listings_desc')}</p></div>;
       }
-
-    return (
-      <div className="market-grid">
-        {listings.map(listing => (
-          <div key={listing.listing_id} className="pin-listing-card">
-            <PinImage pinName={listing.pin_name} imageFilename={listing.image_filename} />
-            <div className="listing-details">
-                <h4>{listing.pin_name}</h4>
-                <p className="seller-info">{t('pins_market.sold_by')} <span>{listing.seller_username}</span></p>
-                <p className="listing-price">${parseFloat(listing.price).toFixed(2)}</p>
-               <button
-    className="btn-primary"
-    onClick={() => setSelectedListing(listing)} // <-- This is the change
-  >
-    {t('pins_market.buy_now')}
-  </button>
-            </div>
+      return (
+          <div className="market-grid">
+              {listings.map(listing => (
+                  <div key={listing.listing_id} className="pin-listing-card">
+                      <div className="pin-image-wrapper"><PinImage pinName={listing.pin_name} imageFilename={listing.image_filename} /></div>
+                      <div className="listing-details">
+                          <h4>{listing.pin_name}</h4>
+                          <p className="seller-info">{t('pins_market.sold_by')} <span>{listing.seller_username}</span></p>
+                          <p className="listing-price">${parseFloat(listing.price).toFixed(2)}</p>
+                          <button className="btn-primary" onClick={() => setSelectedListing(listing)}>{t('pins_market.buy_now')}</button>
+                      </div>
+                  </div>
+              ))}
           </div>
-        ))}
-      </div>
-    );
+      );
   };
 
-return (
+  return (
     <Layout>
       <div className="pins-market-container">
         <div className="market-header">
           <h1 className="market-title gradient-text">{t('pins_market.title')}</h1>
-          <div className="market-controls">
-    <div className="control-group">
-                <label htmlFor="filter-pins">{t('pins_market.filter_label')}</label>
-                <select id="filter-pins" value={filter} onChange={(e) => setFilter(e.target.value)}>
-                  <option value="ALL">{t('pins_market.option_all')}</option>
-                  {pinDefinitions.map(def => (
-                    <option key={def.pin_name} value={def.pin_name}>{def.pin_name}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="control-group">
-                <label htmlFor="sort-pins">{t('pins_market.sort_label')}</label>
-                <select id="sort-pins" value={sort} onChange={(e) => setSort(e.target.value)}>
-                  <option value="created_at-DESC">{t('pins_market.option_newest')}</option>
-                  <option value="price-ASC">{t('pins_market.option_price_low_high')}</option>
-                  <option value="price-DESC">{t('pins_market.option_price_high_low')}</option>
-                </select>
-              </div>
-          </div>
         </div>
 
-        {/* --- THIS IS THE CORRECT PLACEMENT for "My Listings" --- */}
-        {myListings.length > 0 && (
-          <div className="my-listings-section">
-              <h3>{t('pins_market.my_listings_title')}</h3>
-            <div className="my-listings-grid">
-              {myListings.map(listing => (
-                <div key={listing.listing_id} className="my-listing-card">
-                  <PinImage pinName={listing.pin_name} imageFilename={listing.image_filename} />
-                  <div className="listing-info">
-                    <strong>{listing.pin_name}</strong>
-                    <span>${parseFloat(listing.price).toFixed(2)}</span>
-                  </div>
-                  <button
-                      className="btn-danger-small"
-                      onClick={() => handleCancelListing(listing.listing_id)}
-                      disabled={isCancelling === listing.listing_id}
-                    >
-                      {isCancelling === listing.listing_id ? '...' : t('pins_market.cancel')}
-                    </button>
-                  </div>
-                ))}
-              </div>
-          </div>
-        )}
-        
-        {/* --- The main content is now only called ONCE --- */}
-        {renderContent()}
+        {/* ==================================================================== */}
+        {/* --- THIS IS THE CORRECT WAY TO WRAP THE FEATURE --- */}
+        {/* ==================================================================== */}
+        <ComingSoonWrapper flagName="showPinMarketplace">
+            {/* All the dynamic content goes INSIDE the wrapper */}
+            <div className="market-controls">
+                <div className="control-group">
+                    <label htmlFor="filter-pins">{t('pins_market.filter_label')}</label>
+                    <select id="filter-pins" value={filter} onChange={(e) => setFilter(e.target.value)}>
+                        <option value="ALL">{t('pins_market.option_all')}</option>
+                        {pinDefinitions.map(def => (<option key={def.pin_name} value={def.pin_name}>{def.pin_name}</option>))}
+                    </select>
+                </div>
+                <div className="control-group">
+                    <label htmlFor="sort-pins">{t('pins_market.sort_label')}</label>
+                    <select id="sort-pins" value={sort} onChange={(e) => setSort(e.target.value)}>
+                        <option value="created_at-DESC">{t('pins_market.option_newest')}</option>
+                        <option value="price-ASC">{t('pins_market.option_price_low_high')}</option>
+                        <option value="price-DESC">{t('pins_market.option_price_high_low')}</option>
+                    </select>
+                </div>
+            </div>
+
+            {myListings.length > 0 && (
+                <div className="my-listings-section">
+                    <h3>{t('pins_market.my_listings_title')}</h3>
+                    <div className="my-listings-grid">
+                        {myListings.map(listing => (
+                            <div key={listing.listing_id} className="my-listing-card">
+                                <div className="pin-image-wrapper"><PinImage pinName={listing.pin_name} imageFilename={listing.image_filename} /></div>
+                                <div className="listing-info">
+                                    <strong>{listing.pin_name}</strong>
+                                    <span>${parseFloat(listing.price).toFixed(2)}</span>
+                                </div>
+                                <button className="btn-danger-small" onClick={() => handleCancelListing(listing.listing_id)} disabled={isCancelling === listing.listing_id}>
+                                    {isCancelling === listing.listing_id ? '...' : t('pins_market.cancel')}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+            
+            {renderContent()}
+        </ComingSoonWrapper>
+        {/* ==================================================================== */}
+        {/* --- END OF WRAPPER --- */}
+        {/* ==================================================================== */}
+
       </div>
 
        <BuyPinModal 
@@ -187,7 +185,4 @@ return (
   );
 };
 
-export default PinsMarketplace;
-// ==============================================================================
-// END OF FILE
-// ==============================================================================
+export default PinsMarketplacePage;
