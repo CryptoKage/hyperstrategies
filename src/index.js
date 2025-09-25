@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { FeatureFlagProvider } from './context/FeatureFlagContext'; 
 
 import './styles/global.css'; // Your main styles
 import Router from './pages/Router';
