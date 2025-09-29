@@ -60,8 +60,6 @@ const Header = () => {
             </>
           ) : (
             <>
-              <Link to="/self-serve" className="header__button">{t('header.self_serve', 'Self-Serve')}</Link>
-              <Link to="/managed" className="header__button">{t('header.managed', 'Managed')}</Link>
               <Link to="/investor" className="header__button">{t('header.investor', 'Investor')}</Link>
             </>
           )}

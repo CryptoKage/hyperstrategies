@@ -349,10 +349,20 @@
         "link": "/login"
       },
       "investor": {
-        "title": "Hyper Strategies Info",
-        "text": "Erfahre mehr über Hyper-Strategies in unserem Gitbook.",
-        "button": "Mehr erfahren",
-        "link": "https://hyper-strategies.gitbook.io/hyper-strategies-docs/"
+  "title": "Investorenbeziehungen",
+  "subtitle": "Entdecken Sie Möglichkeiten, von Anfang an mit Hyper Strategies zusammenzuarbeiten.",
+  "seed": {
+    "title": "Seed-Investitionsmöglichkeit",
+    "description": "Wir bieten bis zu 12% Unternehmensanteile für frühe Seed-Investitionen an. Bitte kontaktieren Sie das Team, wenn Sie daran interessiert sind.",
+    "cta_telegram": "Kontakt über Telegram",
+    "cta_x": "Kontakt über X"
+  },
+  "presale": {
+    "title": "Plattform-Token-Vorverkauf",
+    "description": "Nehmen Sie an unserem bevorstehenden Token-Vorverkauf teil. Ihre Berechtigung und Zuteilung richten sich nach Ihren XP. Sichern Sie sich Ihren Platz in der Zukunft unseres Ökosystems.",
+    "cta_loggedin": "Vorverkaufsdetails ansehen",
+    "cta_loggedout": "Anmelden, um Berechtigung zu prüfen"
+  }
       }
     },
   "card_section": {
@@ -586,5 +596,43 @@
         "sol": "SOL-Performance"
       }
     }
-  }
+  
+},
+"pins_page": {
+  "loading": "Deine Pins werden geladen...",
+  "error_load": "Wir konnten deine Pins nicht laden. Bitte versuche es erneut.",
+  "retry_button": "Erneut versuchen",
+  "no_slots_alert": "Alle deine Pin-Slots sind voll. Entferne zuerst einen Pin.",
+  "save_error": "Wir konnten deine Ausrüstung nicht speichern. Bitte versuche es erneut.",
+  "eyebrow": "Pins & Kosmetik",
+  "title": "Stelle die Ausrüstung zusammen, die dich repräsentiert",
+  "subtitle": "Verwalte aktive Boosts, bereite zukünftige Pins vor und zeige deine Erfolge bei Hyper Strategies.",
+  "active_summary": "Aktive Ausrüstung",
+  "active_summary_hint": "Fülle alle verfügbaren Slots, um deinen täglichen Belohnungs-Boost zu maximieren.",
+  "collection_summary": "Sammlung",
+  "collection_summary_hint": "Insgesamt gesammelte Pins.",
+  "marketplace_summary": "Marktplatz",
+  "marketplace_access": "Freigeschaltet",
+  "marketplace_locked": "Stufe 2 erforderlich",
+  "marketplace_summary_hint": "Zugang zum P2P-Marktplatz ist auf Stufe 2 beschränkt.",
+  "management_title": "Aktive Pin-Ausrüstung",
+  "management_copy": "Ziehe Pins in deine aktiven Slots, um ihre Boni sofort anzuwenden. Bevorzugst du eine einfachere Einrichtung? Aktiviere die automatische Ausrüstung und wir optimieren für dich.",
+  "auto_equip_label": "Beste Pins automatisch ausrüsten",
+  "empty_slot": "Leerer Slot",
+  "locked_slots": "Nächster Slot wird auf Stufe {{tier}} freigeschaltet",
+  "saving": "Wird gespeichert...",
+  "save_button": "Ausrüstung speichern",
+  "auto_equip_helper": "Die automatische Ausrüstung hält deine stärkste Kombination aktiv. Deaktiviere sie, um die volle manuelle Kontrolle zu übernehmen.",
+  "collection_title": "Pin-Inventar",
+  "collection_copy": "Tippe auf einen Pin, um seine Eigenschaften, Geschichte und Marktplatzoptionen zu sehen.",
+  "list_button": "Ausgewählte Pins anbieten",
+  "empty_collection": "Du hast im Moment keine Pins in Reserve.",
+  "playbook_title": "Pin-Strategiebuch",
+  "playbook_step_one_title": "1. Boosts aktivieren",
+  "playbook_step_one_copy": "Halte deine stärkste Synergie für XP-Boosts und saisonale Multiplikatoren aktiv.",
+  "playbook_step_two_title": "2. Sammlungen rotieren",
+  "playbook_step_two_copy": "Tausche neu geprägte oder auf dem Marktplatz gefundene Pins ein, um Seltenheitsboni zu maximieren.",
+  "playbook_step_three_title": "3. Stil zeigen",
+  "playbook_step_three_copy": "Rüste kosmetische Sets aus, die zu deinem Syndikat passen und zeige der Community deinen Fortschritt."
+}
 }

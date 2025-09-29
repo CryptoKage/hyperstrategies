@@ -62,19 +62,6 @@
       "description": "An exclusive shop where you can spend your balance on powerful perks, items, and advantages is being stocked. Check back soon for the grand opening!"
     }
   },
-  "pins_page": {
-    "eyebrow": "Pins & Cosmetics",
-    "title": "Curate the loadout that represents you",
-    "subtitle": "Manage active boosts, stage future pins, and showcase your achievements across Hyper Strategies.",
-    "active_summary": "Active loadout",
-    "active_summary_hint": "Fill all available slots to maximise your daily rewards boost.",
-    "collection_summary": "Collection",
-    "collection_summary_hint": "Keep rare pins handy so you can swap them in for seasonal events.",
-    "marketplace_summary": "Marketplace",
-    "marketplace_access": "Unlocked",
-    "marketplace_locked": "Tier 2 required",
-    "marketplace_summary_hint": "List duplicates and discover limited editions when you reach Tier 2."
-  },
   "footer": {
     "follow_us": "Follow us:",
     "documentation": "Docs",
@@ -366,13 +353,22 @@
         "button": "VISIT DASHBOARD",
         "link": "/login"
       },
-      "investor": {
-        "title": "Hyper Strategies Info",
-        "text": "Learn about Hyper-Strategies from our Gitbook.",
-        "button": "Learn More",
-        "link": "https://hyper-strategies.gitbook.io/hyper-strategies-docs/"
-      }
-    
+     "investor": {
+  "title": "Investor Relations",
+  "subtitle": "Explore opportunities to partner with Hyper Strategies at the ground floor.",
+  "seed": {
+    "title": "Seed Investment Opportunity",
+    "description": "We are offering up to 12% stake in the company for early seed investment. Please contact the team if this is of interest to you.",
+    "cta_telegram": "Contact via Telegram",
+    "cta_x": "Contact via X"
+  },
+  "presale": {
+    "title": "Platform Token Presale",
+    "description": "Participate in our upcoming token presale. Your eligibility and allocation are determined by your XP. Secure your spot in the future of our ecosystem.",
+    "cta_loggedin": "View Presale Details",
+    "cta_loggedout": "Sign In to Check Eligibility"
+  }
+} 
     },
      "journey": {
       "eyebrow": "Three steps to momentum",
@@ -640,5 +636,44 @@
     "DEPOSIT": "Deposit",
     "WITHDRAWAL_REQUEST": "Withdrawal Request",
     "PNL_DISTRIBUTION": "P&L Distribution"
-  }
+  },
+
+"pins_page": {
+  "loading": "Loading your pins...",
+  "error_load": "We could not load your pins. Please try again.",
+  "retry_button": "Try again",
+  "no_slots_alert": "All of your pin slots are full. Unequip a pin first.",
+  "save_error": "We could not save your loadout. Please try again.",
+  "eyebrow": "Pins & Cosmetics",
+  "title": "Curate the loadout that represents you",
+  "subtitle": "Manage active boosts, stage future pins, and showcase your achievements across Hyper Strategies.",
+  "active_summary": "Active loadout",
+  "active_summary_hint": "Fill all available slots to maximise your daily rewards boost.",
+  "collection_summary": "Collection",
+  "collection_summary_hint": "Total Collected Pins.",
+  "marketplace_summary": "Marketplace",
+  "marketplace_access": "Unlocked",
+  "marketplace_locked": "Tier 2 required",
+  "marketplace_summary_hint": "Access to p2p marketplace restricted to Tier 2.",
+  "management_title": "Active pin loadout",
+  "management_copy": "Drag pins into your active slots to apply their bonuses instantly. Prefer a simpler setup? Enable auto-equip and we will optimise for you.",
+  "auto_equip_label": "Auto-equip best pins",
+  "empty_slot": "Empty slot",
+  "locked_slots": "Next slot unlocks at Tier {{tier}}",
+  "saving": "Saving...",
+  "save_button": "Save loadout",
+  "auto_equip_helper": "Auto-equip keeps your strongest combination active. Disable it to take full manual control.",
+  "collection_title": "Pin inventory",
+  "collection_copy": "Tap any pin to inspect its traits, lore, and marketplace options.",
+  "list_button": "List selected pins",
+  "empty_collection": "You have no pins in reserve right now.",
+  "playbook_title": "Pin playbook",
+  "playbook_step_one_title": "1. Activate boosts",
+  "playbook_step_one_copy": "Keep your strongest synergy active for XP boosts and seasonal multipliers. Use manual mode for fine-tuning.",
+  "playbook_step_two_title": "2. Rotate collections",
+  "playbook_step_two_copy": "Swap in newly minted or marketplace finds to maximise rarity bonuses before events begin.",
+  "playbook_step_three_title": "3. Showcase style",
+  "playbook_step_three_copy": "Equip cosmetic sets that align with your syndicate and broadcast your progress to the community."
 }
+}
+

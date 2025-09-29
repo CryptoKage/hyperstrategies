@@ -161,6 +161,22 @@
       "weeklyReturn": "Weekly Shenanigan Score",
       "monthlyReturn": "Monthly Shenanigan Score",
       "totalReturn": "Total Shenanigans"
-    }
+    },
+    "investor": {
+  "title": "BIG TEEF GITZ",
+  "subtitle": "GET IN ON DA GROUND FLOOR OF DA WAAAGH!",
+  "seed": {
+    "title": "GIMME YER TEEF",
+    "description": "WE'RE OFFERIN' A BIG CHUNK OF DA MOB FOR SOME EARLY TEEF. IF YOU'RE A BIG BOSS, COME TALK TO DA WARBOSS.",
+    "cta_telegram": "YELL AT US ON TELEGRAM",
+    "cta_x": "YELL AT US ON X"
+  },
+  "presale": {
+    "title": "GET YER SHINY GUBBINZ",
+    "description": "GET IN ON DA PRESALE. HOW MUCH WAAAGH! YA GOT DETERMINES HOW MANY SHINIES YA CAN GET. GET IN EARLY!",
+    "cta_loggedin": "SEE DA SHINIES",
+    "cta_loggedout": "SIGN IN, YA GIT!"
+  }
+}
   }
 }

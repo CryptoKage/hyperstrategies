@@ -8,8 +8,6 @@ import Home from './Home';
 import XPLeaderboard from './XPLeaderboard';
 import Profile from './Profile';
 import Pins from './Pins';
-import SelfServe from './SelfServe';
-import Managed from './Managed';
 import Investor from './Investor';
 import Legal from './Legal';
 import Login from './Login';
@@ -48,8 +46,6 @@ const Router = () => {
     <Routes>
       {/* --- Publicly Accessible Routes --- */}
       <Route path="/" element={<Home />} />
-      <Route path="/self-serve" element={<SelfServe />} />
-      <Route path="/managed" element={<Managed />} />
       <Route path="/investor" element={<Investor />} />
       <Route path="/legal" element={<Legal />} />
       <Route path="/faq" element={<FAQ />} />

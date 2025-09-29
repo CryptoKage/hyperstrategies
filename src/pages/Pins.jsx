@@ -133,108 +133,52 @@ const Pins = () => {
 
   if (isLoading) {
     return (
-      <Layout>
-        <div className="pins-page">
-          <p className="pins-page__status-text">
-            {t('pins_page.loading', 'Loading your pins...')}
-          </p>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (error || !profileData) {
-    return (
-      <Layout>
-        <div className="pins-page">
-          <p className="pins-page__status-text pins-page__status-text--error">{error}</p>
-          <button className="btn-primary" onClick={fetchPins}>
-            {t('pins_page.retry_button', 'Try again')}
-          </button>
-        </div>
-      </Layout>
-    );
-  }
-
-  const totalSlots = profileData.totalPinSlots;
-
- return (
     <Layout>
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="pins-page">
           <header className="pins-page__header">
-            <span className="eyebrow-text">{t('pins_page.eyebrow', 'Pins & Cosmetics')}</span>
-            <h1>{t('pins_page.title', 'Curate your loadout')}</h1>
-            <p>
-              {t(
-                'pins_page.subtitle',
-                'Manage active boosts, stage future pins, and showcase your achievements across Hyper Strategies.'
-              )}
-            </p>
+            <span className="eyebrow-text">{t('pins_page.eyebrow')}</span>
+            <h1>{t('pins_page.title')}</h1>
+            <p>{t('pins_page.subtitle')}</p>
           </header>
 
           <section className="pins-overview-grid">
             <article className="pins-overview-card">
-              <h3>{t('pins_page.active_summary', 'Active loadout')}</h3>
+              <h3>{t('pins_page.active_summary')}</h3>
               <p className="pins-overview-card__metric">{`${activePins.length}/${totalSlots}`}</p>
-              <p className="pins-overview-card__meta">
-                {t('pins_page.active_summary_hint','Fill all available slots to maximise your daily rewards boost.')}
-              </p>
+              <p className="pins-overview-card__meta">{t('pins_page.active_summary_hint')}</p>
             </article>
-
             <article className="pins-overview-card">
-              <h3>{t('pins_page.collection_summary', 'Collection')}</h3>
+              <h3>{t('pins_page.collection_summary')}</h3>
               <p className="pins-overview-card__metric">{profileData.ownedPins.length}</p>
-              <p className="pins-overview-card__meta">
-                {t('pins_page.collection_summary_hint','Total Collected Pins.')}
-              </p>
-            </article> {/* <-- THIS IS THE MISSING CLOSING TAG */}
-
-            {/* --- THIS IS THE CORRECTLY PLACED AND STRUCTURED MARKETPLACE CARD --- */}
+              <p className="pins-overview-card__meta">{t('pins_page.collection_summary_hint')}</p>
+            </article>
             {profileData.account_tier >= 2 ? (
               <Link to="/marketplace" className="card-link-wrapper">
                 <article className="pins-overview-card pins-overview-card--clickable">
-                  <h3>{t('pins_page.marketplace_summary', 'Marketplace')}</h3>
-                  <p className="pins-overview-card__metric pins-overview-card__metric--unlocked">
-                    {t('pins_page.marketplace_access', 'Unlocked')}
-                  </p>
-                  <p className="pins-overview-card__meta">
-                    {t('pins_page.marketplace_summary_hint', 'Access to p2p marketplace restricted to Tier 2.')}
-                  </p>
+                  <h3>{t('pins_page.marketplace_summary')}</h3>
+                  <p className="pins-overview-card__metric pins-overview-card__metric--unlocked">{t('pins_page.marketplace_access')}</p>
+                  <p className="pins-overview-card__meta">{t('pins_page.marketplace_summary_hint')}</p>
                 </article>
               </Link>
             ) : (
               <article className="pins-overview-card pins-overview-card--locked">
-                <h3>{t('pins_page.marketplace_summary', 'Marketplace')}</h3>
-                <p className="pins-overview-card__metric">
-                  {t('pins_page.marketplace_locked', 'Tier 2 required')}
-                </p>
-                <p className="pins-overview-card__meta">
-                  {t('pins_page.marketplace_summary_hint', 'Access to p2p marketplace restricted to Tier 2.')}
-                </p>
+                <h3>{t('pins_page.marketplace_summary')}</h3>
+                <p className="pins-overview-card__metric">{t('pins_page.marketplace_locked')}</p>
+                <p className="pins-overview-card__meta">{t('pins_page.marketplace_summary_hint')}</p>
               </article>
             )}
-            {/* --- END OF FIX --- */}
           </section>
 
           <section className="pins-management">
             <div className="pins-management__intro">
-              <h2>{t('pins_page.management_title', 'Active pin loadout')}</h2>
-              <p>
-                {t(
-                  'pins_page.management_copy',
-                  'Drag pins into your active slots to apply their bonuses instantly. Prefer a simpler setup? Enable auto-equip and we will optimise for you.'
-                )}
-              </p>
+              <h2>{t('pins_page.management_title')}</h2>
+              <p>{t('pins_page.management_copy')}</p>
               <div className="toggle-group">
-                <span>{t('pins_page.auto_equip_label', 'Auto-equip best pins')}</span>
-                <label className="switch">
-                  <input type="checkbox" checked={isAutoEquip} onChange={handleToggleAutoEquip} />
-                  <span className="slider round" />
-                </label>
+                <span>{t('pins_page.auto_equip_label')}</span>
+                <label className="switch"><input type="checkbox" checked={isAutoEquip} onChange={handleToggleAutoEquip} /><span className="slider round" /></label>
               </div>
             </div>
-
             <div className={`pins-board ${isAutoEquip ? 'pins-board--disabled' : ''}`}>
               <div className="pins-board__slots">
                 {Array.from({ length: totalSlots }).map((_, index) => {
@@ -256,7 +200,7 @@ const Pins = () => {
                                 </div>
                               )}
                             </Draggable>
-                          ) : ( <span className="pins-slot__empty-text">{t('pins_page.empty_slot', 'Empty slot')}</span> )}
+                          ) : ( <span className="pins-slot__empty-text">{t('pins_page.empty_slot')}</span> )}
                           {provided.placeholder}
                         </div>
                       )}
@@ -264,40 +208,30 @@ const Pins = () => {
                   );
                 })}
               </div>
-
               {profileData.account_tier < 10 && (
-                <div className="pins-board__locked">
-                  <span>{t('pins_page.locked_slots', 'Next slot unlocks at Tier {{tier}}', { tier: profileData.account_tier + 1 })}</span>
-                </div>
+                <div className="pins-board__locked"><span>{t('pins_page.locked_slots', { tier: profileData.account_tier + 1 })}</span></div>
               )}
-
               <button className="btn-primary" onClick={handleSaveChanges} disabled={isSavingLoadout || isAutoEquip}>
-                {isSavingLoadout ? t('pins_page.saving', 'Saving...') : t('pins_page.save_button', 'Save loadout')}
+                {isSavingLoadout ? t('pins_page.saving') : t('pins_page.save_button')}
               </button>
             </div>
-
-            {isAutoEquip && (
-              <p className="pins-management__helper">
-                {t('pins_page.auto_equip_helper', 'Auto-equip keeps your strongest combination active. Disable it to take full manual control.')}
-              </p>
-            )}
+            {isAutoEquip && (<p className="pins-management__helper">{t('pins_page.auto_equip_helper')}</p>)}
           </section>
 
           <section className="pins-collection">
             <div className="pins-collection__header">
               <div>
-                <h2>{t('pins_page.collection_title', 'Pin inventory')}</h2>
-                <p>{t('pins_page.collection_copy', 'Tap any pin to inspect its traits, lore, and marketplace options.')}</p>
+                <h2>{t('pins_page.collection_title')}</h2>
+                <p>{t('pins_page.collection_copy')}</p>
               </div>
               <button className="btn-secondary btn-sm" onClick={() => setIsListerModalOpen(true)} disabled={isAutoEquip || inactivePins.length === 0}>
-                {t('pins_page.list_button', 'List selected pins')}
+                {t('pins_page.list_button')}
               </button>
             </div>
-
             <Droppable droppableId="inactive" direction="horizontal" isDropDisabled={isAutoEquip}>
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps} className="pins-collection__grid">
-                  {inactivePins.length === 0 && (<p className="pins-collection__empty">{t('pins_page.empty_collection', 'You have no pins in reserve right now.')}</p>)}
+                  {inactivePins.length === 0 && (<p className="pins-collection__empty">{t('pins_page.empty_collection')}</p>)}
                   {inactivePins.map((pin, index) => (
                     <Draggable key={pin.pin_id} draggableId={pin.pin_id.toString()} index={index} isDragDisabled={isAutoEquip}>
                       {(dragProvided) => (
@@ -314,20 +248,21 @@ const Pins = () => {
           </section>
 
           <section className="pins-playbook">
-            <h2>{t('pins_page.playbook_title', 'Pin playbook')}</h2>
+            <h2>{t('pins_page.playbook_title')}</h2>
             <div className="pins-playbook__grid">
-              <div className="pins-playbook__card"><h3>{t('pins_page.playbook_step_one_title', '1. Activate boosts')}</h3><p>{t('pins_page.playbook_step_one_copy', 'Keep your strongest synergy active for XP boosts and seasonal multipliers. Use manual mode for fine-tuning.')}</p></div>
-              <div className="pins-playbook__card"><h3>{t('pins_page.playbook_step_two_title', '2. Rotate collections')}</h3><p>{t('pins_page.playbook_step_two_copy', 'Swap in newly minted or marketplace finds to maximise rarity bonuses before events begin.')}</p></div>
-              <div className="pins-playbook__card"><h3>{t('pins_page.playbook_step_three_title', '3. Showcase style')}</h3><p>{t('pins_page.playbook_step_three_copy', 'Equip cosmetic sets that align with your syndicate and broadcast your progress to the community.')}</p></div>
+              <div className="pins-playbook__card"><h3>{t('pins_page.playbook_step_one_title')}</h3><p>{t('pins_page.playbook_step_one_copy')}</p></div>
+              <div className="pins-playbook__card"><h3>{t('pins_page.playbook_step_two_title')}</h3><p>{t('pins_page.playbook_step_two_copy')}</p></div>
+              <div className="pins-playbook__card"><h3>{t('pins_page.playbook_step_three_title')}</h3><p>{t('pins_page.playbook_step_three_copy')}</p></div>
             </div>
           </section>
         </div>
       </DragDropContext>
 
-      <PinDetailModal isOpen={!!selectedPin} onClose={() => setSelectedPin(null)} pin={selectedPin} isActive={activePins.some((pin) => pin.pin_id === selectedPin?.pin_id)} onEquip={handleEquipPin} onUnequip={handleUnequipPin} />
+      <PinDetailModal isOpen={!!selectedPin} onClose={() => setSelectedPin(null)} pin={selectedPin} isActive={activePins.some((p) => p.pin_id === selectedPin?.pin_id)} onEquip={handleEquipPin} onUnequip={handleUnequipPin} />
       <PinListerModal isOpen={isListerModalOpen} onClose={() => setIsListerModalOpen(false)} inactivePins={inactivePins} onListSuccess={fetchPins} />
     </Layout>
+  
   );
 };
-
+}
 export default Pins;
