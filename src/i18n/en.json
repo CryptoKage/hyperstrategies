@@ -644,9 +644,9 @@
   "retry_button": "Try again",
   "no_slots_alert": "All of your pin slots are full. Unequip a pin first.",
   "save_error": "We could not save your loadout. Please try again.",
-  "eyebrow": "Pins & Cosmetics",
-  "title": "Curate the loadout that represents you",
-  "subtitle": "Manage active boosts, stage future pins, and showcase your achievements across Hyper Strategies.",
+  "eyebrow": "",
+  "title": "Pin Loadout",
+  "subtitle": "Equip Pins to benfit from their various perks.",
   "active_summary": "Active loadout",
   "active_summary_hint": "Fill all available slots to maximise your daily rewards boost.",
   "collection_summary": "Collection",
@@ -654,7 +654,7 @@
   "marketplace_summary": "Marketplace",
   "marketplace_access": "Unlocked",
   "marketplace_locked": "Tier 2 required",
-  "marketplace_summary_hint": "Access to p2p marketplace restricted to Tier 2.",
+  "marketplace_summary_hint": "Access to marketplace restricted to Tier 2.",
   "management_title": "Active pin loadout",
   "management_copy": "Drag pins into your active slots to apply their bonuses instantly. Prefer a simpler setup? Enable auto-equip and we will optimise for you.",
   "auto_equip_label": "Auto-equip best pins",
@@ -668,12 +668,12 @@
   "list_button": "List selected pins",
   "empty_collection": "You have no pins in reserve right now.",
   "playbook_title": "Pin playbook",
-  "playbook_step_one_title": "1. Activate boosts",
-  "playbook_step_one_copy": "Keep your strongest synergy active for XP boosts and seasonal multipliers. Use manual mode for fine-tuning.",
-  "playbook_step_two_title": "2. Rotate collections",
-  "playbook_step_two_copy": "Swap in newly minted or marketplace finds to maximise rarity bonuses before events begin.",
-  "playbook_step_three_title": "3. Showcase style",
-  "playbook_step_three_copy": "Equip cosmetic sets that align with your syndicate and broadcast your progress to the community."
+  "playbook_step_one_title": "1. Aquire Pins",
+  "playbook_step_one_copy": "Collect various pins through hyper-strategy initivies.",
+  "playbook_step_two_title": "2. Upgrade your loadout",
+  "playbook_step_two_copy": "Upgrade your loadout to activate and benefit from your best available pins.",
+  "playbook_step_three_title": "3. Upgrade your tier to access pin marketplace ",
+  "playbook_step_three_copy": "Account level up through XP awarded through using the platform."
 }
 }
 
