@@ -16,12 +16,16 @@ import coreVaultBg from '../assets/core.png';
 import apecoinVaultBg from '../assets/apecoin.png';
 import pantherVaultBg from '../assets/panther-swarm.jpg';
 import btcVaultBg from '../assets/btcvault.png';
+import farmVaultBg from '../assets/Farm.png'; 
+import newBtcVaultBg from '../assets/btc.png';
 
 const vaultImageMap = {
   'core.png': coreVaultBg,
   'apecoin.png': apecoinVaultBg,
   'panther-swarm.jpg': pantherVaultBg,
   'btcvault.png': btcVaultBg,
+   'Farm.png': farmVaultBg,     
+  'btc.png': newBtcVaultBg,
 };
 
 const SnapshotItem = ({ labelKey, value, className = '' }) => {
