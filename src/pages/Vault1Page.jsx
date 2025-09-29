@@ -136,7 +136,7 @@ const Vault1Page = () => {
 
 // ... (All the code above the return statement is correct and remains the same)
 
-  return (
+ return (
         <Layout>
             <div className="vault-detail-container">
                 <div className="vault-detail-header">
@@ -152,7 +152,9 @@ const Vault1Page = () => {
                             <div className="vault-detail-column"><StatCard labelKey="vault.stats.realizedPnl" value={userPosition.realizedPnl} subtextKey="vault.stats.realizedPnlSubtext" /><StatCard labelKey="vault.stats.unrealizedPnl" value={userPosition.unrealizedPnl} subtextKey="vault.stats.unrealizedPnlSubtext" className={userPosition.unrealizedPnl >= 0 ? 'text-positive' : 'text-negative'}/></div>
                         </div>
 
-                        {/* --- THIS IS THE FINAL, CORRECT PLACEMENT OF THE WRAPPER --- */}
+                        {/* ==================================================================== */}
+                        {/* --- THIS IS THE "COMING SOON" WRAPPER FOR ALL ANALYTICS --- */}
+                        {/* ==================================================================== */}
                         <ComingSoonWrapper flagName="showPerformanceCharts">
                             {personalSnapshot && (
                                 <div className="profile-card full-width">
@@ -178,7 +180,17 @@ const Vault1Page = () => {
                                     <ResponsiveContainer width="100%" height={400}>
                                         <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#333" /><XAxis dataKey="date" stroke="#888" /><YAxis stroke="#888" tickFormatter={(tick) => chartView === 'accountValue' ? `$${Math.round(tick)}` : `${tick.toFixed(1)}%`} /><Tooltip contentStyle={{backgroundColor: '#1a1a1a', border: '1px solid #333'}} labelStyle={{color: '#fff'}} formatter={(value) => chartView === 'accountValue' ? `$${value?.toFixed(2)}` : `${value?.toFixed(2)}%`} /><Legend />
-                                            {/* ... Chart Lines are correct ... */}
+                                            {chartView === 'accountValue' ? (<Line type="monotone" dataKey="value" name={t('vault.chart.legend.myAccountValue')} stroke={CHART_COLORS.ACCOUNT} dot={false} />) : (
+                                                <>
+                                                    <Line type="monotone" dataKey="VAULT" name={t('vault.chart.legend.vaultIndex', { vaultName: vaultInfo.name })} stroke={CHART_COLORS.VAULT} dot={false} />
+                                                    <Line type="monotone" dataKey="PROJECTION" name={t('vault.chart.legend.withUnrealized')} stroke={CHART_COLORS.PROJECTION} dot={false} strokeDasharray="2 6" connectNulls />
+                                                    {showAssetLines && (<>
+                                                        <Line type="monotone" dataKey="BTC" name={t('vault.chart.legend.btc')} stroke={CHART_COLORS.BTC} dot={false} strokeDasharray="3 3" connectNulls />
+                                                        <Line type="monotone" dataKey="ETH" name={t('vault.chart.legend.eth')} stroke={CHART_COLORS.ETH} dot={false} strokeDasharray="3 3" connectNulls />
+                                                        <Line type="monotone" dataKey="SOL" name={t('vault.chart.legend.sol')} stroke={CHART_COLORS.SOL} dot={false} strokeDasharray="3 3" connectNulls />
+                                                    </>)}
+                                                </>
+                                            )}
                                         </LineChart>
                                     </ResponsiveContainer>
                                 ) : ( <p>{t('vault.errors.noChartData')}</p> )}
@@ -197,13 +209,22 @@ const Vault1Page = () => {
                                 </div>
                             )}
                         </ComingSoonWrapper>
+                        {/* ==================================================================== */}
+                        {/* --- END OF WRAPPER --- */}
+                        {/* ==================================================================== */}
                         
                         <div className="vault-detail-grid">
-                            <div className="profile-card">{/* ... Asset Breakdown ... */}</div>
-                            <div className="profile-card">{/* ... Your Ledger ... */}</div>
+                            <div className="profile-card">
+                                <h3>{t('vault.assetBreakdown.title')}</h3>
+                                <div className="table-responsive-wrapper"><table className="asset-table"><thead><tr><th>{t('vault.assetBreakdown.asset')}</th><th className="amount">{t('vault.assetBreakdown.livePrice')}</th></tr></thead><tbody>{assetBreakdown.map(asset => (<tr key={asset.symbol}><td>{getCoinGeckoLink(asset) ? (<a href={getCoinGeckoLink(asset)} target="_blank" rel="noopener noreferrer" className="asset-link">{asset.symbol} ↗</a>) : (<span>{asset.symbol}</span>)}</td><td className="amount">${asset.livePrice ? asset.livePrice.toLocaleString('en-US', { minimumFractionDigits: 2 }) : 'N/A'}</td></tr>))}</tbody></table></div>
+                            </div>
+                            <div className="profile-card">
+                                <h3>{t('vault.ledger.title')}</h3>
+                                <div className="table-responsive-wrapper"><table className="activity-table"><thead><tr><th>{t('vault.ledger.date')}</th><th>{t('vault.ledger.type')}</th><th className="amount">{t('vault.ledger.amount')}</th></tr></thead><tbody>{userLedger.map(entry => (<tr key={entry.entry_id}><td>{new Date(entry.created_at).toLocaleDateString()}</td><td>{t(`ledgerTypes.${entry.entry_type}`, entry.entry_type.replace(/_/g, ' '))}</td><td className={`amount ${parseFloat(entry.amount) >= 0 ? 'text-positive' : 'text-negative'}`}>{`${parseFloat(entry.amount) >= 0 ? '+' : ''}${parseFloat(entry.amount).toFixed(2)}`}</td></tr>))}</tbody></table></div>
+                            </div>
                         </div>
                     </>
-                ) : ( <div className="profile-card text-center">{/* ... Not invested ... */}</div> )}
+                ) : ( <div className="profile-card text-center"><h2>{t('vault.notInvested.title')}</h2><p>{t('vault.notInvested.description')}</p><Link to="/dashboard" className="btn-primary mt-4">{t('common.goToDashboard')}</Link></div> )}
             </div>
         </Layout>
     );
