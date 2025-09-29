@@ -65,7 +65,7 @@ const PinsMarketplace = () => {
       setSelectedListing(null);
       fetchMarketplaceData();
     } catch (err) {
-      setBuyError(err.response?.data?.error || "Purchase failed. The item may no longer be available.");
+      setBuyError(err.response?.data?.error || t('pins_market.buy_error', 'Purchase failed. The item may no longer be available.'));
     } finally {
       setIsBuying(false);
     }
@@ -145,7 +145,7 @@ const PinsMarketplace = () => {
                                 <span>${parseFloat(listing.price).toFixed(2)}</span>
                             </div>
                             <button className="btn-danger-small" onClick={() => handleCancelListing(listing.listing_id)} disabled={isCancelling === listing.listing_id}>
-                                {isCancelling === listing.listing_id ? '...' : t('pins_market.cancel')}
+                                {isCancelling === listing.listing_id ? t('pins_market.cancelling', '...') : t('pins_market.cancel')}
                             </button>
                         </div>
                     ))}

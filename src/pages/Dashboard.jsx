@@ -65,11 +65,11 @@ const Dashboard = () => {
       setError('');
     } catch (err) {
       console.error('[Dashboard] API call failed:', err);
-      setError('Could not fetch dashboard data.');
+      setError(t('dashboard.error_fetch', 'Could not fetch dashboard data.'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => { fetchDashboardData(); }, [fetchDashboardData]);
 
@@ -106,7 +106,7 @@ const Dashboard = () => {
             <span className="stat-label">{t('dashboard.total_value')}</span>
             <div className="stat-main">
               <span className="stat-value">{isBalanceHidden ? '******' : `$${((dashboardData.totalCapitalInVaults || 0) + (dashboardData.totalBonusPoints || 0) + (dashboardData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
-              <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility"><EyeIcon isHidden={isBalanceHidden} /></button>
+              <button onClick={toggleBalanceVisibility} className="btn-icon" title={t('dashboard.toggle_balance_tooltip', 'Toggle balance visibility')}><EyeIcon isHidden={isBalanceHidden} /></button>
             </div>
             <span className={`stat-sub-value ${(dashboardData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'}`}>
                {t('dashboard.unrealized_pnl')}: {isBalanceHidden ? '******' : `${((dashboardData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(dashboardData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
@@ -184,7 +184,9 @@ const Dashboard = () => {
                           className="btn-secondary" 
                           onClick={() => handleOpenWithdrawModal(position)}
                           disabled={vaultLockStatus.isLocked}
-                          title={vaultLockStatus.isLocked ? `Unlocks on ${new Date(vaultLockStatus.unlockDate).toLocaleDateString()}` : 'Withdraw funds'}
+                          title={vaultLockStatus.isLocked
+                            ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() })
+                            : t('dashboard.unlocked_tooltip')}
                         >
                           {t('dashboard.withdraw')}
                         </button>

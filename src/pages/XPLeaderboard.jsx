@@ -47,7 +47,7 @@ const XPLeaderboard = () => {
   };
   
   const formatReferralCode = (code) => {
-    return code ? code.replace('HS-', '') : 'Anonymous';
+    return code ? code.replace('HS-', '') : t('xp_leaderboard.anonymous', 'Anonymous');
   };
 
   return (
@@ -91,7 +91,7 @@ const XPLeaderboard = () => {
                   <tr>
                     <th>{t('xp_leaderboard.rank')}</th>
                     <th>{t('xp_leaderboard.table_user')}</th>
-                    <th>XP</th>
+                    <th>{t('xp_leaderboard.table_xp', 'XP')}</th>
                     <th style={{ textAlign: 'right' }}>{t('xp_leaderboard.referral_link')}</th>
                   </tr>
                 </thead>

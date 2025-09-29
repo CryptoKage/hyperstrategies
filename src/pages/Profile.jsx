@@ -118,7 +118,7 @@ const Profile = () => {
       fetchProfile();
     } catch (err) {
       console.error('Telegram linking failed:', err);
-      alert('Failed to link Telegram account.');
+      alert(t('profile_page.telegram_link_failed', 'Failed to link Telegram account.'));
     }
   };
 

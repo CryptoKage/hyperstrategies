@@ -17,7 +17,7 @@ const Home = () => {
           
           {/* The new BlurText component replaces the old RotatingText */}
           <BlurText
-            text="HYPER-STRATEGIES"
+            text={t('home.hero.headline', 'HYPER-STRATEGIES')}
             direction="bottom"
             animateBy="words"
             className="hero-headline"

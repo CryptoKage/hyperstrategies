@@ -48,10 +48,10 @@ const FeeStructure = () => {
               </tr>
             </thead>
             <tbody>
-              <tr><td>Tier 1</td><td>{t('fees_page.tier1_xp')}</td><td>{t('fees_page.tier1_benefit')}</td></tr>
-              <tr><td>Tier 2</td><td>{t('fees_page.tier2_xp')}</td><td>{t('fees_page.tier2_benefit')}</td></tr>
-              <tr><td>Tier 3</td><td>{t('fees_page.tier3_xp')}</td><td>{t('fees_page.tier3_benefit')}</td></tr>
-              <tr><td>Tier 4</td><td>{t('fees_page.tier4_xp')}</td><td>{t('fees_page.tier4_benefit')}</td></tr>
+              <tr><td>{t('fees_page.tier1_label', 'Tier 1')}</td><td>{t('fees_page.tier1_xp')}</td><td>{t('fees_page.tier1_benefit')}</td></tr>
+              <tr><td>{t('fees_page.tier2_label', 'Tier 2')}</td><td>{t('fees_page.tier2_xp')}</td><td>{t('fees_page.tier2_benefit')}</td></tr>
+              <tr><td>{t('fees_page.tier3_label', 'Tier 3')}</td><td>{t('fees_page.tier3_xp')}</td><td>{t('fees_page.tier3_benefit')}</td></tr>
+              <tr><td>{t('fees_page.tier4_label', 'Tier 4')}</td><td>{t('fees_page.tier4_xp')}</td><td>{t('fees_page.tier4_benefit')}</td></tr>
             </tbody>
           </table>
         </div>

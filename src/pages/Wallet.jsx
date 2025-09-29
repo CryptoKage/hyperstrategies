@@ -71,7 +71,7 @@ const Wallet = () => {
             <button onClick={fetchWalletData} className="btn-secondary" disabled={loading}>
               {loading ? t('wallet.refreshing') : t('wallet.refresh')}
             </button>
-            <button onClick={toggleBalanceVisibility} className="btn-icon" title="Toggle balance visibility">
+            <button onClick={toggleBalanceVisibility} className="btn-icon" title={t('wallet.toggle_balance_tooltip', 'Toggle balance visibility')}>
               <EyeIcon isHidden={isBalanceHidden} />
             </button>
           </div>
