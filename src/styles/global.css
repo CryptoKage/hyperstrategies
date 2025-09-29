@@ -4881,3 +4881,32 @@ opacity: 0.3;
   color: var(--color-text-primary);
   border-color: var(--color-primary);
 }
+
+.vault-card-container {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.vault-card-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* We modify the existing vault-card to only have rounded corners on the TOP */
+.vault-card {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* This is the new card that will sit directly below the main vault card */
+.performance-snapshot-card {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  background-color: var(--color-surface);
+  padding: 16px 20px;
+  border: 1px solid var(--color-border);
+  border-top: none; /* This removes the top border to seamlessly connect with the card above */
+  border-radius: 0 0 12px 12px; /* Rounds only the bottom corners */
+}

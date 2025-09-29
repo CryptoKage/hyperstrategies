@@ -24,6 +24,17 @@ const vaultImageMap = {
   'btcvault.png': btcVaultBg,
 };
 
+const SnapshotItem = ({ labelKey, value, className = '' }) => {
+    const { t } = useTranslation();
+    const numericValue = parseFloat(value);
+    return (
+        <div className="performance-snapshot-item">
+            <span className={`value ${className}`}>{!isNaN(numericValue) ? numericValue.toFixed(2) : '0.00'}</span>
+            <span className="label">{t(labelKey)}</span>
+        </div>
+    );
+};
+
 const Dashboard = () => {
   const { t } = useTranslation();
   const { user, isBalanceHidden, toggleBalanceVisibility } = useAuth();
@@ -88,13 +99,14 @@ const Dashboard = () => {
     }
   };
 
+  
   const handleOpenAllocateModal = (vault) => { setSelectedVault(vault); setAllocateModalOpen(true); };
   const handleOpenWithdrawModal = (position) => { setSelectedVault(position); setWithdrawModalOpen(true); };
   const handleActionSuccess = () => { fetchDashboardData(); };
 
   const StatCardSkeleton = () => ( <div className="stat-card skeleton"><div className="skeleton-text short"></div><div className="skeleton-text long"></div></div> );
 
-  const renderContent = () => {
+ const renderContent = () => {
     if (loading) { return ( <div className="stats-grid"><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></div> ); }
     if (error || !dashboardData) { return <p className="error-message">{t('dashboard.no_data')}</p>; }
     const investedPositions = dashboardData.userPositions || [];
@@ -145,53 +157,53 @@ const Dashboard = () => {
                 const vaultLockStatus = vaultLockStatuses[position.vault_id] || { isLocked: true };
 
                 return (
-                  <div key={position.vault_id} className="vault-card invested with-bg" style={cardStyle}>
-                    <div className="card-overlay"></div>
-                    <div className="card-content">
-                      <h3>{vaultInfo.name}</h3>
-                      <div className="vault-stat">
-                        <span>{t('dashboard.tradable_capital')}</span>
-                        <span>{isBalanceHidden ? '******' : `$${tradableCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
-                      </div>
-                      <div className="vault-stat">
-                        <span>{t('dashboard.pnl')}</span>
-                        <span className={pnl >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
-                          {isBalanceHidden ? '******' : `${pnl >= 0 ? '+' : ''}$${pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-                        </span>
-                      </div>
-                      {vaultInfo.performance && (
-                        <div className="vault-stat marketing-stat">
-                          <span>{t('dashboard.avg_monthly_return')}</span>
-                          <span className={vaultInfo.performance.monthly >= 0 ? 'text-positive' : 'text-negative'}>
-                            {vaultInfo.performance.monthly > 0 ? '+' : ''}{vaultInfo.performance.monthly}%
-                          </span>
+                  <div key={position.vault_id} className="vault-card-container">
+                    <div className="vault-card invested with-bg" style={cardStyle}>
+                        <div className="card-overlay"></div>
+                        <div className="card-content">
+                        <h3>{vaultInfo.name}</h3>
+                        <div className="vault-stat">
+                            <span>{t('dashboard.tradable_capital')}</span>
+                            <span>{isBalanceHidden ? '******' : `$${tradableCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
                         </div>
-                      )}
-                      <div className="auto-compound-toggle">
-                        <div className="label-group">
-                          <label htmlFor={`compound-toggle-${position.vault_id}`}>{isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}</label>
-                          <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}><InfoIcon /></Link>
+                        <div className="vault-stat">
+                            <span>{t('dashboard.pnl')}</span>
+                            <span className={pnl >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
+                            {isBalanceHidden ? '******' : `${pnl >= 0 ? '+' : ''}$${pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                            </span>
                         </div>
-                        <label className="switch">
-                          <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} disabled={isUpdating} />
-                          <span className="slider round"></span>
-                        </label>
-                      </div>
-                      <div className="vault-actions">
-                        <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
-                        <button className="btn-secondary" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>{t('dashboard.more_info')}</button>
-                        <button 
-                          className="btn-secondary" 
-                          onClick={() => handleOpenWithdrawModal(position)}
-                          disabled={vaultLockStatus.isLocked}
-                          title={vaultLockStatus.isLocked
-                            ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() })
-                            : t('dashboard.unlocked_tooltip')}
-                        >
-                          {t('dashboard.withdraw')}
-                        </button>
-                      </div>
+                        <div className="auto-compound-toggle">
+                            <div className="label-group">
+                            <label htmlFor={`compound-toggle-${position.vault_id}`}>{isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}</label>
+                            <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}><InfoIcon /></Link>
+                            </div>
+                            <label className="switch">
+                            <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} disabled={isUpdating} />
+                            <span className="slider round"></span>
+                            </label>
+                        </div>
+                        <div className="vault-actions">
+                            <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
+                            <button className="btn-secondary" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>{t('dashboard.more_info')}</button>
+                            <button 
+                            className="btn-secondary" 
+                            onClick={() => handleOpenWithdrawModal(position)}
+                            disabled={vaultLockStatus.isLocked}
+                            title={vaultLockStatus.isLocked ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
+                            >
+                            {t('dashboard.withdraw')}
+                            </button>
+                        </div>
+                        </div>
                     </div>
+                    {vaultInfo.performance && (
+                        <div className="performance-snapshot-card">
+                            <SnapshotItem labelKey="vault.stats.dailyReturn" value={vaultInfo.performance.daily} className={vaultInfo.performance.daily >= 0 ? 'text-positive' : 'text-negative'} />
+                            <SnapshotItem labelKey="vault.stats.weeklyReturn" value={vaultInfo.performance.weekly} className={vaultInfo.performance.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+                            <SnapshotItem labelKey="vault.stats.monthlyReturn" value={vaultInfo.performance.monthly} className={vaultInfo.performance.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+                            <SnapshotItem labelKey="vault.stats.totalReturn" value={vaultInfo.performance.total} className={vaultInfo.performance.total >= 0 ? 'text-positive' : 'text-negative'} />
+                        </div>
+                    )}
                   </div>
                 );
               })}
@@ -207,80 +219,40 @@ const Dashboard = () => {
             const cardStyle = vault.image_url && vaultImageMap[vault.image_url] ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` } : {};
             
             return (
-              <div key={vault.vault_id} className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
-                <div className="card-overlay"></div>
-                <div className="card-content">
-                  <h3>{vault.name}</h3>
-                  <p className="cta-text">{vault.description}</p>
-                  
- {isActive && vault.performance && (
-                    <div className="performance-stats-container">
-                      <div className="vault-stat marketing-stat">
-                        <span>{t('dashboard.all_time_pnl')}</span>
-                        <span className={vault.performance.total >= 0 ? 'text-positive' : 'text-negative'}>
-                          {vault.performance.total > 0 ? '+' : ''}{vault.performance.total}%
-                        </span>
-                      </div>
-                      <div className="vault-stat marketing-stat">
-                        <span>{t('dashboard.avg_monthly_return')}</span>
-                        <span className={vault.performance.monthly >= 0 ? 'text-positive' : 'text-negative'}>
-                          {vault.performance.monthly > 0 ? '+' : ''}{vault.performance.monthly}%
-                        </span>
-                      </div>
+              <div key={vault.vault_id} className="vault-card-container">
+                <div className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
+                    <div className="card-overlay"></div>
+                    <div className="card-content">
+                    <h3>{vault.name}</h3>
+                    <p className="cta-text">{vault.description}</p>
+                    <div className="vault-actions">
+                    <button className="btn-secondary" onClick={() => navigate(`/vaults/${vault.vault_id}`)}>
+                        {t('dashboard.more_info')}
+                        </button>
+                        {isActive ? (
+                        <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
+                            {t('dashboard.allocate_funds')}
+                        </button>
+                        ) : (
+                        <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
+                        )}
                     </div>
-                  )}
-
-                  <div className="vault-actions">
-                   <button className="btn-secondary" onClick={() => navigate(`/vaults/${vault.vault_id}`)}>
-                      {t('dashboard.more_info')}
-                    </button>
-                    {isActive ? (
-                      <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
-                        {t('dashboard.allocate_funds')}
-                      </button>
-                    ) : (
-                      <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
-                    )}
-                  </div>
+                    </div>
                 </div>
+                {isActive && vault.performance && (
+                     <div className="performance-snapshot-card">
+                        <SnapshotItem labelKey="vault.stats.dailyReturn" value={vault.performance.daily} className={vault.performance.daily >= 0 ? 'text-positive' : 'text-negative'} />
+                        <SnapshotItem labelKey="vault.stats.weeklyReturn" value={vault.performance.weekly} className={vault.performance.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+                        <SnapshotItem labelKey="vault.stats.monthlyReturn" value={vault.performance.monthly} className={vault.performance.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+                        <SnapshotItem labelKey="vault.stats.totalReturn" value={vault.performance.total} className={vault.performance.total >= 0 ? 'text-positive' : 'text-negative'} />
+                    </div>
+                )}
               </div>
             );
           })}
         </div>
       </>
     );
-  };
-
-  return (
-    <>
-      <Layout>
-        <div className="dashboard-container">
-          <h1>{t('dashboard.welcome', { username: user?.username || 'User' })}</h1>
-          {renderContent()}
-        </div>
-      </Layout>
-      
-      {dashboardData && (
-        <VaultModal 
-          isOpen={isAllocateModalOpen} 
-          onClose={() => setAllocateModalOpen(false)} 
-          vault={selectedVault} 
-          availableBalance={dashboardData.availableBalance} 
-          userTier={dashboardData.accountTier} 
-          onAllocationSuccess={handleActionSuccess} 
-        />
-      )}
-      {dashboardData && (
-        <VaultWithdrawModal 
-          isOpen={isWithdrawModalOpen} 
-          onClose={() => setWithdrawModalOpen(false)} 
-          vault={selectedVault}
-          unlockDate={vaultLockStatuses[selectedVault?.vault_id]?.unlockDate}
-          onWithdrawalSuccess={handleActionSuccess} 
-        />
-      )}
-    </>
-  );
 };
-
+};
 export default Dashboard;
