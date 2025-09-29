@@ -11,10 +11,10 @@ const Presale = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const rounds = [
-    { name: t('presale.round_private'), allocation: 20, price: '-' },
-    { name: t('presale.round_a'), allocation: 20, price: '$0.20' },
-    { name: t('presale.round_b'), allocation: 40, price: '$0.22' },
-    { name: t('presale.round_public'), allocation: 20, price: '$0.25' },
+    { name: t('presale.round_private'), allocation: 20, price: t('presale.round_private_price', '-') },
+    { name: t('presale.round_a'), allocation: 20, price: t('presale.round_a_price', '$0.20') },
+    { name: t('presale.round_b'), allocation: 40, price: t('presale.round_b_price', '$0.22') },
+    { name: t('presale.round_public'), allocation: 20, price: t('presale.round_public_price', '$0.25') },
   ];
 
   const isEligible = user && parseFloat(user.xp || 0) >= 1000;

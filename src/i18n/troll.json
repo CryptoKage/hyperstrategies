@@ -21,14 +21,21 @@
     "terms": "DA RULEZ",
     "terms_link": "DA BIG RULEZ"
   },
+  "home": {
+    "hero": {
+      "headline": "HYPER-STRATZ!!!"
+    }
+  },
   "dashboard": {
     "unrealized_pnl": "SHINIES YER GONNA GET",
     "welcome": "OI, {{username}}, GET BACK TA KRUMPIN'!",
     "no_data": "COULDN'T GET DA INFO. PROBABLY SNEAKY GITS.",
+    "error_fetch": "COULDN'T GET DA INFO. PROBABLY SNEAKY GITS.",
     "total_value": "ALL YER STUFF",
     "available_balance": "TEEFS FOR KRUMPIN'",
     "manage": "SORT IT",
     "bonus_points": "EXTRA TEEFS",
+    "toggle_balance_tooltip": "HIDE OR SHOW DA TEEFPILE",
     "your_positions": "YER STOMPAS",
     "tradable_capital": "FIGHTIN' TEEFS",
     "pnl": "SHINIES",
@@ -56,6 +63,7 @@
   "wallet": {
     "title": "DA TEEF PILE",
     "refresh": "CHECK AGAIN!",
+    "toggle_balance_tooltip": "STOP STARIN' OR TAKE A PEEK",
     "deposit_address_title": "WHERE TA SEND MORE TEEF",
     "deposit_address_subtitle": "SEND YER SHINY USDC GUBBINZ 'ERE.",
     "copy": "NICK IT",
@@ -109,6 +117,7 @@
     "copy_link_button": "SHOUT YER WARCRY",
     "copied_button": "SHOUTED!",
     "customize_link_title": "MAKE YER OWN WARCRY",
+    "telegram_link_failed": "DA TELEGRAM GROTZ RAN OFF!",
     "xp_history_title": "WAAAGH! HISTORY",
     "edit_details_title": "CHANGE YER NAME",
     "username_label": "NAME",
@@ -116,6 +125,7 @@
   },
   "rewards_center": {
     "title": "DA REWARDZ SQUIG",
+    "loading": "COUNTIN' DA LOOT...",
     "total_xp_label": "TOTAL WAAAGH! ON DA PLATFORM",
     "leaderboard_button": "SEE DA BIGGEST BOSSES",
     "unclaimed_xp_title": "UNCLAIMED WAAAGH!",
@@ -123,6 +133,7 @@
     "claim_button": "TAKE ALL DA WAAAGH!",
     "claiming_button": "TAKIN'...",
     "claim_success": "YA GOT IT!",
+    "error_loading": "DA SQUIG AIN'T TALKIN' RIGHT NOW.",
     "bounties_title": "JOBS FROM DA WARBOSS",
     "bounties_description": "DO DIS STUFF, GET MORE WAAAGH!",
     "bounty_verify_button": "CHECK IT",
@@ -133,7 +144,27 @@
     "deposit_bonus": "Got {{amount}} WAAAGH! for sendin' boyz to Stompa {{vaultId}}.",
     "referral_bonus": "Got {{amount}} WAAAGH! cuz yer boy {{username}} joined da fight."
   },
-    "vault": {
+  "fees_page": {
+    "tier1_label": "Boss Tier 1",
+    "tier2_label": "Boss Tier 2",
+    "tier3_label": "Boss Tier 3",
+    "tier4_label": "Boss Tier 4"
+  },
+  "pins_market": {
+    "buy_error": "DA DEAL WUZ NICKED BY SOME OTHA GIT!",
+    "cancelling": "TELLIN' DA GOBLINS TA STOP..."
+  },
+  "presale": {
+    "round_private_price": "-",
+    "round_a_price": "20 teef a pop",
+    "round_b_price": "22 teef a pop",
+    "round_public_price": "25 teef fer da masses"
+  },
+  "xp_leaderboard": {
+    "table_xp": "WAAAGH!",
+    "anonymous": "MYSTERY GIT"
+  },
+  "vault": {
     "title": "Magic Money Pot",
     "stats": {
       "totalCapital": "Yer Hoard",

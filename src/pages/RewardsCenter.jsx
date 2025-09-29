@@ -40,11 +40,11 @@ const RewardsCenter = () => {
       setRewardsData(rewardsRes.data);
       setBounties(bountiesRes.data);
     } catch (err) {
-      setError("Could not load your rewards data at this time.");
+      setError(t('rewards_center.error_loading', 'Could not load your rewards data at this time.'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchData();
@@ -84,7 +84,7 @@ const RewardsCenter = () => {
   };
 
   if (loading) {
-      return <Layout><div className="rewards-container"><h1>Loading Rewards...</h1></div></Layout>;
+      return <Layout><div className="rewards-container"><h1>{t('rewards_center.loading', 'Loading Rewards...')}</h1></div></Layout>;
   }
 
   if (error) {
