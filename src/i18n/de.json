@@ -483,6 +483,10 @@
   "ledger_description": "Eine chronologische Übersicht aller von dir verdienten XP.",
   "ledger_empty": "Du hast noch keinen eingeforderten XP-Verlauf."
 },
+"shop": {
+  "title": "Der Shop",
+  "subtitle": "Kaufen Sie exklusive Vorteile, Gegenstände und Plattformvorteile mit Ihrem verfügbaren Guthaben."
+},
  "vault": {
     "yourPerformanceSnapshotTitle": "Dein Performance-Überblick",
   "yourPerformanceSnapshotSubtext": "Basierend auf deiner realisierten Performance seit deiner ersten Einzahlung.",

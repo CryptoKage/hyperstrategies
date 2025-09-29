@@ -49,6 +49,9 @@
     "coming_soon": "Coming Soon",
     "more_info": "More Info"
   },
+  "shop": {
+  "title": "The Shop"
+  },
   "vault_modal": {
     "title": "Allocate to {{vaultName}}",
     "subtitle": "Your allocation will be split based on your account tier.",

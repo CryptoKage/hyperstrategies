@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 const defaultAnimationSettings = {
   general: {
     showPlasma: true,
-    showNetwork: true,
+    showNetwork: false,
   },
   plasma: {
     primaryColor: '#3fbaf3',

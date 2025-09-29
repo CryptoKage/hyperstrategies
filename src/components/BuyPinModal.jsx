@@ -1,6 +1,5 @@
-// ==============================================================================
-// START: PASTE THIS ENTIRE BLOCK into your new src/components/BuyPinModal.jsx
-// ==============================================================================
+// src/components/BuyPinModal.jsx
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PinImage } from './UserPins';

@@ -164,7 +164,7 @@ const Pins = () => {
         <div className="pins-page">
           <header className="pins-page__header">
             <span className="eyebrow-text">{t('pins_page.eyebrow', 'Pins & Cosmetics')}</span>
-            <h1>{t('pins_page.title', 'Curate the loadout that represents you')}</h1>
+            <h1>{t('pins_page.title', 'Curate your loadout')}</h1>
             <p>
               {t(
                 'pins_page.subtitle',
@@ -186,7 +186,7 @@ const Pins = () => {
               <h3>{t('pins_page.collection_summary', 'Collection')}</h3>
               <p className="pins-overview-card__metric">{profileData.ownedPins.length}</p>
               <p className="pins-overview-card__meta">
-                {t('pins_page.collection_summary_hint','Keep rare pins handy so you can swap them in for seasonal events.')}
+                {t('pins_page.collection_summary_hint','Total Collected Pins.')}
               </p>
             </article> {/* <-- THIS IS THE MISSING CLOSING TAG */}
 
@@ -199,7 +199,7 @@ const Pins = () => {
                     {t('pins_page.marketplace_access', 'Unlocked')}
                   </p>
                   <p className="pins-overview-card__meta">
-                    {t('pins_page.marketplace_summary_hint', 'List duplicates and discover limited editions when you reach Tier 2.')}
+                    {t('pins_page.marketplace_summary_hint', 'Access to p2p marketplace restricted to Tier 2.')}
                   </p>
                 </article>
               </Link>
@@ -210,7 +210,7 @@ const Pins = () => {
                   {t('pins_page.marketplace_locked', 'Tier 2 required')}
                 </p>
                 <p className="pins-overview-card__meta">
-                  {t('pins_page.marketplace_summary_hint', 'List duplicates and discover limited editions when you reach Tier 2.')}
+                  {t('pins_page.marketplace_summary_hint', 'Access to p2p marketplace restricted to Tier 2.')}
                 </p>
               </article>
             )}
