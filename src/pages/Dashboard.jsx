@@ -1,6 +1,6 @@
 // /src/pages/Dashboard.jsx
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
@@ -98,7 +98,6 @@ const Dashboard = () => {
       setIsUpdatingCompound(prev => ({ ...prev, [vaultId]: false }));
     }
   };
-
   
   const handleOpenAllocateModal = (vault) => { setSelectedVault(vault); setAllocateModalOpen(true); };
   const handleOpenWithdrawModal = (position) => { setSelectedVault(position); setWithdrawModalOpen(true); };
@@ -106,7 +105,7 @@ const Dashboard = () => {
 
   const StatCardSkeleton = () => ( <div className="stat-card skeleton"><div className="skeleton-text short"></div><div className="skeleton-text long"></div></div> );
 
- const renderContent = () => {
+  const renderContent = () => {
     if (loading) { return ( <div className="stats-grid"><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></div> ); }
     if (error || !dashboardData) { return <p className="error-message">{t('dashboard.no_data')}</p>; }
     const investedPositions = dashboardData.userPositions || [];
@@ -161,39 +160,39 @@ const Dashboard = () => {
                     <div className="vault-card invested with-bg" style={cardStyle}>
                         <div className="card-overlay"></div>
                         <div className="card-content">
-                        <h3>{vaultInfo.name}</h3>
-                        <div className="vault-stat">
-                            <span>{t('dashboard.tradable_capital')}</span>
-                            <span>{isBalanceHidden ? '******' : `$${tradableCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
-                        </div>
-                        <div className="vault-stat">
-                            <span>{t('dashboard.pnl')}</span>
-                            <span className={pnl >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
-                            {isBalanceHidden ? '******' : `${pnl >= 0 ? '+' : ''}$${pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-                            </span>
-                        </div>
-                        <div className="auto-compound-toggle">
-                            <div className="label-group">
-                            <label htmlFor={`compound-toggle-${position.vault_id}`}>{isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}</label>
-                            <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}><InfoIcon /></Link>
+                            <h3>{vaultInfo.name}</h3>
+                            <div className="vault-stat">
+                                <span>{t('dashboard.tradable_capital')}</span>
+                                <span>{isBalanceHidden ? '******' : `$${tradableCapital.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
                             </div>
-                            <label className="switch">
-                            <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} disabled={isUpdating} />
-                            <span className="slider round"></span>
-                            </label>
-                        </div>
-                        <div className="vault-actions">
-                            <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
-                            <button className="btn-secondary" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>{t('dashboard.more_info')}</button>
-                            <button 
-                            className="btn-secondary" 
-                            onClick={() => handleOpenWithdrawModal(position)}
-                            disabled={vaultLockStatus.isLocked}
-                            title={vaultLockStatus.isLocked ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
-                            >
-                            {t('dashboard.withdraw')}
-                            </button>
-                        </div>
+                            <div className="vault-stat">
+                                <span>{t('dashboard.pnl')}</span>
+                                <span className={pnl >= 0 ? 'stat-value-positive' : 'stat-value-negative'}>
+                                {isBalanceHidden ? '******' : `${pnl >= 0 ? '+' : ''}$${pnl.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                                </span>
+                            </div>
+                            <div className="auto-compound-toggle">
+                                <div className="label-group">
+                                <label htmlFor={`compound-toggle-${position.vault_id}`}>{isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}</label>
+                                <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}><InfoIcon /></Link>
+                                </div>
+                                <label className="switch">
+                                <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} disabled={isUpdating} />
+                                <span className="slider round"></span>
+                                </label>
+                            </div>
+                            <div className="vault-actions">
+                                <button className="btn-secondary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
+                                <button className="btn-secondary" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>{t('dashboard.more_info')}</button>
+                                <button 
+                                className="btn-secondary" 
+                                onClick={() => handleOpenWithdrawModal(position)}
+                                disabled={vaultLockStatus.isLocked}
+                                title={vaultLockStatus.isLocked ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
+                                >
+                                {t('dashboard.withdraw')}
+                                </button>
+                            </div>
                         </div>
                     </div>
                     {vaultInfo.performance && (
@@ -223,20 +222,20 @@ const Dashboard = () => {
                 <div className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`} style={cardStyle}>
                     <div className="card-overlay"></div>
                     <div className="card-content">
-                    <h3>{vault.name}</h3>
-                    <p className="cta-text">{vault.description}</p>
-                    <div className="vault-actions">
-                    <button className="btn-secondary" onClick={() => navigate(`/vaults/${vault.vault_id}`)}>
-                        {t('dashboard.more_info')}
-                        </button>
-                        {isActive ? (
-                        <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
-                            {t('dashboard.allocate_funds')}
-                        </button>
-                        ) : (
-                        <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
-                        )}
-                    </div>
+                        <h3>{vault.name}</h3>
+                        <p className="cta-text">{vault.description}</p>
+                        <div className="vault-actions">
+                        <button className="btn-secondary" onClick={() => navigate(`/vaults/${vault.vault_id}`)}>
+                            {t('dashboard.more_info')}
+                            </button>
+                            {isActive ? (
+                            <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
+                                {t('dashboard.allocate_funds')}
+                            </button>
+                            ) : (
+                            <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
+                            )}
+                        </div>
                     </div>
                 </div>
                 {isActive && vault.performance && (
@@ -253,6 +252,38 @@ const Dashboard = () => {
         </div>
       </>
     );
+  };
+
+  return (
+    <>
+      <Layout>
+        <div className="dashboard-container">
+          <h1>{t('dashboard.welcome', { username: user?.username || 'User' })}</h1>
+          {renderContent()}
+        </div>
+      </Layout>
+      
+      {dashboardData && (
+        <VaultModal 
+          isOpen={isAllocateModalOpen} 
+          onClose={() => setAllocateModalOpen(false)} 
+          vault={selectedVault} 
+          availableBalance={dashboardData.availableBalance} 
+          userTier={dashboardData.accountTier} 
+          onAllocationSuccess={handleActionSuccess} 
+        />
+      )}
+      {dashboardData && (
+        <VaultWithdrawModal 
+          isOpen={isWithdrawModalOpen} 
+          onClose={() => setWithdrawModalOpen(false)} 
+          vault={selectedVault}
+          unlockDate={vaultLockStatuses[selectedVault?.vault_id]?.unlockDate}
+          onWithdrawalSuccess={handleActionSuccess} 
+        />
+      )}
+    </>
+  );
 };
-};
+
 export default Dashboard;
