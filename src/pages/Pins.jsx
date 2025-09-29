@@ -130,10 +130,29 @@ const Pins = () => {
       setIsSavingLoadout(false);
     }
   };
-
-  if (isLoading) {
-    const totalSlots = profileData.totalPinSlots;
+ if (isLoading) {
     return (
+      <Layout>
+        <div className="pins-page">
+          <p className="pins-page__status-text">{t('pins_page.loading')}</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !profileData) {
+    return (
+      <Layout>
+        <div className="pins-page">
+          <p className="pins-page__status-text pins-page__status-text--error">{error || t('pins_page.error_load')}</p>
+          <button className="btn-primary" onClick={fetchPins}>{t('pins_page.retry_button')}</button>
+        </div>
+      </Layout>
+    );
+  }
+  const totalSlots = profileData.totalPinSlots;
+
+  return (
     <Layout>
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="pins-page">
@@ -265,5 +284,4 @@ const Pins = () => {
   
   );
 };
-}
 export default Pins;
