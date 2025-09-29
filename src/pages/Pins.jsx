@@ -132,6 +132,7 @@ const Pins = () => {
   };
 
   if (isLoading) {
+    const totalSlots = profileData.totalPinSlots;
     return (
     <Layout>
       <DragDropContext onDragEnd={onDragEnd}>
