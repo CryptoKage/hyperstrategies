@@ -648,14 +648,14 @@
   "title": "Pin Loadout",
   "subtitle": "Equip Pins to benfit from their various perks.",
   "active_summary": "Active loadout",
-  "active_summary_hint": "Fill all available slots to maximise your daily rewards boost.",
+  "active_summary_hint": "Equip pins to maximise your benfits.",
   "collection_summary": "Collection",
-  "collection_summary_hint": "Total Collected Pins.",
+  "collection_summary_hint": "Your pin collection.",
   "marketplace_summary": "Marketplace",
   "marketplace_access": "Unlocked",
   "marketplace_locked": "Tier 2 required",
-  "marketplace_summary_hint": "Access to marketplace restricted to Tier 2.",
-  "management_title": "Active pin loadout",
+  "marketplace_summary_hint": "Access to marketplace granted after tier 2.",
+  "management_title": "Active Pin Loadout",
   "management_copy": "Drag pins into your active slots to apply their bonuses instantly. Prefer a simpler setup? Enable auto-equip and we will optimise for you.",
   "auto_equip_label": "Auto-equip best pins",
   "empty_slot": "Empty slot",
@@ -672,8 +672,8 @@
   "playbook_step_one_copy": "Collect various pins through hyper-strategy initivies.",
   "playbook_step_two_title": "2. Upgrade your loadout",
   "playbook_step_two_copy": "Upgrade your loadout to activate and benefit from your best available pins.",
-  "playbook_step_three_title": "3. Upgrade your tier to access pin marketplace ",
-  "playbook_step_three_copy": "Account level up through XP awarded through using the platform."
+  "playbook_step_three_title": "3. Aquire more pins",
+  "playbook_step_three_copy": "Use hyper-strategie products and engage with initives."
 }
 }
 
