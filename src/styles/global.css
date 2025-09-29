@@ -4835,3 +4835,49 @@ opacity: 0.3;
   max-width: 600px;
   margin-bottom: 2rem;
 }
+
+/* /src/styles/global.css */
+
+.coming-soon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  margin-top: 2rem;
+}
+
+.coming-soon-container h2 {
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.coming-soon-container p {
+  color: var(--color-text-secondary);
+  max-width: 450px;
+  line-height: 1.6;
+}
+
+.btn-pill {
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 9999px; /* This creates the pill shape */
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-pill:hover {
+  background-color: var(--color-border);
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+}
