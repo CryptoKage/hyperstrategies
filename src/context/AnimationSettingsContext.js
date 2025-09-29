@@ -6,7 +6,7 @@ const defaultAnimationSettings = {
     showNetwork: false,
   },
   plasma: {
-    primaryColor: '#3fbaf3',
+    primaryColor: '#359ed0',
     secondaryColor: '#040e21',
     noiseScale: 0.005,
     timeScale: 0.0005,
