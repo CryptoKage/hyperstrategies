@@ -1,21 +1,79 @@
 {
   "common": {
+    "loading": "Loading...",
+    "backToDashboard": "Back to Dashboard",
+    "goToDashboard": "Go to Dashboard",
     "max": "Max",
-  "pending_withdrawal_tooltip": "A vault withdrawal is currently being processed. Your balance will update upon completion."
+    "pending_withdrawal_tooltip": "A vault withdrawal is currently being processed. Your balance will update upon completion."
+  },
+  "nav": {
+    "marketplace": "Marketplace",
+    "shop": "Shop"
   },
   "header": {
     "dashboard": "Dashboard",
+    "pins": "Pins",
+    "rewards": "Rewards",
     "wallet": "Wallet",
     "profile": "Profile",
     "admin": "Admin",
     "logout": "Logout",
-    "pins": "Pins",
-  "rewards": "Rewards",
     "signin": "Sign In",
     "register": "Register",
-    "marketplace": "Pin Market",
-    "alt_logo": "Hyper-Strategies Logo",
-    "shop": "Shop"
+    "alt_logo": "Hyper-Strategies Logo"
+  },
+  "home": {
+    "hero": {
+      "headline": "HYPER-STRATEGIES",
+      "subtext": "Automated Trading Solutions, Curated Crypto Vaults.",
+      "register_now": "Register Now",
+      "sign_in": "Sign In"
+    },
+    "journey": {
+      "eyebrow": "Three steps to momentum",
+      "title": "A guided flow for every member",
+      "subtitle": "Whether you prefer to self-serve or go managed, follow the path below to activate capital, XP, and community perks.",
+      "step_one_title": "Create your account",
+      "step_one_copy": "Register in minutes, secure your referral code, and get instant access to our dashboards on desktop or mobile.",
+      "step_one_cta": "Start registration",
+      "step_two_title": "Select a vault experience",
+      "step_two_copy": "Pick between automated strategies, managed portfolios, or investor-grade syndicates that match your risk appetite.",
+      "step_two_cta": "Explore vaults",
+      "step_three_title": "Equip pins & earn rewards",
+      "step_three_copy": "Head to the new pins hub to curate your loadout, then claim XP boosts and rewards tailored to your tier.",
+      "step_three_cta": "Visit pins hub"
+    }
+  },
+  "shop": {
+    "title": "The Shop",
+    "subtitle": "Purchase exclusive perks, items, and platform advantages using your available balance."
+  },
+  "comingSoon": {
+    "analytics": {
+      "title": "Advanced Analytics Coming Soon",
+      "description": "We're putting the final touches on our new performance charts and detailed analytics. This feature will be launching in our next major update!"
+    },
+    "marketplace": {
+      "title": "Pin Marketplace Coming Soon",
+      "description": "A peer-to-peer marketplace for trading and collecting unique cosmetic pins is under construction. Get ready to build your collection!"
+    },
+    "shop": {
+      "title": "The Shop is Coming Soon",
+      "description": "An exclusive shop where you can spend your balance on powerful perks, items, and advantages is being stocked. Check back soon for the grand opening!"
+    }
+  },
+  "pins_page": {
+    "eyebrow": "Pins & Cosmetics",
+    "title": "Curate the loadout that represents you",
+    "subtitle": "Manage active boosts, stage future pins, and showcase your achievements across Hyper Strategies.",
+    "active_summary": "Active loadout",
+    "active_summary_hint": "Fill all available slots to maximise your daily rewards boost.",
+    "collection_summary": "Collection",
+    "collection_summary_hint": "Keep rare pins handy so you can swap them in for seasonal events.",
+    "marketplace_summary": "Marketplace",
+    "marketplace_access": "Unlocked",
+    "marketplace_locked": "Tier 2 required",
+    "marketplace_summary_hint": "List duplicates and discover limited editions when you reach Tier 2."
   },
   "footer": {
     "follow_us": "Follow us:",
@@ -51,11 +109,6 @@
     "allocate_funds": "Allocate Funds",
     "coming_soon": "Coming Soon",
     "more_info": "More Info"
-  },
-  "shop": {
-  "title": "The Shop",
-  "subtitle": ""
-
   },
   "vault_modal": {
     "title": "Allocate to {{vaultName}}",
@@ -286,12 +339,6 @@
     "rightsTitle": "Copyright",
     "rights": "All rights reserved. The content and works published on this website are governed by the copyright laws of the operating jurisdiction."
   },
-  "home": {
-    "rotating_words": [
-      "AUTOMATED",
-      "HEDGEFUND",
-      "EXPERIMENTAL"
-    ],
     "hero": {
       "headline": "HYPER-STRATEGIES",
       "subtext": "Automated Trading Solutions, Curated Crypto Vaults.",
@@ -340,8 +387,7 @@
       "step_three_title": "Equip pins & earn rewards",
       "step_three_copy": "Head to the new pins hub to curate your loadout, then claim XP boosts and rewards tailored to your tier.",
       "step_three_cta": "Visit pins hub"
-     }
-  },
+     },
   "faq_page": {
     "title": "Frequently Asked Questions",
     "q1_title": "What are Bonus Points?",

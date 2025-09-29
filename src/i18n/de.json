@@ -1,22 +1,65 @@
 {
   "common": {
-    "max": "Max",
-  "pending_withdrawal_tooltip": "Eine Vault-Auszahlung wird derzeit bearbeitet. Ihr Guthaben wird nach Abschluss aktualisiert.",
-  "goToDashboard": "Zum Dashboard"
+    "loading": "Wird geladen...",
+    "backToDashboard": "Zurück zum Dashboard",
+    "goToDashboard": "Zum Dashboard",
+    "max": "Max"
+  },
+  "nav": {
+    "marketplace": "Marktplatz",
+    "shop": "Shop"
   },
   "header": {
     "dashboard": "Dashboard",
+    "pins": "Pins",
+    "rewards": "Belohnungen",
     "wallet": "Wallet",
     "profile": "Profil",
     "admin": "Admin",
     "logout": "Abmelden",
     "signin": "Anmelden",
-      "pins": "Pins",
-  "rewards": "Belohnungen",
     "register": "Registrieren",
-    "marketplace": "Marktplatz",
-    "shop" : "shop", 
     "alt_logo": "Hyper-Strategies Logo"
+  },
+  "home": {
+    "hero": {
+      "headline": "HYPER-STRATEGIES",
+      "subtext": "Automatisierte Handelslösungen, kuratierte Krypto-Vaults.",
+      "register_now": "Jetzt registrieren",
+      "sign_in": "Anmelden"
+    },
+    "journey": {
+      "eyebrow": "Drei Schritte zum Erfolg",
+      "title": "Ein geführter Weg für jedes Mitglied",
+      "subtitle": "Ob Sie es selbst verwalten oder verwalten lassen möchten, folgen Sie dem Pfad unten, um Kapital, XP und Community-Vorteile zu aktivieren.",
+      "step_one_title": "Erstellen Sie Ihr Konto",
+      "step_one_copy": "Registrieren Sie sich in Minuten, sichern Sie Ihren Empfehlungscode und erhalten Sie sofortigen Zugriff auf unsere Dashboards.",
+      "step_one_cta": "Registrierung starten",
+      "step_two_title": "Wählen Sie ein Vault-Erlebnis",
+      "step_two_copy": "Wählen Sie zwischen automatisierten Strategien, verwalteten Portfolios oder Syndikaten, die zu Ihrer Risikobereitschaft passen.",
+      "step_two_cta": "Vaults erkunden",
+      "step_three_title": "Pins ausrüsten & Belohnungen verdienen",
+      "step_three_copy": "Besuchen Sie den neuen Pin-Hub, um Ihre Ausrüstung zu kuratieren, und fordern Sie dann XP-Boosts und Belohnungen an.",
+      "step_three_cta": "Zum Pin-Hub"
+    }
+  },
+  "shop": {
+    "title": "Der Shop",
+    "subtitle": "Kaufen Sie exklusive Vorteile, Gegenstände und Plattformvorteile mit Ihrem verfügbaren Guthaben."
+  },
+  "comingSoon": {
+    "analytics": {
+      "title": "Erweiterte Analysen in Kürze verfügbar",
+      "description": "Wir arbeiten an den letzten Details unserer neuen Performance-Charts. Diese Funktion wird mit unserem nächsten großen Update veröffentlicht!"
+    },
+    "marketplace": {
+      "title": "Pin-Marktplatz in Kürze verfügbar",
+      "description": "Ein Peer-to-Peer-Marktplatz zum Handeln und Sammeln von Pins ist im Aufbau. Machen Sie sich bereit, Ihre Sammlung aufzubauen!"
+    },
+    "shop": {
+      "title": "Der Shop ist in Kürze verfügbar",
+      "description": "Ein exklusiver Shop, in dem Sie Ihr Guthaben für Vorteile ausgeben können, wird gerade bestückt. Schauen Sie bald wieder vorbei!"
+    }
   },
   "footer": {
     "follow_us": "Folge uns:",
@@ -277,12 +320,7 @@
     "rightsTitle": "Urheberrecht",
     "rights": "Alle Rechte vorbehalten. Die auf dieser Webseite veröffentlichten Inhalte und Werke unterliegen dem Urheberrecht der geltenden Rechtsordnung."
   },
-  "home": {
-    "rotating_words": [
-      "AUTOMATISIERT",
-      "HEDGEFOND",
-      "EXPERIMENTELL"
-    ],
+
     "hero": {
       "headline": "HYPER-STRATEGIES",
       "subtext": "Handverlesene Krypto-Vaults. Vertrauen bei jedem Schritt.",
@@ -316,8 +354,7 @@
         "button": "Mehr erfahren",
         "link": "https://hyper-strategies.gitbook.io/hyper-strategies-docs/"
       }
-    }
-  },
+    },
   "card_section": {
     "view_leaderboard": "Rangliste ansehen",
     "invest_now": "Jetzt investieren"
@@ -516,10 +553,6 @@
   "ledger_title": "XP-Verlauf",
   "ledger_description": "Eine chronologische Übersicht aller von dir verdienten XP.",
   "ledger_empty": "Du hast noch keinen eingeforderten XP-Verlauf."
-},
-"shop": {
-  "title": "Der Shop", 
-  "subtitle": "Kaufen Sie exklusive Vorteile, Gegenstände und Plattformvorteile mit Ihrem verfügbaren Guthaben."
 },
  "vault": {
     "yourPerformanceSnapshotTitle": "Dein Performance-Überblick",

@@ -1,30 +1,14 @@
 {
-  "common": {
-    "max": "ALL OF IT!",
-    "pending_withdrawal_tooltip": "DA MEKBOY IS GETTIN' YER TEEF. HOLD ON.",
-     "goToDashboard": "To the Dashboard!"
-  },
-  "header": {
-    "dashboard": "DA BOSS HUT",
-    "wallet": "DA TEEF PILE",
-    "profile": "YER BOSS POLE",
-    "admin": "WARBOSS TENT",
-    "logout": "LEG IT!",
-    "signin": "GET IN DA FIGHT",
-    "register": "JOIN DA WAAAGH!",
-    "alt_logo": "Hyper-Stratz Logo... it's ded killy."
-  },
+  "common": { "loading": "SUMMONIN' PIXELS...", "backToDashboard": "FLEE TO DA BOSS HUT!", "goToDashboard": "TO DA BOSS HUT!", "max": "ALL OF IT!", "pending_withdrawal_tooltip": "DA MEKBOY IS GETTIN' YER TEEF. HOLD ON." },
+  "nav": { "marketplace": "DA BITZ MARKET", "shop": "DA GOBBO'S SHOPPE" },
+  "header": { "dashboard": "DA BOSS HUT", "pins": "SHINY BITZ", "rewards": "DA LOOT PILE", "wallet": "DA TEEF PILE", "profile": "YER BOSS POLE", "admin": "WARBOSS TENT", "logout": "LEG IT!", "signin": "GET IN DA FIGHT", "register": "JOIN DA WAAAGH!", "alt_logo": "Hyper-Stratz Logo... it's ded killy." },
+  "home": { "hero": { "headline": "HYPER-STRATZ!!!", "subtext": "DED KUNNIN' KRUMPIN' BOXES. TRUSTY AS A GORK.", "register_now": "JOIN DA WAAAGH!", "sign_in": "GET IN DA FIGHT" }, "journey": { "eyebrow": "THREE STEPS TA MORE DAKKA", "title": "A GOOD PLAN FOR EVERY GIT", "subtitle": "DON'T MATTA IF YA KRUMP YERSELF OR LET DA BOYZ DO IT, DO DIS STUFF TA GET TEEF, WAAAGH!, AND GUBBINZ.", "step_one_title": "GET YER NAME", "step_one_copy": "SIGN UP, GET A LOUD WARCRY, AND SEE YER STUFF ON DA BIG MAP.", "step_one_cta": "START SIGNIN'", "step_two_title": "PICK A WAY TA FIGHT", "step_two_copy": "PICK A STOMPA OR A KILLA KAN OR JOIN A BIGGA MOB. WATEVA'S BEST FOR KRUMPIN'.", "step_two_cta": "SEE DA STOMPAS", "step_three_title": "STICK ON SHINY BITZ & GET LOOT", "step_three_copy": "GO TO DA BITZ PILE, MAKE YERSELF LOOK PROPA ORKY, DEN GO GET MORE WAAAGH! AND SHINIES.", "step_three_cta": "GO TO BITZ PILE" } },
   "footer": {
     "follow_us": "FOLLOW DA WAAAGH!:",
     "documentation": "DA PLANZ",
     "user_guide": "HOW TA KRUMP",
     "terms": "DA RULEZ",
     "terms_link": "DA BIG RULEZ"
-  },
-  "home": {
-    "hero": {
-      "headline": "HYPER-STRATZ!!!"
-    }
   },
   "dashboard": {
     "unrealized_pnl": "SHINIES YER GONNA GET",
