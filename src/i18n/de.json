@@ -14,7 +14,8 @@
       "pins": "Pins",
   "rewards": "Belohnungen",
     "register": "Registrieren",
-    "tab_market": "Tab-Marktplatz",
+    "marketplace": "Marktplatz",
+    "shop" : "shop", 
     "alt_logo": "Hyper-Strategies Logo"
   },
   "footer": {

@@ -103,8 +103,8 @@ const Header = () => {
                       <>
                           <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
                           <Link to="/pins" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.pins', 'Pins')}</Link>
-                          <Link to="/marketplace" className="mobile-menu__link" onClick={closeMobileMenu}>{t('nav.marketplace')}</Link>
-                          <Link to="/shop" className="mobile-menu__link" onClick={closeMobileMenu}>{t('nav.shop')}</Link>
+                          <Link to="/marketplace" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.marketplace')}</Link>
+                          <Link to="/shop" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.shop')}</Link>
                           <Link to="/rewards" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.rewards', 'Rewards')}</Link>
                           <Link to="/wallet" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.wallet')}</Link>
                           <Link to="/profile" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.profile')}</Link>

@@ -13,8 +13,9 @@
   "rewards": "Rewards",
     "signin": "Sign In",
     "register": "Register",
-    "tab_market": "Tab Market",
-    "alt_logo": "Hyper-Strategies Logo"
+    "marketplace": "Pin Market",
+    "alt_logo": "Hyper-Strategies Logo",
+    "shop": "Shop"
   },
   "footer": {
     "follow_us": "Follow us:",
