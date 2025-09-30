@@ -106,7 +106,7 @@ button {
 
 .hero-subtext {
   font-size: 18px;
-  color: #a0a0a0;
+  color: #b1ababce;
   margin-bottom: 24px;
   max-width: 600px;
 }
@@ -159,7 +159,7 @@ button {
 
 .card-text {
   font-size: 14px;
-  color: #a0a0a0;
+  color: #dfd5d5;
   min-height: 60px;
 }
 
@@ -3021,7 +3021,7 @@ input:checked + .slider:before {
   margin: 5px 0;
 }
 .text-muted {
-  color: #888;
+  color: #f19292;
 }
 
 /* Add to your main CSS file for UserPins */

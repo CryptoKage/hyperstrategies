@@ -452,8 +452,7 @@
     "username_label": "Username",
     "save_changes_button": "Save changes",
     "eyebrow": "",
-    "modern_title": "Your Hyper-Strategies Profile"
-    ,
+    "modern_title": "Your Hyper-Strategies Profile"   , 
     "modern_subtitle": "Complete the steps below to unlock the full ecosystem — from personalised referrals to collectible pins and seasonal rewards.",
     "journey_title": "Your activation journey",
     "journey_caption": "We curated three simple milestones so you always know the next best action to take.",
@@ -465,7 +464,8 @@
     "journey_step_two_cta": "Go to pins hub",
     "journey_step_three": "Earn & celebrate",
     "journey_step_three_copy": "Claim XP boosts, track leaderboard status, and unlock presale access as you climb through the tiers.",
-    "journey_step_three_cta": "Open rewards center"
+    "journey_step_three_cta": "Open rewards center",
+    "profile_form_copy": "Update your username"
   },
   "pins_market": {
     "title": "Pins Marketplace",
