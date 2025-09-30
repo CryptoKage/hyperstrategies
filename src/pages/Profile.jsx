@@ -238,13 +238,12 @@ const Profile = () => {
               <span className="stat-value-large xp-rate-value">
                 +{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span>
               </span>
+             </div>
+            
+            <div className="profile-card__actions">
+              <Link to="/xpleaderboard" className="btn-secondary btn-sm">{t('profile_page.view_leaderboard')}</Link>
+              <Link to="/rewards" className="btn-primary">{t('profile_page.claim_xp_button')}</Link>
             </div>
-            <Link to="/xpleaderboard" className="btn-secondary btn-sm">
-              {t('profile_page.view_leaderboard', 'View XP leaderboard')}
-            </Link>
-            <Link to="/rewards" className="btn-primary">
-              {t('profile_page.claim_xp_button')}
-            </Link>
           </article>
 
           <article className="profile-card profile-card--referral" aria-labelledby="profile-referral-heading">
@@ -309,9 +308,9 @@ const Profile = () => {
               <div className="telegram-button-wrapper">
                 <TelegramLoginButton onAuth={handleTelegramAuth} />
               </div>
-              <button className="btn-secondary connection-button" disabled>
-                <span>{t('profile_page.connect_evm_button')}</span>
-              </button>
+                <button className="btn-secondary connection-button" disabled><span>EVM Wallet (Coming Soon)</span></button>
+              <button className="btn-secondary connection-button" disabled><span>Solana Wallet (Coming Soon)</span></button>
+              
             </div>
           </article>
 

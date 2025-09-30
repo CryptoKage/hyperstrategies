@@ -4910,3 +4910,20 @@ opacity: 0.3;
   border-top: none; /* This removes the top border to seamlessly connect with the card above */
   border-radius: 0 0 12px 12px; /* Rounds only the bottom corners */
 }
+
+.profile-card__actions {
+  display: flex;
+  flex-direction: column; /* Stack the buttons vertically */
+  gap: 12px; /* Add space between them */
+  margin-top: 24px; /* Add space above the buttons */
+  border-top: 1px solid var(--color-border); /* Add a separator line */
+  padding-top: 24px; /* Add space below the separator line */
+}
+
+/* This makes sure the buttons inside the new container are full-width */
+.profile-card__actions .btn-secondary,
+.profile-card__actions .btn-primary {
+  width: 100%;
+}
+
+

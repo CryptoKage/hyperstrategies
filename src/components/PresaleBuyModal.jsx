@@ -15,7 +15,7 @@ import React, { useState } from 'react';
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button onClick={onClose} className="modal-close-btn">×</button>
-        <h2>Buy PST</h2>
+        <h2>Coming soon: Buy the upcoming $hyper-strategies token</h2>
         <p className="modal-subtitle">Use your available balance to purchase tokens.</p>
 
         <div className="investment-breakdown">
@@ -43,7 +43,7 @@ import React, { useState } from 'react';
 
         <div className="modal-actions">
           <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
-          <button type="button" onClick={handleConfirm} className="btn-primary">Confirm Purchase</button>
+          
         </div>
       </div>
     </div>
