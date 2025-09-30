@@ -1,3 +1,5 @@
+// /src/pages/XPLeaderboard.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
@@ -14,15 +16,11 @@ const XPLeaderboard = () => {
   const [myRank, setMyRank] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isXPModalOpen, setIsXPModalOpen] = useState(false);
-  
-  // --- NEW: State to track which link is being copied ---
   const [copiedLink, setCopiedLink] = useState(null);
 
   const fetchData = useCallback(async () => {
-    // --- BUG FIX: Removed 'user' from the dependency array to prevent a potential loop ---
-    setLoading(true);
+    // We don't set loading here to prevent a flicker if the user object is not ready
     try {
-      // We can safely read 'user' from the outer scope here without listing it as a dependency.
       const [leaderboardRes, myRankRes] = await Promise.all([
         api.get('/user/leaderboard'),
         user ? api.get('/user/my-rank') : Promise.resolve(null)
@@ -34,16 +32,21 @@ const XPLeaderboard = () => {
     } catch (err) {
       console.error("Could not load leaderboard data.", err);
     } finally {
-      setLoading(false);
+      setLoading(false); // Set loading to false after all API calls are done
     }
-  }, []);
+  }, [user]); // We depend on the user object. When it loads, this function can be called.
   
-  // --- NEW: Function to handle copying a specific referral link ---
+  // --- THIS IS THE FINAL FIX: Re-add the useEffect to call the data fetch ---
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+  // --- END OF FIX ---
+
   const handleCopyLink = (referralCode) => {
     const link = `https://www.hyper-strategies.com/register?ref=${referralCode}`;
     navigator.clipboard.writeText(link);
     setCopiedLink(referralCode);
-    setTimeout(() => setCopiedLink(null), 2000); // Reset after 2 seconds
+    setTimeout(() => setCopiedLink(null), 2000);
   };
   
   const formatReferralCode = (code) => {
@@ -101,15 +104,10 @@ const XPLeaderboard = () => {
                     return (
                       <tr key={player.referral_code || index} className={isCurrentUser ? 'current-user-row' : ''}>
                         <td>{index + 1}</td>
-                        {/* --- THE FIX: Display formatted referral code --- */}
                         <td>{formatReferralCode(player.referral_code)}</td>
                         <td>{parseInt(player.xp).toLocaleString()}</td>
-                        {/* --- THE FIX: Add a Copy Link button to each row --- */}
                         <td style={{ textAlign: 'right' }}>
-                           <button 
-                             onClick={() => handleCopyLink(player.referral_code)}
-                             className="btn-secondary btn-sm"
-                           >
+                           <button onClick={() => handleCopyLink(player.referral_code)} className="btn-secondary btn-sm">
                              {copiedLink === player.referral_code ? t('xp_leaderboard.copied_button') : t('xp_leaderboard.copy_button')}
                            </button>
                         </td>
@@ -123,38 +121,13 @@ const XPLeaderboard = () => {
         </div>
       </Layout>
 
-      <InfoModal
-        isOpen={isXPModalOpen}
-        onClose={() => setIsXPModalOpen(false)}
-        title={t('xp_leaderboard.modal_title')}
-      >
+      <InfoModal isOpen={isXPModalOpen} onClose={() => setIsXPModalOpen(false)} title={t('xp_leaderboard.modal_title')}>
         <Accordion>
-          <AccordionItem title={t('xp_leaderboard.accordion_title_signup')}>
-            <p>{t('xp_leaderboard.accordion_desc_signup')}</p>
-            <ul className="reward-list">
-              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_1') }} />
-              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_2') }} />
-              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_3') }} />
-              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_4') }} />
-              <li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_5') }} />
-            </ul>
-          </AccordionItem>
-          
-          <AccordionItem title={t('xp_leaderboard.accordion_title_allocation')}>
-            <p>{t('xp_leaderboard.accordion_desc_allocation')}</p>
-          </AccordionItem>
-          
-          <AccordionItem title={t('xp_leaderboard.accordion_title_referral')}>
-            <p>{t('xp_leaderboard.accordion_desc_referral')}</p>
-          </AccordionItem>
-
-          <AccordionItem title={t('xp_leaderboard.accordion_title_staking')}>
-            <p>{t('xp_leaderboard.accordion_desc_staking')}</p>
-          </AccordionItem>
-          
-          <AccordionItem title={t('xp_leaderboard.accordion_title_buyback')}>
-            <p>{t('xp_leaderboard.accordion_desc_buyback')}</p>
-          </AccordionItem>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_signup')}><p>{t('xp_leaderboard.accordion_desc_signup')}</p><ul className="reward-list"><li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_1') }} /><li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_2') }} /><li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_3') }} /><li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_4') }} /><li dangerouslySetInnerHTML={{ __html: t('xp_leaderboard.signup_tier_5') }} /></ul></AccordionItem>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_allocation')}><p>{t('xp_leaderboard.accordion_desc_allocation')}</p></AccordionItem>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_referral')}><p>{t('xp_leaderboard.accordion_desc_referral')}</p></AccordionItem>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_staking')}><p>{t('xp_leaderboard.accordion_desc_staking')}</p></AccordionItem>
+          <AccordionItem title={t('xp_leaderboard.accordion_title_buyback')}><p>{t('xp_leaderboard.accordion_desc_buyback')}</p></AccordionItem>
         </Accordion>
       </InfoModal>
     </>
