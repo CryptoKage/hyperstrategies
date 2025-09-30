@@ -48,11 +48,10 @@ const Header = () => {
           {user ? (
             <>
               <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
+              <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
               <Link to="/pins" className="header__button">{t('header.pins', 'Pins')}</Link>
-              <Link to="/marketplace" className="header__button">{t('nav.marketplace')}</Link>
               <Link to="/shop" className="header__button">{t('nav.shop')}</Link>
               <Link to="/rewards" className="header__button">{t('header.rewards', 'Rewards')}</Link>
-              <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
               <Link to="/profile" className="header__button">{t('header.profile')}</Link>
               {user.isAdmin && (
                 <Link to="/admin" className="header__button header__button--admin">{t('header.admin')}</Link>
