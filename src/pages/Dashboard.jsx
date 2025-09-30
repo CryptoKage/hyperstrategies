@@ -192,10 +192,9 @@ const Dashboard = () => {
                                 </label>
                             </div>
                             <div className="vault-actions">
-                                <button className="vault-action-button" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
+                                <button className="btn-primary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
                                 <button className="vault-action-button" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>{t('dashboard.more_info')}</button>
-                                <button 
-                                className="vault-action-button" 
+                                <button className="vault-action-button" 
                                 onClick={() => handleOpenWithdrawModal(position)}
                                 disabled={vaultLockStatus.isLocked}
                                 title={vaultLockStatus.isLocked ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
