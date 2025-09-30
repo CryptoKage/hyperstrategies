@@ -31,9 +31,15 @@ const vaultImageMap = {
 const SnapshotItem = ({ labelKey, value, className = '' }) => {
     const { t } = useTranslation();
     const numericValue = parseFloat(value);
+
+    // THE FIX: If the value is 0 or not a number, render nothing.
+    if (isNaN(numericValue) || numericValue === 0) {
+        return null; 
+    }
+
     return (
         <div className="performance-snapshot-item">
-            <span className={`value ${className}`}>{!isNaN(numericValue) ? numericValue.toFixed(2) : '0.00'}</span>
+            <span className={`value ${className}`}>{numericValue.toFixed(2)}</span>
             <span className="label">{t(labelKey)}</span>
         </div>
     );
@@ -242,7 +248,7 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-               {isActive && vault.performance && (
+                {isActive && vault.performance && (
                      <div className="performance-snapshot-card">
                         <SnapshotItem labelKey="vault.stats.dailyReturn" value={vault.performance.daily} className={vault.performance.daily >= 0 ? 'text-positive' : 'text-negative'} />
                         <SnapshotItem labelKey="vault.stats.weeklyReturn" value={vault.performance.weekly} className={vault.performance.weekly >= 0 ? 'text-positive' : 'text-negative'} />
