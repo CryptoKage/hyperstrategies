@@ -4,7 +4,7 @@
     "backToDashboard": "Back to Dashboard",
     "goToDashboard": "Go to Dashboard",
     "max": "Max",
-    "pending_withdrawal_tooltip": "A vault withdrawal is currently being processed. Your balance will update upon completion."
+    "pending_withdrawal_tooltip": "A strategy withdrawal is currently being processed. Your balance will update upon completion."
   },
   "nav": {
     "marketplace": "Marketplace",
@@ -12,7 +12,7 @@
   },
   "header": {
     "dashboard": "Dashboard",
-    "pins": "Pins",
+    "pins": "Pin loadout",
     "rewards": "Rewards",
     "wallet": "Wallet",
     "profile": "Profile",
@@ -25,28 +25,28 @@
   "home": {
     "hero": {
       "headline": "HYPER-STRATEGIES",
-      "subtext": "Automated Trading Solutions, Curated Crypto Vaults.",
+      "subtext": "Simplicity with Depth.",
       "register_now": "Register Now",
       "sign_in": "Sign In"
     },
     "journey": {
-      "eyebrow": "Three steps to momentum",
-      "title": "A guided flow for every member",
-      "subtitle": "Whether you prefer to self-serve or go managed, follow the path below to activate capital, XP, and community perks.",
+      "eyebrow": "",
+      "title": "Get started in 3 easy steps",
+      "subtitle": "",
       "step_one_title": "Create your account",
-      "step_one_copy": "Register in minutes, secure your referral code, and get instant access to our dashboards on desktop or mobile.",
+      "step_one_copy": "Register in under a minute to get access to Hyper-Strategies and make a deposit.",
       "step_one_cta": "Start registration",
-      "step_two_title": "Select a vault experience",
-      "step_two_copy": "Pick between automated strategies, managed portfolios, or investor-grade syndicates that match your risk appetite.",
-      "step_two_cta": "Explore vaults",
-      "step_three_title": "Equip pins & earn rewards",
-      "step_three_copy": "Head to the new pins hub to curate your loadout, then claim XP boosts and rewards tailored to your tier.",
-      "step_three_cta": "Visit pins hub"
+      "step_two_title": "Select a strategy",
+      "step_two_copy": "Pick between different automated strategies that match your risk appetite.",
+      "step_two_cta": "Explore strategies",
+      "step_three_title": "Equip pins & upgrade your tier",
+      "step_three_copy": "Head to the pin loadout page to customize your loadout to benefit from your strongest pins and reap the rewards.",
+      "step_three_cta": "Visit pin loadout"
     }
   },
   "shop": {
     "title": "The Shop",
-    "subtitle": "Purchase exclusive perks, items, and platform advantages using your available balance."
+    "subtitle": "Purchase pins and other goodies. Purchases with bonus points are discounted. Stay tuned for special offers!"
   },
   "comingSoon": {
     "analytics": {
@@ -55,7 +55,7 @@
     },
     "marketplace": {
       "title": "Pin Marketplace Coming Soon",
-      "description": "A peer-to-peer marketplace for trading and collecting unique cosmetic pins is under construction. Get ready to build your collection!"
+      "description": "A peer-to-peer marketplace for trading and collecting pins is under construction. Build your collection!"
     },
     "shop": {
       "title": "The Shop is Coming Soon",
@@ -228,50 +228,54 @@
     "title": "Platform Tiers & Fees",
     "intro": "Our system is designed to reward engagement and long-term participation through tiers, XP, and a dynamic fee structure.",
     "nav_tiers": "Tiers",
-    "nav_fees": "Vault Fees",
+    "nav_fees": "Strategy Fees",
     "nav_xp": "Earning XP",
     "nav_faq": "View FAQ",
     "tiers_title": "Account Tiers",
-    "tiers_subtitle": "Your account tier is determined by your total XP. Higher tiers unlock significant benefits on select vaults.",
+    "tiers_subtitle": "Your account tier is determined by your total XP. The higher your tier the more pins you can equip, which can reduce costs and increase your daily XP bonus.",
     "table_header_tier": "Tier",
     "table_header_xp": "XP Required",
     "table_header_benefits": "Core Benefits",
     "tier1_label": "Tier 1",
-    "tier1_xp": "0 - 749 XP",
-    "tier1_benefit": "Standard Access",
+    "tier1_xp": "0 - 999 XP",
+    "tier1_benefit": "1 Slot",
     "tier2_label": "Tier 2",
-    "tier2_xp": "750 - 1,499 XP",
-    "tier2_benefit": "-2% Deposit Fee (Core) & -2.5% Performance Fee (ApeCoin)",
+    "tier2_xp": "1000 - 1999 XP",
+    "tier2_benefit": "2 Slots",
     "tier3_label": "Tier 3",
-    "tier3_xp": "1,500 - 2,999 XP",
-    "tier3_benefit": "-4% Deposit Fee (Core) & -5% Performance Fee (ApeCoin)",
+    "tier3_xp": "2000 - 3999 XP",
+    "tier3_benefit": "3 Slots",
     "tier4_label": "Tier 4",
-    "tier4_xp": "3,000+ XP",
-    "tier4_benefit": "-6% Deposit Fee (Core) & -7.5% Performance Fee (ApeCoin)",
-    "fees_title": "Vault Fees Explained",
-    "fees_subtitle": "Each vault has a unique fee structure tailored to its strategy. Fees are used for platform operations, liquidity provision, and future development.",
-    "core_vault_title": "Core Vault (Vault 1)",
-    "core_vault_desc_1": "<strong>Deposit Fee:</strong> <strong>20% (Tier-Reduced)</strong>. The full fee amount is credited to your Bonus Points balance.",
-    "core_vault_desc_2": "<strong>Performance Fee:</strong> Flat <strong>20%</strong>, charged only on profits generated.",
+    "tier4_xp": "4000 - 7000 XP",
+    "tier4_benefit": "4 Slots",
+    "fees_title": "Strategy Fees Explained",
+    "fees_subtitle": "Strategies become discounted with pins. Fees are used for platform operations, liquidity provision, and future development.",
+    "core_vault_title": "Core Strategy",
+    "core_vault_desc_1": "<strong>Deposit Fee:</strong> <strong>20% (Tier-Reduced)</strong>. The deposit fee amount is credited to your Bonus Points balance.",
+    "core_vault_desc_2": "<strong>Performance Fee:</strong> Flat <strong>20%</strong>, charged only on profits generated with a high-water mark.",
     "core_vault_desc_3": "<strong>Lock-up Period:</strong> 1 month for any newly deposited capital.",
-    "ape_vault_title": "ApeCoin EMA Vault (Vault 2)",
-    "ape_vault_desc_1": "<strong>Deposit Fee:</strong> Flat <strong>10%</strong> (not affected by tier). Credited as Bonus Points.",
-    "ape_vault_desc_2": "<strong>Performance Fee:</strong> <strong>40% (Tier-Reduced)</strong>. Fee is reduced by 2.5% for each tier.",
+    "ape_vault_title": "Bitcoin Strategy",
+    "ape_vault_desc_1": "<strong>Deposit Fee:</strong> Flat <strong>20%</strong>. The deposit fee amount is credited to your Bonus Points balance.",
+    "ape_vault_desc_2": "<strong>Performance Fee:</strong> <strong>40% (Tier-Reduced)</strong>.",
     "ape_vault_desc_3": "<strong>Lock-up Period:</strong> None. Capital is liquid.",
+    "swarm_strategy_title": "Swarm Strategy",
+    "swarm_strategy_desc_1": "<strong>Deposit Fee:</strong> <strong>20% (Tier-Reduced)</strong>. The deposit fee amount is credited to your Bonus Points balance.",
+    "swarm_strategy_desc_2": "<strong>Performance Fee:</strong> Flat <strong>20%</strong>, charged only on profits generated with a high-water mark.",
+    "swarm_strategy_desc_3": "<strong>Lock-up Period:</strong> 1 month for any newly deposited capital.",
     "xp_title": "How to Earn XP",
     "xp_subtitle": "XP is the measure of your contribution to the ecosystem. See your rank on the <1>XP Leaderboard</1>.",
     "xp_rule_1_title": "Capital Allocation:",
-    "xp_rule_1_desc": "Earn 1 XP for every $10 of capital you allocate to a vault.",
-    "xp_rule_2_title": "Time-Staked Bonus:",
-    "xp_rule_2_desc": "Earn daily XP based on the capital you have actively staked in vaults.",
+    "xp_rule_1_desc": "Earn 1 XP for every $10 of capital you allocate to a strategy.",
+    "xp_rule_2_title": "Daily Bonus XP Rate:",
+    "xp_rule_2_desc": "Unlock a 2% daily XP bonus on your strategy deposits.",
     "xp_rule_3_title": "Successful Referrals:",
-    "xp_rule_3_desc": "Earn bonus XP every time a user you referred allocates capital.",
+    "xp_rule_3_desc": "Earn bonus XP EVERY time a user you referred allocates capital.",
     "xp_rule_4_title": "Bonus Point Buy-Backs:",
-    "xp_rule_4_desc": "Earn 1 XP for every 10 Bonus Points the platform buys back from you."
+    "xp_rule_4_desc": "Earn 1 XP for every 10 bonus points the platform buys back from you or when you make discounted purchases in the Shop with your bonus points."
   },
    "xp_leaderboard": {
     "title": "XP Leaderboard",
-    "subtitle": "Earn XP by participating in the ecosystem",
+    "subtitle": "Earn XP by participating in the Hyper-Strategies ecosystem",
     "how_to_earn_button": "How to Earn XP",
     "my_rank_title": "Your Rank",
     "rank": "Rank",
@@ -285,7 +289,7 @@
   "copied_button": "Copied!",
   "referral_link": "Referral Link",
   "anonymous": "Anonymous",
-    "accordion_title_signup": "🚀 Early Adopter Signup Bonus (First 500 Users)",
+    "accordion_title_signup": "🚀 Early Supporter Signup Bonus (First 500 Users)",
     "accordion_desc_signup": "A one-time XP bonus is awarded to the first 500 users upon registration to reward our earliest supporters. The bonus is tiered:",
     "signup_tier_1": "<strong>Users 1-100:</strong> 25 XP",
     "signup_tier_2": "<strong>Users 101-200:</strong> 20 XP",
@@ -293,13 +297,13 @@
     "signup_tier_4": "<strong>Users 301-400:</strong> 10 XP",
     "signup_tier_5": "<strong>Users 401-500:</strong> 5 XP",
     "accordion_title_allocation": "💰 Capital Allocation: $10 = 1 XP",
-    "accordion_desc_allocation": "You earn XP by putting your capital to work. For every $10 you allocate to a vault (minimum $100 allocation), you receive 1 XP. A $1,000 allocation will net you 100 XP.",
+    "accordion_desc_allocation": "You earn XP by putting your capital to work. For every $10 you allocate to a strategy (minimum $100 allocation), you receive 1 XP. A $1,000 allocation will net you 100 XP.",
     "accordion_title_referral": "🤝 Successful Referral: Dynamic (5%)",
-    "accordion_desc_referral": "When a user signs up with your referral code and makes a vault allocation (minimum $100), you (the referrer) will receive XP equal to 5% of the allocation amount, EVERY TIME. If they allocate $1,000, you get 50 XP.",
+    "accordion_desc_referral": "When a user signs up with your referral code and makes a strategy allocation (minimum $100), you (the referrer) will receive XP equal to 5% of the allocation amount, EVERY TIME. If they allocate $1,000, you get 50 XP.",
     "accordion_title_staking": "⏳ Daily XP Bonus",
-    "accordion_desc_staking": "A future feature will reward users with XP for every week they keep their capital locked in a vault, encouraging long-term participation.",
+    "accordion_desc_staking": "We reward long-term commitment with a 2% daily XP bonus on strategy deposits.",
     "accordion_title_buyback": "💸 Bonus Point Buy-Back: 10 to 1 XP",
-    "accordion_desc_buyback": "When the platform buys back your Bonus Points, you will receive XP equal to 10% of the value. A 200 Bonus Point buy-back will grant you 20 XP."
+    "accordion_desc_buyback": "When the platform buys back your bonus points, you will receive XP equal to 10% of the value. The same applies to the discounted purchases at the Shop."
   },
   "add_to_home_screen": {
     "title": "Install Hyper-Strategies App",
@@ -328,7 +332,7 @@
   },
     "hero": {
       "headline": "HYPER-STRATEGIES",
-      "subtext": "Automated Trading Solutions, Curated Crypto Vaults.",
+      "subtext": "Simplicity with depth.",
       "join_community": "Join the Community",
       "install_app": "Install App",
        "register_now": "Register Now",
@@ -338,7 +342,7 @@
       "title": "Explore Hyper-Strategies",
       "airdrop": {
         "title": "XP, Tiers & Leaderboard",
-        "text": "Engage with the platform to earn XP, climb account tiers, and compete for future token allocations.",
+        "text": "Engage with the platform to earn XP, climb account tiers, benefit from your pin loadout and compete for future token allocations.",
         "button": "VIEW LEADERBOARD",
         "link": "/xpleaderboard"
       },
@@ -348,8 +352,8 @@
         "button": "Coming Soon"
       },
       "managed": {
-        "title": "Invest in Managed Vaults",
-        "text": "Deposit and let our systems and traders work for you in curated, high-performance vaults.",
+        "title": "Invest in Managed Strategies",
+        "text": "Deposit and let our Systems work for you with curated, high-performance strategies.",
         "button": "VISIT DASHBOARD",
         "link": "/login"
       },
@@ -364,34 +368,34 @@
   },
   "presale": {
     "title": "Platform Token Presale",
-    "description": "Coming Soon: Participate in our upcoming token presale. Your eligibility and allocation are determined by your XP. Secure your spot in the future of our ecosystem.",
+    "description": "In order to participate in our upcoming token presale, your account must be tier 2 or above. Secure your spot in the future of the Hyper-Strategies ecosystem.",
     "cta_loggedin": "View Presale Details",
     "cta_loggedout": "Sign In to Check Eligibility"
   }
 } 
     },
      "journey": {
-      "eyebrow": "Three steps to momentum",
-      "title": "A guided flow for every member",
-      "subtitle": "Whether you prefer to self-serve or go managed, follow the path below to activate capital, XP, and community perks.",
+      "eyebrow": "Get started in 3 easy steps",
+      "title": "",
+      "subtitle": "",
       "step_one_title": "Create your account",
-      "step_one_copy": "Register in minutes, secure your referral code, and get instant access to our dashboards on desktop or mobile.",
+      "step_one_copy": "Register in under a minute to get access to Hyper-Strategies and make a deposit.",
       "step_one_cta": "Start registration",
-      "step_two_title": "Select a vault experience",
-      "step_two_copy": "Pick between automated strategies, managed portfolios, or investor-grade syndicates that match your risk appetite.",
-      "step_two_cta": "Explore vaults",
-      "step_three_title": "Equip pins & earn rewards",
-      "step_three_copy": "Head to the new pins hub to curate your loadout, then claim XP boosts and rewards tailored to your tier.",
-      "step_three_cta": "Visit pins hub"
+      "step_two_title": "Select a strategy",
+      "step_two_copy": "Pick between different automated strategies that match your risk appetite.",
+      "step_two_cta": "Explore strategies",
+      "step_three_title": "Equip pins & upgrade your tier",
+      "step_three_copy": "Head to the pin loadout page to customize your loadout to benefit from your strongest pins and reap the rewards.",
+      "step_three_cta": "Visit pin loadout"
      },
   "faq_page": {
     "title": "Frequently Asked Questions",
-    "q1_title": "What are Bonus Points?",
-    "q1_answer": "Bonus Points are our way of rewarding users who contribute capital to our vaults. When you allocate funds to a vault, a portion of that capital is converted into Bonus Points, which are valued 1:1 with USDC. This helps cover the operational and development costs of the platform, allowing us to build a better service for you.",
-    "q2_title": "Can I cash out my Bonus Points?",
-    "q2_answer": "Bonus Points are not directly cashable. They represent your contribution to the platform. Over time, as our platform generates revenue from performance fees, we will use a portion of that revenue to 'buy back' Bonus Points from users. This process converts your Bonus Points back into USDC, which is then added to your main 'Available to Allocate' balance.",
-    "q3_title": "How are withdrawals from vaults handled?",
-    "q3_answer": "When you request a withdrawal from a vault, a request is created to move your 'Tradable Capital' back to your main 'Available to Allocate' balance. This process can take a minimum of 48 hours to complete. To withdraw funds from the platform to an external wallet, you must use the 'Withdraw Funds' feature on the Wallet page after your vault withdrawal has been processed."
+    "q1_title": "What are bonus points?",
+    "q1_answer": "When depositing in our strategies, 20% of your deposit is credited to you as bonus points. We will periodically buy back these points for USDC (1:1), which will be added to your “Available to Allocate” balance for immediate withdrawal or reinvestment. Bonus Points may also be used in the Shop for significant discounts.",
+    "q2_title": "What is a high-water mark?",
+    "q2_answer": "A high water mark ensures that the performance fee is only applied to **new profits**, not on funds that are simply recovering from a previous loss.",
+    "q3_title": "How are withdrawals from strategies handled?",
+    "q3_answer": "When you request a withdrawal from a strategy, a request is created to move your 'Tradable Capital' back to your main 'Available to Allocate' balance. This process can take up to 24 hours to complete. To withdraw funds from the platform to an external wallet, you must use the 'Withdraw Funds' feature on the Wallet page after your strategy withdrawal has been processed. That process should only take minutes."
   },
   "profile_page": {
   "loading": "Loading Profile...",
@@ -410,16 +414,16 @@
     "telegram_link_failed": "Failed to link Telegram account.",
     "title": "Your Profile",
     "pin_loadout_title": "Pin Loadout",
-    "auto_equip_label": "Auto-Equip Best Pins",
-    "loadout_description": "Equip pins to activate their bonuses. Slots are unlocked by your Account Tier.",
+    "auto_equip_label": "Auto-Equip Best pins",
+    "loadout_description": "Equip pins to activate their bonuses. Additional slots are unlocked by leveling up your account tier.",
     "active_slots_label": "Active Slots ({{count}} / {{total}})",
     "empty_slot": "Empty Slot",
-    "locked_slot_tooltip": "Unlocks at Tier {{tier}}",
+    "locked_slot_tooltip": "Unlocks at tier {{tier}}",
     "locked_slot_label": "Locked",
-    "save_loadout_button": "Save Loadout",
+    "save_loadout_button": "Save loadout",
     "saving_button": "Saving...",
     "pin_collection_title": "Your Pin Collection ({{count}})",
-    "list_pin_button": "List a Pin",
+    "list_pin_button": "List a pin",
     "no_inactive_pins": "You have no inactive pins.",
     "connect_title": "Connect Accounts & Wallets",
     "connect_description": "Link your social and Web3 accounts to unlock exclusive bounties and rewards.",
@@ -429,8 +433,8 @@
     "account_tier_label": "Account Tier",
     "tier_prefix": "Tier {{tier}}",
     "xp_label": "Your XP",
-    "claim_xp_button": "Claim XP / View Bounties",
-    "xp_rate_label": "Staking XP Rate",
+    "claim_xp_button": "Claim XP / View bounties",
+    "xp_rate_label": "Daily XP Rate",
     "xp_rate_per_day": "/ day",
     "referral_code_label": "Your Referral Code",
     "copy_link_button": "Copy Referral Link",
@@ -438,17 +442,18 @@
     "customize_link_title": "Customize Your Referral Link",
     "customize_link_subtitle": "Create a unique code. Must be 3-15 alphanumeric characters.",
     "placeholder_your_code": "your-code",
-    "save_code_button": "Save Code",
+    "save_code_button": "Save code",
     "syndicate_title": "Syndicate Referrals",
-    "syndicate_description": "Join forces with a community to earn shared referral rewards. Coming soon.",
-    "learn_more_button": "Learn More",
-    "pins_marketplace_button": "Pins Marketplace",
+    "syndicate_description": "Join a community, grow your syndicate, and share in the collective success.",
+    "learn_more_button": "Learn more",
+    "pins_marketplace_button": "P2P Marketplace",
     "xp_history_title": "XP History",
     "edit_details_title": "Edit Details",
     "username_label": "Username",
-    "save_changes_button": "Save Changes",
-    "eyebrow": "Your journey",
-    "modern_title": "Shape your Hyper Strategies identity",
+    "save_changes_button": "Save changes",
+    "eyebrow": "",
+    "modern_title": "Your Hyper-Strategies Profile"
+    ,
     "modern_subtitle": "Complete the steps below to unlock the full ecosystem — from personalised referrals to collectible pins and seasonal rewards.",
     "journey_title": "Your activation journey",
     "journey_caption": "We curated three simple milestones so you always know the next best action to take.",
@@ -465,7 +470,7 @@
   "pins_market": {
     "title": "Pins Marketplace",
     "coming_soon_title": "Peer-to-Peer Trading is Coming Soon",
-    "coming_soon_desc": "Soon you will be able to list your unique, owned Pins for sale and trade with other users right here. Build your collection, equip your best Pins, and get ready to trade.",
+    "coming_soon_desc": "Soon you will be able to list your unique, owned pins for sale and trade with other users right here. Build your collection, equip your best pins, and get ready to trade.",
     "view_my_pins": "View My Pin Collection",
     "loading": "Loading listings...",
     "error_loading": "Could not load marketplace data at this time.",
@@ -474,8 +479,8 @@
     "sold_by": "Sold by:",
     "buy_now": "Buy Now",
     "buy_error": "Purchase failed. The item may no longer be available.",
-    "filter_label": "Filter by Pin:",
-    "option_all": "All Pins",
+    "filter_label": "Filter by pin:",
+    "option_all": "All pins",
     "sort_label": "Sort by:",
     "option_newest": "Newest First",
     "option_price_low_high": "Price: Low to High",
@@ -530,8 +535,8 @@
   "login_now": "Login Now"
 },
 "xp_history": {
-  "deposit_bonus": "Earned {{amount}} XP for depositing in Vault {{vaultId}}.",
-  "referral_bonus": "Earned {{amount}} XP from your referral ({{username}}) making their first deposit."
+  "deposit_bonus": "Earned {{amount}} XP for depositing in strategy {{vaultId}}.",
+  "referral_bonus": "Earned {{amount}} XP from your referral ({{username}}) making a deposit."
 },
 "bounties": {
   "x_follow": {
@@ -557,10 +562,10 @@
   "total_xp_label": "Total XP Awarded on Platform",
   "leaderboard_button": "View Leaderboard",
   "unclaimed_xp_title": "Unclaimed XP",
-  "unclaimed_xp_description": "This is XP you've earned from bounties and special events. Claim it to add it to your total balance.",
+  "unclaimed_xp_description": "This is XP you've earned from bounties and special events. Claim it to add it to your total XP balance.",
   "claim_button": "Claim All XP",
   "claiming_button": "Claiming...",
-  "claim_success": "XP Claimed!",
+  "claim_success": "XP claimed!",
   "claim_failed": "Failed to claim XP.",
   "error_loading": "Could not load your rewards data at this time.",
   "presale_title": "Platform Presale",
@@ -582,7 +587,7 @@
 "vault": {
       "yourPerformanceSnapshotTitle": "Your Performance Snapshot",
   "yourPerformanceSnapshotSubtext": "Based on your personal realized performance since your first deposit.",
-    "title": "Vault Details",
+    "title": "Strategy Details",
     "stats": {
       "totalCapital": "Your Total Capital",
       "totalCapitalSubtext": "Principal + Realized & Unrealized P&L",
@@ -596,11 +601,11 @@
       "totalReturn": "Total Return (All-Time)"
     },
     "performanceSnapshotTitle": "Historical Performance Snapshot",
-    "performanceSnapshotSubtext": "Based on the average realized performance since vault inception.",
+    "performanceSnapshotSubtext": "Based on the average realized performance since strategy inception.",
     "chart": {
       "title": "Performance Journey",
       "myAccountValue": "My Account Value",
-      "vaultPerformanceIndex": "Vault Performance Index",
+      "vaultPerformanceIndex": "Strategy Performance Index",
       "compareAssets": "Compare Assets",
       "legend": {
         "myAccountValue": "My Account Value",
@@ -623,12 +628,12 @@
       "amount": "Amount"
     },
     "notInvested": {
-      "title": "You are not currently invested in this vault.",
+      "title": "You are not currently invested in this strategy.",
       "description": "To see your performance, make a deposit from your dashboard."
     },
     "errors": {
-      "loadDetails": "Could not load vault details. This vault may be inactive or you may not have a position yet.",
-      "noData": "No data available for this vault.",
+      "loadDetails": "Could not load strategy details. This strategy may be inactive or you may not have a position yet.",
+      "noData": "No data available for this strategy.",
       "noChartData": "Insufficient historical data to render chart."
     }
   },
@@ -638,7 +643,7 @@
     "PNL_DISTRIBUTION": "P&L Distribution"
  },
 
-"Pins_page": {
+"pins_page": {
   "loading": "Loading your pins...",
   "error_load": "We could not load your pins. Please try again.",
   "retry_button": "Try again",
@@ -654,8 +659,8 @@
   "marketplace_summary": "Marketplace",
   "marketplace_access": "Unlocked",
   "marketplace_locked": "Tier 2 required",
-  "marketplace_summary_hint": "Access to marketplace granted after tier 2.",
-  "management_title": "Active pin loadout",
+  "marketplace_summary_hint": "Access to Marketplace granted after tier 2.",
+  "management_title": "Active Pin Loadout",
   "management_copy": "Drag pins into your active slots to apply their bonuses instantly. Prefer a simpler setup? Enable auto-equip and we will optimise for you.",
   "auto_equip_label": "Auto-equip best pins",
   "empty_slot": "Empty slot",
