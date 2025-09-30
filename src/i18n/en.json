@@ -25,7 +25,7 @@
   "home": {
     "hero": {
       "headline": "HYPER-STRATEGIES",
-      "subtext": "Simplicity with Depth.",
+      "subtext": "Simplicity with Depth",
       "register_now": "Register Now",
       "sign_in": "Sign In"
     },
@@ -332,7 +332,7 @@
   },
     "hero": {
       "headline": "HYPER-STRATEGIES",
-      "subtext": "Simplicity with depth.",
+      "subtext": "Simplicity with Depth",
       "join_community": "Join the Community",
       "install_app": "Install App",
        "register_now": "Register Now",
@@ -381,12 +381,12 @@
       "step_one_title": "Create your account",
       "step_one_copy": "Register in under a minute to get access to Hyper-Strategies and make a deposit.",
       "step_one_cta": "Start registration",
-      "step_two_title": "Select a strategy",
-      "step_two_copy": "Pick between different automated strategies that match your risk appetite.",
-      "step_two_cta": "Explore strategies",
-      "step_three_title": "Equip pins & upgrade your tier",
-      "step_three_copy": "Head to the pin loadout page to customize your loadout to benefit from your strongest pins and reap the rewards.",
-      "step_three_cta": "Visit pin loadout"
+      "step_two_title": "Configure your profile and pin loadout",
+      "step_two_copy": "Complete your profile and equip any available pins to benefit from their perks.",
+      "step_two_cta": "Edit profile",
+      "step_three_title": "Select a strategy",
+      "step_three_copy": "Pick between different automated strategies that match your risk appetite. Set and forget.",
+      "step_three_cta": "Explore strategies"
      },
   "faq_page": {
     "title": "Frequently Asked Questions",
@@ -426,14 +426,14 @@
     "list_pin_button": "List a pin",
     "no_inactive_pins": "You have no inactive pins.",
     "connect_title": "Connect Accounts & Wallets",
-    "connect_description": "Link your social and Web3 accounts to unlock exclusive bounties and rewards.",
+    "connect_description": "Link your social and web3 accounts to unlock exclusive bounties and rewards.",
     "connect_x_button": "Connect X (Twitter)",
-    "connect_evm_button": "Connect EVM Wallet",
+    "connect_evm_button": "Connect EVM wallet",
     "stats_referrals_title": "Stats & Referrals",
     "account_tier_label": "Account Tier",
     "tier_prefix": "Tier {{tier}}",
     "xp_label": "Your XP",
-    "claim_xp_button": "Claim XP / View bounties",
+    "claim_xp_button": "Rewards",
     "xp_rate_label": "Daily XP Rate",
     "xp_rate_per_day": "/ day",
     "referral_code_label": "Your Referral Code",
@@ -452,25 +452,24 @@
     "username_label": "Username",
     "save_changes_button": "Save changes",
     "eyebrow": "",
-    "modern_title": "Your Hyper-Strategies Profile"   , 
+    "modern_title": "Your Hyper-Strategies Profile",
     "modern_subtitle": "Complete the steps below to unlock the full ecosystem — from personalised referrals to collectible pins and seasonal rewards.",
-    "journey_title": "Your activation journey",
-    "journey_caption": "We curated three simple milestones so you always know the next best action to take.",
+    "journey_title": "Here are 3 more tips to get the most out of your account",
+    "journey_caption": "",
     "journey_step_one": "Complete your profile",
-    "journey_step_one_copy": "Update your username and link messaging accounts so teammates can recognise you instantly.",
-    "journey_step_one_cta": "Edit details",
-    "journey_step_two": "Curate your pins",
-    "journey_step_two_copy": "Move pins into your loadout, list duplicates, and prepare for seasonal challenges from one dedicated hub.",
-    "journey_step_two_cta": "Go to pins hub",
-    "journey_step_three": "Earn & celebrate",
-    "journey_step_three_copy": "Claim XP boosts, track leaderboard status, and unlock presale access as you climb through the tiers.",
-    "journey_step_three_cta": "Open rewards center",
-    "profile_form_copy": "Update your username"
+    "journey_step_one_copy": "You can personalize your username and referral link. Your referral link is your Hyper-Strategies identity. Usernames will not be made public for your own privacy.",
+    "journey_step_one_cta": "Referral toolkit",
+    "journey_step_two": "Check out your pin loadout",
+    "journey_step_two_copy": "Move pins into your loadout, list pins for sale! Stay tuned for special events for pin airdrops.",
+    "journey_step_two_cta": "Pin loadout",
+    "journey_step_three": "Gather XP and level up your tier",
+    "journey_step_three_copy": "Claim XP for various activites, level up your tier to equip more pins to benefit from more perks and unlock access to the token presale.",
+    "journey_step_three_cta": "Rewards"
   },
   "pins_market": {
     "title": "Pins Marketplace",
     "coming_soon_title": "Peer-to-Peer Trading is Coming Soon",
-    "coming_soon_desc": "Soon you will be able to list your unique, owned pins for sale and trade with other users right here. Build your collection, equip your best pins, and get ready to trade.",
+    "coming_soon_desc": "Soon you will be able to list your unique, owned pins for sale and trade with other users right here. Build your collection, equip your best pins, and reap the benefits.",
     "view_my_pins": "View My Pin Collection",
     "loading": "Loading listings...",
     "error_loading": "Could not load marketplace data at this time.",
@@ -506,7 +505,7 @@
   "round_public": "Public",
   "round_public_price": "$0.25",
   "button_buy_tokens": "Buy Tokens",
-  "needs_xp": "You need at least 1,000 XP to participate in the presale.",
+  "needs_xp": "Your account needs to be at least tier 2 to participate in the presale.",
   "login_to_check": "Login to Check Your Eligibility"
 },
   
@@ -673,11 +672,11 @@
   "list_button": "List selected pins",
   "empty_collection": "You have no pins in reserve right now.",
   "playbook_title": "Pin playbook",
-  "playbook_step_one_title": "1. Aquire pins",
-  "playbook_step_one_copy": "Collect various pins through Hyper-Strategies initiatives.",
+  "playbook_step_one_title": "1. Acquire pins",
+  "playbook_step_one_copy": "Collect various pins through Hyper-Strategies initiatives, the Shop or the P2P Marketplace(Tier 2).",
   "playbook_step_two_title": "2. Upgrade your loadout",
   "playbook_step_two_copy": "Upgrade your loadout to activate and benefit from your best available pins.",
   "playbook_step_three_title": "3. Acquire more pins",
-  "playbook_step_three_copy": "Use Hyper-Strategies products and engage with initiatives."
+  "playbook_step_three_copy": "Use Hyper-Strategies products and engage with initiatives or trade in the P2P Marketplace."
 }
 }
