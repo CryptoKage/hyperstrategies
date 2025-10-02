@@ -138,6 +138,20 @@
     "pin_discount": "(-{{pct}}% Pin-Bonus)",
     "terms_ack_link": "Ich habe die <1>Allgemeinen Geschäftsbedingungen</1> gelesen und stimme zu."
   },
+  "vault_transfer_modal": {
+    "title": "Kapital zwischen Strategien übertragen",
+    "subtitle": "Übertrage abgerechnetes Kapital aus der {{vaultName}}-Strategie.",
+    "amount_label": "Zu übertragender Betrag (Verfügbar: ${{max}})",
+    "destination_label": "Übertragen an:",
+    "no_destinations": "Keine geeigneten Vaults verfügbar",
+    "risk_ack_link": "Ich verstehe, dass dieser Prozess erfordert, dass das Handelsteam Positionen auflöst und 3-48 Stunden dauern kann. Ich stimme auch den <1>Bedingungen des Ziel-Vaults</1> zu.",
+    "cancel": "Abbrechen",
+    "confirm_request": "Übertragung anfordern",
+    "submitting": "Wird eingereicht...",
+    "processing_notice": "Übertragungsanfrage eingereicht! Dieser Prozess ist manuell und kann 3-48 Stunden dauern. Den Status kannst du auf deinem Dashboard verfolgen.",
+    "error_failed": "Übertragungsanforderung fehlgeschlagen. Bitte versuche es erneut."
+  },
+
   "vault_withdraw_modal": {
     "title": "Auszahlung aus {{vaultName}} anfordern",
     "subtitle": "Dadurch wird deine gesamte Position von <strong>${{amount}}</strong> zur Auszahlung in die Warteschlange gestellt.",

@@ -139,6 +139,22 @@
     "terms_ack_link": "I have read and agree to the <1>Terms and Conditions</1>."
 
   },
+
+  "vault_transfer_modal": {
+    "title": "Transfer Capital Between Strategies",
+    "subtitle": "Transfer settled capital from the {{vaultName}} strategy.",
+    "amount_label": "Amount to Transfer (Available: ${{max}})",
+    "destination_label": "Transfer To:",
+    "no_destinations": "No eligible vaults available",
+    "risk_ack_link": "I understand this process requires the trading desk to unwind positions and may take 3-48 hours. I also agree to the <1>terms of the destination vault</1>.",
+    "cancel": "Cancel",
+    "confirm_request": "Request Transfer",
+    "submitting": "Submitting...",
+    "processing_notice": "Transfer request submitted! This process is manual and may take 3-48 hours. You can track the status on your dashboard.",
+    "error_failed": "Failed to request transfer. Please try again."
+  },
+
+
   "vault_withdraw_modal": {
     "title": "Request Withdrawal from {{vaultName}}",
     "subtitle": "This will queue your entire <strong>${{amount}}</strong> position for withdrawal.",
