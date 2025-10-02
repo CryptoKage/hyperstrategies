@@ -60,8 +60,20 @@
     "shop": {
       "title": "The Shop is Coming Soon",
       "description": "An exclusive shop where you can spend your balance on powerful perks, items, and advantages is being stocked. Check back soon for the grand opening!"
-    }
-  },
+    },
+    "discretionary": {
+      "title": "Advanced Analytics Coming Soon",
+      "description": "Detailed charts, performance metrics, and a full transaction history will be available here soon."
+    },
+    "reserve": {
+      "title": "Performance Tracking Coming Soon",
+      "description": "A detailed chart showing purchase history against the live asset price will be available here soon."
+    },
+    "farming": {
+      "title": "Airdrop & Protocol Rewards Tracking Coming Soon",
+      "description": "This section will track protocol contribution rewards generated through your share of the vault's trading volume."
+  }
+},
   "footer": {
     "follow_us": "Follow us:",
     "documentation": "Docs",

@@ -11,6 +11,7 @@ import VaultWithdrawModal from '../components/VaultWithdrawModal';
 import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
 import LoadingSpinner from '../components/LoadingSpinner';
+import VaultTransferModal from '../components/VaultTransferModal';
 
 import coreVaultBg from '../assets/core.png';
 import apecoinVaultBg from '../assets/apecoin.png';
@@ -62,6 +63,8 @@ const Dashboard = () => {
   const [isUpdatingCompound, setIsUpdatingCompound] = useState({});
   const [vaultLockStatuses, setVaultLockStatuses] = useState({});
 
+   const [isTransferModalOpen, setTransferModalOpen] = useState(false);
+
   const fetchDashboardData = useCallback(async () => {
     try {
       const response = await api.get('/dashboard');
@@ -111,6 +114,14 @@ const Dashboard = () => {
   
   const handleOpenAllocateModal = (vault) => { setSelectedVault(vault); setAllocateModalOpen(true); };
   const handleOpenWithdrawModal = (position) => { setSelectedVault(position); setWithdrawModalOpen(true); };
+
+  const handleOpenTransferModal = (position) => {
+    // We need to merge the position data with the vault's static info (like its name)
+    const vaultInfo = dashboardData.vaults.find(v => v.vault_id === position.vault_id);
+    setSelectedVault({ ...position, ...vaultInfo });
+    setTransferModalOpen(true);
+  };
+
   const handleActionSuccess = () => { fetchDashboardData(); };
 
   const StatCardSkeleton = () => ( <div className="stat-card skeleton"><div className="skeleton-text short"></div><div className="skeleton-text long"></div></div> );
@@ -159,6 +170,9 @@ const Dashboard = () => {
               {investedPositions.map(position => {
                 const vaultInfo = dashboardData.vaults.find(v => v.vault_id === position.vault_id);
                 if (!vaultInfo) return null;
+                const pendingTransferOut = dashboardData.pendingTransfers?.find(
+                  t => t.from_vault_id === position.vault_id
+                );
                 const tradableCapital = parseFloat(position.tradable_capital);
                 const pnl = parseFloat(position.pnl);
                 const isUpdating = isUpdatingCompound[position.vault_id];
@@ -170,6 +184,16 @@ const Dashboard = () => {
                     <div className="vault-card invested with-bg" style={cardStyle}>
                         <div className="card-overlay"></div>
                         <div className="card-content">
+                           {pendingTransferOut && (
+                              <div className="pending-transfer-banner">
+                                <LoadingSpinner size="small" />
+                                <span>
+                                  {t('dashboard.pending_transfer', { 
+                                    amount: parseFloat(pendingTransferOut.amount).toFixed(2) 
+                                  })}
+                                </span>
+                              </div>
+                            )}
                             <h3>{vaultInfo.name}</h3>
                             <div className="vault-stat">
                                 <span>{t('dashboard.tradable_capital')}</span>
@@ -191,17 +215,32 @@ const Dashboard = () => {
                                 <span className="slider round"></span>
                                 </label>
                             </div>
-                            <div className="vault-actions">
-                                <button className="btn-primary" onClick={() => handleOpenAllocateModal(vaultInfo)}>{t('dashboard.add_funds')}</button>
-                                <button className="vault-action-button" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>{t('dashboard.more_info')}</button>
-                                <button className="vault-action-button" 
-                                onClick={() => handleOpenWithdrawModal(position)}
-                                disabled={vaultLockStatus.isLocked}
-                                title={vaultLockStatus.isLocked ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
-                                >
-                                {t('dashboard.withdraw')}
-                                </button>
-                            </div>
+                            <div className="vault-actions primary-actions">
+                            <button className="btn-primary" onClick={() => handleOpenAllocateModal(vaultInfo)}>
+                              {t('dashboard.add_funds')}
+                            </button>
+                            <button 
+                              className="btn-secondary" 
+                              onClick={() => handleOpenWithdrawModal(position)}
+                              disabled={vaultLockStatus.isLocked}
+                              title={vaultLockStatus.isLocked ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
+                            >
+                              {t('dashboard.withdraw')}
+                            </button>
+                            <button 
+                              className="btn-secondary" 
+                              onClick={() => handleOpenTransferModal(position)}
+                              disabled={pendingTransferOut} // Disable if a transfer is already pending
+                              title={pendingTransferOut ? 'A transfer is already pending from this vault.' : ''}
+                            >
+                              {t('dashboard.transfer')}
+                            </button>
+                        </div>
+                        <div className="vault-actions secondary-actions">
+                           <button className="vault-action-button" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>
+                             {t('dashboard.more_info')}
+                           </button>
+                        </div>
                         </div>
                     </div>
                     {vaultInfo.performance && (
@@ -290,6 +329,15 @@ const Dashboard = () => {
           unlockDate={vaultLockStatuses[selectedVault?.vault_id]?.unlockDate}
           onWithdrawalSuccess={handleActionSuccess} 
         />
+      )}
+      {dashboardData && (
+        <VaultTransferModal
+          isOpen={isTransferModalOpen}
+          onClose={() => setTransferModalOpen(false)}
+          sourcePosition={selectedVault} // The position we want to transfer FROM
+          allVaults={dashboardData.vaults} // A list of all possible destinations
+          onTransferSuccess={handleActionSuccess}
+           />
       )}
     </>
   );

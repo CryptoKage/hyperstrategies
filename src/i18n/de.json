@@ -60,6 +60,18 @@
     "shop": {
       "title": "Der Shop kommt bald",
       "description": "Ein exklusiver Shop, in dem du dein Guthaben für starke Vorteile, Items und Perks einsetzen kannst, wird bestückt. Schau bald zur großen Eröffnung wieder vorbei!"
+    },
+    "discretionary": {
+      "title": "Erweiterte Analysen in Kürze verfügbar",
+      "description": "Detaillierte Diagramme, Leistungskennzahlen und eine vollständige Transaktionshistorie werden hier in Kürze verfügbar sein."
+    },
+    "reserve": {
+      "title": "Performance-Tracking in Kürze verfügbar",
+      "description": "Ein detailliertes Diagramm, das die Kaufhistorie im Vergleich zum Live-Asset-Preis zeigt, wird hier in Kürze verfügbar sein."
+    },
+    "farming": {
+      "title": "Airdrop- & Protokoll-Belohnungs-Tracking in Kürze verfügbar",
+      "description": "Dieser Bereich wird die durch Ihren Anteil am Handelsvolumen des Vaults generierten Protokollbeitragsbelohnungen verfolgen."
     }
   },
   "footer": {

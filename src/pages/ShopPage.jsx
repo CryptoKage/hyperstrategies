@@ -19,7 +19,10 @@ const ShopPage = () => {
                 </div>
                 {/* --- END OF FIX --- */}
                 
-                <ComingSoon featureKey="shop" />
+                <ComingSoon 
+                    title={t('comingSoon.shop.title')} 
+                    description={t('comingSoon.shop.description')} 
+                />
             </div>
         </Layout>
     );

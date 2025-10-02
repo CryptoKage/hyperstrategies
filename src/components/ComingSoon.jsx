@@ -1,14 +1,13 @@
+// src/components/ComingSoon.jsx - SIMPLIFIED VERSION
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 
-const ComingSoon = ({ featureKey }) => {
-    const { t } = useTranslation();
-
+// The component now accepts the final translated text as props.
+const ComingSoon = ({ title, description }) => {
     return (
         <div className="coming-soon-container">
-            <h2>{t(`comingSoon.${featureKey}.title`, 'Coming Soon')}</h2>
-            <p>{t(`comingSoon.${featureKey}.description`, 'This feature is currently under development. Check back soon for updates!')}</p>
+            <h2>{title}</h2>
+            <p>{description}</p>
         </div>
     );
 };

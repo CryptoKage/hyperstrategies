@@ -1,6 +1,6 @@
 // /src/components/Header.jsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -35,6 +35,23 @@ const Header = () => {
   };
   
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
+
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Set scrolled to true if user has scrolled more than 10px down
+      setScrolled(window.scrollY > 10);
+    };
+
+    // Add event listener when the component mounts
+    window.addEventListener('scroll', handleScroll);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <header className="header">
@@ -99,10 +116,10 @@ const Header = () => {
                   {user ? (
                       <>
                           <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
-                          <Link to="/pins" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.pins', 'Pins')}</Link>
-                          <Link to="/marketplace" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.marketplace')}</Link>
-                          <Link to="/shop" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.shop')}</Link>
-                          <Link to="/rewards" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.rewards', 'Rewards')}</Link>
+                <Link to="/pins" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.pins')}</Link>
+<Link to="/marketplace" className="mobile-menu__link" onClick={closeMobileMenu}>{t('nav.marketplace')}</Link>
+<Link to="/shop" className="mobile-menu__link" onClick={closeMobileMenu}>{t('nav.shop')}</Link>
+<Link to="/rewards" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.rewards')}</Link>
                           <Link to="/wallet" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.wallet')}</Link>
                           <Link to="/profile" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.profile')}</Link>
                           {user.isAdmin && <Link to="/admin" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.admin')}</Link>}

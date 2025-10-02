@@ -5,6 +5,7 @@ import api from '../../api/api';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
+  const [pendingTransfers, setPendingTransfers] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   
@@ -14,8 +15,8 @@ const AdminDashboard = () => {
   
   const [approvingId, setApprovingId] = useState(null);
   const [actionMessage, setActionMessage] = useState({ id: null, type: '', text: '' });
+  const [completingId, setCompletingId] = useState(null);
 
-  // --- NEW STATE for Diagnostic Tools ---
   const [blockToScan, setBlockToScan] = useState('');
   const [userToScan, setUserToScan] = useState('');
   const [isScanning, setIsScanning] = useState(false);
@@ -27,13 +28,21 @@ const AdminDashboard = () => {
   const fetchAdminStats = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await api.get('/admin/dashboard-stats');
-      setStats(response.data);
+      // Fetch both sets of data in parallel
+      const [statsResponse, transfersResponse] = await Promise.all([
+        api.get('/admin/dashboard-stats'),
+        api.get('/admin/transfers/pending')
+      ]);
+      
+      setStats(statsResponse.data);
+      setPendingTransfers(transfersResponse.data);
       setError('');
     } catch (err) {
-      console.error("Failed to fetch admin stats:", err);
+      console.error("Failed to fetch admin data:", err);
       setError(err.response?.data?.error || "Could not load admin data.");
+      // Set default empty states on error
       setStats({ databaseConnected: false, alchemyConnected: false, pendingVaultWithdrawals: [], recentDeposits: [], recentWithdrawals: [] });
+      setPendingTransfers([]);
     } finally {
       setLoading(false);
     }
@@ -57,7 +66,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // --- NEW HANDLER for Force Block Scan ---
   const handleForceScanBlock = async (e) => {
     e.preventDefault();
     setIsScanning(true);
@@ -74,12 +82,12 @@ const AdminDashboard = () => {
   };
 
   const handleSweepToUser = async (activityId) => {
-    setApprovingId(activityId); // We can reuse the 'approving' state for the spinner
+    setApprovingId(activityId);
     setActionMessage({ id: activityId, text: 'Initiating sweep...' });
     try {
       const response = await api.post(`/admin/withdrawals/${activityId}/sweep`);
       setActionMessage({ id: activityId, type: 'success', text: 'Sweep started. Awaiting confirmation.' });
-      fetchAdminStats(); // Refresh the dashboard to show the new status
+      fetchAdminStats();
     } catch (err) {
       setActionMessage({ id: activityId, type: 'error', text: err.response?.data?.error || 'Sweep failed.' });
     } finally {
@@ -93,7 +101,7 @@ const AdminDashboard = () => {
     try {
       const response = await api.post(`/admin/withdrawals/${activityId}/finalize`);
       setActionMessage({ id: activityId, type: 'success', text: response.data.message });
-      setTimeout(fetchAdminStats, 1500); // Refresh after a short delay
+      setTimeout(fetchAdminStats, 1500);
     } catch (err) {
       setActionMessage({ id: activityId, type: 'error', text: err.response?.data?.error || 'Finalization failed.' });
     } finally {
@@ -101,7 +109,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // --- NEW HANDLER for User Wallet Scan ---
   const handleScanUserWallet = async (e) => {
     e.preventDefault();
     setIsScanning(true);
@@ -114,6 +121,19 @@ const AdminDashboard = () => {
       setScanMessage({ type: 'error', text: err.response?.data?.message || 'Failed to scan wallet.' });
     } finally {
       setIsScanning(false);
+    }
+  };
+  
+  const handleCompleteTransfer = async (transferId) => {
+    setCompletingId(transferId);
+    setActionMessage({ id: transferId, text: 'Processing...' });
+    try {
+      const response = await api.post(`/admin/transfers/${transferId}/complete`);
+      setActionMessage({ id: transferId, type: 'success', text: response.data.message });
+      setTimeout(fetchAdminStats, 2000); 
+    } catch (err) {
+      setActionMessage({ id: transferId, type: 'error', text: err.response?.data?.error || 'Processing failed.' });
+      setCompletingId(null);
     }
   };
 
@@ -169,61 +189,98 @@ const renderContent = () => {
           <StatCard label="Hot Wallet Gas (ETH)" value={parseFloat(stats.hotWalletBalance)} />
         </div>
         
-        {/* --- THIS IS THE CORRECTED PENDING WITHDRAWALS CARD --- */}
-<div className="admin-actions-card">
-  <h3>Withdrawal Workflow</h3>
-  <p>Manage the multi-step process for user vault withdrawals.</p>
-  
-  {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 ? (
-    <div className="table-responsive">
-      <table className="activity-table">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Description</th>
-            <th className="amount">Amount</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {stats.pendingVaultWithdrawals.map(item => (
-            <tr key={item.activity_id}>
-              <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
-              <td>{item.description}</td>
-              <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
-              <td><span className={`status-badge status-${(item.status || 'unknown').toLowerCase()}`}>{(item.status || 'UNKNOWN').replace(/_/g, ' ')}</span></td>
-              <td className="actions-cell">
-                {/* --- THIS IS THE NEW CONDITIONAL LOGIC --- */}
-                {item.status === 'PENDING_FUNDING' && (
-                  <button className="btn-primary btn-sm" onClick={() => handleSweepToUser(item.activity_id)} disabled={approvingId === item.activity_id}>
-                    {approvingId === item.activity_id ? '...' : 'Sweep to User'}
-                  </button>
-                )}
-                {item.status === 'PENDING_CONFIRMATION' && (
-                  <button className="btn-secondary btn-sm" disabled>Awaiting B/C</button>
-                )}
-                {item.status === 'SWEEP_CONFIRMED' && (
-                  <button className="btn-positive btn-sm" onClick={() => handleFinalizeWithdrawal(item.activity_id)} disabled={finalizingId === item.activity_id}>
-                    {finalizingId === item.activity_id ? '...' : 'Finalize & Credit'}
-                  </button>
-                )}
-                {item.status === 'SWEEP_FAILED' && (
-                  <button className="btn-danger-small" onClick={() => handleSweepToUser(item.activity_id)}>Retry Sweep</button>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
-    </div>
-  ) : (
-    <p>There are currently no pending vault withdrawals.</p>
-  )}
-</div>
+        <div className="admin-actions-card">
+          <h3>Withdrawal Workflow</h3>
+          <p>Manage the multi-step process for user vault withdrawals.</p>
+          
+          {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 ? (
+            <div className="table-responsive">
+              <table className="activity-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Description</th>
+                    <th className="amount">Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stats.pendingVaultWithdrawals.map(item => (
+                    <tr key={item.activity_id}>
+                      <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
+                      <td>{item.description}</td>
+                      <td className="amount">${parseFloat(item.amount_primary).toFixed(2)}</td>
+                      <td><span className={`status-badge status-${(item.status || 'unknown').toLowerCase()}`}>{(item.status || 'UNKNOWN').replace(/_/g, ' ')}</span></td>
+                      <td className="actions-cell">
+                        {item.status === 'PENDING_FUNDING' && (
+                          <button className="btn-primary btn-sm" onClick={() => handleSweepToUser(item.activity_id)} disabled={approvingId === item.activity_id}>
+                            {approvingId === item.activity_id ? '...' : 'Sweep to User'}
+                          </button>
+                        )}
+                        {item.status === 'PENDING_CONFIRMATION' && (
+                          <button className="btn-secondary btn-sm" disabled>Awaiting B/C</button>
+                        )}
+                        {item.status === 'SWEEP_CONFIRMED' && (
+                          <button className="btn-positive btn-sm" onClick={() => handleFinalizeWithdrawal(item.activity_id)} disabled={finalizingId === item.activity_id}>
+                            {finalizingId === item.activity_id ? '...' : 'Finalize & Credit'}
+                          </button>
+                        )}
+                        {item.status === 'SWEEP_FAILED' && (
+                          <button className="btn-danger-small" onClick={() => handleSweepToUser(item.activity_id)}>Retry Sweep</button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
+            </div>
+          ) : (
+            <p>There are currently no pending vault withdrawals.</p>
+          )}
+        </div>
+
+        <div className="admin-actions-card">
+          <h3>Pending Vault Transfers</h3>
+          <p>Process user requests to move capital between vaults.</p>
+          {pendingTransfers && pendingTransfers.length > 0 ? (
+            <div className="table-responsive">
+              <table className="activity-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Request</th>
+                    <th className="amount">Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingTransfers.map(item => (
+                    <tr key={item.transfer_id}>
+                      <td><Link to={`/admin/user/${item.user_id}`} className="admin-table-link">{item.username}</Link></td>
+                      <td>{`${item.from_vault_name} → ${item.to_vault_name}`}</td>
+                      <td className="amount">${parseFloat(item.amount).toFixed(2)}</td>
+                      <td><span className={`status-badge status-${(item.status || 'unknown').toLowerCase()}`}>{(item.status || 'UNKNOWN').replace(/_/g, ' ')}</span></td>
+                      <td className="actions-cell">
+                        {item.status === 'PENDING_UNWIND' && (
+                          <button className="btn-positive btn-sm" onClick={() => handleCompleteTransfer(item.transfer_id)} disabled={completingId === item.transfer_id}>
+                            {completingId === item.transfer_id ? '...' : 'Complete Transfer'}
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
+            </div>
+          ) : (
+            <p>There are currently no pending vault transfers.</p>
+          )}
+        </div>
         
-        {/* --- This is the User Lookup card, now separate --- */}
         <div className="admin-actions-card">
           <h3>User Lookup</h3>
           <p>Search for a user by their username, email, or wallet address.</p>
@@ -292,13 +349,11 @@ const renderContent = () => {
           </div>
         </div>
 
-        {/* --- THIS IS THE NEW DIAGNOSTIC TOOLS CARD --- */}
         <div className="admin-actions-card">
           <h3>Diagnostic & Repair Tools</h3>
           {scanMessage.text && <p className={`admin-message ${scanMessage.type}`}>{scanMessage.text}</p>}
 
           <div className="admin-grid" style={{ marginTop: '20px' }}>
-            {/* Tool 1: Force Scan Block */}
             <div className="diagnostic-tool">
               <h4>Force Re-Scan Block</h4>
               <p>If the automated scanner missed a deposit, enter the block number here to force a re-scan.</p>
@@ -312,7 +367,6 @@ const renderContent = () => {
               </form>
             </div>
             
-            {/* Tool 2: Scan User Wallet */}
             <div className="diagnostic-tool">
               <h4>Scan User Wallet History</h4>
               <p>If a specific user's deposit is missing, enter their User ID (UUID) to scan their entire wallet history.</p>

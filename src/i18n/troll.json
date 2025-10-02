@@ -1,8 +1,75 @@
 {
-  "common": { "loading": "SUMMONIN' PIXELS...", "backToDashboard": "FLEE TO DA BOSS HUT!", "goToDashboard": "TO DA BOSS HUT!", "max": "ALL OF IT!", "pending_withdrawal_tooltip": "DA MEKBOY IS GETTIN' YER TEEF. HOLD ON." },
-  "nav": { "marketplace": "DA BITZ MARKET", "shop": "DA GOBBO'S SHOPPE" },
-  "header": { "dashboard": "DA BOSS HUT", "pins": "SHINY BITZ", "rewards": "DA LOOT PILE", "wallet": "DA TEEF PILE", "profile": "YER BOSS POLE", "admin": "WARBOSS TENT", "logout": "LEG IT!", "signin": "GET IN DA FIGHT", "register": "JOIN DA WAAAGH!", "alt_logo": "Hyper-Stratz Logo... it's ded killy." },
-  "home": { "hero": { "headline": "HYPER-STRATZ!!!", "subtext": "DED KUNNIN' KRUMPIN' BOXES. TRUSTY AS A GORK.", "register_now": "JOIN DA WAAAGH!", "sign_in": "GET IN DA FIGHT" }, "journey": { "eyebrow": "THREE STEPS TA MORE DAKKA", "title": "A GOOD PLAN FOR EVERY GIT", "subtitle": "DON'T MATTA IF YA KRUMP YERSELF OR LET DA BOYZ DO IT, DO DIS STUFF TA GET TEEF, WAAAGH!, AND GUBBINZ.", "step_one_title": "GET YER NAME", "step_one_copy": "SIGN UP, GET A LOUD WARCRY, AND SEE YER STUFF ON DA BIG MAP.", "step_one_cta": "START SIGNIN'", "step_two_title": "PICK A WAY TA FIGHT", "step_two_copy": "PICK A STOMPA OR A KILLA KAN OR JOIN A BIGGA MOB. WATEVA'S BEST FOR KRUMPIN'.", "step_two_cta": "SEE DA STOMPAS", "step_three_title": "STICK ON SHINY BITZ & GET LOOT", "step_three_copy": "GO TO DA BITZ PILE, MAKE YERSELF LOOK PROPA ORKY, DEN GO GET MORE WAAAGH! AND SHINIES.", "step_three_cta": "GO TO BITZ PILE" } },
+  "common": {
+    "loading": "SUMMONIN' DA WAAAGH!...",
+    "backToDashboard": "BACK TO DA BOSS HUT!",
+    "goToDashboard": "TO DA BOSS HUT!",
+    "max": "ALL OF IT!",
+    "pending_withdrawal_tooltip": "DA MEKBOY IS COUNTIN' YER TEEF. HOLD YER SQUIGS."
+  },
+  "nav": {
+    "marketplace": "DA BITZ MARKET",
+    "shop": "DA GOBBO'S SHOPPE"
+  },
+  "header": {
+    "dashboard": "DA BOSS HUT",
+    "pins": "SHINY BITZ",
+    "rewards": "DA LOOT PILE",
+    "wallet": "DA TEEF PILE",
+    "profile": "YER BOSS POLE",
+    "admin": "WARBOSS TENT",
+    "logout": "LEG IT!",
+    "signin": "GET IN DA FIGHT",
+    "register": "JOIN DA WAAAGH!",
+    "alt_logo": "Hyper-Stratz Logo... it's ded killy."
+  },
+  "home": {
+    "hero": {
+      "headline": "HYPER-STRATZ!!!",
+      "subtext": "MORE KUNNIN', MORE DAKKA.",
+      "register_now": "JOIN DA WAAAGH!",
+      "sign_in": "GET IN DA FIGHT"
+    },
+    "journey": {
+      "eyebrow": "",
+      "title": "GET KRUMPIN' IN 3 STEPS",
+      "subtitle": "",
+      "step_one_title": "GET YER NAME",
+      "step_one_copy": "SIGN UP, GET A LOUD WARCRY, AN' START COLLECTIN' TEEF.",
+      "step_one_cta": "JOIN NOW!",
+      "step_two_title": "PICK A STOMPA",
+      "step_two_copy": "PICK HOW YA WANNA FIGHT. LOTS'A WAYS TA GET MORE DAKKA.",
+      "step_two_cta": "SEE DA STOMPAS",
+      "step_three_title": "STICK ON SHINY BITZ",
+      "step_three_copy": "GO TO DA BITZ PILE, MAKE YERSELF LOOK PROPA ORKY, DEN GET MORE LOOT!",
+      "step_three_cta": "GO TO BITZ PILE"
+    }
+  },
+  "shop": {
+    "title": "DA GOBBO'S SHOPPE",
+    "subtitle": "GET YER SHINY BITZ 'ERE. SPEND YER EXTRA TEEFS FOR CHEAPER GUBBINZ!"
+  },
+  "comingSoon": {
+    "discretionary": {
+      "title": "DA BIG PLANZ IZ COMIN'",
+      "description": "DA MEKBOYZ ARE MAKIN' CHARTS 'N SQUIGGLY LINES TA SHOW HOW GOOD WE'RE KRUMPIN'. BE READY."
+    },
+    "reserve": {
+      "title": "DA TEEF COUNTER IZ COMIN'",
+      "description": "A BIG CHART TA SHOW HOW MANY TEEF WE GOT AND WHEN WE GOT 'EM. IT'LL BE DED SHINY."
+    },
+    "farming": {
+      "title": "DA SNEAKY GITZ TRACKA IZ COMIN'",
+      "description": "DIS'LL SHOW ALL DA SNEAKY DEALS WE'RE DOIN' TA GET FREE LOOT FROM DA 'UMIES. MORE KRUMPIN' VOLUME, MORE LOOT!"
+    },
+    "shop": {
+      "title": "DA SHOP'S COMIN' SOON",
+      "description": "DA GOBBOS ARE STILL FINDIN' STUFF TO SELL. COME BACK LATER FOR MORE DAKKA AND SHINY BITZ."
+    },
+    "marketplace": {
+      "title": "DA BITZ MARKET'S COMIN' SOON",
+      "description": "A PLACE TA SWAP YER SHINY BITZ WIF OTHER ORKS. GET YER COLLECTION BIGGA!"
+    }
+  },
   "footer": {
     "follow_us": "FOLLOW DA WAAAGH!:",
     "documentation": "DA PLANZ",
@@ -11,38 +78,57 @@
     "terms_link": "DA BIG RULEZ"
   },
   "dashboard": {
-    "unrealized_pnl": "SHINIES YER GONNA GET",
     "welcome": "OI, {{username}}, GET BACK TA KRUMPIN'!",
     "no_data": "COULDN'T GET DA INFO. PROBABLY SNEAKY GITS.",
     "error_fetch": "COULDN'T GET DA INFO. PROBABLY SNEAKY GITS.",
     "total_value": "ALL YER STUFF",
-    "available_balance": "TEEFS FOR KRUMPIN'",
+    "available_balance": "TEEFS READY TA SPEND",
     "manage": "SORT IT",
     "bonus_points": "EXTRA TEEFS",
-    "toggle_balance_tooltip": "HIDE OR SHOW DA TEEFPILE",
-    "your_positions": "YER STOMPAS",
+    "toggle_balance_tooltip": "HIDE YER PILE",
+    "your_positions": "YER WARBAND",
     "tradable_capital": "FIGHTIN' TEEFS",
-    "pnl": "SHINIES",
-    "auto_compound": "GET MORE DAKKA",
+    "pnl": "EXTRA SHINIES",
+    "auto_compound": "GET MORE DAKKA AUTOMATIC",
     "saving": "SAVIN'...",
-    "add_funds": "GET MORE TEEFS",
+    "add_funds": "ADD TEEFS",
     "withdraw": "TAKE TEEFS",
-    "available_strategies": "WAYS TA FIGHT",
-    "allocate_funds": "SEND DA BOYZ",
+    "transfer": "MOVE BOYZ",
+    "pending_transfer": "{{amount}} TEEF MOVIN'...",
+    "available_strategies": "MORE WAYS TA FIGHT",
+    "allocate_funds": "SEND IN DA BOYZ",
     "coming_soon": "COMIN' SOON",
-    "more_info": "MORE INFO"
+    "more_info": "LOOK CLOSER"
+  },
+  "vault_transfer_modal": {
+    "title": "MOVE BOYZ BETWEEN STOMPAS",
+    "subtitle": "YA GOT {{amount}} TEEFS IN DA {{vaultName}} STOMPA TA MOVE.",
+    "amount_label": "HOW MANY TEEFS? (MAX: {{max}})",
+    "destination_label": "WHERE DEY GOIN'?",
+    "no_destinations": "NOWHERE TA GO!",
+    "risk_ack_link": "I KNOWS DIS AIN'T INSTANT AND I READ DA <1>BIG RULEZ</1> FOR DA NEW STOMPA.",
+    "cancel": "NAH",
+    "confirm_request": "MOVE 'EM!",
+    "submitting": "MOVIN'...",
+    "processing_notice": "DA BOYZ ARE ON DA MOVE! IT'LL TAKE A BIT.",
+    "error_failed": "DA BOYZ GOT LOST. TRY AGAIN."
   },
   "vault_modal": {
-    "title": "SEND DA BOYZ TO DA {{vaultName}} STOMPA!",
+    "title": "SEND BOYZ TO DA {{vaultName}} STOMPA!",
     "allocate_label": "HOW MANY TEEFS? (YA GOT ${{amount}})",
     "tradable_capital": "KRUMPIN' TEEFS",
     "deposit_fee": "MEKBOY'S CUT",
     "cancel": "NAH",
     "confirm_allocation": "WAAAGH!",
     "processing": "KRUMPIN'...",
-    "error_insufficient": "YA DON'T GOT ENOUGH TEEFS!",
-    "error_failed": "SUMFIN' WENT WRONG.",
+    "error_insufficient": "YA DON'T GOT ENOUGH TEEFS, YA GIT!",
+    "error_failed": "SUMFIN' WENT WRONG. TRY KRUMPIN' IT AGAIN.",
     "terms_ack_link": "I'VE SEEN DA <1>BIG RULEZ</1> AN' I'M READY TA FIGHT."
+  },
+  "vault_withdraw_modal": {
+    "title": "GET BOYZ OUTTA DA {{vaultName}} STOMPA",
+    "processing_notice": "REQUEST SENT! DA MEKBOYZ ARE GETTIN' YER TEEF.",
+    "error_failed": "DA BOYZ DON'T WANNA LEAVE. TRY AGAIN."
   },
   "wallet": {
     "title": "DA TEEF PILE",
@@ -61,12 +147,12 @@
     "bonus_points_value": "EXTRA TEEFS"
   },
   "register_page": {
-    "title": "SIGN UP FOR DA WAAAGH!",
+    "title": "JOIN DA WAAAGH!",
     "username_label": "WOT'S YER NAME",
     "email_label": "WOT'S YER SQUIG-MAIL",
     "password_label": "WOT'S DA SECRET WORD",
     "button_create": "MAKE ME AN ORK",
-    "google_signup": "SIGN UP WIF GOOGLE GUBBINZ",
+    "google_signup": "JOIN WIF GOOGLE GUBBINZ",
     "login_prompt": "ALREADY IN DA WAAAGH!?",
     "login_link": "GET IN DA FIGHT"
   },
@@ -108,15 +194,15 @@
     "save_changes_button": "SAVE NAME"
   },
   "rewards_center": {
-    "title": "DA REWARDZ SQUIG",
+    "title": "DA LOOT PILE",
     "loading": "COUNTIN' DA LOOT...",
-    "total_xp_label": "TOTAL WAAAGH! ON DA PLATFORM",
+    "total_xp_label": "TOTAL WAAAGH! FROM ALL DA ORKS",
     "leaderboard_button": "SEE DA BIGGEST BOSSES",
     "unclaimed_xp_title": "UNCLAIMED WAAAGH!",
-    "unclaimed_xp_description": "STUFF YA EARNED. TAKE IT TA GET BIGGA.",
+    "unclaimed_xp_description": "STUFF YA EARNED FROM DOIN' JOBS. TAKE IT TA GET BIGGA.",
     "claim_button": "TAKE ALL DA WAAAGH!",
-    "claiming_button": "TAKIN'...",
-    "claim_success": "YA GOT IT!",
+    "claiming_button": "TAKIN' IT...",
+    "claim_success": "YA GOT DA LOOT!",
     "error_loading": "DA SQUIG AIN'T TALKIN' RIGHT NOW.",
     "bounties_title": "JOBS FROM DA WARBOSS",
     "bounties_description": "DO DIS STUFF, GET MORE WAAAGH!",
@@ -128,55 +214,27 @@
     "deposit_bonus": "Got {{amount}} WAAAGH! for sendin' boyz to Stompa {{vaultId}}.",
     "referral_bonus": "Got {{amount}} WAAAGH! cuz yer boy {{username}} joined da fight."
   },
-  "fees_page": {
-    "tier1_label": "Boss Tier 1",
-    "tier2_label": "Boss Tier 2",
-    "tier3_label": "Boss Tier 3",
-    "tier4_label": "Boss Tier 4"
-  },
-  "pins_market": {
-    "buy_error": "DA DEAL WUZ NICKED BY SOME OTHA GIT!",
-    "cancelling": "TELLIN' DA GOBLINS TA STOP..."
-  },
-  "presale": {
-    "round_private_price": "-",
-    "round_a_price": "20 teef a pop",
-    "round_b_price": "22 teef a pop",
-    "round_public_price": "25 teef fer da masses"
-  },
-  "xp_leaderboard": {
-    "table_xp": "WAAAGH!",
-    "anonymous": "MYSTERY GIT"
+  "ledgerTypes": {
+    "DEPOSIT": "SENDIN' BOYZ",
+    "WITHDRAWAL_REQUEST": "BOYZ COMIN' BACK",
+    "PNL_DISTRIBUTION": "LOOT FROM DA FIGHT",
+    "TRANSFER_FUNDS_HELD": "BOYZ GETTIN' READY TA MOVE",
+    "VAULT_TRANSFER_OUT": "BOYZ LEFT DIS STOMPA",
+    "VAULT_TRANSFER_IN": "NEW BOYZ FOR DIS STOMPA"
   },
   "vault": {
-    "title": "Magic Money Pot",
+    "title": "DA STOMPA'S GUBBINZ",
     "stats": {
-      "totalCapital": "Yer Hoard",
-      "totalCapitalSubtext": "Shinies + Imaginary Shinies",
-      "realizedPnl": "Real Shinies",
-      "realizedPnlSubtext": "From victorious raids.",
-      "unrealizedPnl": "Imaginary Shinies",
-      "unrealizedPnlSubtext": "From ongoing shenanigans.",
-      "dailyReturn": "Daily Shenanigan Score",
-      "weeklyReturn": "Weekly Shenanigan Score",
-      "monthlyReturn": "Monthly Shenanigan Score",
-      "totalReturn": "Total Shenanigans"
+      "totalCapital": "YER TOTAL WARBAND",
+      "totalCapitalSubtext": "TEEFS + REAL SHINIES & MAYBE-SHINIES",
+      "realizedPnl": "REAL SHINIES",
+      "realizedPnlSubtext": "LOOT FROM FINISHED KRUMPIN'.",
+      "unrealizedPnl": "MAYBE-SHINIES",
+      "unrealizedPnlSubtext": "LOOT FROM KRUMPIN' DAT'S STILL GOIN' ON."
     },
-    "investor": {
-  "title": "BIG TEEF GITZ",
-  "subtitle": "GET IN ON DA GROUND FLOOR OF DA WAAAGH!",
-  "seed": {
-    "title": "GIMME YER TEEF",
-    "description": "WE'RE OFFERIN' A BIG CHUNK OF DA MOB FOR SOME EARLY TEEF. IF YOU'RE A BIG BOSS, COME TALK TO DA WARBOSS.",
-    "cta_telegram": "YELL AT US ON TELEGRAM",
-    "cta_x": "YELL AT US ON X"
-  },
-  "presale": {
-    "title": "GET YER SHINY GUBBINZ",
-    "description": "GET IN ON DA PRESALE. HOW MUCH WAAAGH! YA GOT DETERMINES HOW MANY SHINIES YA CAN GET. GET IN EARLY!",
-    "cta_loggedin": "SEE DA SHINIES",
-    "cta_loggedout": "SIGN IN, YA GIT!"
-  }
-}
+    "notInvested": {
+      "title": "YA AIN'T GOT NO BOYZ IN DIS STOMPA.",
+      "description": "GO TO DA BOSS HUT AND SEND SOME BOYZ IN TA SEE DA FIGHT."
+    }
   }
 }
