@@ -4319,7 +4319,7 @@ opacity: 0.3;
 
 /* This style applies ONLY when the user has scrolled down */
 .header.scrolled {
-  background-color: rgba(10, 25, 47, 0.85); /* Your theme's dark blue with 85% opacity */
+  background-color: rgba(10, 25, 47, 0.95); /* Your theme's dark blue with 85% opacity */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px); /* For Safari */
   border-bottom: 1px solid var(--color-border); /* A subtle visible border */
