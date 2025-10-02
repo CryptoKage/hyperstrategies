@@ -86,6 +86,7 @@
     "all_time_pnl": "Performance (Allzeit)",
     "unrealized_pnl": "Nicht realisierter P&L",
     "welcome": "Willkommen zurück, {{username}}",
+    "transfer": "Übertragen",
     "no_data": "Dashboard-Daten konnten nicht abgerufen werden.",
     "error_fetch": "Dashboard-Daten konnten nicht abgerufen werden.",
     "total_value": "Gesamtportfoliowert",

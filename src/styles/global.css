@@ -4299,22 +4299,19 @@ opacity: 0.3;
 /* FINAL, DEFINITIVE CSS for Header and its components                          */
 /* ============================================================================== */
 .header {
-  /* --- Core Layout (from your existing code) --- */
+  /* --- Core Layout & Sticky Positioning --- */
   padding: 12px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
-  z-index: 1000; /* High z-index to stay on top */
-  transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transitions */
-
-  /* --- STICKY & TRANSPARENT LOGIC --- */
-  position: sticky;
+  position: sticky; /* Keeps it sticky */
   top: 0;
-  
-  /* Initial State (at the very top of the page) */
-  background-color: transparent;
-  border-bottom: 1px solid transparent; /* Start with an invisible border */
+  z-index: 1000;
+  transition: border-color 0.3s ease; /* We only need to transition the border now */
+
+  /* --- SOLID BACKGROUND LOGIC --- */
+  background-color: var(--color-surface); /* Use your solid surface color directly */
+  border-bottom: 1px solid var(--color-border); /* Always show the border */
 }
 
 /* This style applies ONLY when the user has scrolled down */

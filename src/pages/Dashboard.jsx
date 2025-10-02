@@ -220,7 +220,7 @@ const Dashboard = () => {
                               {t('dashboard.add_funds')}
                             </button>
                             <button 
-                              className="btn-secondary" 
+                              className="vault-actions primary-actions" 
                               onClick={() => handleOpenWithdrawModal(position)}
                               disabled={vaultLockStatus.isLocked}
                               title={vaultLockStatus.isLocked ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
@@ -228,7 +228,7 @@ const Dashboard = () => {
                               {t('dashboard.withdraw')}
                             </button>
                             <button 
-                              className="btn-secondary" 
+                              className="vault-actions primary-actions" 
                               onClick={() => handleOpenTransferModal(position)}
                               disabled={pendingTransferOut} // Disable if a transfer is already pending
                               title={pendingTransferOut ? 'A transfer is already pending from this vault.' : ''}
