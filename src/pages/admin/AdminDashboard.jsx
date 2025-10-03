@@ -23,6 +23,9 @@ const AdminDashboard = () => {
   const [scanMessage, setScanMessage] = useState({ type: '', text: '' });
   const [finalizingId, setFinalizingId] = useState(null);
 
+  const [reportsForApproval, setReportsForApproval] = useState([]);
+  const [reviewingId, setReviewingId] = useState(null);
+
   const navigate = useNavigate();
 
   const fetchAdminStats = useCallback(async () => {
@@ -31,11 +34,13 @@ const AdminDashboard = () => {
       // Fetch both sets of data in parallel
       const [statsResponse, transfersResponse] = await Promise.all([
         api.get('/admin/dashboard-stats'),
-        api.get('/admin/transfers/pending')
+        api.get('/admin/transfers/pending'),
+          api.get('/admin/reports/pending-approval') 
       ]);
       
       setStats(statsResponse.data);
       setPendingTransfers(transfersResponse.data);
+      setReportsForApproval(reportsResponse.data);
       setError('');
     } catch (err) {
       console.error("Failed to fetch admin data:", err);
@@ -65,6 +70,18 @@ const AdminDashboard = () => {
       setApprovingId(null);
     }
   };
+
+  const handleReviewReport = async (reportId, newStatus) => {
+  setReviewingId(reportId);
+  try {
+    await api.post(`/admin/reports/${reportId}/review`, { newStatus });
+    fetchAdminStats(); // Refresh the whole dashboard
+  } catch (err) {
+    alert('Failed to update report status.');
+  } finally {
+    setReviewingId(null);
+  }
+};
 
   const handleForceScanBlock = async (e) => {
     e.preventDefault();
@@ -240,6 +257,49 @@ const renderContent = () => {
             <p>There are currently no pending vault withdrawals.</p>
           )}
         </div>
+
+<div className="admin-actions-card">
+  <h3>Report Approval Queue</h3>
+  {reportsForApproval && reportsForApproval.length > 0 ? (
+    <table className="activity-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Report Title</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {reportsForApproval.map(report => (
+          <tr key={report.report_id}>
+            <td>{report.username}</td>
+            <td>{report.title}</td>
+            <td className="actions-cell">
+              {/* We need a "View" button here. For now, it links nowhere. */}
+              <button className="btn-secondary btn-sm">View</button>
+              <button 
+                className="btn-positive btn-sm" 
+                onClick={() => handleReviewReport(report.report_id, 'APPROVED')}
+                disabled={reviewingId === report.report_id}
+              >
+                Approve
+              </button>
+              <button 
+                className="btn-danger-small"
+                onClick={() => handleReviewReport(report.report_id, 'DRAFT')}
+                disabled={reviewingId === report.report_id}
+              >
+                Reject
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  ) : (
+    <p>No reports are currently awaiting approval.</p>
+  )}
+</div>
 
         <div className="admin-actions-card">
           <h3>Pending Vault Transfers</h3>

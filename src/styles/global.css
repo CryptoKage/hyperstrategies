@@ -4877,3 +4877,65 @@ opacity: 0.3;
   gap: 8px;
   z-index: 2; /* Ensure it's above the card overlay */
 }
+
+.report-builder-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr; /* Left column is smaller, right is larger */
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.workbench-section {
+  margin-bottom: 32px;
+}
+
+.transaction-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 16px;
+}
+
+.transaction-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 4px;
+}
+.transaction-item:hover {
+  background-color: var(--color-background);
+}
+
+.tx-date { font-size: 0.8rem; color: var(--color-text-secondary); width: 80px; }
+.tx-type { font-weight: 500; flex-grow: 1; }
+.tx-amount { font-weight: 600; font-family: 'Courier New', monospace; }
+
+.report-preview {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 24px 0;
+  font-family: 'Georgia', serif; /* Give it a more document-like feel */
+  background-color: var(--color-background);
+}
+
+.report-preview h2, .report-preview h4 { font-family: 'Inter', sans-serif; }
+.report-preview-subtitle { color: var(--color-text-secondary); font-size: 0.9rem; margin-bottom: 16px; }
+.report-preview-section { padding: 16px 0; border-bottom: 1px dashed var(--color-border); }
+.report-preview-section:last-child { border-bottom: none; }
+
+.event-block h4 { display: flex; justify-content: space-between; align-items: center; }
+.event-date { font-size: 0.9rem; font-weight: normal; color: var(--color-text-secondary); }
+.event-calculation { font-style: italic; color: var(--color-text-secondary); margin: 8px 0; }
+.event-details { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.95rem; }
+
+.final-summary p { font-size: 1.1rem; }
+
+@media (max-width: 900px) {
+  .report-builder-grid {
+    grid-template-columns: 1fr;
+  }
+}

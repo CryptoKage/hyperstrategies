@@ -1,4 +1,4 @@
-// src/pages/ReportsPage.jsx
+// src/pages/ReportsPage.jsx - FINAL VERSION
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,13 @@ import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import api from '../api/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+
+// --- Re-using the preview component from the Admin builder ---
+// In a real app, you would move this to its own file in /components
+const ReportPreview = ({ reportData }) => {
+    // ... (Paste the exact same ReportPreview component code from ReportBuilderPage.jsx here)
+};
+
 
 const ReportsPage = () => {
     const { t } = useTranslation();
@@ -17,64 +24,42 @@ const ReportsPage = () => {
     const [isLoadingReport, setIsLoadingReport] = useState(false);
     const [error, setError] = useState('');
 
-    // 1. Fetch the list of available reports when the page loads
     useEffect(() => {
-        const fetchAvailableReports = async () => {
-            setIsLoadingList(true);
-            try {
-                const response = await api.get('/user/reports/available');
-                setAvailableReports(response.data);
-                // If reports exist, pre-select the most recent one
-                if (response.data.length > 0) {
-                    setSelectedReportId(response.data[0].report_id);
+        // Fetch the list of available reports
+        api.get('/user/reports/available')
+            .then(res => {
+                setAvailableReports(res.data);
+                if (res.data.length > 0) {
+                    setSelectedReportId(res.data[0].report_id);
                 }
-            } catch (err) {
-                console.error("Failed to fetch available reports:", err);
-                setError("Could not load your available reports.");
-            } finally {
-                setIsLoadingList(false);
-            }
-        };
-        fetchAvailableReports();
+            })
+            .catch(err => setError("Could not load available reports."))
+            .finally(() => setIsLoadingList(false));
     }, []);
 
-    // 2. Fetch the full report data whenever the selectedReportId changes
     useEffect(() => {
-        if (!selectedReportId) {
-            setReportData(null);
-            return;
-        }
-
-        const fetchReportData = async () => {
-            setIsLoadingReport(true);
-            setError('');
-            try {
-                const response = await api.get(`/user/reports/${selectedReportId}`);
-                setReportData(response.data);
-            } catch (err) {
-                console.error(`Failed to fetch report ${selectedReportId}:`, err);
-                setError("Could not load the selected report.");
-            } finally {
-                setIsLoadingReport(false);
-            }
-        };
-        fetchReportData();
+        if (!selectedReportId) return;
+        setIsLoadingReport(true);
+        api.get(`/user/reports/${selectedReportId}`)
+            .then(res => setReportData(res.data))
+            .catch(err => setError("Could not load the selected report."))
+            .finally(() => setIsLoadingReport(false));
     }, [selectedReportId]);
 
+    const handleDownloadPdf = () => {
+        alert("PDF download functionality will be added in the next sprint using a library like react-to-print.");
+    };
 
     return (
         <Layout>
-            <div className="admin-container"> {/* Reusing admin styles for now */}
+            <div className="admin-container">
                 <div className="admin-header">
                     <h1>My Reports</h1>
                     <Link to="/profile" className="btn-secondary btn-sm">← Back to Profile</Link>
                 </div>
 
-                {isLoadingList ? (
-                    <LoadingSpinner />
-                ) : error ? (
-                    <p className="error-message">{error}</p>
-                ) : availableReports.length === 0 ? (
+                {isLoadingList ? <LoadingSpinner /> : error ? <p className="error-message">{error}</p> :
+                availableReports.length === 0 ? (
                     <div className="profile-card text-center">
                         <h2>No Reports Available</h2>
                         <p>Your monthly performance reports will appear here once they have been generated and approved. Please check back later.</p>
@@ -94,22 +79,22 @@ const ReportsPage = () => {
                     </div>
                 )}
 
-                {isLoadingReport ? (
-                    <LoadingSpinner />
-                ) : reportData ? (
+                {isLoadingReport ? <LoadingSpinner /> : reportData ? (
                     <div className="admin-card" style={{ marginTop: '24px' }}>
-                        <h2>{reportData.title}</h2>
-                        {/* We will replace this with a beautiful component later */}
-                        <pre style={{ backgroundColor: '#111', padding: '1rem', borderRadius: '8px', color: '#fff', overflowX: 'auto' }}>
-                            {JSON.stringify(reportData.report_data, null, 2)}
-                        </pre>
-                        {/* Placeholder for PDF button */}
-                        <div style={{ marginTop: '24px' }}>
-                           <button className="btn-primary" disabled>Download as PDF (Coming Soon)</button>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                            <h3>Report Details</h3>
+                            <button className="btn-primary" onClick={handleDownloadPdf}>Download as PDF</button>
+                        </div>
+                        
+                        {/* Use the beautiful preview component */}
+                        <ReportPreview reportData={reportData.report_data} />
+
+                         {/* Add the "Tax Support Coming Soon" link */}
+                        <div style={{ marginTop: '24px', textAlign: 'center' }}>
+                            <Link to="/tax-support" className="btn-secondary">Tax Support (Coming Soon)</Link>
                         </div>
                     </div>
                 ) : null}
-
             </div>
         </Layout>
     );
