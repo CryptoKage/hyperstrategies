@@ -33,6 +33,8 @@ import Presale from './Presale';
 import Vault1Page from './Vault1Page';
 import ShopPage from './ShopPage';
 import AnimationControlsPage from './admin/AnimationControlsPage';
+import ReportBuilderPage from './admin/ReportBuilderPage';
+import ReportsPage from './ReportsPage';
 
 
 // --- Guard Components ---
@@ -68,6 +70,7 @@ const Router = () => {
       <Route path="/rewards" element={<ProtectedRoute><RewardsCenter /></ProtectedRoute>} />
       <Route path="/presale-info" element={<ProtectedRoute><Presale /></ProtectedRoute>} />
       <Route path="/vaults/:vaultId" element={<ProtectedRoute><Vault1Page /></ProtectedRoute>} />
+      <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
       <Route path="/shop" element={<ShopPage />} />
           
       {/* --- ADMIN-ONLY Protected Routes --- */}
@@ -99,6 +102,7 @@ const Router = () => {
       />
       <Route path="/admin/xp-awards" element={<AdminRoute><XPAwardsPage /></AdminRoute>} />
        <Route path="/admin/animations" element={<AdminRoute><AnimationControlsPage /></AdminRoute>} />
+       <Route  path="/admin/reports/builder"  element={<AdminRoute><ReportBuilderPage /></AdminRoute>}/>
        
     </Routes>
   );
