@@ -32,7 +32,7 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       // Fetch both sets of data in parallel
-      const [statsResponse, transfersResponse] = await Promise.all([
+      const [statsResponse, transfersResponse, reportsResponse] = await Promise.all([
         api.get('/admin/dashboard-stats'),
         api.get('/admin/transfers/pending'),
           api.get('/admin/reports/pending-approval') 
