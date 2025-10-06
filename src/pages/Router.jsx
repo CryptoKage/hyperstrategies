@@ -35,6 +35,7 @@ import ShopPage from './ShopPage';
 import AnimationControlsPage from './admin/AnimationControlsPage';
 import ReportBuilderPage from './admin/ReportBuilderPage';
 import ReportsPage from './ReportsPage';
+import DeskResultsPage from './admin/DeskResultsPage';
 
 
 // --- Guard Components ---
@@ -103,6 +104,7 @@ const Router = () => {
       <Route path="/admin/xp-awards" element={<AdminRoute><XPAwardsPage /></AdminRoute>} />
        <Route path="/admin/animations" element={<AdminRoute><AnimationControlsPage /></AdminRoute>} />
        <Route  path="/admin/reports/builder"  element={<AdminRoute><ReportBuilderPage /></AdminRoute>}/>
+       <Route path="/admin/desk-results" element={<AdminRoute><DeskResultsPage /></AdminRoute>} />
        
     </Routes>
   );
