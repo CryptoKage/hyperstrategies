@@ -2711,7 +2711,15 @@ textarea.input-field { resize: vertical; }
 }
 
 @media (max-width: 900px) { /* A slightly larger breakpoint for headers */
+    .main-content {
+    /* Add padding to the bottom equal to the nav bar's height */
+    padding-bottom: 60px;
+  }
   
+  /* It's also good practice to hide the footer on mobile for a cleaner app feel */
+  .footer {
+    display: none;
+  }
 
   .hamburger-button {
     display: inline-flex;
