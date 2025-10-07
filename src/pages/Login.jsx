@@ -51,8 +51,13 @@ const Login = () => {
 
     try {
       const response = await api.post('/auth/login', { email, password });
-      login(response.data.token);
-      navigate('/dashboard');
+     
+        if (response.data.user) {
+            login(response.data.user); 
+            navigate('/dashboard');
+        } else {
+             setError(t('login_page.error_failed'));
+        }
     } catch (err) {
       setError(err.response?.data?.error || t('login_page.error_failed'));
     } finally {

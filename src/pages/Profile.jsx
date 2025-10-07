@@ -10,7 +10,7 @@ import TelegramLoginButton from '../components/TelegramLoginButton';
 
 const Profile = () => {
   const { t } = useTranslation();
-  const { refreshToken } = useAuth();
+  const { checkAuthStatus } = useAuth(); 
 
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,6 +24,7 @@ const Profile = () => {
 
   const fetchProfile = useCallback(async () => {
     try {
+      
       const response = await api.get('/user/profile');
       const data = response.data;
       setProfileData(data);
@@ -34,23 +35,14 @@ const Profile = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [t]);
-
+  }, [t]); 
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        await refreshToken();
-        await fetchProfile();
-      } catch (err) {
-        console.error('Failed to refresh token before fetching profile', err);
-        setError(t('profile_page.error_load'));
-        setIsLoading(false);
-      }
-    };
-
-    loadProfile();
+   
+    setIsLoading(true); 
+    fetchProfile();
+    
     setCopySuccessMessage(t('profile_page.copy_link_button'));
-  }, [refreshToken, fetchProfile, t]);
+  }, [fetchProfile, t]);
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
@@ -59,7 +51,10 @@ const Profile = () => {
     try {
       const response = await api.put('/user/profile', { username });
       setEditMessage({ type: 'success', text: t(response.data.messageKey) });
-      refreshToken();
+       if (checkAuthStatus) {
+        await checkAuthStatus(); 
+      }
+
     } catch (err) {
       const messageKey = err.response?.data?.messageKey || 'profile_page.error_unexpected';
       setEditMessage({ type: 'error', text: t(messageKey) });
