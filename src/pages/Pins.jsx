@@ -11,7 +11,7 @@ import { PinImage } from '../components/UserPins';
 
 const Pins = () => {
   const { t } = useTranslation();
-  const { refreshToken } = useAuth();
+  const { checkAuthStatus } = useAuth();
 
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -43,17 +43,19 @@ const Pins = () => {
   useEffect(() => {
     const loadPins = async () => {
       try {
-        await refreshToken();
+        if (checkAuthStatus) {
+          await checkAuthStatus();
+        }
         await fetchPins();
       } catch (err) {
-        console.error('Failed to refresh token before loading pins', err);
+        console.error('Failed to verify session before loading pins', err);
         setError(t('pins_page.error_load', 'We could not load your pins. Please try again.'));
         setIsLoading(false);
       }
     };
 
     loadPins();
-  }, [refreshToken, fetchPins, t]);
+  }, [checkAuthStatus, fetchPins, t]);
 
   const handleToggleAutoEquip = async () => {
     const nextState = !isAutoEquip;
