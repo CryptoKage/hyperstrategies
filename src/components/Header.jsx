@@ -115,21 +115,24 @@ const Header = () => {
               <div className="mobile-menu-content">
                   {user ? (
                       <>
-                          <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
-                <Link to="/pins" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.pins')}</Link>
-<Link to="/marketplace" className="mobile-menu__link" onClick={closeMobileMenu}>{t('nav.marketplace')}</Link>
-<Link to="/shop" className="mobile-menu__link" onClick={closeMobileMenu}>{t('nav.shop')}</Link>
-<Link to="/rewards" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.rewards')}</Link>
-                          <Link to="/wallet" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.wallet')}</Link>
-                          <Link to="/profile" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.profile')}</Link>
-                          {user.isAdmin && <Link to="/admin" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.admin')}</Link>}
-                          <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="mobile-menu__button">{t('header.logout')}</button>
-                      </>
-                  ) : (
-                      <>
-                          
-                      </>
-                  )}
+            {/* Link to Dashboard remains as a quick access point */}
+            <Link to="/dashboard" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.dashboard')}</Link>
+            
+            {/* Admin link for admins */}
+            {user.isAdmin && (
+                <Link to="/admin" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.admin')}</Link>
+            )}
+
+            {/* Logout is the primary action */}
+            <button onClick={() => { handleLogout(); closeMobileMenu(); }} className="mobile-menu__button">{t('header.logout')}</button>
+        </>
+    ) : (
+        <>
+            {/* For logged-out users, show Sign In and Register */}
+            <Link to="/login" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.signin')}</Link>
+            <Link to="/register" className="mobile-menu__link" onClick={closeMobileMenu}>{t('header.register')}</Link>
+        </>
+    )}
                   <div className="mobile-menu__language-select-wrapper">
                       <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
                           <option value="en">EN</option>

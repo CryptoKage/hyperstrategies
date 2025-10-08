@@ -1,6 +1,6 @@
-// /src/pages/Dashboard.jsx
+// src/pages/Dashboard.jsx
 
-import React, {useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
@@ -12,6 +12,7 @@ import InfoIcon from '../components/InfoIcon';
 import EyeIcon from '../components/EyeIcon';
 import LoadingSpinner from '../components/LoadingSpinner';
 import VaultTransferModal from '../components/VaultTransferModal';
+import WelcomeCard from '../components/WelcomeCard'; // Import the new WelcomeCard
 
 import coreVaultBg from '../assets/core.png';
 import apecoinVaultBg from '../assets/apecoin.png';
@@ -25,7 +26,7 @@ const vaultImageMap = {
   'apecoin.png': apecoinVaultBg,
   'panther-swarm.jpg': pantherVaultBg,
   'btcvault.png': btcVaultBg,
-   'Farm.png': farmVaultBg,     
+  'Farm.png': farmVaultBg,     
   'btc.png': newBtcVaultBg,
 };
 
@@ -33,7 +34,6 @@ const SnapshotItem = ({ labelKey, value, className = '' }) => {
     const { t } = useTranslation();
     const numericValue = parseFloat(value);
 
-    // THE FIX: If the value is 0 or not a number, render nothing.
     if (isNaN(numericValue) || numericValue === 0) {
         return null; 
     }
@@ -57,13 +57,14 @@ const Dashboard = () => {
   
   const [isAllocateModalOpen, setAllocateModalOpen] = useState(false);
   const [isWithdrawModalOpen, setWithdrawModalOpen] = useState(false);
+  const [isTransferModalOpen, setTransferModalOpen] = useState(false);
   const [selectedVault, setSelectedVault] = useState(null);
 
   const [autoCompoundState, setAutoCompoundState] = useState({});
   const [isUpdatingCompound, setIsUpdatingCompound] = useState({});
   const [vaultLockStatuses, setVaultLockStatuses] = useState({});
-
-   const [isTransferModalOpen, setTransferModalOpen] = useState(false);
+  
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -105,7 +106,7 @@ const Dashboard = () => {
     try {
       await api.put(`/user/vault-settings/${vaultId}/compound`, { autoCompound: newState });
     } catch (err) {
-      console.error("Failed to update auto-compound setting:", err);
+      console.error('Failed to update auto-compound setting:', err);
       setAutoCompoundState(prevState => ({ ...prevState, [vaultId]: currentState }));
     } finally {
       setIsUpdatingCompound(prev => ({ ...prev, [vaultId]: false }));
@@ -114,21 +115,34 @@ const Dashboard = () => {
   
   const handleOpenAllocateModal = (vault) => { setSelectedVault(vault); setAllocateModalOpen(true); };
   const handleOpenWithdrawModal = (position) => { setSelectedVault(position); setWithdrawModalOpen(true); };
-
   const handleOpenTransferModal = (position) => {
-    // We need to merge the position data with the vault's static info (like its name)
     const vaultInfo = dashboardData.vaults.find(v => v.vault_id === position.vault_id);
     setSelectedVault({ ...position, ...vaultInfo });
     setTransferModalOpen(true);
   };
-
   const handleActionSuccess = () => { fetchDashboardData(); };
 
-  const StatCardSkeleton = () => ( <div className="stat-card skeleton"><div className="skeleton-text short"></div><div className="skeleton-text long"></div></div> );
+  const StatCardSkeleton = () => (
+    <div className="stat-card skeleton">
+      <div className="skeleton-text short"></div>
+      <div className="skeleton-text long"></div>
+    </div>
+  );
 
   const renderContent = () => {
-    if (loading) { return ( <div className="stats-grid"><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></div> ); }
-    if (error || !dashboardData) { return <p className="error-message">{t('dashboard.no_data')}</p>; }
+    if (loading) {
+      return (
+        <div className="stats-grid">
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+          <StatCardSkeleton />
+        </div>
+      );
+    }
+    if (error || !dashboardData) {
+      return <p className="error-message">{t('dashboard.no_data')}</p>;
+    }
+
     const investedPositions = dashboardData.userPositions || [];
 
     return (
@@ -138,7 +152,9 @@ const Dashboard = () => {
             <span className="stat-label">{t('dashboard.total_value')}</span>
             <div className="stat-main">
               <span className="stat-value">{isBalanceHidden ? '******' : `$${((dashboardData.totalCapitalInVaults || 0) + (dashboardData.totalBonusPoints || 0) + (dashboardData.availableBalance || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
-              <button onClick={toggleBalanceVisibility} className="btn-icon" title={t('dashboard.toggle_balance_tooltip', 'Toggle balance visibility')}><EyeIcon isHidden={isBalanceHidden} /></button>
+              <button onClick={toggleBalanceVisibility} className="btn-icon" title={t('dashboard.toggle_balance_tooltip', 'Toggle balance visibility')}>
+                <EyeIcon isHidden={isBalanceHidden} />
+              </button>
             </div>
             <span className={`stat-sub-value ${(dashboardData.totalUnrealizedPnl || 0) >= 0 ? 'stat-pnl-positive' : 'stat-pnl-negative'}`}>
                {t('dashboard.unrealized_pnl')}: {isBalanceHidden ? '******' : `${((dashboardData.totalUnrealizedPnl || 0) >= 0) ? '+' : ''}${(dashboardData.totalUnrealizedPnl || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
@@ -163,16 +179,14 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {investedPositions.length > 0 && (
+        {investedPositions.length > 0 ? (
           <>
             <h2 style={{ marginTop: '48px' }}>{t('dashboard.your_positions')}</h2>
             <div className="vaults-grid">
               {investedPositions.map(position => {
                 const vaultInfo = dashboardData.vaults.find(v => v.vault_id === position.vault_id);
                 if (!vaultInfo) return null;
-                const pendingTransferOut = dashboardData.pendingTransfers?.find(
-                  t => t.from_vault_id === position.vault_id
-                );
+                const pendingTransferOut = dashboardData.pendingTransfers?.find(t => t.from_vault_id === position.vault_id);
                 const tradableCapital = parseFloat(position.tradable_capital);
                 const pnl = parseFloat(position.pnl);
                 const isUpdating = isUpdatingCompound[position.vault_id];
@@ -187,11 +201,7 @@ const Dashboard = () => {
                            {pendingTransferOut && (
                               <div className="pending-transfer-banner">
                                 <LoadingSpinner size="small" />
-                                <span>
-                                  {t('dashboard.pending_transfer', { 
-                                    amount: parseFloat(pendingTransferOut.amount).toFixed(2) 
-                                  })}
-                                </span>
+                                <span>{t('dashboard.pending_transfer', { amount: parseFloat(pendingTransferOut.amount).toFixed(2) })}</span>
                               </div>
                             )}
                             <h3>{vaultInfo.name}</h3>
@@ -207,40 +217,39 @@ const Dashboard = () => {
                             </div>
                             <div className="auto-compound-toggle">
                                 <div className="label-group">
-                                <label htmlFor={`compound-toggle-${position.vault_id}`}>{isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}</label>
-                                <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}><InfoIcon /></Link>
+                                    <label htmlFor={`compound-toggle-${position.vault_id}`}>{isUpdating ? t('dashboard.saving') : t('dashboard.auto_compound')}</label>
+                                    <Link to="/faq#auto-compound" className="info-icon-link" title={t('dashboard.auto_compound_tooltip')}><InfoIcon /></Link>
                                 </div>
                                 <label className="switch">
-                                <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} disabled={isUpdating} />
-                                <span className="slider round"></span>
+                                    <input type="checkbox" id={`compound-toggle-${position.vault_id}`} checked={autoCompoundState[position.vault_id] ?? true} onChange={() => handleToggleAutoCompound(position.vault_id)} disabled={isUpdating} />
+                                    <span className="slider round"></span>
                                 </label>
                             </div>
-                            <div className="vault-actions primary-actions">
-                            <button className="btn-primary" onClick={() => handleOpenAllocateModal(vaultInfo)}>
-                              {t('dashboard.add_funds')}
-                            </button>
-                            <button 
-                              className="vault-actions primary-actions" 
-                              onClick={() => handleOpenWithdrawModal(position)}
-                              disabled={vaultLockStatus.isLocked}
-                              title={vaultLockStatus.isLocked ? t('dashboard.locked_tooltip', { date: new Date(vaultLockStatus.unlockDate).toLocaleDateString() }) : t('dashboard.unlocked_tooltip')}
-                            >
-                              {t('dashboard.withdraw')}
-                            </button>
-                            <button 
-                              className="vault-actions primary-actions" 
-                              onClick={() => handleOpenTransferModal(position)}
-                              disabled={pendingTransferOut} // Disable if a transfer is already pending
-                              title={pendingTransferOut ? 'A transfer is already pending from this vault.' : ''}
-                            >
-                              {t('dashboard.transfer')}
-                            </button>
-                        </div>
-                        <div className="vault-actions secondary-actions">
-                           <button className="vault-action-button" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>
-                             {t('dashboard.more_info')}
-                           </button>
-                        </div>
+                            <div className="vault-actions-group">
+                                <div className="manage-position-menu">
+                                    <button className="btn-primary" style={{width: '100%'}} onClick={() => setOpenMenuId(openMenuId === position.vault_id ? null : position.vault_id)}>
+                                        {t('dashboard.manage_position')}
+                                    </button>
+                                    {openMenuId === position.vault_id && (
+                                        <div className="manage-dropdown-content">
+                                            <button onClick={() => { handleOpenAllocateModal(vaultInfo); setOpenMenuId(null); }}>
+                                                {t('dashboard.add_funds')}
+                                            </button>
+                                            <button onClick={() => { handleOpenWithdrawModal(position); setOpenMenuId(null); }} disabled={vaultLockStatus.isLocked}>
+                                                {t('dashboard.withdraw')}
+                                            </button>
+                                            <button onClick={() => { handleOpenTransferModal(position); setOpenMenuId(null); }} disabled={!!pendingTransferOut}>
+                                                {t('dashboard.transfer')}
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="vault-actions-row">
+                                    <button className="vault-action-button" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>
+                                        {t('dashboard.more_info')}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {vaultInfo.performance && (
@@ -256,6 +265,8 @@ const Dashboard = () => {
               })}
             </div>
           </>
+        ) : (
+            <WelcomeCard />
         )}
 
         <h2 style={{ marginTop: '48px' }}>{t('dashboard.available_strategies')}</h2>
@@ -272,16 +283,13 @@ const Dashboard = () => {
                     <div className="card-content">
                         <h3>{vault.name}</h3>
                         <p className="cta-text">{vault.description}</p>
-                        <div className="vault-actions">
-                        <button className="vault-action-button" onClick={() => navigate(`/vaults/${vault.vault_id}`)}>
-                            {t('dashboard.more_info')}
-                            </button>
+                        <div className="vault-actions" style={{ marginTop: 'auto', justifyContent: 'center' }}>
                             {isActive ? (
-                            <button className="btn-primary" onClick={() => handleOpenAllocateModal(vault)}>
-                                {t('dashboard.allocate_funds')}
-                            </button>
+                                <button className="btn-primary" onClick={() => navigate(`/vaults/${vault.vault_id}`)}>
+                                    {t('dashboard.explore_strategy')}
+                                </button>
                             ) : (
-                            <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
+                                <span className="placeholder-text">{t('dashboard.coming_soon')}</span>
                             )}
                         </div>
                     </div>
@@ -289,9 +297,9 @@ const Dashboard = () => {
                 {isActive && vault.performance && (
                      <div className="performance-snapshot-card">
                         <SnapshotItem labelKey="vault.stats.dailyReturn" value={vault.performance.daily} className={vault.performance.daily >= 0 ? 'text-positive' : 'text-negative'} />
-                        <SnapshotItem labelKey="vault.stats.weeklyReturn" value={vault.performance.weekly} className={vault.performance.weekly >= 0 ? 'text-positive' : 'text-negative'} />
-                        <SnapshotItem labelKey="vault.stats.monthlyReturn" value={vault.performance.monthly} className={vault.performance.monthly >= 0 ? 'text-positive' : 'text-negative'} />
-                        <SnapshotItem labelKey="vault.stats.totalReturn" value={vault.performance.total} className={vault.performance.total >= 0 ? 'text-positive' : 'text-negative'} />
+                        <SnapshotItem labelKey="vault.stats.weeklyReturn" value={vault.performance.weekly} className={vaultInfo.performance.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+                        <SnapshotItem labelKey="vault.stats.monthlyReturn" value={vault.performance.monthly} className={vaultInfo.performance.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+                        <SnapshotItem labelKey="vault.stats.totalReturn" value={vault.performance.total} className={vaultInfo.performance.total >= 0 ? 'text-positive' : 'text-negative'} />
                     </div>
                 )}
               </div>
@@ -334,10 +342,10 @@ const Dashboard = () => {
         <VaultTransferModal
           isOpen={isTransferModalOpen}
           onClose={() => setTransferModalOpen(false)}
-          sourcePosition={selectedVault} // The position we want to transfer FROM
-          allVaults={dashboardData.vaults} // A list of all possible destinations
+          sourcePosition={selectedVault}
+          allVaults={dashboardData.vaults}
           onTransferSuccess={handleActionSuccess}
-           />
+        />
       )}
     </>
   );

@@ -8,6 +8,7 @@ import { AnimationSettingsProvider } from './context/AnimationSettingsContext';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import './styles/global.css';
 import Router from './pages/Router';
+import { Toaster } from 'react-hot-toast';
 import './i18n';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -18,6 +19,16 @@ root.render(
         <AuthProvider>
           <FeatureFlagProvider>
             <AnimationSettingsProvider>
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  style: {
+                    background: 'var(--color-surface)',
+                    color: 'var(--color-text-primary)',
+                    border: '1px solid var(--color-border)',
+                  },
+                }}
+                />
               <Router />
             </AnimationSettingsProvider>
           </FeatureFlagProvider>

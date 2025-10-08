@@ -82,6 +82,11 @@
     "terms_link": "Rechtliches"
   },
   "dashboard": {
+    "explore_strategy": "Strategie erkunden",
+  "manage_position": "Position verwalten",
+   "welcome_title": "Legen wir los!",
+  "welcome_subtitle": "Deine Reise beginnt mit deiner ersten Einzahlung. Gehe zu deiner Wallet, um dein Konto aufzuladen und Strategien zu entdecken.",
+  "welcome_cta": "Wallet aufladen",
     "avg_monthly_return": "Durchschn. Monatsrendite",
     "all_time_pnl": "Performance (Allzeit)",
     "unrealized_pnl": "Nicht realisierter P&L",

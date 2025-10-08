@@ -78,6 +78,11 @@
     "terms_link": "DA BIG RULEZ"
   },
   "dashboard": {
+    "explore_strategy": "SEE DA STOMPA",
+  "manage_position": "BOSS YER BOYZ",
+  "welcome_title": "GET TA KRUMPIN'!",
+  "welcome_subtitle": "YA CAN'T FIGHT WIF NO TEEF. GO TO DA TEEF PILE, GET SOME SHINIES, DEN GO PICK A STOMPA.",
+  "welcome_cta": "GO TO DA TEEF PILE",
     "welcome": "OI, {{username}}, GET BACK TA KRUMPIN'!",
     "no_data": "COULDN'T GET DA INFO. PROBABLY SNEAKY GITS.",
     "error_fetch": "COULDN'T GET DA INFO. PROBABLY SNEAKY GITS.",

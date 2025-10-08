@@ -82,6 +82,12 @@
     "terms_link": "Legal"
   },
   "dashboard": {
+    "explore_strategy": "Explore Strategy",
+  "manage_position": "Manage Position",
+  
+   "welcome_title": "Let's Get Started!",
+  "welcome_subtitle": "Your journey begins with your first deposit. Head to your wallet to fund your account and start exploring strategies.",
+  "welcome_cta": "Fund Your Wallet",
     "avg_monthly_return": "Avg. Monthly Return",
     "all_time_pnl": "All-Time Performance",
     "transfer": "Transfer",

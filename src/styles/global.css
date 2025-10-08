@@ -1117,6 +1117,15 @@ button {
   border-radius: 4px;
 }
 
+.pins-skeleton-slot {
+  /* Mimic the dimensions of your .pins-slot class */
+  background-color: var(--color-surface); /* A slightly darker base color */
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  min-height: 160px;
+  width: 100%;
+}
+
 .skeleton-text.short { width: 40%; margin-bottom: 12px; height: 16px; }
 .skeleton-text.long { width: 60%; height: 28px; }
 
@@ -5000,3 +5009,120 @@ opacity: 0.3;
   }
 }
 
+/* --- Dashboard Manage Position Dropdown --- */
+.manage-position-menu {
+  position: relative;
+  display: inline-block;
+  width: 100%; /* Make the container full width */
+}
+
+.manage-dropdown-content {
+  display: block;
+  position: absolute;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  min-width: 160px;
+  width: 100%; /* Make dropdown match button width */
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 10;
+  bottom: 110%; /* Position it above the button */
+  right: 0;
+}
+
+.manage-dropdown-content button {
+  color: var(--color-text-primary);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 1rem; /* Ensure font size is consistent */
+  cursor: pointer;
+}
+
+.manage-dropdown-content button:hover {
+  background-color: var(--color-border);
+}
+
+.manage-dropdown-content button:disabled {
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: none; /* Ensure disabled doesn't have a background */
+}
+
+/* In global.css */
+
+.welcome-card {
+  background: linear-gradient(135deg, rgba(63, 186, 243, 0.15) 0%, rgba(63, 186, 243, 0.05) 100%);
+  border: 1px solid var(--color-primary);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  margin: 48px 0;
+  box-shadow: 0 0 25px rgba(63, 186, 243, 0.1);
+}
+
+.welcome-card h2 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.welcome-card p {
+  color: var(--color-text-secondary);
+  max-width: 500px;
+  margin: 0 auto 24px auto;
+}
+
+/* --- Dashboard Manage Position Dropdown --- */
+.manage-position-menu {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.manage-dropdown-content {
+  display: block;
+  position: absolute;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  min-width: 160px;
+  width: 100%;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 10;
+  bottom: 110%; 
+  right: 0;
+  overflow: hidden; /* Ensures buttons conform to border-radius */
+}
+
+.manage-dropdown-content button {
+  color: var(--color-text-primary);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--color-border); /* Separator line */
+  font-size: 1rem;
+  cursor: pointer;
+}
+.manage-dropdown-content button:last-child {
+  border-bottom: none; /* No border on the last item */
+}
+
+.manage-dropdown-content button:hover {
+  background-color: var(--color-border);
+}
+
+.manage-dropdown-content button:disabled {
+  color: var(--color-text-secondary);
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: none;
+}
