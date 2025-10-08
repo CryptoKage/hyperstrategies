@@ -295,13 +295,13 @@ const Dashboard = () => {
                     </div>
                 </div>
                 {isActive && vault.performance && (
-                     <div className="performance-snapshot-card">
-                        <SnapshotItem labelKey="vault.stats.dailyReturn" value={vault.performance.daily} className={vault.performance.daily >= 0 ? 'text-positive' : 'text-negative'} />
-                        <SnapshotItem labelKey="vault.stats.weeklyReturn" value={vault.performance.weekly} className={vaultInfo.performance.weekly >= 0 ? 'text-positive' : 'text-negative'} />
-                        <SnapshotItem labelKey="vault.stats.monthlyReturn" value={vault.performance.monthly} className={vaultInfo.performance.monthly >= 0 ? 'text-positive' : 'text-negative'} />
-                        <SnapshotItem labelKey="vault.stats.totalReturn" value={vault.performance.total} className={vaultInfo.performance.total >= 0 ? 'text-positive' : 'text-negative'} />
-                    </div>
-                )}
+    <div className="performance-snapshot-card">
+        <SnapshotItem labelKey="vault.stats.dailyReturn" value={vault.performance.daily} className={vault.performance.daily >= 0 ? 'text-positive' : 'text-negative'} />
+        <SnapshotItem labelKey="vault.stats.weeklyReturn" value={vault.performance.weekly} className={vault.performance.weekly >= 0 ? 'text-positive' : 'text-negative'} />
+        <SnapshotItem labelKey="vault.stats.monthlyReturn" value={vault.performance.monthly} className={vault.performance.monthly >= 0 ? 'text-positive' : 'text-negative'} />
+        <SnapshotItem labelKey="vault.stats.totalReturn" value={vault.performance.total} className={vault.performance.total >= 0 ? 'text-positive' : 'text-negative'} />
+    </div>
+)}
               </div>
             );
           })}
