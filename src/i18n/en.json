@@ -74,6 +74,10 @@
       "description": "This section will track protocol contribution rewards generated through your share of the vault's trading volume."
   }
 },
+"reserveVault": {
+  "yourHoldings": "Your Holdings",
+  "avgCost": "Average Cost Basis"
+},
   "footer": {
     "follow_us": "Follow us:",
     "documentation": "Docs",

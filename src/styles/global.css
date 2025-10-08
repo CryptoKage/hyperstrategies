@@ -497,6 +497,20 @@ button {
   gap: 12px;
 }
 
+.vault-actions-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vault-actions-row {
+  width: 100%;
+}
+
+.vault-actions-row .btn-primary {
+  width: 100%;
+}
+
 .vault-actions button:hover {
   background-color: rgba(255, 255, 255, 0.1);
   border-color: var(--color-primary);

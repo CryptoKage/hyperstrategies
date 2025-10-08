@@ -81,6 +81,10 @@
     "terms": "Bedingungen",
     "terms_link": "Rechtliches"
   },
+  "reserveVault": {
+  "yourHoldings": "Deine Bestände",
+  "avgCost": "Durchschnittliche Kostenbasis"
+},
   "dashboard": {
     "explore_strategy": "Strategie erkunden",
   "manage_position": "Position verwalten",

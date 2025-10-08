@@ -77,6 +77,10 @@
     "terms": "DA RULEZ",
     "terms_link": "DA BIG RULEZ"
   },
+  "reserveVault": {
+  "yourHoldings": "YER PILE OF SHINIES",
+  "avgCost": "HOW MANY TEEFS PER SHINY"
+},
   "dashboard": {
     "explore_strategy": "SEE DA STOMPA",
   "manage_position": "BOSS YER BOYZ",
