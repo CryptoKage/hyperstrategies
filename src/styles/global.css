@@ -494,6 +494,7 @@ button {
   transition: all 0.2s ease-in-out;
   text-decoration: none; /* Remove underline if it's a Link */
   text-align: center;
+  gap: 12px;
 }
 
 .vault-actions button:hover {
