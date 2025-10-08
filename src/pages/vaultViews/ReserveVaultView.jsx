@@ -4,17 +4,19 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Layout from '../../components/Layout';
-import ComingSoon from '../../components/ComingSoon';
 
-// Reusable StatCard component for this page
+// A reusable StatCard, tailored for this page's layout
 const StatCard = ({ labelKey, value, subtext = null, isCurrency = true, className = '' }) => {
     const { t } = useTranslation();
+    const formattedValue = typeof value === 'number'
+        ? value.toLocaleString('en-US', { minimumFractionDigits: isCurrency ? 2 : 6, maximumFractionDigits: isCurrency ? 2 : 6 })
+        : 'N/A';
+
     return (
         <div className={`profile-card ${className}`}>
             <h3>{t(labelKey)}</h3>
             <p className="stat-value-large">
-                {isCurrency && '$'}
-                {typeof value === 'number' ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 'N/A'}
+                {isCurrency && '$'}{formattedValue}
             </p>
             {subtext && <p className="stat-subtext">{subtext}</p>}
         </div>
@@ -27,35 +29,30 @@ const ReserveVaultView = ({ pageData }) => {
 
     const isInvested = userPosition && userPosition.principal > 0;
     
-    // --- CALCULATIONS ---
-    let userShare = {
-        totalAssetAmount: 0,
-        averageCost: 0,
-    };
+    // --- Data Calculations ---
+    let userShare = { totalAssetAmount: 0, averageCost: 0 };
     let reserveAsset = null;
-    let totalVaultAssetAmount = 0;
 
     if (isInvested && openTrades.length > 0 && assetBreakdown.length > 0) {
-        // Find the primary reserve asset (assuming it's the first one listed)
-        reserveAsset = assetBreakdown[0];
+        // Find the primary asset using our new flag. Fallback to the first asset.
+        reserveAsset = assetBreakdown.find(a => a.is_primary_asset) || assetBreakdown[0];
 
-        // Calculate the vault's total holdings of the reserve asset
-        totalVaultAssetAmount = openTrades.reduce((sum, trade) => sum + parseFloat(trade.quantity), 0);
-
-        // Calculate the user's ownership percentage of the vault's principal capital
-        // Note: We use principal for a stable ownership percentage that isn't affected by P&L
-        const vaultTotalPrincipal = pageData.vaultStats?.totalPrincipal || totalVaultAssetAmount * openTrades[0].entry_price; // Fallback
+        // The vault's total holdings is the sum of all 'buy' quantities.
+        const totalVaultAssetAmount = openTrades.reduce((sum, trade) => sum + parseFloat(trade.quantity), 0);
+        
+        // We need the vault's total principal to calculate user ownership.
+        // The API provides this in a roundabout way, let's calculate it robustly.
+        const vaultTotalPrincipal = openTrades.reduce((sum, trade) => sum + (parseFloat(trade.quantity) * parseFloat(trade.entry_price)), 0);
+        
         const userOwnershipPct = (vaultTotalPrincipal > 0) ? (userPosition.principal / vaultTotalPrincipal) : 0;
         
-        // Calculate the user's pro-rata share of the total asset holdings
         userShare.totalAssetAmount = totalVaultAssetAmount * userOwnershipPct;
 
-        // Calculate the user's average cost basis
         if (userShare.totalAssetAmount > 0) {
             userShare.averageCost = userPosition.principal / userShare.totalAssetAmount;
         }
     }
-    // --- END OF CALCULATIONS ---
+    // --- End Calculations ---
 
     return (
         <Layout>
@@ -77,29 +74,33 @@ const ReserveVaultView = ({ pageData }) => {
                                 isCurrency={false}
                                 className="text-positive"
                             />
-                            <StatCard labelKey="reserveVault.avgCost" value={userShare.averageCost} subtext={`per ${reserveAsset ? reserveAsset.symbol : 'unit'}`} />
+                            <StatCard 
+                                labelKey="reserveVault.avgCost" 
+                                value={userShare.averageCost} 
+                                subtext={`per ${reserveAsset ? reserveAsset.symbol : 'unit'}`} 
+                            />
                         </div>
 
                         <div className="admin-card" style={{ marginTop: '24px' }}>
-                            <h3>Purchase History</h3>
-                            <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1rem' }}>This log shows all asset purchases made by the trading desk for this vault.</p>
+                            <h3>Vault Purchase History</h3>
+                            <p className="form-description">This log shows all asset purchases made by the trading desk for this vault's reserve.</p>
                             <div className="table-responsive">
                                 <table className="activity-table">
                                     <thead>
                                         <tr>
                                             <th>Date</th>
-                                            <th>Asset</th>
-                                            <th>Amount Purchased</th>
+                                            <th>Asset Purchased</th>
+                                            <th>Amount</th>
                                             <th className="amount">Price per Unit</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {openTrades.map(trade => (
+                                        {openTrades.sort((a,b) => new Date(b.trade_opened_at) - new Date(a.trade_opened_at)).map(trade => (
                                             <tr key={trade.trade_id}>
                                                 <td>{new Date(trade.trade_opened_at).toLocaleDateString()}</td>
                                                 <td>{trade.asset_symbol}</td>
                                                 <td>{parseFloat(trade.quantity).toFixed(6)}</td>
-                                                <td className="amount">${parseFloat(trade.entry_price).toLocaleString()}</td>
+                                                <td className="amount">${parseFloat(trade.entry_price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                                             </tr>
                                         ))}
                                     </tbody>
