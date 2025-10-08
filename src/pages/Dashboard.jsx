@@ -245,9 +245,9 @@ const Dashboard = () => {
                                     )}
                                 </div>
                                 <div className="vault-actions-row">
-                                    <button className="vault-action-button" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>
-                                        {t('dashboard.more_info')}
-                                    </button>
+                                    <button className="btn-primary" onClick={() => navigate(`/vaults/${vaultInfo.vault_id}`)}>
+        {t('dashboard.explore_strategy')}
+    </button>
                                 </div>
                             </div>
                         </div>

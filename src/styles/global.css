@@ -5065,7 +5065,7 @@ opacity: 0.3;
 /* In global.css */
 
 .welcome-card {
-  background: linear-gradient(135deg, rgba(63, 186, 243, 0.15) 0%, rgba(63, 186, 243, 0.05) 100%);
+  background:  var(--color-surface);
   border: 1px solid var(--color-primary);
   border-radius: 16px;
   padding: 32px;
