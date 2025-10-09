@@ -244,6 +244,7 @@ const VaultManagementPage = () => {
           <Link to="/admin" className="btn-secondary btn-sm">
             ← Back to Mission Control
           </Link>
+          <Link to="/admin/farming-pipeline" className="btn-secondary btn-sm">Manage Farming Pipeline</Link>
         </div>
 
         <div className="admin-card">

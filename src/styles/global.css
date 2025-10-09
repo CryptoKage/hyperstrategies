@@ -5149,3 +5149,67 @@ opacity: 0.3;
   cursor: not-allowed;
   background: none;
 }
+
+/* --- Farming Pipeline Admin Page Styles --- */
+.farming-pipeline-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.pipeline-column {
+  background-color: var(--color-background);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+}
+
+.pipeline-column h3 {
+  margin-top: 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.protocol-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 300px;
+}
+
+.protocol-card {
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  padding: 16px;
+  border-left: 4px solid var(--color-primary);
+}
+.protocol-card h4 {
+  margin: 0 0 8px 0;
+}
+.protocol-card p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+.protocol-card-footer {
+  margin-top: 12px;
+  text-align: right;
+}
+.reaped-info {
+  font-weight: bold;
+  color: var(--color-positive, #4ade80);
+}
+.add-protocol-form {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+.add-protocol-form h4 {
+  margin-top: 0;
+}
+
+@media (max-width: 1024px) {
+  .farming-pipeline-grid {
+    grid-template-columns: 1fr;
+  }
+}
