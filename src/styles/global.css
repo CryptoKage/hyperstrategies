@@ -1691,7 +1691,7 @@ textarea.input-field { resize: vertical; }
   justify-content: center;
   text-align: center;
   max-width: 1200px;
-  margin: 80px auto;
+  margin:  0 auto 80px auto;
   padding: 0 24px;
   position: relative;
 }
@@ -1743,8 +1743,7 @@ textarea.input-field { resize: vertical; }
 /* --- Mobile Responsiveness for Your Existing Hero --- */
 @media (max-width: 768px) {
   .hero-section {
-    margin-top: 40px;
-    margin-bottom: 40px;
+    margin: 0 auto 80px auto;
   }
 
   .hero-headline {
