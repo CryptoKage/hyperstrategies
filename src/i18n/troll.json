@@ -181,6 +181,7 @@
     "active_slots_label": "READY BITZ ({{count}} / {{total}})",
     "empty_slot": "EMPTY",
     "locked_slot_label": "LOCKED",
+    "view_leaderboard": "SEE DA BIGGEST BOSSES",
     "save_loadout_button": "SAVE BITZ",
     "saving_button": "SAVIN'...",
     "pin_collection_title": "YER PILE O' BITZ ({{count}})",

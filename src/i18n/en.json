@@ -503,7 +503,8 @@
     "journey_step_two_cta": "Pin loadout",
     "journey_step_three": "Gather XP and level up your tier",
     "journey_step_three_copy": "Claim XP for various activites, level up your tier to equip more pins to benefit from more perks and unlock access to the token presale.",
-    "journey_step_three_cta": "Rewards"
+    "journey_step_three_cta": "Rewards",
+    "view_leaderboard": "View Leaderboard"
   },
   "pins_market": {
     "title": "Pins Marketplace",

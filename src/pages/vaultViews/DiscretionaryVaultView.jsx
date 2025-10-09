@@ -57,8 +57,16 @@ const DiscretionaryVaultView = ({ pageData }) => {
                     <div className="profile-card text-center">
                         <h2>{t('vault.notInvested.title')}</h2>
                         <p>{t('vault.notInvested.description')}</p>
-                        <Link to="/dashboard" className="btn-primary mt-4">{t('common.goToDashboard')}</Link>
-                    </div> 
+                         <div style={{ marginTop: '24px' }}>
+        <Link 
+            to="/dashboard" 
+            className="btn-primary" 
+            style={{ width: 'auto', padding: '12px 24px' }}
+        >
+            {t('common.goToDashboard')}
+        </Link>
+    </div>
+</div> 
                 )}
             </div>
         </Layout>
