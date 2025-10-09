@@ -406,7 +406,7 @@ button {
 
 .dashboard-container h2 {
   font-size: 24px;
-  margin-top: 48px;
+  margin-top: 0;
   margin-bottom: 24px;
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 12px;
@@ -1159,7 +1159,6 @@ button {
   /* Reduce padding on main containers for more space */
   .dashboard-container, .wallet-container, .profile-container, .admin-container, .faq-container, .leaderboard-container {
     padding: 20px 16px;
-    margin-top: 24px;
   }
   
   /* Make headings slightly smaller on mobile */
