@@ -75,22 +75,37 @@ const DeskResultsPage = () => {
 
 
     // Handlers for form submissions
-    const handleSaveSummary = async (e) => {
-        e.preventDefault();
-        setIsSavingSummary(true);
-        setSummaryMessage({ type: '', text: '' });
-        try {
-            const monthDate = new Date(selectedMonth + '-01');
-            const formattedMonth = monthDate.toISOString().split('T')[0];
-            const payload = { vaultId: selectedVaultId, month: formattedMonth, ...monthlyPerf };
-            const response = await api.post('/admin/vaults/monthly-performance', payload);
-            setSummaryMessage({ type: 'success', text: response.data.message });
-        } catch (err) {
-            setSummaryMessage({ type: 'error', text: err.response?.data?.error || 'Failed to save summary.' });
-        } finally {
-            setIsSavingSummary(false);
-        }
-    };
+    // in src/pages/admin/DeskResultsPage.jsx
+
+const handleGenerateReports = async (e) => {
+    e.preventDefault();
+    if (!window.confirm(`Are you sure you want to generate all user reports for ${selectedMonth}? This will overwrite any existing drafts for this period.`)) {
+        return;
+    }
+
+    setIsSavingSummary(true);
+    setSummaryMessage({ type: '', text: '' });
+    try {
+        const monthDate = new Date(selectedMonth + '-01');
+        const formattedMonth = monthDate.toISOString().split('T')[0];
+        
+        const payload = { 
+            vaultId: selectedVaultId, 
+            month: formattedMonth, 
+            pnlPercentage: monthlyPerf.pnlPercentage,
+            notes: monthlyPerf.notes
+        };
+
+        // Call our NEW endpoint
+        const response = await api.post('/admin/reports/generate-monthly-drafts', payload);
+        
+        setSummaryMessage({ type: 'success', text: response.data.message });
+    } catch (err) {
+        setSummaryMessage({ type: 'error', text: err.response?.data?.error || 'Failed to generate reports.' });
+    } finally {
+        setIsSavingSummary(false);
+    }
+};
 
     const handleLogTrade = async (e) => {
         e.preventDefault();
@@ -144,9 +159,9 @@ const DeskResultsPage = () => {
 
                 {/* --- Monthly Summary Section --- */}
                 <div className="admin-actions-card">
-                    <h3>Monthly Summary</h3>
-                    <p>Record the final, official P&L percentage for the selected vault and month. This is the source of truth for all user reports.</p>
-                    <form onSubmit={handleSaveSummary} className="admin-form">
+                    <h3>Monthly Summary & Report Generation</h3>
+                    <p>Record the final, official P&L percentage. This will automatically generate a draft report for every active user in the vault for that month.</p>
+                    <form onSubmit={handleGenerateReports} className="admin-form">
                         <div className="form-group">
                             <label htmlFor="perf-pnl">Performance Percentage (e.g., 5.5 or -2.1)</label>
                             <input id="perf-pnl" type="number" step="any" value={monthlyPerf.pnlPercentage} onChange={(e) => setMonthlyPerf({...monthlyPerf, pnlPercentage: e.target.value})} required />
@@ -155,10 +170,22 @@ const DeskResultsPage = () => {
                             <label htmlFor="perf-notes">Notes / Commentary (Optional)</label>
                             <textarea id="perf-notes" value={monthlyPerf.notes} onChange={(e) => setMonthlyPerf({...monthlyPerf, notes: e.target.value})} rows="3"></textarea>
                         </div>
-                        <button type="submit" className="btn-primary" disabled={isSavingSummary}>{isSavingSummary ? 'Saving...' : 'Save Monthly Summary'}</button>
-                    </form>
-                    {summaryMessage.text && (<p className={`admin-message ${summaryMessage.type}`}>{summaryMessage.text}</p>)}
+                        <button type="submit" className="btn-primary" disabled={isSavingSummary || !selectedMonth || !monthlyPerf.pnlPercentage}>
+            {isSavingSummary ? 'Generating...' : 'Save & Generate Draft Reports'}
+        </button>
+    </form>
+    {summaryMessage.text && (
+                        <div className={`admin-message ${summaryMessage.type}`}>
+                            <p>{summaryMessage.text}</p>
+                            {summaryMessage.type === 'success' && (
+                                <Link to="/admin/reports/review" className="btn-secondary btn-sm" style={{ marginTop: '1rem' }}>
+                                    Go to Review & Publish →
+                                </Link>
+                            )}
+                        </div>   
+                    )}
                 </div>
+    
 
                 {/* --- Event Logging Forms --- */}
                 <div className="admin-grid">

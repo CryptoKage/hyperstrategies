@@ -6,11 +6,11 @@ import Layout from '../../components/Layout';
 import api from '../../api/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
-// This is the read-only preview component for the right-hand column
 const ReportPreview = ({ reportData }) => {
     if (!reportData) return null;
     
-    const formatDate = (dateString) => new Date(dateString).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    const { summary } = reportData;
+    const formatDate = (dateString) => new Date(dateString + 'T00:00:00Z').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' });
 
     return (
         <div className="report-preview">
@@ -21,28 +21,33 @@ const ReportPreview = ({ reportData }) => {
                 <p>{reportData.openingRemarks}</p>
             </div>
             
-            <div className="report-preview-section">
-                <p>You deposited a total of <strong>{reportData.summary.totalDeposits.toFixed(2)} USDC</strong>, which corresponds to <strong>{reportData.summary.totalTradable.toFixed(2)} USDC</strong> in tradable capital.</p>
-            </div>
-
-            {reportData.events.map((event, index) => (
-                <div key={index} className="report-preview-section event-block">
-                    <h4>{event.index}. {event.title} <span className="event-date">{event.dateRange}</span></h4>
-                    {event.type === 'ALLOCATION' && (
-                        <>
-                            <p className="event-calculation">{event.calculationString}</p>
-                            <div className="event-details"><span>Tradable Capital:</span> <span>{event.tradableCapital.toFixed(2)} USDC</span></div>
-                            <div className="event-details"><span>Position Open:</span> <span className={event.unrealizedPnl >= 0 ? 'text-positive' : 'text-negative'}>~ {event.unrealizedPnl.toFixed(2)} USDC</span></div>
-                        </>
-                    )}
-                    {event.type === 'MANUAL_PNL' && (
-                        <div className="event-details"><span>{event.label}:</span> <span className={event.amount >= 0 ? 'text-positive' : 'text-negative'}>{event.amount >= 0 ? '+' : ''}{event.amount.toFixed(2)} USDC</span></div>
-                    )}
+            <div className="report-preview-section summary-grid">
+                <div className="summary-item">
+                    <span>Starting Capital (as of {formatDate(reportData.startDate)})</span>
+                    <span>{summary.startingCapital.toFixed(2)} USDC</span>
                 </div>
-            ))}
-            
-            <div className="report-preview-section final-summary">
-                <p>Your tradable capital (as of {formatDate(reportData.endDate)}) is: <strong>~ {reportData.summary.endingCapital.toFixed(2)} USDC</strong></p>
+                <div className="summary-item">
+                    <span>Performance ({summary.pnlPercentage >= 0 ? '+' : ''}{summary.pnlPercentage}%)</span>
+                    <span className={summary.pnlAmount >= 0 ? 'text-positive' : 'text-negative'}>
+                        {summary.pnlAmount >= 0 ? '+' : ''} {summary.pnlAmount.toFixed(2)} USDC
+                    </span>
+                </div>
+                {summary.periodDeposits > 0 && (
+                    <div className="summary-item">
+                        <span>Deposits this period</span>
+                        <span>+ {summary.periodDeposits.toFixed(2)} USDC</span>
+                    </div>
+                )}
+                {summary.periodWithdrawals > 0 && (
+                     <div className="summary-item">
+                        <span>Withdrawals this period</span>
+                        <span>- {summary.periodWithdrawals.toFixed(2)} USDC</span>
+                    </div>
+                )}
+                <div className="summary-item total">
+                    <span>Ending Capital (as of {formatDate(reportData.endDate)})</span>
+                    <span>{summary.endingCapital.toFixed(2)} USDC</span>
+                </div>
             </div>
             
             <div className="report-preview-section">
