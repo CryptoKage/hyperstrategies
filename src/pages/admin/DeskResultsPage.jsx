@@ -229,36 +229,36 @@ const handleGenerateReports = async (e) => {
                         <th className="amount">Value / P&L (USD)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {supportingEvents.length > 0 ? supportingEvents.map(event => (
-                        <tr key={`${event.type}-${event.id}`}>
-                            <td>{new Date(event.event_date).toLocaleString()}</td>
-                            <td>
-                                <span className={`status-badge status-${event.type.toLowerCase()}`}>
-                                    {event.type.replace(/_/g, ' ')}
-                                </span>
-                            </td>
-                            <td>
-                                {(() => {
-                                    switch (event.type) {
-                                        case 'DEPOSIT':
-                                            return `User '${event.username}' deposited ${event.total_deposit_amount.toFixed(2)} (Net: ${event.tradable_capital.toFixed(2)})`;
-                                        case 'TRADE':
-                                            return `${event.status} ${event.direction} ${event.quantity} ${event.asset_symbol} @ ${event.entry_price}`;
-                                        default: // For AIRDROP_RECEIVED, etc.
-                                            return event.description;
-                                    }
-                                })()}
-                            </td>
-                            <td className={`amount ${ (event.pnl_usd || event.value_usd || 0) >= 0 ? 'text-positive' : 'text-negative'}`}>
-                                { event.type === 'DEPOSIT' ? `+${event.total_deposit_amount.toFixed(2)}`
-                                : (event.pnl_usd !== null && event.pnl_usd !== undefined) ? event.pnl_usd.toFixed(2)
-                                : (event.value_usd !== null && event.value_usd !== undefined) ? event.value_usd.toFixed(2)
-                                : 'N/A'}
-                            </td>
-                        </tr>
-                    )) : <tr><td colSpan="4" style={{textAlign: 'center'}}>No events found for this period.</td></tr>}
-                </tbody>
+      <tbody>
+    {supportingEvents.length > 0 ? supportingEvents.map(event => (
+        <tr key={`${event.type}-${event.id}`}>
+            <td>{new Date(event.event_date).toLocaleString()}</td>
+            <td>
+                <span className={`status-badge status-${event.type.toLowerCase()}`}>
+                    {event.type.replace(/_/g, ' ')}
+                </span>
+            </td>
+            <td>
+                {(() => {
+                    switch (event.type) {
+                        case 'DEPOSIT':
+                            return `User '${event.username}' deposited ${parseFloat(event.total_deposit_amount).toFixed(2)} (Net: ${parseFloat(event.tradable_capital).toFixed(2)})`;
+                        case 'TRADE':
+                            return `${event.status} ${event.direction} ${event.quantity} ${event.asset_symbol} @ ${event.entry_price}`;
+                        default: // For AIRDROP_RECEIVED, etc.
+                            return event.description;
+                    }
+                })()}
+            </td>
+            <td className={`amount ${ (parseFloat(event.pnl_usd || event.value_usd || 0)) >= 0 ? 'text-positive' : 'text-negative'}`}>
+                { event.type === 'DEPOSIT' ? `+${parseFloat(event.total_deposit_amount).toFixed(2)}`
+                : (event.pnl_usd !== null && event.pnl_usd !== undefined) ? parseFloat(event.pnl_usd).toFixed(2)
+                : (event.value_usd !== null && event.value_usd !== undefined) ? parseFloat(event.value_usd).toFixed(2)
+                : 'N/A'}
+            </td>
+        </tr>
+    )) : <tr><td colSpan="4" style={{textAlign: 'center'}}>No events found for this period.</td></tr>}
+</tbody>
             </table>
         </div>
     }
