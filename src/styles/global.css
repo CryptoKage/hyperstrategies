@@ -1458,10 +1458,160 @@ button {
 .profile-journey__actions {
   margin-top: auto;
 }
-.profile-overview-grid {
+.profile-tabs {
+  margin-top: 64px;
+}
+
+.profile-tabs__header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.profile-tabs__header h2 {
+  margin-bottom: 8px;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.profile-tabs__header p {
+  margin: 0 auto;
+  max-width: 640px;
+  color: var(--color-text-secondary);
+}
+
+.profile-tabs__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.profile-tabs__trigger {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.profile-tabs__trigger:hover,
+.profile-tabs__trigger:focus-visible {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  outline: none;
+}
+
+.profile-tabs__trigger--active {
+  background: rgba(99, 207, 255, 0.16);
+  border-color: rgba(99, 207, 255, 0.5);
+  color: var(--color-primary);
+  box-shadow: 0 6px 16px rgba(99, 207, 255, 0.18);
+}
+
+.profile-tabs__panel {
+  background: linear-gradient(180deg, rgba(9, 16, 28, 0.6) 0%, rgba(9, 16, 28, 0.3) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 32px;
+}
+
+.profile-tab-grid {
   display: grid;
   gap: 24px;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.profile-card--account .account-details-list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-details-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 12px;
+}
+
+.account-details-row dt {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.account-details-row dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.account-details-caption {
+  margin-top: 16px;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.referral-card-body {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.referral-card-column {
+  flex: 1 1 260px;
+  min-width: 240px;
+}
+
+.referral-card-column--qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.referral-qr-wrapper {
+  background: rgba(9, 16, 28, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  width: 100%;
+  max-width: 220px;
+}
+
+.referral-qr-placeholder {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.referral-qr-code {
+  width: 160px !important;
+  height: 160px !important;
+}
+
+.referral-qr-caption {
+  margin-top: 12px;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+}
+
+.profile-card--resources {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-card--resources .profile-card__actions {
+  justify-content: flex-start;
 }
 .profile-card--spotlight {
   background: linear-gradient(135deg, rgba(99, 207, 255, 0.1) 0%, rgba(99, 207, 255, 0) 100%);
@@ -1525,6 +1675,22 @@ textarea.input-field { resize: vertical; }
   }
   .profile-journey__grid {
     grid-template-columns: 1fr;
+  }
+  .profile-tabs {
+    margin-top: 48px;
+  }
+  .profile-tabs__header {
+    text-align: left;
+  }
+  .profile-tabs__header p {
+    margin: 0;
+  }
+  .profile-tabs__list {
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .profile-tabs__panel {
+    padding: 20px;
   }
 }
 
