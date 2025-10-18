@@ -28,7 +28,7 @@ const OAuthSuccess = () => {
       
       // Once the auth state is updated, we can safely navigate to the dashboard.
       // The `replace: true` option prevents the user from clicking "back" to this page.
-      navigate('/dashboard', { replace: true });
+      window.location.replace(`https://app.hyper-strategies.com/dashboard`);
     };
 
     verifyLogin();
