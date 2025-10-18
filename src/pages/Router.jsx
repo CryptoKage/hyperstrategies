@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import useDomainRedirects from '../hooks/useDomainRedirects'; // The new import
 
 // --- Page Components ---
 import Home from './Home';
@@ -46,6 +47,9 @@ import AdminRoute from '../components/AdminRoute';
 import TierRoute from '../components/TierRoute';
 
 const Router = () => {
+  // This hook now runs on every route change, handling domain logic automatically.
+  useDomainRedirects();
+
   return (
     <Routes>
       {/* --- Publicly Accessible Routes --- */}
@@ -59,11 +63,11 @@ const Router = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} /> 
       <Route path="/reset-password" element={<ResetPassword />} /> 
 
-      {/* --- Guest-Only Routes --- */}
+      {/* --- Guest-Only Routes (primarily for app.domain) --- */}
       <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
       <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
       
-      {/* --- Standard Protected Routes --- */}
+      {/* --- Standard Protected Routes (will be forced to app.domain) --- */}
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
@@ -76,38 +80,17 @@ const Router = () => {
       <Route path="/shop" element={<ShopPage />} />
           
       {/* --- ADMIN-ONLY Protected Routes --- */}
-      {/* --- ANNOTATION --- I've standardized the main admin route to just /admin for simplicity */}
-      <Route 
-        path="/admin" 
-        element={<AdminRoute><AdminDashboard /></AdminRoute>} 
-      />
-      {/* --- NEW --- This is the new route for the user detail page */}
-      <Route
-        path="/admin/user/:userId"
-        element={<AdminRoute><UserDetailPage /></AdminRoute>}
-      />
-      <Route
-        path="/admin/financials"  
-        element={<AdminRoute><FinancialsPage /></AdminRoute>}
-      />
-      <Route  
-        path="/admin/treasury"
-        element={<AdminRoute><TreasuryPage /></AdminRoute>}
-      />
-      <Route
-        path="/admin/vaults"
-        element={<AdminRoute><VaultManagementPage /></AdminRoute>}
-      />
-      <Route
-            path="/admin/pins"
-            element={<AdminRoute><PinManagementPage /></AdminRoute>}
-      />
+      <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+      <Route path="/admin/user/:userId" element={<AdminRoute><UserDetailPage /></AdminRoute>} />
+      <Route path="/admin/financials" element={<AdminRoute><FinancialsPage /></AdminRoute>} />
+      <Route path="/admin/treasury" element={<AdminRoute><TreasuryPage /></AdminRoute>} />
+      <Route path="/admin/vaults" element={<AdminRoute><VaultManagementPage /></AdminRoute>} />
+      <Route path="/admin/pins" element={<AdminRoute><PinManagementPage /></AdminRoute>} />
       <Route path="/admin/xp-awards" element={<AdminRoute><XPAwardsPage /></AdminRoute>} />
-       <Route path="/admin/animations" element={<AdminRoute><AnimationControlsPage /></AdminRoute>} />
-       <Route  path="/admin/reports/builder"  element={<AdminRoute><ReportBuilderPage /></AdminRoute>}/>
-       <Route path="/admin/desk-results" element={<AdminRoute><DeskResultsPage /></AdminRoute>} />
-       <Route path="/admin/farming-pipeline" element={<AdminRoute><FarmingPipelinePage /></AdminRoute>} />
-       
+      <Route path="/admin/animations" element={<AdminRoute><AnimationControlsPage /></AdminRoute>} />
+      <Route path="/admin/reports/builder" element={<AdminRoute><ReportBuilderPage /></AdminRoute>} />
+      <Route path="/admin/desk-results" element={<AdminRoute><DeskResultsPage /></AdminRoute>} />
+      <Route path="/admin/farming-pipeline" element={<AdminRoute><FarmingPipelinePage /></AdminRoute>} />
     </Routes>
   );
 };
