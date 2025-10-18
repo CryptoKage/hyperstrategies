@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import useDomainRedirects from '../hooks/useDomainRedirects'; // The new import
 
 // --- Page Components ---
 import Home from './Home';
@@ -47,8 +46,7 @@ import AdminRoute from '../components/AdminRoute';
 import TierRoute from '../components/TierRoute';
 
 const Router = () => {
-  // This hook now runs on every route change, handling domain logic automatically.
-  useDomainRedirects();
+
 
   return (
     <Routes>
