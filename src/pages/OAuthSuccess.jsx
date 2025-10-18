@@ -18,17 +18,8 @@ const OAuthSuccess = () => {
     }
 
     const verifyLogin = async () => {
-      // The cookie was set by the server on the previous step.
-      // Now, we tell our AuthContext to re-check its status.
-      // `checkAuthStatus` will call the `/refresh-token` endpoint, which will succeed
-      // because the browser will send the new cookie. The context will then be updated with the user's data.
-      if (checkAuthStatus) {
-        await checkAuthStatus();
-      }
-      
-      // Once the auth state is updated, we can safely navigate to the dashboard.
-      // The `replace: true` option prevents the user from clicking "back" to this page.
-      window.location.replace(`https://app.hyper-strategies.com/dashboard`);
+      if (checkAuthStatus) { await checkAuthStatus(); }
+    navigate('/dashboard', { replace: true });
     };
 
     verifyLogin();

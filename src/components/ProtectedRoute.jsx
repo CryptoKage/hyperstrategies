@@ -1,14 +1,21 @@
-// src/components/ProtectedRoute.jsx
+// src/components/ProtectedRoute.jsx - SIMPLIFIED
+
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LoadingSpinner from './LoadingSpinner'; // Optional: show a spinner
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
-  if (loading) return null; // ✅ wait until user check is done
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
-  if (!user) {
+  // If not authenticated, redirect to the login page.
+  // This redirect is safe because it happens within the app domain
+  // after the useDomainRedirects hook has already done its job.
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

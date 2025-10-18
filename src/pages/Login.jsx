@@ -54,9 +54,7 @@ const Login = () => {
      
         if (response.data.user) {
             login(response.data.user); 
-
-             window.location.replace(`https://app.hyper-strategies.com/dashboard`);
-             
+navigate('/dashboard');
         } else {
              setError(t('login_page.error_failed'));
         }
