@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
@@ -7,6 +7,7 @@ import api from '../api/api';
 import XpHistoryList from '../components/XpHistoryList';
 import { createPkcePair } from '../utils/pkce';
 import TelegramLoginButton from '../components/TelegramLoginButton';
+import { QRCodeCanvas } from 'qrcode.react';
 
 const Profile = () => {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ const Profile = () => {
   const [isUpdatingReferral, setIsUpdatingReferral] = useState(false);
   const [referralUpdateMessage, setReferralUpdateMessage] = useState({ type: '', text: '' });
   const [copySuccessMessage, setCopySuccessMessage] = useState('');
+  const [activeTab, setActiveTab] = useState('overview');
 
   const fetchProfile = useCallback(async () => {
     try {
@@ -80,13 +82,22 @@ const Profile = () => {
   };
 
   const handleCopyLink = () => {
-    const referralLink = `https://www.hyper-strategies.com/register?ref=${profileData?.referral_code}`;
+    if (!referralLink) {
+      return;
+    }
     navigator.clipboard.writeText(referralLink);
     setCopySuccessMessage(t('profile_page.copied_button'));
     setTimeout(() => {
       setCopySuccessMessage(t('profile_page.copy_link_button'));
     }, 2000);
   };
+
+  const referralLink = useMemo(() => {
+    if (!profileData?.referral_code) {
+      return '';
+    }
+    return `https://www.hyper-strategies.com/register?ref=${profileData.referral_code}`;
+  }, [profileData?.referral_code]);
 
   const handleConnectX = async () => {
     try {
@@ -138,6 +149,238 @@ const Profile = () => {
   }
 
   const dailyXpRate = (profileData?.total_staked_capital || 0) / 300;
+
+  const renderTabPanel = () => {
+    switch (activeTab) {
+      case 'overview':
+        return (
+          <div className="profile-tab-grid" role="tabpanel" id="profile-tab-overview" aria-labelledby="profile-tab-button-overview">
+            <article className="profile-card profile-card--spotlight" aria-labelledby="profile-stats-heading">
+              <h3 id="profile-stats-heading">{t('profile_page.stats_referrals_title')}</h3>
+              <div className="stat-display tier-display">
+                <span className="stat-label">{t('profile_page.account_tier_label')}</span>
+                <span className="stat-value-large tier-value">
+                  {t('profile_page.tier_prefix', { tier: profileData.account_tier })}
+                </span>
+              </div>
+              <div className="stat-display">
+                <span className="stat-label">{t('profile_page.xp_label')}</span>
+                <span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span>
+              </div>
+              <div className="stat-display">
+                <span className="stat-label">{t('profile_page.xp_rate_label')}</span>
+                <span className="stat-value-large xp-rate-value">
+                  +{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span>
+                </span>
+              </div>
+
+              <div className="profile-card__actions">
+                <Link to="/xpleaderboard" className="btn-secondary btn-sm">{t('profile_page.view_leaderboard')}</Link>
+                <Link to="/rewards" className="btn-primary">{t('profile_page.claim_xp_button')}</Link>
+              </div>
+            </article>
+
+            <article className="profile-card profile-card--account" aria-labelledby="profile-account-heading">
+              <h3 id="profile-account-heading">{t('profile_page.account_details_title', 'Account details')}</h3>
+              <dl className="account-details-list">
+                <div className="account-details-row">
+                  <dt>{t('profile_page.username_label')}</dt>
+                  <dd>{profileData.username || t('profile_page.value_missing', 'Not set')}</dd>
+                </div>
+                <div className="account-details-row">
+                  <dt>{t('profile_page.email_label', 'Email')}</dt>
+                  <dd>{profileData.email || t('profile_page.value_missing', 'Not set')}</dd>
+                </div>
+                <div className="account-details-row">
+                  <dt>{t('profile_page.referral_code_label')}</dt>
+                  <dd>{profileData.referral_code || t('profile_page.value_missing', 'Not set')}</dd>
+                </div>
+              </dl>
+              <p className="account-details-caption">
+                {t(
+                  'profile_page.account_details_caption',
+                  'Keep this information up-to-date so collaborators always recognise you across Hyper Strategies.'
+                )}
+              </p>
+            </article>
+          </div>
+        );
+      case 'referrals':
+        return (
+          <div className="profile-tab-grid" role="tabpanel" id="profile-tab-referrals" aria-labelledby="profile-tab-button-referrals">
+            <article className="profile-card profile-card--referral" aria-labelledby="profile-referral-heading">
+              <h3 id="profile-referral-heading">{t('profile_page.referral_title', 'Referral toolkit')}</h3>
+              <p className="form-description">
+                {t(
+                  'profile_page.referral_copy',
+                  'Share your personalised link and customise your invite code to match your brand.'
+                )}
+              </p>
+
+              <div className="referral-card-body">
+                <div className="referral-card-column">
+                  <div className="stat-display">
+                    <span className="stat-label">{t('profile_page.referral_code_label')}</span>
+                    <span className="referral-code">{profileData.referral_code}</span>
+                  </div>
+                  <button onClick={handleCopyLink} className="btn-secondary" disabled={!referralLink}>
+                    {copySuccessMessage}
+                  </button>
+                  <form onSubmit={handleUpdateReferralCode} className="referral-update-form">
+                    <div className="referral-input-group">
+                      <span className="referral-input-prefix">HS-</span>
+                      <input
+                        type="text"
+                        className="referral-update-input"
+                        placeholder={t('profile_page.placeholder_your_code')}
+                        value={customReferralInput}
+                        onChange={(event) => setCustomReferralInput(event.target.value)}
+                        disabled={isUpdatingReferral}
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="btn-primary"
+                      disabled={isUpdatingReferral || !customReferralInput}
+                    >
+                      {isUpdatingReferral
+                        ? t('profile_page.saving_button')
+                        : t('profile_page.save_code_button')}
+                    </button>
+                  </form>
+                  {referralUpdateMessage.text && (
+                    <p className={`referral-message ${referralUpdateMessage.type}`}>
+                      {referralUpdateMessage.text}
+                    </p>
+                  )}
+                </div>
+                <div className="referral-card-column referral-card-column--qr">
+                  <div className="referral-qr-wrapper" aria-live="polite">
+                    {referralLink ? (
+                      <QRCodeCanvas value={referralLink} size={160} includeMargin className="referral-qr-code" />
+                    ) : (
+                      <div className="referral-qr-placeholder">
+                        <span>{t('profile_page.referral_qr_placeholder', 'Add a code to generate your QR link')}</span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="referral-qr-caption">
+                    {t(
+                      'profile_page.referral_qr_caption',
+                      'Download or screenshot the QR code to share your invite at events and meetups.'
+                    )}
+                  </p>
+                </div>
+              </div>
+            </article>
+          </div>
+        );
+      case 'connections':
+        return (
+          <div className="profile-tab-grid" role="tabpanel" id="profile-tab-connections" aria-labelledby="profile-tab-button-connections">
+            <article
+              className="profile-card profile-card--connections"
+              aria-labelledby="profile-connections-heading"
+            >
+              <h3 id="profile-connections-heading">{t('profile_page.connect_title')}</h3>
+              <p className="form-description">
+                {t(
+                  'profile_page.connect_description',
+                  'Link social accounts so we can deliver alerts, announcements, and bonus missions.'
+                )}
+              </p>
+              <div className="connection-buttons-container">
+                <button className="btn-secondary connection-button" onClick={handleConnectX}>
+                  <span>{t('profile_page.connect_x_button')}</span>
+                </button>
+                <div className="telegram-button-wrapper">
+                  <TelegramLoginButton onAuth={handleTelegramAuth} />
+                </div>
+                <button className="btn-secondary connection-button" disabled><span>EVM Wallet (Coming Soon)</span></button>
+                <button className="btn-secondary connection-button" disabled><span>Solana Wallet (Coming Soon)</span></button>
+
+              </div>
+            </article>
+          </div>
+        );
+      case 'activity':
+        return (
+          <div className="profile-tab-grid" role="tabpanel" id="profile-tab-activity" aria-labelledby="profile-tab-button-activity">
+            <article className="profile-card profile-card--history" aria-label={t('profile_page.history_heading', 'Recent XP activity')}>
+              <XpHistoryList />
+            </article>
+          </div>
+        );
+      case 'resources':
+        return (
+          <div className="profile-tab-grid" role="tabpanel" id="profile-tab-resources" aria-labelledby="profile-tab-button-resources">
+            <article className="profile-card profile-card--syndicate" aria-labelledby="profile-syndicate-heading">
+              <h3 id="profile-syndicate-heading">{t('profile_page.syndicate_title')}</h3>
+              <p className="form-description">{t('profile_page.syndicate_description')}</p>
+              <a
+                href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+              >
+                {t('profile_page.learn_more_button')}
+              </a>
+            </article>
+            <article className="profile-card profile-card--resources" aria-labelledby="profile-resources-heading">
+              <h3 id="profile-resources-heading">{t('profile_page.resources_heading', 'Explore more actions')}</h3>
+              <p>
+                {t(
+                  'profile_page.resources_description',
+                  'Jump into seasonal drops, revisit the FAQ, or explore the rewards centre whenever you need inspiration.'
+                )}
+              </p>
+              <div className="profile-card__actions">
+                <Link to="/rewards" className="btn-primary btn-sm">{t('profile_page.claim_xp_button')}</Link>
+                <Link to="/faq" className="btn-secondary btn-sm">{t('profile_page.resources_faq', 'Open FAQ')}</Link>
+              </div>
+            </article>
+          </div>
+        );
+      case 'settings':
+        return (
+          <div className="profile-tab-grid" role="tabpanel" id="profile-tab-settings" aria-labelledby="profile-tab-button-settings">
+            <article
+              id="profile-settings"
+              className="profile-card profile-card--form"
+              aria-labelledby="profile-settings-heading"
+            >
+              <h3 id="profile-settings-heading">{t('profile_page.edit_details_title')}</h3>
+              <p className="form-description">
+                {t(
+                  'profile_page.profile_form_copy',
+                  'Your username is visible in leaderboards and on the upcoming social layers.'
+                )}
+              </p>
+              <form onSubmit={handleProfileUpdate} className="profile-form">
+                <div className="form-group">
+                  <label htmlFor="username">{t('profile_page.username_label')}</label>
+                  <input
+                    id="username"
+                    type="text"
+                    className="input-field"
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
+                  />
+                </div>
+                <button type="submit" className="btn-primary">
+                  {t('profile_page.save_changes_button')}
+                </button>
+                {editMessage.text && (
+                  <p className={`edit-message ${editMessage.type}`}>{editMessage.text}</p>
+                )}
+              </form>
+            </article>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <Layout>
@@ -212,151 +455,85 @@ const Profile = () => {
           </div>
         </section>
 
-        <section className="profile-overview-grid" aria-labelledby="profile-overview-title">
-          <h2 id="profile-overview-title" className="sr-only">
-            {t('profile_page.overview_title', 'Account overview')}
-          </h2>
-          <article className="profile-card profile-card--spotlight" aria-labelledby="profile-stats-heading">
-            <h3 id="profile-stats-heading">{t('profile_page.stats_referrals_title')}</h3>
-            <div className="stat-display tier-display">
-              <span className="stat-label">{t('profile_page.account_tier_label')}</span>
-              <span className="stat-value-large tier-value">
-                {t('profile_page.tier_prefix', { tier: profileData.account_tier })}
-              </span>
-            </div>
-            <div className="stat-display">
-              <span className="stat-label">{t('profile_page.xp_label')}</span>
-              <span className="stat-value-large">{(parseFloat(profileData.xp) || 0).toFixed(2)} XP</span>
-            </div>
-            <div className="stat-display">
-              <span className="stat-label">{t('profile_page.xp_rate_label')}</span>
-              <span className="stat-value-large xp-rate-value">
-                +{dailyXpRate.toFixed(2)}<span className="xp-rate-per-day"> / {t('profile_page.xp_rate_per_day')}</span>
-              </span>
-             </div>
-            
-            <div className="profile-card__actions">
-              <Link to="/xpleaderboard" className="btn-secondary btn-sm">{t('profile_page.view_leaderboard')}</Link>
-              <Link to="/rewards" className="btn-primary">{t('profile_page.claim_xp_button')}</Link>
-            </div>
-          </article>
-
-          <article className="profile-card profile-card--referral" aria-labelledby="profile-referral-heading">
-            <h3 id="profile-referral-heading">{t('profile_page.referral_title', 'Referral toolkit')}</h3>
-            <p className="form-description">
+        <section className="profile-tabs" aria-labelledby="profile-tabs-title">
+          <div className="profile-tabs__header">
+            <h2 id="profile-tabs-title">{t('profile_page.overview_title', 'Account overview')}</h2>
+            <p>
               {t(
-                'profile_page.referral_copy',
-                'Share your personalised link and customise your invite code to match your brand.'
+                'profile_page.overview_caption',
+                'Navigate between your essentials, referral hub, account connections, and recent activity without losing context.'
               )}
             </p>
-            <div className="stat-display">
-              <span className="stat-label">{t('profile_page.referral_code_label')}</span>
-              <span className="referral-code">{profileData.referral_code}</span>
-            </div>
-            <button onClick={handleCopyLink} className="btn-secondary">
-              {copySuccessMessage}
-            </button>
-            <form onSubmit={handleUpdateReferralCode} className="referral-update-form">
-              <div className="referral-input-group">
-                <span className="referral-input-prefix">HS-</span>
-                <input
-                  type="text"
-                  className="referral-update-input"
-                  placeholder={t('profile_page.placeholder_your_code')}
-                  value={customReferralInput}
-                  onChange={(event) => setCustomReferralInput(event.target.value)}
-                  disabled={isUpdatingReferral}
-                />
-              </div>
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={isUpdatingReferral || !customReferralInput}
-              >
-                {isUpdatingReferral
-                  ? t('profile_page.saving_button')
-                  : t('profile_page.save_code_button')}
-              </button>
-            </form>
-            {referralUpdateMessage.text && (
-              <p className={`referral-message ${referralUpdateMessage.type}`}>
-                {referralUpdateMessage.text}
-              </p>
-            )}
-          </article>
-
-          <article
-            className="profile-card profile-card--connections"
-            aria-labelledby="profile-connections-heading"
-          >
-            <h3 id="profile-connections-heading">{t('profile_page.connect_title')}</h3>
-            <p className="form-description">
-              {t(
-                'profile_page.connect_description',
-                'Link social accounts so we can deliver alerts, announcements, and bonus missions.'
-              )}
-            </p>
-            <div className="connection-buttons-container">
-              <button className="btn-secondary connection-button" onClick={handleConnectX}>
-                <span>{t('profile_page.connect_x_button')}</span>
-              </button>
-              <div className="telegram-button-wrapper">
-                <TelegramLoginButton onAuth={handleTelegramAuth} />
-              </div>
-                <button className="btn-secondary connection-button" disabled><span>EVM Wallet (Coming Soon)</span></button>
-              <button className="btn-secondary connection-button" disabled><span>Solana Wallet (Coming Soon)</span></button>
-              
-            </div>
-          </article>
-
-          <article
-            id="profile-settings"
-            className="profile-card profile-card--form"
-            aria-labelledby="profile-settings-heading"
-          >
-            <h3 id="profile-settings-heading">{t('profile_page.edit_details_title')}</h3>
-            <p className="form-description">
-              {t(
-                'profile_page.profile_form_copy',
-                'Your username is visible in leaderboards and on the upcoming social layers.'
-              )}
-            </p>
-            <form onSubmit={handleProfileUpdate} className="profile-form">
-              <div className="form-group">
-                <label htmlFor="username">{t('profile_page.username_label')}</label>
-                <input
-                  id="username"
-                  type="text"
-                  className="input-field"
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
-                />
-              </div>
-              <button type="submit" className="btn-primary">
-                {t('profile_page.save_changes_button')}
-              </button>
-              {editMessage.text && (
-                <p className={`edit-message ${editMessage.type}`}>{editMessage.text}</p>
-              )}
-            </form>
-          </article>
-
-          <article className="profile-card profile-card--syndicate" aria-labelledby="profile-syndicate-heading">
-            <h3 id="profile-syndicate-heading">{t('profile_page.syndicate_title')}</h3>
-            <p className="form-description">{t('profile_page.syndicate_description')}</p>
-            <a
-              href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary"
+          </div>
+          <div className="profile-tabs__list" role="tablist" aria-label={t('profile_page.tablist_label', 'Profile sections')}>
+            <button
+              id="profile-tab-button-overview"
+              className={`profile-tabs__trigger ${activeTab === 'overview' ? 'profile-tabs__trigger--active' : ''}`}
+              role="tab"
+              type="button"
+              aria-selected={activeTab === 'overview'}
+              aria-controls="profile-tab-overview"
+              onClick={() => setActiveTab('overview')}
             >
-              {t('profile_page.learn_more_button')}
-            </a>
-          </article>
-
-          <article className="profile-card profile-card--history" aria-label={t('profile_page.history_heading', 'Recent XP activity')}>
-            <XpHistoryList />
-          </article>
+              {t('profile_page.tab_overview', 'Overview')}
+            </button>
+            <button
+              id="profile-tab-button-referrals"
+              className={`profile-tabs__trigger ${activeTab === 'referrals' ? 'profile-tabs__trigger--active' : ''}`}
+              role="tab"
+              type="button"
+              aria-selected={activeTab === 'referrals'}
+              aria-controls="profile-tab-referrals"
+              onClick={() => setActiveTab('referrals')}
+            >
+              {t('profile_page.tab_referrals', 'Referral links')}
+            </button>
+            <button
+              id="profile-tab-button-settings"
+              className={`profile-tabs__trigger ${activeTab === 'settings' ? 'profile-tabs__trigger--active' : ''}`}
+              role="tab"
+              type="button"
+              aria-selected={activeTab === 'settings'}
+              aria-controls="profile-tab-settings"
+              onClick={() => setActiveTab('settings')}
+            >
+              {t('profile_page.tab_settings', 'Profile settings')}
+            </button>
+            <button
+              id="profile-tab-button-connections"
+              className={`profile-tabs__trigger ${activeTab === 'connections' ? 'profile-tabs__trigger--active' : ''}`}
+              role="tab"
+              type="button"
+              aria-selected={activeTab === 'connections'}
+              aria-controls="profile-tab-connections"
+              onClick={() => setActiveTab('connections')}
+            >
+              {t('profile_page.tab_connections', 'Connections')}
+            </button>
+            <button
+              id="profile-tab-button-activity"
+              className={`profile-tabs__trigger ${activeTab === 'activity' ? 'profile-tabs__trigger--active' : ''}`}
+              role="tab"
+              type="button"
+              aria-selected={activeTab === 'activity'}
+              aria-controls="profile-tab-activity"
+              onClick={() => setActiveTab('activity')}
+            >
+              {t('profile_page.tab_activity', 'Activity')}
+            </button>
+            <button
+              id="profile-tab-button-resources"
+              className={`profile-tabs__trigger ${activeTab === 'resources' ? 'profile-tabs__trigger--active' : ''}`}
+              role="tab"
+              type="button"
+              aria-selected={activeTab === 'resources'}
+              aria-controls="profile-tab-resources"
+              onClick={() => setActiveTab('resources')}
+            >
+              {t('profile_page.tab_resources', 'Resources')}
+            </button>
+          </div>
+          <div className="profile-tabs__panel">{renderTabPanel()}</div>
         </section>
       </div>
     </Layout>
