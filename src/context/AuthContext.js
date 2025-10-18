@@ -14,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   // Its job is to set the user state after a successful API login call.
   const login = (userData) => {
     setUser(userData);
+     window.location.replace(`https://${APP_DOMAIN}/dashboard`);
   };
 
   // Logout now calls the backend to clear the cookie.
