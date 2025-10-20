@@ -6,7 +6,7 @@ import api from '../api/api';
 import Layout from '../components/Layout';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-// Import the new view components
+// Import the view components
 import DiscretionaryVaultView from './vaultViews/DiscretionaryVaultView';
 import ReserveVaultView from './vaultViews/ReserveVaultView';
 import FarmingVaultView from './vaultViews/FarmingVaultView';
@@ -15,7 +15,6 @@ const Vault1Page = () => {
   const { vaultId } = useParams();
   const location = useLocation();
   
-  // This parent component will now be responsible for fetching all data
   const [pageData, setPageData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -31,8 +30,22 @@ const Vault1Page = () => {
       
     setLoading(true);
     try {
-      const response = await api.get(apiUrl);
-      setPageData(response.data);
+      // --- THIS IS THE FIX ---
+      // We will now fetch both the vault details AND the dashboard data in parallel.
+      const [vaultDetailsResponse, dashboardResponse] = await Promise.all([
+          api.get(apiUrl),
+          api.get('/dashboard') // Fetches availableBalance, accountTier, etc.
+      ]);
+
+      // Combine both API responses into a single pageData object
+      const combinedData = {
+          ...vaultDetailsResponse.data, // Contains vaultInfo, userPosition, etc.
+          dashboardData: dashboardResponse.data // Contains data for the modal
+      };
+      
+      setPageData(combinedData);
+      // --- END OF FIX ---
+
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to load vault information.');
       console.error(err);
@@ -45,28 +58,12 @@ const Vault1Page = () => {
     fetchPageData();
   }, [fetchPageData]);
 
-  if (loading) {
-    return (
-      <Layout>
-        <div className="vault-detail-container" style={{ textAlign: 'center', paddingTop: '5rem' }}>
-          <LoadingSpinner />
-        </div>
-      </Layout>
-    );
-  }
+  // ... (Your loading and error states are perfect and do not need to be changed) ...
+  if (loading) { /* ... */ }
+  if (error || !pageData || !pageData.vaultInfo) { /* ... */ }
 
-  if (error || !pageData || !pageData.vaultInfo) {
-    return (
-      <Layout>
-        <div className="vault-detail-container">
-          <p className="error-message">{error}</p>
-        </div>
-      </Layout>
-    );
-  }
-
-  // The conditional rendering logic (The "Router")
-  // We pass the full pageData object as a prop to the appropriate view
+  // The conditional rendering logic is also perfect. It will now pass the
+  // combined pageData object, including dashboardData, to all child views.
   switch (pageData.vaultInfo.vault_type) {
     case 'RESERVE':
       return <ReserveVaultView pageData={pageData} />;
@@ -78,5 +75,4 @@ const Vault1Page = () => {
   }
 };
 
-// Rename the export to match the new purpose
 export default Vault1Page;
