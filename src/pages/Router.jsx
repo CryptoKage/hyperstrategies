@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+import MetaPixelTracker from '../components/MetaPixelTracker'; 
 
 // --- Page Components ---
 import Home from './Home';
@@ -46,12 +47,11 @@ import AdminRoute from '../components/AdminRoute';
 import TierRoute from '../components/TierRoute';
 
 const Router = () => {
-
-
   return (
-    <Routes>
-      {/* --- Publicly Accessible Routes --- */}
-      <Route path="/" element={<Home />} />
+    <> 
+      <MetaPixelTracker />
+      <Routes>
+        <Route path="/" element={<Home />} />
       <Route path="/investor" element={<Investor />} />
       <Route path="/legal" element={<Legal />} />
       <Route path="/faq" element={<FAQ />} />
@@ -90,6 +90,7 @@ const Router = () => {
       <Route path="/admin/desk-results" element={<AdminRoute><DeskResultsPage /></AdminRoute>} />
       <Route path="/admin/farming-pipeline" element={<AdminRoute><FarmingPipelinePage /></AdminRoute>} />
     </Routes>
+     </> 
   );
 };
 
