@@ -90,8 +90,8 @@ const FarmingVaultView = ({ pageData }) => {
     const reaped = protocolsWithStatus.filter(p => p.status === 'REAPED');
 
     return (
-        <Layout>
-            <div className="vault-detail-container">
+        <>
+                    <div className="vault-detail-container">
                 <div className="vault-detail-header">
                     <h1>{vaultInfo.name}</h1>
                     <Link to="/dashboard" className="btn-secondary btn-sm">← {t('common.backToDashboard')}</Link>
@@ -143,7 +143,6 @@ const FarmingVaultView = ({ pageData }) => {
                 </div>
             </div>
 
-            {/* Modal now gets its data from the main pageData prop */}
             {dashboardData && (
                 <VaultModal
                     isOpen={isAllocateModalOpen}
@@ -152,9 +151,9 @@ const FarmingVaultView = ({ pageData }) => {
                     availableBalance={dashboardData.availableBalance}
                     userTier={dashboardData.accountTier}
                     onAllocationSuccess={() => window.location.reload()}
-                />
+             />
             )}
-        </Layout>
+        </>
     );
 };
 
