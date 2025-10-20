@@ -26,7 +26,7 @@ const DiscretionaryVaultView = ({ pageData }) => {
     const hasPrincipal = userPosition && userPosition.principal > 0;
     
     return (
-        <Layout>
+        <>
             <div className="vault-detail-container">
                 <div className="vault-detail-header">
                     <h1>{vaultInfo.name || t('vault.title')}</h1>
@@ -69,7 +69,7 @@ const DiscretionaryVaultView = ({ pageData }) => {
 </div> 
                 )}
             </div>
-        </Layout>
+        </>
     );
 };
 
