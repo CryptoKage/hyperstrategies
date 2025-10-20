@@ -20,10 +20,10 @@ const VaultTransferModal = ({ isOpen, onClose, sourcePosition, allVaults, onTran
 
   // Filter the list of possible destination vaults
   const destinationOptions = allVaults.filter(v => 
-    v.status === 'active' && 
-    v.vault_id !== sourcePosition?.vault_id &&
-    ['DISCRETIONARY', 'FARMING'].includes(v.vault_type) // Only allow transfers TO these types
-  );
+  v.is_user_investable && 
+  v.status === 'active' && 
+  v.vault_id !== sourcePosition?.vault_id
+);
 
   useEffect(() => {
     if (isOpen) {

@@ -58,6 +58,7 @@ const FarmingVaultView = ({ pageData }) => {
     const isInvested = userPosition && userPosition.principal > 0;
     const vaultTotalPrincipal = vaultStats?.totalPrincipal || 1;
     const userOwnershipPct = isInvested ? (userPosition.principal / vaultTotalPrincipal) * 100 : 0;
+    const canInvest = vaultInfo.is_user_investable && vaultInfo.status === 'active';
     
     // Fetch user's specific farming status when the component loads
     useEffect(() => {
@@ -100,9 +101,11 @@ const FarmingVaultView = ({ pageData }) => {
                 
                 {/* Simplified "Invest Now" button */}
                 <div className="vault-actions">
-                    <button className="btn-primary" onClick={() => setAllocateModalOpen(true)}>
-                        {isInvested ? 'Invest More' : 'Invest Now'}
-                    </button>
+        {canInvest && (
+            <button className="btn-primary" onClick={() => setAllocateModalOpen(true)}>
+                {isInvested ? 'Invest More' : 'Invest Now'}
+            </button>
+             )}
                     {isInvested && (
                          <button className="btn-secondary">Request Withdrawal</button> // Placeholder
                     )}

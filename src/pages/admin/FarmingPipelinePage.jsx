@@ -40,18 +40,26 @@ const FarmingPipelinePage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Fetch all vaults that are of type 'FARMING'
-    const fetchFarmingVaults = useCallback(async () => {
-        try {
-            const response = await api.get('/dashboard');
-            const farmingVaults = response.data.vaults.filter(v => v.vault_type === 'FARMING' && v.status === 'active');
-            setVaults(farmingVaults);
-            if (farmingVaults.length > 0) {
-                setSelectedVaultId(farmingVaults[0].vault_id);
-            }
-        } catch (err) {
-            setError('Could not fetch list of farming vaults.');
+   const fetchFarmingVaults = useCallback(async () => {
+    try {
+        // --- THIS IS THE FIX ---
+        // We now call our new, dedicated admin endpoint.
+        const response = await api.get('/admin/vaults/all');
+        
+        // We still filter for vault_type, but we no longer filter by status.
+        const farmingVaults = response.data.filter(v => v.vault_type === 'FARMING');
+        // --- END OF FIX ---
+
+        setVaults(farmingVaults);
+        if (farmingVaults.length > 0) {
+            // Default to the first one in the list
+            setSelectedVaultId(farmingVaults[0].vault_id);
         }
-    }, []);
+    } catch (err) {
+        setError('Could not fetch list of farming vaults.');
+        console.error(err);
+    }
+}, []);
 
     // Fetch the pipeline data for the selected vault
     const fetchPipeline = useCallback(async () => {
