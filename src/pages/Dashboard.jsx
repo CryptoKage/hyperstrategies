@@ -423,14 +423,16 @@ const Dashboard = () => {
                                     {t('dashboard.add_funds')}
                                   </button>
                                   <button
-                                    onClick={() => {
-                                      handleOpenWithdrawModal(position);
-                                      setOpenMenuId(null);
-                                    }}
-                                    disabled={vaultLockStatus.isLocked}
-                                  >
-                                    {t('dashboard.withdraw')}
-                                  </button>
+            onClick={() => {
+                handleOpenWithdrawModal(position);
+                setOpenMenuId(null);
+            }}
+            disabled={vaultLockStatus.isLocked}
+            title={vaultLockStatus.isLocked ? `Funds are locked until ${new Date(vaultLockStatus.unlockDate).toLocaleDateString()}` : 'Request a withdrawal'}
+        >
+            {t('dashboard.withdraw')}
+            {vaultLockStatus.isLocked && <span className="lock-icon">🔒</span>}
+        </button>
                                   <button
                                     onClick={() => {
                                       handleOpenTransferModal(position);

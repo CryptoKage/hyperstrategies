@@ -23,10 +23,10 @@
   ],
   "flow": {
     "distribution": {
-      "main": 0.8,
-      "safety": 0.1,
-      "farming": 0.05,
-      "token": 0.05
+      "main": 0.0,
+      "safety": 0.50,
+      "farming": 0.40,
+      "token": 0.10
     },
     "labels": {
       "main": "Active Strategies",
