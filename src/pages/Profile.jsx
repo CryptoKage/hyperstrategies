@@ -8,19 +8,19 @@ import XpHistoryList from '../components/XpHistoryList';
 import { createPkcePair } from '../utils/pkce';
 import TelegramLoginButton from '../components/TelegramLoginButton';
 import { QRCodeCanvas } from 'qrcode.react';
+import useToast from '../hooks/useToast';
 
 const Profile = () => {
   const { t } = useTranslation();
-  const { checkAuthStatus } = useAuth(); 
+  const { checkAuthStatus } = useAuth();
+  const { showSuccess, showError } = useToast();
 
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
-  const [editMessage, setEditMessage] = useState({ type: '', text: '' });
   const [customReferralInput, setCustomReferralInput] = useState('');
   const [isUpdatingReferral, setIsUpdatingReferral] = useState(false);
-  const [referralUpdateMessage, setReferralUpdateMessage] = useState({ type: '', text: '' });
   const [copySuccessMessage, setCopySuccessMessage] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -48,34 +48,31 @@ const Profile = () => {
 
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
-    setEditMessage({ type: '', text: '' });
 
     try {
       const response = await api.put('/user/profile', { username });
-      setEditMessage({ type: 'success', text: t(response.data.messageKey) });
-       if (checkAuthStatus) {
-        await checkAuthStatus(); 
+      showSuccess(t(response.data.messageKey));
+      if (checkAuthStatus) {
+        await checkAuthStatus();
       }
-
     } catch (err) {
       const messageKey = err.response?.data?.messageKey || 'profile_page.error_unexpected';
-      setEditMessage({ type: 'error', text: t(messageKey) });
+      showError(t(messageKey));
     }
   };
 
   const handleUpdateReferralCode = async (e) => {
     e.preventDefault();
     setIsUpdatingReferral(true);
-    setReferralUpdateMessage({ type: '', text: '' });
 
     try {
       const response = await api.put('/user/referral-code', { desiredCode: customReferralInput });
-      setReferralUpdateMessage({ type: 'success', text: t(response.data.messageKey) });
+      showSuccess(t(response.data.messageKey));
       setProfileData((prev) => ({ ...prev, referral_code: response.data.referralCode }));
       setCustomReferralInput('');
     } catch (err) {
       const messageKey = err.response?.data?.messageKey || 'profile_page.error_unexpected';
-      setReferralUpdateMessage({ type: 'error', text: t(messageKey) });
+      showError(t(messageKey));
     } finally {
       setIsUpdatingReferral(false);
     }
@@ -87,6 +84,7 @@ const Profile = () => {
     }
     navigator.clipboard.writeText(referralLink);
     setCopySuccessMessage(t('profile_page.copied_button'));
+    showSuccess(t('profile_page.toast_copied_link', 'Referral link copied to clipboard.'));
     setTimeout(() => {
       setCopySuccessMessage(t('profile_page.copy_link_button'));
     }, 2000);
@@ -122,9 +120,10 @@ const Profile = () => {
     try {
       await api.post('/user/link-telegram', user);
       fetchProfile();
+      showSuccess(t('profile_page.toast_telegram_linked', 'Telegram account linked successfully.'));
     } catch (err) {
       console.error('Telegram linking failed:', err);
-      alert(t('profile_page.telegram_link_failed', 'Failed to link Telegram account.'));
+      showError(t('profile_page.telegram_link_failed', 'Failed to link Telegram account.'));
     }
   };
 
@@ -196,12 +195,6 @@ const Profile = () => {
                   <dd>{profileData.referral_code || t('profile_page.value_missing', 'Not set')}</dd>
                 </div>
               </dl>
-              <p className="account-details-caption">
-                {t(
-                  'profile_page.account_details_caption',
-                  'Keep this information up-to-date so collaborators always recognise you across Hyper Strategies.'
-                )}
-              </p>
             </article>
           </div>
         );
@@ -238,21 +231,16 @@ const Profile = () => {
                         disabled={isUpdatingReferral}
                       />
                     </div>
-                    <button
-                      type="submit"
-                      className="btn-primary"
-                      disabled={isUpdatingReferral || !customReferralInput}
-                    >
-                      {isUpdatingReferral
-                        ? t('profile_page.saving_button')
-                        : t('profile_page.save_code_button')}
-                    </button>
-                  </form>
-                  {referralUpdateMessage.text && (
-                    <p className={`referral-message ${referralUpdateMessage.type}`}>
-                      {referralUpdateMessage.text}
-                    </p>
-                  )}
+                  <button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={isUpdatingReferral || !customReferralInput}
+                  >
+                    {isUpdatingReferral
+                      ? t('profile_page.saving_button')
+                      : t('profile_page.save_code_button')}
+                  </button>
+                </form>
                 </div>
                 <div className="referral-card-column referral-card-column--qr">
                   <div className="referral-qr-wrapper" aria-live="polite">
@@ -275,69 +263,11 @@ const Profile = () => {
             </article>
           </div>
         );
-      case 'connections':
-        return (
-          <div className="profile-tab-grid" role="tabpanel" id="profile-tab-connections" aria-labelledby="profile-tab-button-connections">
-            <article
-              className="profile-card profile-card--connections"
-              aria-labelledby="profile-connections-heading"
-            >
-              <h3 id="profile-connections-heading">{t('profile_page.connect_title')}</h3>
-              <p className="form-description">
-                {t(
-                  'profile_page.connect_description',
-                  'Link social accounts so we can deliver alerts, announcements, and bonus missions.'
-                )}
-              </p>
-              <div className="connection-buttons-container">
-                <button className="btn-secondary connection-button" onClick={handleConnectX}>
-                  <span>{t('profile_page.connect_x_button')}</span>
-                </button>
-                <div className="telegram-button-wrapper">
-                  <TelegramLoginButton onAuth={handleTelegramAuth} />
-                </div>
-                <button className="btn-secondary connection-button" disabled><span>EVM Wallet (Coming Soon)</span></button>
-                <button className="btn-secondary connection-button" disabled><span>Solana Wallet (Coming Soon)</span></button>
-
-              </div>
-            </article>
-          </div>
-        );
       case 'activity':
         return (
           <div className="profile-tab-grid" role="tabpanel" id="profile-tab-activity" aria-labelledby="profile-tab-button-activity">
             <article className="profile-card profile-card--history" aria-label={t('profile_page.history_heading', 'Recent XP activity')}>
               <XpHistoryList />
-            </article>
-          </div>
-        );
-      case 'resources':
-        return (
-          <div className="profile-tab-grid" role="tabpanel" id="profile-tab-resources" aria-labelledby="profile-tab-button-resources">
-            <article className="profile-card profile-card--syndicate" aria-labelledby="profile-syndicate-heading">
-              <h3 id="profile-syndicate-heading">{t('profile_page.syndicate_title')}</h3>
-              <p className="form-description">{t('profile_page.syndicate_description')}</p>
-              <a
-                href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started/syndicate"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-              >
-                {t('profile_page.learn_more_button')}
-              </a>
-            </article>
-            <article className="profile-card profile-card--resources" aria-labelledby="profile-resources-heading">
-              <h3 id="profile-resources-heading">{t('profile_page.resources_heading', 'Explore more actions')}</h3>
-              <p>
-                {t(
-                  'profile_page.resources_description',
-                  'Jump into seasonal drops, revisit the FAQ, or explore the rewards centre whenever you need inspiration.'
-                )}
-              </p>
-              <div className="profile-card__actions">
-                <Link to="/rewards" className="btn-primary btn-sm">{t('profile_page.claim_xp_button')}</Link>
-                <Link to="/faq" className="btn-secondary btn-sm">{t('profile_page.resources_faq', 'Open FAQ')}</Link>
-              </div>
             </article>
           </div>
         );
@@ -370,10 +300,29 @@ const Profile = () => {
                 <button type="submit" className="btn-primary">
                   {t('profile_page.save_changes_button')}
                 </button>
-                {editMessage.text && (
-                  <p className={`edit-message ${editMessage.type}`}>{editMessage.text}</p>
-                )}
               </form>
+            </article>
+            <article
+              className="profile-card profile-card--connections"
+              aria-labelledby="profile-connections-heading"
+            >
+              <h3 id="profile-connections-heading">{t('profile_page.connect_title')}</h3>
+              <p className="form-description">
+                {t(
+                  'profile_page.connect_description',
+                  'Link social accounts so we can deliver alerts, announcements, and bonus missions.'
+                )}
+              </p>
+              <div className="connection-buttons-container">
+                <button className="btn-secondary connection-button" onClick={handleConnectX}>
+                  <span>{t('profile_page.connect_x_button')}</span>
+                </button>
+                <div className="telegram-button-wrapper">
+                  <TelegramLoginButton onAuth={handleTelegramAuth} />
+                </div>
+                <button className="btn-secondary connection-button" disabled><span>EVM Wallet (Coming Soon)</span></button>
+                <button className="btn-secondary connection-button" disabled><span>Solana Wallet (Coming Soon)</span></button>
+              </div>
             </article>
           </div>
         );
@@ -500,17 +449,6 @@ const Profile = () => {
               {t('profile_page.tab_settings', 'Profile settings')}
             </button>
             <button
-              id="profile-tab-button-connections"
-              className={`profile-tabs__trigger ${activeTab === 'connections' ? 'profile-tabs__trigger--active' : ''}`}
-              role="tab"
-              type="button"
-              aria-selected={activeTab === 'connections'}
-              aria-controls="profile-tab-connections"
-              onClick={() => setActiveTab('connections')}
-            >
-              {t('profile_page.tab_connections', 'Connections')}
-            </button>
-            <button
               id="profile-tab-button-activity"
               className={`profile-tabs__trigger ${activeTab === 'activity' ? 'profile-tabs__trigger--active' : ''}`}
               role="tab"
@@ -520,17 +458,6 @@ const Profile = () => {
               onClick={() => setActiveTab('activity')}
             >
               {t('profile_page.tab_activity', 'Activity')}
-            </button>
-            <button
-              id="profile-tab-button-resources"
-              className={`profile-tabs__trigger ${activeTab === 'resources' ? 'profile-tabs__trigger--active' : ''}`}
-              role="tab"
-              type="button"
-              aria-selected={activeTab === 'resources'}
-              aria-controls="profile-tab-resources"
-              onClick={() => setActiveTab('resources')}
-            >
-              {t('profile_page.tab_resources', 'Resources')}
             </button>
           </div>
           <div className="profile-tabs__panel">{renderTabPanel()}</div>
