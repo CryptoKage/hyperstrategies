@@ -6,7 +6,7 @@ import copy from '../data/site_copy.json';
 import FlowSceneCubes from '../components/HowItWorks3D/FlowSceneCubes';
 import ScrollCameraController from '../components/HowItWorks3D/ScrollCameraController';
 import ParallaxFallback from '../components/HowItWorks3D/ParallaxFallback';
-import { T } from '@/utils/i18n';
+import { useTranslation } from 'react-i18next';
 import '../styles/how-it-works-3d.css';
 
 const KEYFRAMES = [

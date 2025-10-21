@@ -5,7 +5,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { useTranslation } from 'react-i18next';
 import copy from '../../data/site_copy.json';
-import { T } from '@/utils/i18n';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_FLOW = {
   main: 0.8,
