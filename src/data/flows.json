@@ -1,0 +1,14 @@
+{
+  "depositLabel": "Deposit",
+  "mainFlowLabel": "Strategies",
+  "mainPercent": 80,
+  "sideFlows": [
+    { "label": "Safety Fund", "percent": 10, "color": "#00F5A0" },
+    { "label": "Farming Protocols", "percent": 5, "color": "#0099FF" },
+    { "label": "Token Seeding Pool", "percent": 5, "color": "#9B5CF6" }
+  ],
+  "notes": [
+    "We allocate 20% of deposits across Safety Fund, farming protocols, and token seeding.",
+    "On successful trades, a 20% performance fee applies to profits above the high-watermark."
+  ]
+}

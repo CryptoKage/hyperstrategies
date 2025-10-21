@@ -1,0 +1,18 @@
+[
+  {
+    "id": "core",
+    "name": "Core Strategy",
+    "short": "Flagship algorithmic strategy with discretionary overlays, trailing stops, and a focus on high-market-cap pairs.",
+    "risk": "Moderate",
+    "badges": ["Algorithmic", "Risk-managed", "High-cap focus"],
+    "disclaimer": "Capital at risk. Performance varies with market conditions."
+  },
+  {
+    "id": "highRisk",
+    "name": "High-Risk Strategy",
+    "short": "Same methodology applied to more volatile pairs — higher potential, higher accepted risk.",
+    "risk": "High",
+    "badges": ["Volatility-exposed", "Aggressive risk profile"],
+    "disclaimer": "User acknowledges elevated drawdown likelihood."
+  }
+]

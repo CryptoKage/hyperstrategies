@@ -47,6 +47,11 @@ button {
   border: none;
 }
 
+.btn-large {
+  font-size: 1rem;
+  padding: 12px 24px;
+}
+
 
 .btn-outline {
   background: transparent;

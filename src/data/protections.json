@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Safety Fund",
+    "body": "A portion of deposits accrues to a Safety Fund designed to buffer unexpected events.",
+    "icon": "shield"
+  },
+  {
+    "title": "Farming Protocols",
+    "body": "Selective farming to diversify income streams and support sustainability.",
+    "icon": "leaf"
+  },
+  {
+    "title": "Buy-back Engine",
+    "body": "Directed revenue supports periodic buy-backs to align incentives with the ecosystem.",
+    "icon": "refresh"
+  },
+  {
+    "title": "Risk Controls",
+    "body": "Dynamic stop-losses, position sizing, and continuous monitoring aim to keep exposure within strict parameters.",
+    "icon": "activity"
+  }
+]

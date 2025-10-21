@@ -62,6 +62,9 @@ const Header = () => {
       
       <div className="header__right--desktop">
         <nav className="header__nav">
+          <Link to="/how-it-works" className="header__button" onClick={closeMobileMenu}>
+            How it works
+          </Link>
           {user ? (
             <>
               <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
@@ -107,10 +110,11 @@ const Header = () => {
           </button>
       </div>
       
-      {isMobileMenuOpen && (
+          {isMobileMenuOpen && (
           <div className="mobile-menu-overlay">
               <button className="mobile-menu__close-btn" onClick={closeMobileMenu}>×</button>
               <div className="mobile-menu-content">
+                  <Link to="/how-it-works" className="mobile-menu__link" onClick={closeMobileMenu}>How it works</Link>
                   {user ? (
                       <>
             {/* Link to Dashboard remains as a quick access point */}
