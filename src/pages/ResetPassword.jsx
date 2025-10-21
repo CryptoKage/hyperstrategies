@@ -1,4 +1,4 @@
-// src/pages/ResetPassword.jsx
+// src/pages/ResetPassword.jsx.
 
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
