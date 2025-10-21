@@ -5,9 +5,11 @@ import { useTranslation, Trans } from 'react-i18next';
 import api from '../api/api';
 import InputField from './InputField';
 import InfoIcon from './InfoIcon';
+import useToast from '../hooks/useToast';
 
 const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllocationSuccess }) => {
   const { t } = useTranslation();
+  const { showSuccess, showError } = useToast();
   
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -51,14 +53,35 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
 
   const handleAllocate = async (e) => {
     e.preventDefault();
-    setIsLoading(true); setError('');
+    setError('');
+
+    const parsedAmount = parseFloat(amount);
+    if (Number.isNaN(parsedAmount) || parsedAmount <= 0) {
+      const message = t('vault_modal.error_nan');
+      setError(message);
+      showError(message);
+      return;
+    }
+
+    if (parsedAmount > (availableBalance || 0)) {
+      const message = t('vault_modal.error_insufficient');
+      setError(message);
+      showError(message);
+      return;
+    }
+
+    setIsLoading(true);
     try {
       await api.post('/vaults/invest', { vaultId: vault.vault_id, amount: amount });
       onAllocationSuccess();
       onClose();
+      showSuccess(t('vault_modal.success', 'Allocation submitted successfully.'));
     } catch (err) {
-      const messageKey = err.response?.data?.messageKey || 'vault_modal.error_failed';
-      setError(t(messageKey));
+      const messageKey = err.response?.data?.messageKey;
+      const serverMessage = err.response?.data?.message;
+      const translated = messageKey ? t(messageKey) : serverMessage || t('vault_modal.error_failed');
+      setError(translated);
+      showError(translated);
     } finally {
       setIsLoading(false);
     }
