@@ -61,7 +61,7 @@ const FarmingVaultView = ({ pageData }) => {
     const [loading, setLoading] = useState(true);
 
     // Hardcoded target date for the Q1 buyback
-    const Q1_BUYBACK_DATE = "2026-03-31T23:59:59Z";
+    const Q1_BUYBACK_DATE = "2026-01-01T00:00:00Z";
 
     useEffect(() => {
         const fetchData = async () => {
@@ -148,6 +148,33 @@ const FarmingVaultView = ({ pageData }) => {
                     </table>
                 </div>
             </div>
+            <div style={{ marginTop: '32px' }}>
+    <h3>Activities Powering the Buyback</h3>
+    <div className="farming-pipeline-grid">
+        <div className="pipeline-column">
+            <h4>Actively Farming</h4>
+            <div className="protocol-list">
+                {pageData.farmingProtocols?.filter(p => p.status === 'FARMING').map(p => (
+                    <div key={p.protocol_id} className="protocol-card">
+                        <h5>{p.name} ({p.chain})</h5>
+                        <p>{p.description}</p>
+                    </div>
+                )) || <p>No active farms.</p>}
+            </div>
+        </div>
+        <div className="pipeline-column">
+            <h4>On the Radar (Seeding)</h4>
+            <div className="protocol-list">
+                {pageData.farmingProtocols?.filter(p => p.status === 'SEEDING').map(p => (
+                     <div key={p.protocol_id} className="protocol-card">
+                        <h5>{p.name} ({p.chain})</h5>
+                        <p>{p.description}</p>
+                    </div>
+                )) || <p>Nothing in the pipeline.</p>}
+            </div>
+        </div>
+    </div>
+</div>
         </div>
     );
 };

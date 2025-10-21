@@ -28,6 +28,7 @@ const vaultImageMap = {
   'btcvault.png': btcVaultBg,
   'Farm.png': farmVaultBg,
   'btc.png': newBtcVaultBg,
+  'buyback.png': buybackEngineBg,
 };
 
 const SnapshotItem = ({ labelKey, value, className = '' }) => {
