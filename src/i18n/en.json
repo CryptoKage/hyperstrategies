@@ -22,6 +22,36 @@
     "register": "Register",
     "alt_logo": "Hyper-Strategies Logo"
   },
+  "howItWorks": {
+    "labels": {
+      "user": "User",
+      "deposits": "Deposits",
+      "strategiesHub": "Strategies Hub",
+      "coreStrategy": "Core Strategy",
+      "highStrategy": "High-Risk Strategy",
+      "safetyFund": "Safety Fund",
+      "farming": "Farming",
+      "tokenSeeding": "Token Seeding",
+      "userOut": "Back to User",
+      "innerLoop": "Inner Loop"
+    },
+    "descriptions": {
+      "user": "Capital origin",
+      "deposits": "Routing entry",
+      "strategiesHub": "Automated allocation",
+      "coreStrategy": "Low-volatility engine",
+      "highStrategy": "High-octane bets",
+      "safetyFund": "Reserves & insurance",
+      "farming": "Liquidity programs",
+      "tokenSeeding": "Ecosystem incentives",
+      "userOut": "Withdrawals & PnL",
+      "innerLoop": "Signal → Position → Risk → Rebalance → Realize → Compound"
+    },
+    "percent": "{{value}}%",
+    "aria": {
+      "label": "{{label}} hub, {{detail}}"
+    }
+  },
   "home": {
     "hero": {
       "headline": "HYPER-STRATEGIES",
