@@ -82,13 +82,13 @@ const Home = () => {
               <p>
                 {t(
                   'home.journey.step_three_copy',
-                  'Head to the new pins hub to curate your loadout, then claim XP boosts and rewards tailored to your tier.'
+                  'Our refreshed pins experience will arrive soon with streamlined loadouts and improved rewards.'
                 )}
               </p>
               <div className="home-journey__actions">
-                <Link to="/pins" className="btn-pill">
-                  {t('home.journey.step_three_cta', 'Visit pins hub')} →
-                </Link>
+                <span className="btn-pill btn-pill--disabled">
+                  {t('home.journey.step_three_cta', 'Pins hub coming soon')}
+                </span>
               </div>
             </article>
           </div>

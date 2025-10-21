@@ -66,8 +66,6 @@ const Header = () => {
             <>
               <Link to="/dashboard" className="header__button">{t('header.dashboard')}</Link>
               <Link to="/wallet" className="header__button">{t('header.wallet')}</Link>
-              <Link to="/pins" className="header__button">{t('header.pins', 'Pins')}</Link>
-              <Link to="/shop" className="header__button">{t('nav.shop')}</Link>
               <Link to="/rewards" className="header__button">{t('header.rewards', 'Rewards')}</Link>
               <Link to="/profile" className="header__button">{t('header.profile')}</Link>
               {user.isAdmin && (
