@@ -87,7 +87,7 @@
 },
   "dashboard": {
     "explore_strategy": "Strategie erkunden",
-    "invest_now": "Jetzt investieren",
+    "invest_now": "Investieren",
   "manage_position": "Position verwalten",
    "welcome_title": "Legen wir los!",
   "welcome_subtitle": "Deine Reise beginnt mit deiner ersten Einzahlung. Gehe zu deiner Wallet, um dein Konto aufzuladen und Strategien zu entdecken.",
@@ -352,7 +352,7 @@
   },
   "card_section": {
     "view_leaderboard": "Leaderboard ansehen",
-    "invest_now": "Jetzt investieren"
+    "invest_now": "Investieren"
   },
   "legal": {
     "title": "Rechtlicher Hinweis & Impressum",
