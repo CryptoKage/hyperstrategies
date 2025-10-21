@@ -20,6 +20,7 @@ import pantherVaultBg from '../assets/panther-swarm.jpg';
 import btcVaultBg from '../assets/btcvault.png';
 import farmVaultBg from '../assets/Farm.png';
 import newBtcVaultBg from '../assets/btc.png';
+import buybackEngineBg from '../assets/buyback.png';
 
 const vaultImageMap = {
   'core.png': coreVaultBg,
