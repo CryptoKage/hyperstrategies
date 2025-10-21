@@ -1,0 +1,60 @@
+{
+  "scenes": [
+    {
+      "id": "overview",
+      "headline": "Let your capital move intelligently.",
+      "body": "Deposit once. Hyper Strategies automatically routes capital between vaults, safety funds, and upcoming initiatives — so your money is always working."
+    },
+    {
+      "id": "moneyFlow",
+      "headline": "The money flow.",
+      "body": "On deposit, 80% enters active strategies and 20% routes to the Safety Fund, farming protocols, and our token seeding pool."
+    },
+    {
+      "id": "strategyHub",
+      "headline": "Our strategies.",
+      "body": "Two vaults today: the Core Strategy for balanced growth, and a High-Risk Strategy for amplified exposure on more volatile pairs."
+    },
+    {
+      "id": "innerLoop",
+      "headline": "Inside a strategy.",
+      "body": "Signals → positions → risk controls → rebalance → realize PnL → compound. Algorithmic trading with discretionary overlays and dynamic trailing stops."
+    }
+  ],
+  "flow": {
+    "distribution": {
+      "main": 0.8,
+      "safety": 0.1,
+      "farming": 0.05,
+      "token": 0.05
+    },
+    "labels": {
+      "main": "Active Strategies",
+      "safety": "Safety Fund",
+      "farming": "Farming",
+      "token": "Token Seeding"
+    }
+  },
+  "strategies": [
+    {
+      "id": "core",
+      "name": "Core Strategy",
+      "tagline": "Balanced growth",
+      "description": "Disciplined exposure with continuous hedging and rebalancing."
+    },
+    {
+      "id": "highRisk",
+      "name": "High-Risk Strategy",
+      "tagline": "Amplified opportunity",
+      "description": "Seeks asymmetric upside on high-volatility pairs with tight downside controls."
+    }
+  ],
+  "innerLoop": [
+    "Signal",
+    "Position",
+    "Risk",
+    "Rebalance",
+    "Realize",
+    "Compound"
+  ]
+}
