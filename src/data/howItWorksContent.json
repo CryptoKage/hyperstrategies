@@ -1,0 +1,252 @@
+{
+  "brand": {
+    "name": "Hyper Strategies",
+    "short": "Automated strategies. Risk-aware design.",
+    "colors": {
+      "primary": "#00C6E6",
+      "accent": "#00F5A0",
+      "warning": "#F6A200",
+      "danger": "#FF4D4D",
+      "bgDark": "#0B1121",
+      "textLight": "#E6F7FF"
+    }
+  },
+  "nav": {
+    "primary": [
+      { "label": "How it works", "href": "/how-it-works" },
+      { "label": "Strategies", "href": "/strategies" },
+      { "label": "Docs", "href": "https://docs.hyper-strategies.com" },
+      { "label": "Legal", "href": "/legal" }
+    ],
+    "cta": { "label": "Launch App", "href": "https://app.hyper-strategies.com" }
+  },
+  "cta": {
+    "primary": "Connect wallet",
+    "secondary": "Explore strategies",
+    "learnMore": "Learn more",
+    "seeDocs": "Read the docs",
+    "viewLegal": "View legal",
+    "viewCore": "Explore Core Strategy",
+    "viewHighRisk": "Explore High-Risk Strategy"
+  },
+  "scenes": [
+    {
+      "id": 0,
+      "headline": "Let your capital move intelligently.",
+      "body": "Deposit once. Hyper Strategies automatically routes capital between vaults, safety funds, and upcoming initiatives — so your money is always working."
+    },
+    {
+      "id": 1,
+      "headline": "The money flow.",
+      "body": "On deposit, 80% enters active strategies and 20% routes to the Safety Fund, farming protocols, and our token seeding pool."
+    },
+    {
+      "id": 2,
+      "headline": "Our strategies.",
+      "body": "Two vaults today: the Core Strategy for balanced growth, and a High-Risk Strategy for amplified exposure on more volatile pairs."
+    },
+    {
+      "id": 3,
+      "headline": "Inside a strategy.",
+      "body": "Signals → positions → risk controls → rebalance → realize PnL → compound. Algorithmic trading with discretionary overlays and dynamic trailing stops."
+    },
+    {
+      "id": 4,
+      "headline": "Security and sustainability.",
+      "body": "A portion of deposits strengthens the Safety Fund and is deployed to farming protocols; the buy-back engine and token seeding align long-term incentives."
+    },
+    {
+      "id": 5,
+      "headline": "Transparent performance.",
+      "body": "Fees use a high-watermark model: 20% of profits after the watermark. Track results and understand variability over time."
+    },
+    {
+      "id": 6,
+      "headline": "Community & Syndicates.",
+      "body": "Earn through syndicate participation and transparent on-chain rewards. Share performance responsibly and grow together."
+    },
+    {
+      "id": 7,
+      "headline": "Ready to start?",
+      "body": "Connect your wallet and choose a vault. You can withdraw at any time, subject to venue conditions and market liquidity."
+    }
+  ],
+  "flows": {
+    "depositLabel": "Deposit",
+    "mainFlowLabel": "Strategies",
+    "mainPercent": 80,
+    "sideFlows": [
+      { "label": "Safety Fund", "percent": 10, "color": "#00F5A0" },
+      { "label": "Farming Protocols", "percent": 5, "color": "#0099FF" },
+      { "label": "Token Seeding Pool", "percent": 5, "color": "#9B5CF6" }
+    ],
+    "notes": [
+      "We allocate 20% of deposits across Safety Fund, farming protocols, and token seeding.",
+      "On successful trades, a 20% performance fee applies to profits above the high-watermark."
+    ]
+  },
+  "strategies": [
+    {
+      "id": "core",
+      "name": "Core Strategy",
+      "short": "Flagship algorithmic strategy with discretionary overlays, trailing stops, and a focus on high-market-cap pairs.",
+      "risk": "Moderate",
+      "badges": ["Algorithmic", "Risk-managed", "High-cap focus"],
+      "disclaimer": "Capital at risk. Performance varies with market conditions."
+    },
+    {
+      "id": "highRisk",
+      "name": "High-Risk Strategy",
+      "short": "Same methodology applied to more volatile pairs — higher potential, higher accepted risk.",
+      "risk": "High",
+      "badges": ["Volatility-exposed", "Aggressive risk profile"],
+      "disclaimer": "User acknowledges elevated drawdown likelihood."
+    }
+  ],
+  "protections": [
+    {
+      "title": "Safety Fund",
+      "body": "A portion of deposits accrues to a Safety Fund designed to buffer unexpected events.",
+      "icon": "shield"
+    },
+    {
+      "title": "Farming Protocols",
+      "body": "Selective farming to diversify income streams and support sustainability.",
+      "icon": "leaf"
+    },
+    {
+      "title": "Buy-back Engine",
+      "body": "Directed revenue supports periodic buy-backs to align incentives with the ecosystem.",
+      "icon": "refresh"
+    },
+    {
+      "title": "Risk Controls",
+      "body": "Dynamic stop-losses, position sizing, and continuous monitoring aim to keep exposure within strict parameters.",
+      "icon": "activity"
+    }
+  ],
+  "tooltips": {
+    "highWatermark": "Fees only apply to new profits above the highest historical equity peak for your account.",
+    "performanceFee": "20% of profits after high-watermark. No fee if there’s no new profit.",
+    "depositSplit": "80% to active strategies. 20% across Safety Fund, farming protocols, and token seeding.",
+    "trailingStop": "Automatically adjusts stop-loss upward as a position moves in your favor."
+  },
+  "metricsLabels": {
+    "netDeposits": "Net deposits",
+    "pnl": "PnL",
+    "drawdown": "Max drawdown",
+    "winRate": "Win rate",
+    "sharpe": "Sharpe (informational)"
+  },
+  "chartsLegend": {
+    "equityCurve": "Equity",
+    "deposits": "Deposits",
+    "fees": "Fees",
+    "strategySwitches": "Strategy changes"
+  },
+  "faq": [
+    {
+      "q": "What fees do you charge?",
+      "a": "We route 20% of deposits to Safety Fund, farming protocols, and token seeding. We charge a 20% performance fee on profits above your high-watermark. No performance fee applies without new profits."
+    },
+    {
+      "q": "Can I withdraw any time?",
+      "a": "Yes, subject to venue conditions, on-chain network status, and market liquidity. Certain events may temporarily delay execution."
+    },
+    {
+      "q": "How risky are the strategies?",
+      "a": "All strategies involve risk, including loss of capital. The Core Strategy targets moderate risk on high-market-cap pairs; the High-Risk Strategy intentionally accepts higher volatility and drawdowns."
+    },
+    {
+      "q": "Where are strategies executed?",
+      "a": "Strategies run on supported venues (e.g., Hyperliquid). Venue availability may change over time."
+    },
+    {
+      "q": "Do you guarantee returns?",
+      "a": "No. Past performance does not guarantee future results. Returns are variable and may be negative."
+    }
+  ],
+  "disclosures": {
+    "riskSummary": "Digital assets are highly volatile and involve risk of loss. Never invest more than you can afford to lose.",
+    "noGuarantee": "No returns are guaranteed. Historical results are for illustration only.",
+    "venue": "Execution depends on third-party venues and network conditions which may impact performance and withdrawals.",
+    "hwmDefinition": "High-watermark means performance fees are only paid on new profits above your prior peak equity.",
+    "tokenSeeding": "A portion of deposits may be allocated to seeding the upcoming token; this is subject to change.",
+    "jurisdiction": "Availability may vary by jurisdiction and user eligibility."
+  },
+  "legal": {
+    "links": [
+      { "label": "Terms of Use", "href": "/legal/terms" },
+      { "label": "Privacy Policy", "href": "/legal/privacy" },
+      { "label": "Risk Disclosure", "href": "/legal/risk" }
+    ],
+    "footnote": "© Hyper Strategies. All rights reserved."
+  },
+  "alerts": {
+    "connectWallet": "Please connect your wallet to continue.",
+    "networkUnsupported": "This network isn’t supported. Switch networks to proceed.",
+    "txPending": "Transaction submitted. Waiting for confirmation…",
+    "txConfirmed": "Transaction confirmed.",
+    "txFailed": "Transaction failed. Please try again."
+  },
+  "states": {
+    "empty": {
+      "noStrategies": "No strategies available yet.",
+      "noData": "Data will appear once you deposit."
+    },
+    "errors": {
+      "generic": "Something went wrong. Please retry.",
+      "rateLimited": "Hold on—too many requests. Try again shortly.",
+      "dataFetch": "We couldn’t load data. Check your connection and retry."
+    },
+    "loaders": {
+      "default": "Loading…",
+      "chart": "Rendering chart…"
+    }
+  },
+  "a11y": {
+    "alt": {
+      "logo": "Hyper Strategies logo",
+      "moneyFlow": "Diagram of deposit split across strategies and safety mechanisms",
+      "strategyNode": "Strategy node",
+      "chart": "Performance chart"
+    },
+    "aria": {
+      "sceneNav": "How it works scene navigation",
+      "expand": "Expand details",
+      "collapse": "Collapse details"
+    },
+    "reducedMotionNote": "Animations are minimized due to your system settings."
+  },
+  "seo": {
+    "title": "How Hyper Strategies Works — Automated DeFi Vaults",
+    "description": "See how deposits flow, how strategies operate, and how fees and protections work. High-watermark performance fees and risk-aware design.",
+    "ogImage": "/og/how-it-works.png",
+    "keywords": ["DeFi", "strategies", "vaults", "algorithmic trading", "high watermark", "risk management"]
+  },
+  "consent": {
+    "cookieBanner": {
+      "text": "We use cookies for site performance, analytics, and to remember your preferences.",
+      "actions": { "accept": "Accept all", "reject": "Reject", "manage": "Manage" }
+    }
+  },
+  "footer": {
+    "tag": "Built for disciplined automation.",
+    "social": [
+      { "label": "X", "href": "https://twitter.com/yourhandle" },
+      { "label": "Discord", "href": "https://discord.gg/yourinvite" },
+      { "label": "GitHub", "href": "https://github.com/CryptoKage/hyperstrategies" }
+    ],
+    "status": { "label": "Status", "href": "https://status.yourdomain.com" },
+    "contact": { "label": "Contact", "href": "mailto:team@yourdomain.com" }
+  },
+  "analytics": {
+    "events": [
+      "scene_view:{id}",
+      "cta_click:{label}",
+      "strategy_view:{id}",
+      "faq_open:{q}",
+      "outbound_click:{domain}"
+    ]
+  }
+}

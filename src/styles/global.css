@@ -47,6 +47,11 @@ button {
   border: none;
 }
 
+.btn-large {
+  font-size: 1rem;
+  padding: 12px 24px;
+}
+
 
 .btn-outline {
   background: transparent;
@@ -2692,6 +2697,23 @@ textarea.input-field { resize: vertical; }
 }
 .footer__legal .separator {
   color: var(--color-border);
+}
+
+.footer__legal--secondary {
+  flex-wrap: wrap;
+  border-top: none;
+  padding-top: 8px;
+}
+
+.footer__legal--secondary a {
+  font-size: 13px;
+}
+
+.footer__footnote {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  text-align: center;
 }
 
 /* --- Fee Structure & Info Page Styles --- */

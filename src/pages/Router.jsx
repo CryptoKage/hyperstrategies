@@ -35,6 +35,7 @@ import ReportBuilderPage from './admin/ReportBuilderPage';
 import ReportsPage from './ReportsPage';
 import DeskResultsPage from './admin/DeskResultsPage';
 import FarmingPipelinePage from './admin/FarmingPipelinePage';
+import HowItWorks from './HowItWorks';
 
 
 // --- Guard Components ---
@@ -48,6 +49,7 @@ const Router = () => {
       <MetaPixelTracker />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
       <Route path="/investor" element={<Investor />} />
       <Route path="/legal" element={<Legal />} />
       <Route path="/faq" element={<FAQ />} />
