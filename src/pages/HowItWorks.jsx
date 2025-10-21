@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Layout from '../components/Layout';
 import copy from '../data/site_copy.json';
-import FlowScene from '../components/HowItWorks3D/FlowScene';
+import FlowSceneCubes from '../components/HowItWorks3D/FlowSceneCubes';
 import ScrollCameraController from '../components/HowItWorks3D/ScrollCameraController';
 import ParallaxFallback from '../components/HowItWorks3D/ParallaxFallback';
 import '../styles/how-it-works-3d.css';
@@ -104,7 +104,7 @@ const HowItWorks = () => {
           <>
             <canvas ref={canvasRef} className="howitworks-canvas" aria-hidden="true" />
             <div ref={overlayRef} className="howitworks-overlay" aria-hidden="true" />
-            <FlowScene canvasRef={canvasRef} overlayRef={overlayRef} onReady={setSceneAPI} />
+            <FlowSceneCubes canvasRef={canvasRef} overlayRef={overlayRef} onReady={setSceneAPI} />
             {sceneAPI && (
               <ScrollCameraController
                 sceneAPI={sceneAPI}

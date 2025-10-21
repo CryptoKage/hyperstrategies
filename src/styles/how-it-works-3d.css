@@ -26,17 +26,18 @@
 
 .howitworks-label {
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(0.92);
   padding: 10px 14px;
   border-radius: 12px;
   background: rgba(5, 21, 36, 0.72);
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
   color: #d4f7ff;
   text-align: left;
   pointer-events: none;
   transition: opacity 0.3s ease, transform 0.3s ease;
   white-space: nowrap;
   opacity: 0;
+  will-change: transform, opacity;
 }
 
 .howitworks-label::after {
@@ -47,6 +48,28 @@
   border: 1px solid rgba(0, 198, 230, 0.45);
   pointer-events: none;
   opacity: 0.6;
+}
+
+.howitworks-label::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 22px;
+  left: 50%;
+  top: calc(100% - 8px);
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, rgba(0, 198, 230, 0.6), rgba(0, 198, 230, 0));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.howitworks-label.is-visible {
+  opacity: 1;
+}
+
+.howitworks-label.is-visible::before {
+  opacity: 0.75;
 }
 
 .howitworks-label__title {

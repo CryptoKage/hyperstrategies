@@ -22,6 +22,36 @@
     "register": "JOIN DA WAAAGH!",
     "alt_logo": "Hyper-Stratz Logo... it's ded killy."
   },
+  "howItWorks": {
+    "labels": {
+      "user": "DA USER GIT",
+      "deposits": "DA TEEF CHUTE",
+      "strategiesHub": "DA STRATEGY HUB",
+      "coreStrategy": "DA CORE STOMPA",
+      "highStrategy": "DA CRAZY STOMPA",
+      "safetyFund": "DA SAFE STACK",
+      "farming": "DA FARMN' PIT",
+      "tokenSeeding": "DA TOKEN SHOWER",
+      "userOut": "BACK TA DA GIT",
+      "innerLoop": "DA SPINNY LOOP"
+    },
+    "descriptions": {
+      "user": "Where da teef start",
+      "deposits": "Da entry shoot",
+      "strategiesHub": "Gubbinz does da routing",
+      "coreStrategy": "Da steady krumpin'",
+      "highStrategy": "Lotta boom risk",
+      "safetyFund": "Spare teef 'n shield",
+      "farming": "Extra loot crews",
+      "tokenSeeding": "Hype da tribe",
+      "userOut": "Teef back ta ya",
+      "innerLoop": "Signal → Stomp → Risk → Rebalance → Loot → More Dakka"
+    },
+    "percent": "{{value}}%",
+    "aria": {
+      "label": "{{label}} spot, {{detail}}"
+    }
+  },
   "home": {
     "hero": {
       "headline": "HYPER-STRATZ!!!",
