@@ -39,19 +39,18 @@
     {
       "id": 6,
       "key": "scenes.6",
-      "headline": "Rewards, XP & tiers.",
-      "body": "Earn through Rewards Center, climb Account Tiers with XP, and track Leaderboards."
+      "headline": "XP & tiers.",
+      "body": "Climb Account Tiers through product use to unlock additional features and reduce fees."
     },
     {
       "id": 7,
       "key": "scenes.7",
-      "headline": "Reporting & syndicates.",
-      "body": "Personal dashboards, public quarterly reports, and community syndicates. Withdrawals flow back to you."
+      "headline": "Centralized / Defi Split",
+      "body": "Throughout Alpha/Beta revenue is used for LP seed generation. Post TGE token will replace various protocol functionality."
     }
   ],
   "flow": {
     "distribution": {
-      "main": 0.0,
       "safety": 0.50,
       "farming": 0.40,
       "token": 0.10
@@ -125,8 +124,6 @@
     "Signal",
     "Position",
     "Risk",
-    "Rebalance",
-    "Realize",
     "Compound"
   ]
 }

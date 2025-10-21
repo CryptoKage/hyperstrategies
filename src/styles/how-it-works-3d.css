@@ -241,6 +241,13 @@
   display: grid;
   align-content: center;
   gap: 18px;
+    background: linear-gradient(180deg, rgba(13,25,39,0.55), rgba(13,25,39,0.25));
+  border: 1px solid rgba(120, 180, 220, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: clamp(16px, 3vw, 32px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
 }
 
 .panel-eyebrow {
@@ -255,6 +262,7 @@
   font-size: clamp(32px, 5vw, 54px);
   line-height: 1.1;
   margin: 0;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
 }
 
 .panel p {
