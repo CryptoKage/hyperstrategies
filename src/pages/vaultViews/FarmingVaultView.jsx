@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import Layout from '../../components/Layout';
-import VaultModal from '../../components/VaultModal';
 import api from '../../api/api';
-import LoadingSpinner from '../../components/LoadingSpinner'; // Import a loading spinner
+import LoadingSpinner from '../../components/LoadingSpinner';
+import { useAuth } from '../../context/AuthContext'; // To get user's bonus points
 
+// --- Sub-components for a cleaner layout ---
 const StatCard = ({ label, value, subtext = null }) => (
     <div className="profile-card">
         <h3>{label}</h3>
@@ -16,30 +16,35 @@ const StatCard = ({ label, value, subtext = null }) => (
     </div>
 );
 
-// --- NEW: Protocol Card component for a cleaner UI ---
-const ProtocolCard = ({ protocol, userStatus }) => {
-    let statusIndicator;
-    switch (userStatus) {
-        case 'Currently Farming':
-            statusIndicator = <span className="status-badge status-active">You're Farming This</span>;
-            break;
-        case 'Contributed':
-            statusIndicator = <span className="status-badge status-completed">You Contributed</span>;
-            break;
-        default:
-            statusIndicator = null;
-    }
+const CountdownTimer = ({ targetDate }) => {
+    const calculateTimeLeft = () => {
+        const difference = +new Date(targetDate) - +new Date();
+        let timeLeft = {};
+        if (difference > 0) {
+            timeLeft = {
+                days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+                hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+                minutes: Math.floor((difference / 1000 / 60) % 60),
+                seconds: Math.floor((difference / 1000) % 60)
+            };
+        }
+        return timeLeft;
+    };
+
+    const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+    useEffect(() => {
+        const timer = setTimeout(() => setTimeLeft(calculateTimeLeft()), 1000);
+        return () => clearTimeout(timer);
+    });
 
     return (
-        <div className="protocol-card">
-            <h4>{protocol.name} {protocol.chain && `(${protocol.chain})`}</h4>
-            {statusIndicator}
-            {protocol.description && <p>{protocol.description}</p>}
-            {protocol.status === 'REAPED' && (
-                <div className="reaped-info">
-                    Harvested: ${parseFloat(protocol.rewards_realized_usd || 0).toLocaleString()}
+        <div className="countdown-timer">
+            {Object.entries(timeLeft).map(([unit, value]) => (
+                <div key={unit} className="timer-segment">
+                    <span className="timer-value">{value.toString().padStart(2, '0')}</span>
+                    <span className="timer-label">{unit}</span>
                 </div>
-            )}
+            ))}
         </div>
     );
 };
@@ -47,116 +52,103 @@ const ProtocolCard = ({ protocol, userStatus }) => {
 
 const FarmingVaultView = ({ pageData }) => {
     const { t } = useTranslation();
-    const { vaultInfo, userPosition, vaultStats, dashboardData } = pageData; // Get dashboardData from parent
-
-    const [isAllocateModalOpen, setAllocateModalOpen] = useState(false);
+    const { vaultInfo } = pageData;
     
-    // --- NEW: State for user's specific farming status ---
-    const [userFarmingStatus, setUserFarmingStatus] = useState([]);
-    const [isLoadingStatus, setIsLoadingStatus] = useState(true);
+    // --- State for our new data ---
+    const [buybackStats, setBuybackStats] = useState({ poolBalance: 0, totalBonusPoints: 1 });
+    const [farmingProfits, setFarmingProfits] = useState({});
+    const [userBonusPoints, setUserBonusPoints] = useState(0);
+    const [loading, setLoading] = useState(true);
 
-    const isInvested = userPosition && userPosition.principal > 0;
-    const vaultTotalPrincipal = vaultStats?.totalPrincipal || 1;
-    const userOwnershipPct = isInvested ? (userPosition.principal / vaultTotalPrincipal) * 100 : 0;
-    const canInvest = vaultInfo.is_user_investable && vaultInfo.status === 'active';
-    
-    // Fetch user's specific farming status when the component loads
+    // Hardcoded target date for the Q1 buyback
+    const Q1_BUYBACK_DATE = "2026-03-31T23:59:59Z";
+
     useEffect(() => {
-        setIsLoadingStatus(true);
-        api.get(`/farming/${vaultInfo.vault_id}/my-status`)
-            .then(res => {
-                setUserFarmingStatus(res.data);
-            })
-            .catch(err => {
-                console.error("Could not load user farming status", err);
-                // Optionally show an error
-            })
-            .finally(() => {
-                setIsLoadingStatus(false);
-            });
-    }, [vaultInfo.vault_id]);
+        const fetchData = async () => {
+            try {
+                // Fetch all necessary data in parallel
+                const [buybackRes, profitsRes, dashboardRes] = await Promise.all([
+                    api.get('/stats/buyback-pool'),
+                    api.get('/stats/farming-profits'),
+                    api.get('/dashboard') // Easiest way to get the current user's bonus points
+                ]);
 
+                setBuybackStats(buybackRes.data);
+                setFarmingProfits(profitsRes.data);
+                setUserBonusPoints(dashboardRes.data.totalBonusPoints || 0);
 
-    // --- Combine protocol data with user-specific status ---
-    const protocolsWithStatus = (pageData.farmingProtocols || []).map(protocol => {
-        const userStatusInfo = userFarmingStatus.find(s => s.protocolId === protocol.protocol_id);
-        return {
-            ...protocol,
-            userStatus: userStatusInfo ? userStatusInfo.userStatus : "Not Involved",
+            } catch (err) {
+                console.error("Failed to load farming vault data:", err);
+            } finally {
+                setLoading(false);
+            }
         };
-    });
+        fetchData();
+    }, []);
+    
+    // Calculate the user's estimated payout
+    const userShare = (buybackStats.totalBonusPoints > 0) ? (userBonusPoints / buybackStats.totalBonusPoints) : 0;
+    const estimatedPayout = userShare * buybackStats.poolBalance;
 
-    const seeding = protocolsWithStatus.filter(p => p.status === 'SEEDING');
-    const farming = protocolsWithStatus.filter(p => p.status === 'FARMING');
-    const reaped = protocolsWithStatus.filter(p => p.status === 'REAPED');
+    if (loading) {
+        return (
+            <div className="vault-detail-container" style={{ textAlign: 'center', paddingTop: '5rem' }}>
+                <LoadingSpinner />
+            </div>
+        );
+    }
 
     return (
-        <>
-                    <div className="vault-detail-container">
-                <div className="vault-detail-header">
-                    <h1>{vaultInfo.name}</h1>
-                    <Link to="/dashboard" className="btn-secondary btn-sm">← {t('common.backToDashboard')}</Link>
-                </div>
-                <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
-                
-                {/* Simplified "Invest Now" button */}
-                <div className="vault-actions">
-        {canInvest && (
-            <button className="btn-primary" onClick={() => setAllocateModalOpen(true)}>
-                {isInvested ? 'Invest More' : 'Invest Now'}
-            </button>
-             )}
-                    {isInvested && (
-                         <button className="btn-secondary">Request Withdrawal</button> // Placeholder
-                    )}
-                </div>
-
-                {isInvested && (
-                    <div className="vault-detail-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'}}>
-                        <StatCard label="Your Total Capital" value={`$${userPosition.totalCapital.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
-                        <StatCard label="Your Ownership Share" value={`${userOwnershipPct.toFixed(4)}%`} />
-                    </div>
-                )}
-                
-                <div className="farming-pipeline-grid" style={{ marginTop: '32px' }}>
-                    <div className="pipeline-column">
-                        <h3>Actively Farming ({farming.length})</h3>
-                        {isLoadingStatus ? <LoadingSpinner/> : (
-                            <div className="protocol-list">
-                                {farming.length > 0 ? farming.map(p => <ProtocolCard key={p.protocol_id} protocol={p} userStatus={p.userStatus} />) : <p className="text-muted">No protocols are being actively farmed.</p>}
-                            </div>
-                        )}
-                    </div>
-                    <div className="pipeline-column">
-                        <h3>On the Radar ({seeding.length})</h3>
-                         {isLoadingStatus ? <LoadingSpinner/> : (
-                            <div className="protocol-list">
-                                {seeding.length > 0 ? seeding.map(p => <ProtocolCard key={p.protocol_id} protocol={p} userStatus={p.userStatus} />) : <p className="text-muted">No protocols are in the research phase.</p>}
-                            </div>
-                        )}
-                    </div>
-                    <div className="pipeline-column">
-                        <h3>Past Harvests ({reaped.length})</h3>
-                         {isLoadingStatus ? <LoadingSpinner/> : (
-                            <div className="protocol-list">
-                                {reaped.length > 0 ? reaped.map(p => <ProtocolCard key={p.protocol_id} protocol={p} userStatus={p.userStatus} />) : <p className="text-muted">No rewards have been harvested yet.</p>}
-                            </div>
-                        )}
-                    </div>
-                </div>
+        <div className="vault-detail-container">
+            <div className="vault-detail-header">
+                <h1>{vaultInfo.name}</h1>
+                <Link to="/dashboard" className="btn-secondary btn-sm">← {t('common.backToDashboard')}</Link>
+            </div>
+            <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
+            
+            {/* Buyback Countdown Section */}
+            <div className="profile-card text-center" style={{ marginBottom: '24px', background: 'var(--color-surface-accent)' }}>
+                <h2>Next Bonus Point Buyback</h2>
+                <p>Time remaining until the end of Q1:</p>
+                <CountdownTimer targetDate={Q1_BUYBACK_DATE} />
             </div>
 
-            {dashboardData && (
-                <VaultModal
-                    isOpen={isAllocateModalOpen}
-                    onClose={() => setAllocateModalOpen(false)}
-                    vault={vaultInfo}
-                    availableBalance={dashboardData.availableBalance}
-                    userTier={dashboardData.accountTier}
-                    onAllocationSuccess={() => window.location.reload()}
-             />
-            )}
-        </>
+            {/* User-specific Stats */}
+            <div className="vault-detail-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'}}>
+                <StatCard label="Current Buyback Pool" value={`$${buybackStats.poolBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
+                <StatCard label="Your Bonus Points" value={userBonusPoints.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
+                <StatCard label="Your Est. Payout" value={`$${estimatedPayout.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} subtext={`Based on your ${ (userShare * 100).toFixed(4) }% share of total points`} />
+            </div>
+
+            {/* Monthly Profit History */}
+            <div className="admin-card" style={{ marginTop: '32px' }}>
+                <h3>Monthly Profits Added to Pool</h3>
+                <div className="table-responsive">
+                    <table className="activity-table">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th className="amount">Profit Generated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.keys(farmingProfits).length > 0 ? (
+                                Object.entries(farmingProfits).map(([month, profit]) => (
+                                    <tr key={month}>
+                                        <td>{new Date(month + '-02').toLocaleString('default', { month: 'long', year: 'year' })}</td>
+                                        <td className="amount text-positive">+${profit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="2" style={{textAlign: 'center'}}>No profits have been added to the pool yet.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     );
 };
 
