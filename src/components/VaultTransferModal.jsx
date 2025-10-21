@@ -20,9 +20,11 @@ const VaultTransferModal = ({ isOpen, onClose, sourcePosition, allVaults, onTran
 
   // Filter the list of possible destination vaults
   const destinationOptions = allVaults.filter(v => 
-  v.is_user_investable && 
-  v.status === 'active' && 
-  v.vault_id !== sourcePosition?.vault_id
+   v.is_user_investable && // Rule 1: MUST be investable
+    v.status === 'active' && // Rule 2: MUST be active
+    v.vault_id !== sourcePosition?.vault_id // Rule 3: Cannot be the same as the source vault
+    // We no longer need to check vault_type. The 'is_user_investable' flag handles it all.
+    // --- END OF FIX ---
 );
 
   useEffect(() => {

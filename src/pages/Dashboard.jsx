@@ -505,7 +505,7 @@ const Dashboard = () => {
 <div className="vaults-grid">
   {dashboardData.vaults
     // --- NEW: Filter out internal-only vaults from the user view ---
-    .filter(vault => vault.status !== 'internal_only')
+    
     .map((vault) => {
       // Skip rendering a card if the user is already invested in this vault
       if (investedPositions.find((p) => p.vault_id === vault.vault_id)) {
@@ -535,17 +535,20 @@ const Dashboard = () => {
                 style={{ marginTop: 'auto', display: 'flex', gap: '12px', justifyContent: 'center' }}
               >
                 {/* --- THIS IS THE NEW LOGIC --- */}
-                {isActive ? (
+                 {isActive ? (
                   <>
+                    {/* The "Explore" button is ALWAYS shown for active vaults */}
                     <button
-                      className="btn-secondary" // "Explore" is now the secondary action
+                      className={canInvest ? "btn-secondary" : "btn-primary"} // Make it primary if it's the ONLY option
                       onClick={() => navigate(`/vaults/${vault.vault_id}`)}
                     >
                       {t('dashboard.explore_strategy')}
                     </button>
-                    {canInvest && ( // Only show "Invest" if the vault is investable
+
+                    {/* The "Invest Now" button ONLY shows if 'canInvest' is true */}
+                    {canInvest && (
                       <button
-                        className="btn-primary" // "Invest" is now the primary action
+                        className="btn-primary"
                         onClick={() => handleOpenAllocateModal(vault)}
                       >
                         {t('dashboard.invest_now')}
