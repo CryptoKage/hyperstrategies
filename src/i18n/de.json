@@ -39,9 +39,9 @@
       "step_two_title": "Wähle eine Strategie",
       "step_two_copy": "Wähle zwischen verschiedenen automatisierten Strategien, die zu deiner Risikobereitschaft passen.",
       "step_two_cta": "Strategien entdecken",
-      "step_three_title": "Pins ausrüsten & dein Tier upgraden",
-      "step_three_copy": "Gehe zur Pin-Loadout-Seite, passe dein Setup an, profitiere von deinen stärksten Pins und ernte die Belohnungen.",
-      "step_three_cta": "Pin-Loadout besuchen"
+      "step_three_title": "Pin-Loadouts kehren bald zurück",
+      "step_three_copy": "Wir verfeinern den neuen Pins-Hub, damit du dein Loadout schneller verwalten und mehr Belohnungen holen kannst. Bald ist es soweit.",
+      "step_three_cta": "Pins-Hub bald verfügbar"
     }
   },
   "shop": {
@@ -499,9 +499,9 @@
     "journey_step_one": "Vervollständige dein Profil",
     "journey_step_one_copy": "Du kannst Benutzername und Empfehlungslink personalisieren. Dein Empfehlungslink ist deine Hyper-Strategies-Identität. Benutzernamen werden aus Datenschutzgründen nicht öffentlich angezeigt.",
     "journey_step_one_cta": "Referral-Toolkit",
-    "journey_step_two": "Sieh dir dein Pin-Loadout an",
-    "journey_step_two_copy": "Verschiebe Pins in dein Loadout, liste Pins zum Verkauf! Bleib dran für besondere Pin-Airdrop-Events.",
-    "journey_step_two_cta": "Pin-Loadout",
+    "journey_step_two": "Pins-Hub im Neustart",
+    "journey_step_two_copy": "Wir pausieren Loadouts und Handel kurz, während wir die neue Erfahrung fertigstellen. Deine Sammlung ist bald zurück.",
+    "journey_step_two_cta": "Pins-Hub bald verfügbar",
     "journey_step_three": "Sammle XP und steigere dein Tier",
     "journey_step_three_copy": "Claim XP für verschiedene Aktivitäten, steigere dein Tier, um mehr Pins auszurüsten, mehr Perks zu erhalten und Zugang zum Token-Presale freizuschalten.",
     "journey_step_three_cta": "Belohnungen"

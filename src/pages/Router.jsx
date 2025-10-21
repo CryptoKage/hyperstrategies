@@ -8,7 +8,6 @@ import MetaPixelTracker from '../components/MetaPixelTracker';
 import Home from './Home';
 import XPLeaderboard from './XPLeaderboard';
 import Profile from './Profile';
-import Pins from './Pins';
 import Investor from './Investor';
 import Legal from './Legal';
 import Login from './Login';
@@ -18,7 +17,6 @@ import Wallet from './Wallet';
 import OAuthSuccess from './OAuthSuccess';
 import FAQ from './FAQ';
 import FeeStructure from './FeeStructure';
-import PinsMarketplace from './PinsMarketplace';
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
 
@@ -32,7 +30,6 @@ import XPAwardsPage from './admin/XPAwardsPage';
 import RewardsCenter from './RewardsCenter';
 import Presale from './Presale';
 import Vault1Page from './Vault1Page';
-import ShopPage from './ShopPage';
 import AnimationControlsPage from './admin/AnimationControlsPage';
 import ReportBuilderPage from './admin/ReportBuilderPage';
 import ReportsPage from './ReportsPage';
@@ -44,7 +41,6 @@ import FarmingPipelinePage from './admin/FarmingPipelinePage';
 import ProtectedRoute from '../components/ProtectedRoute';
 import GuestRoute from '../components/GuestRoute';
 import AdminRoute from '../components/AdminRoute';
-import TierRoute from '../components/TierRoute';
 
 const Router = () => {
   return (
@@ -69,13 +65,11 @@ const Router = () => {
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-      <Route path="/pins" element={<ProtectedRoute><Pins /></ProtectedRoute>} />
-      <Route path="/marketplace" element={<TierRoute minTier={2}><PinsMarketplace /></TierRoute>} />
+      {/* Pins, marketplace, and shop are temporarily disabled for launch */}
       <Route path="/rewards" element={<ProtectedRoute><RewardsCenter /></ProtectedRoute>} />
       <Route path="/presale-info" element={<ProtectedRoute><Presale /></ProtectedRoute>} />
       <Route path="/vaults/:vaultId" element={<ProtectedRoute><Vault1Page /></ProtectedRoute>} />
       <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
-      <Route path="/shop" element={<ShopPage />} />
           
       {/* --- ADMIN-ONLY Protected Routes --- */}
       <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />

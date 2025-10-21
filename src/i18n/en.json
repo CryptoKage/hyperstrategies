@@ -39,9 +39,9 @@
       "step_two_title": "Select a strategy",
       "step_two_copy": "Pick between different automated strategies that match your risk appetite.",
       "step_two_cta": "Explore strategies",
-      "step_three_title": "Equip pins & upgrade your tier",
-      "step_three_copy": "Head to the pin loadout page to customize your loadout to benefit from your strongest pins and reap the rewards.",
-      "step_three_cta": "Visit pin loadout"
+      "step_three_title": "Pin loadouts returning soon",
+      "step_three_copy": "We're polishing the new pins hub to make managing your loadout faster and more rewarding. Stay tuned for the relaunch.",
+      "step_three_cta": "Pins hub coming soon"
     }
   },
   "shop": {
@@ -501,9 +501,9 @@
     "journey_step_one": "Complete your profile",
     "journey_step_one_copy": "You can personalize your username and referral link. Your referral link is your Hyper-Strategies identity. Usernames will not be made public for your own privacy.",
     "journey_step_one_cta": "Referral toolkit",
-    "journey_step_two": "Check out your pin loadout",
-    "journey_step_two_copy": "Move pins into your loadout, list pins for sale! Stay tuned for special events for pin airdrops.",
-    "journey_step_two_cta": "Pin loadout",
+    "journey_step_two": "Pins hub reboot in progress",
+    "journey_step_two_copy": "We're temporarily pausing pin loadouts and trading while we polish the new experience. Your collection will be back soon.",
+    "journey_step_two_cta": "Pins hub coming soon",
     "journey_step_three": "Gather XP and level up your tier",
     "journey_step_three_copy": "Claim XP for various activites, level up your tier to equip more pins to benefit from more perks and unlock access to the token presale.",
     "journey_step_three_cta": "Rewards",

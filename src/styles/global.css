@@ -5022,6 +5022,26 @@ opacity: 0.3;
   border-color: var(--color-primary);
 }
 
+.btn-pill--disabled {
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border);
+  opacity: 0.6;
+  cursor: default;
+  pointer-events: none;
+}
+
+.profile-journey__coming-soon {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  background-color: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
 .vault-card-container {
   display: flex;
   flex-direction: column;

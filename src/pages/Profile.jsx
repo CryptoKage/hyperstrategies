@@ -377,13 +377,13 @@ const Profile = () => {
               <p>
                 {t(
                   'profile_page.journey_step_two_copy',
-                  'Move pins into your loadout, list duplicates, and prepare for seasonal challenges from one dedicated hub.'
+                  'Pin loadouts will return soon with streamlined management and trading.'
                 )}
               </p>
               <div className="profile-journey__actions">
-                <Link to="/pins" className="btn-link">
-                  {t('profile_page.journey_step_two_cta', 'Go to pins hub')}
-                </Link>
+                <span className="profile-journey__coming-soon">
+                  {t('profile_page.journey_step_two_cta', 'Pins hub coming soon')}
+                </span>
               </div>
             </article>
             <article className="profile-journey__step">
