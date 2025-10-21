@@ -499,51 +499,64 @@ const Dashboard = () => {
           )
         )}
 
-        <h2 style={{ marginTop: '48px' }}>
-          {t('dashboard.available_strategies')}
-        </h2>
-        <div className="vaults-grid">
-          {dashboardData.vaults.map((vault) => {
-            if (investedPositions.find((p) => p.vault_id === vault.vault_id))
-              return null;
+       <h2 style={{ marginTop: '48px' }}>
+  {t('dashboard.available_strategies')}
+</h2>
+<div className="vaults-grid">
+  {dashboardData.vaults
+    // --- NEW: Filter out internal-only vaults from the user view ---
+    .filter(vault => vault.status !== 'internal_only')
+    .map((vault) => {
+      // Skip rendering a card if the user is already invested in this vault
+      if (investedPositions.find((p) => p.vault_id === vault.vault_id)) {
+        return null;
+      }
 
-            const isActive = vault.status === 'active';
-            const cardStyle =
-              vault.image_url && vaultImageMap[vault.image_url]
-                ? {
-                    backgroundImage: `url(${vaultImageMap[vault.image_url]})`,
-                  }
-                : {};
+      const isActive = vault.status === 'active';
+      const canInvest = vault.is_user_investable; // Use the flag from our DB
 
-            return (
-              <div key={vault.vault_id} className="vault-card-container">
-                <div
-                  className={`vault-card ${
-                    isActive ? 'cta' : 'placeholder'
-                  } with-bg`}
-                  style={cardStyle}
-                >
-                  <div className="card-overlay"></div>
-                  <div className="card-content">
-                    <h3>{vault.name}</h3>
-                    <p className="cta-text">{vault.description}</p>
-                    <div
-                      className="vault-actions"
-                      style={{ marginTop: 'auto', justifyContent: 'center' }}
+      const cardStyle =
+        vault.image_url && vaultImageMap[vault.image_url]
+          ? { backgroundImage: `url(${vaultImageMap[vault.image_url]})` }
+          : {};
+
+      return (
+        <div key={vault.vault_id} className="vault-card-container">
+          <div
+            className={`vault-card ${isActive ? 'cta' : 'placeholder'} with-bg`}
+            style={cardStyle}
+          >
+            <div className="card-overlay"></div>
+            <div className="card-content">
+              <h3>{vault.name}</h3>
+              <p className="cta-text">{vault.description}</p>
+              <div
+                className="vault-actions"
+                style={{ marginTop: 'auto', display: 'flex', gap: '12px', justifyContent: 'center' }}
+              >
+                {/* --- THIS IS THE NEW LOGIC --- */}
+                {isActive ? (
+                  <>
+                    <button
+                      className="btn-secondary" // "Explore" is now the secondary action
+                      onClick={() => navigate(`/vaults/${vault.vault_id}`)}
                     >
-                      {isActive ? (
-                        <button
-                          className="btn-primary"
-                          onClick={() => navigate(`/vaults/${vault.vault_id}`)}
-                        >
-                          {t('dashboard.explore_strategy')}
-                        </button>
-                      ) : (
-                        // NEW: disabled button for coming soon
-                        <button className="btn-secondary" disabled>
-                          {t('dashboard.coming_soon')}
-                        </button>
-                      )}
+                      {t('dashboard.explore_strategy')}
+                    </button>
+                    {canInvest && ( // Only show "Invest" if the vault is investable
+                      <button
+                        className="btn-primary" // "Invest" is now the primary action
+                        onClick={() => handleOpenAllocateModal(vault)}
+                      >
+                        {t('dashboard.invest_now')}
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <button className="btn-secondary" disabled>
+                    {t('dashboard.coming_soon')}
+                  </button>
+                )}
                     </div>
                   </div>
                 </div>
