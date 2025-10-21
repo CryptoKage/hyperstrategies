@@ -102,12 +102,12 @@
     "farming": {
       "title": "Airdrop & Protocol Rewards Tracking Coming Soon",
       "description": "This section will track protocol contribution rewards generated through your share of the vault's trading volume."
-  }
-},
-"reserveVault": {
-  "yourHoldings": "Your Holdings",
-  "avgCost": "Average Cost Basis"
-},
+    }
+  },
+  "reserveVault": {
+    "yourHoldings": "Your Holdings",
+    "avgCost": "Average Cost Basis"
+  },
   "footer": {
     "follow_us": "Follow us:",
     "documentation": "Docs",
@@ -117,11 +117,11 @@
   },
   "dashboard": {
     "explore_strategy": "Explore Strategy",
-  "manage_position": "Manage Position",
-  "invest_now": "Deposit",  
-   "welcome_title": "Let's Get Started!",
-  "welcome_subtitle": "Your journey begins with your first deposit. Head to your wallet to fund your account and start exploring strategies.",
-  "welcome_cta": "Fund Your Wallet",
+    "manage_position": "Manage Position",
+    "invest_now": "Deposit",
+    "welcome_title": "Let's Get Started!",
+    "welcome_subtitle": "Your journey begins with your first deposit. Head to your wallet to fund your account and start exploring strategies.",
+    "welcome_cta": "Fund Your Wallet",
     "avg_monthly_return": "Avg. Monthly Return",
     "all_time_pnl": "All-Time Performance",
     "transfer": "Transfer",
@@ -178,9 +178,7 @@
     "tier_discount": "(-{{pct}}% Tier Bonus)",
     "pin_discount": "(-{{pct}}% Pin Bonus)",
     "terms_ack_link": "I have read and agree to the <1>Terms and Conditions</1>."
-
   },
-
   "vault_transfer_modal": {
     "title": "Transfer Capital Between Strategies",
     "subtitle": "Transfer settled capital from the {{vaultName}} strategy.",
@@ -194,8 +192,6 @@
     "processing_notice": "Transfer request submitted! This process is manual and may take 3-48 hours. You can track the status on your dashboard.",
     "error_failed": "Failed to request transfer. Please try again."
   },
-
-
   "vault_withdraw_modal": {
     "title": "Request Withdrawal from {{vaultName}}",
     "subtitle": "This will queue your entire <strong>${{amount}}</strong> position for withdrawal.",
@@ -206,16 +202,16 @@
     "error_failed": "Failed to request withdrawal."
   },
   "wallet": {
-     "tabs": {
-    "overview": "Overview",
-    "activity": "Activity",
-    "withdrawals": "Withdrawals"
-                },
+    "tabs": {
+      "overview": "Overview",
+      "activity": "Activity",
+      "withdrawals": "Withdrawals"
+    },
     "loading": "Loading Wallet...",
-  "title": "Your Wallet",
-  "refreshing": "Refreshing...",
-  "refresh": "Refresh",
-  "toggle_balance_tooltip": "Toggle balance visibility",
+    "title": "Your Wallet",
+    "refreshing": "Refreshing...",
+    "refresh": "Refresh",
+    "toggle_balance_tooltip": "Toggle balance visibility",
     "balance_usdc": "USDC Balance (On-Chain)",
     "balance_eth": "ETH Balance (for Gas)",
     "balance_bonus": "Bonus Points Value",
@@ -343,22 +339,22 @@
     "xp_rule_4_title": "Bonus Point Buy-Backs:",
     "xp_rule_4_desc": "Earn 1 XP for every 10 bonus points the platform buys back from you or when you make discounted purchases in the Shop with your bonus points."
   },
-   "xp_leaderboard": {
+  "xp_leaderboard": {
     "title": "XP Leaderboard",
     "subtitle": "Earn XP by participating in the Hyper-Strategies ecosystem",
     "how_to_earn_button": "How to Earn XP",
     "my_rank_title": "Your Rank",
     "rank": "Rank",
-  "total_xp": "Total XP",
-  "top_users_title": "Top 25 Users",
-  "loading": "Loading Leaderboard...",
-  "table_user": "User",
-  "table_xp": "XP",
+    "total_xp": "Total XP",
+    "top_users_title": "Top 25 Users",
+    "loading": "Loading Leaderboard...",
+    "table_user": "User",
+    "table_xp": "XP",
     "modal_title": "How to Earn XP",
-  "copy_button": "Copy Link",
-  "copied_button": "Copied!",
-  "referral_link": "Referral Link",
-  "anonymous": "Anonymous",
+    "copy_button": "Copy Link",
+    "copied_button": "Copied!",
+    "referral_link": "Referral Link",
+    "anonymous": "Anonymous",
     "accordion_title_signup": "🚀 Early Supporter Signup Bonus (First 500 Users)",
     "accordion_desc_signup": "A one-time XP bonus is awarded to the first 500 users upon registration to reward our earliest supporters. The bonus is tiered:",
     "signup_tier_1": "<strong>Users 1-100:</strong> 25 XP",
@@ -400,64 +396,80 @@
     "rightsTitle": "Copyright",
     "rights": "All rights reserved. The content and works published on this website are governed by the copyright laws of the operating jurisdiction."
   },
-    "hero": {
-      "headline": "HYPER-STRATEGIES",
-      "subtext": "Simplicity with Depth",
-      "join_community": "Join the Community",
-      "install_app": "Install App",
-       "register_now": "Register Now",
+  "hero": {
+    "headline": "HYPER-STRATEGIES",
+    "subtext": "Simplicity with Depth",
+    "join_community": "Join the Community",
+    "install_app": "Install App",
+    "register_now": "Register Now",
     "sign_in": "Sign In"
+  },
+  "cards": {
+    "core": {
+      "title": "Core Strategy",
+      "body": "Flagship algo + discretionary overlays, trailing stops, high-cap pairs.",
+      "badge": "Moderate risk"
     },
-    "cards": {
-      "title": "Explore Hyper-Strategies",
-      "airdrop": {
-        "title": "XP, Tiers & Leaderboard",
-        "text": "Engage with the platform to earn XP, climb account tiers, benefit from your pin loadout and compete for future token allocations.",
-        "button": "VIEW LEADERBOARD",
-        "link": "/xpleaderboard"
-      },
-      "self": {
-        "title": "Strategy Builder Engine",
-        "text": "Coming Soon: A powerful engine to build, backtest, and deploy your own automated trading strategies.",
-        "button": "Coming Soon"
-      },
-      "managed": {
-        "title": "Invest in Managed Strategies",
-        "text": "Deposit and let our Systems work for you with curated, high-performance strategies.",
-        "button": "VISIT DASHBOARD",
-        "link": "/login"
-      }
+    "highRisk": {
+      "title": "High-Risk Strategy",
+      "body": "More volatile pairs—amplified opportunity & drawdowns.",
+      "badge": "High risk"
     },
-    "investor": {
-      "title": "Investor Relations",
-      "subtitle": "Explore opportunities to partner with Hyper Strategies at the ground floor.",
-      "seed": {
-        "title": "Seed Investment Opportunity",
-        "description": "We are offering up to 12% stake in the company for early seed investment. Please contact the team if this is of interest to you.",
-        "cta_telegram": "Contact via Telegram",
-        "cta_x": "Contact via X"
-      },
-      "presale": {
-        "title": "Platform Token Presale",
-        "description": "In order to participate in our upcoming token presale, your account must be tier 2 or above. Secure your spot in the future of the Hyper-Strategies ecosystem.",
-        "cta_loggedin": "View Presale Details",
-        "cta_loggedout": "Sign In to Check Eligibility"
-      }
+    "feeStructure": {
+      "title": "Fee Structure",
+      "body": "20% performance fee after high-watermark."
     },
-     "journey": {
-      "eyebrow": "Get started in 3 easy steps",
-      "title": "",
-      "subtitle": "",
-      "step_one_title": "Create your account",
-      "step_one_copy": "Register in under a minute to get access to Hyper-Strategies and make a deposit.",
-      "step_one_cta": "Start registration",
-      "step_two_title": "Configure your profile and pin loadout",
-      "step_two_copy": "Complete your profile and equip any available pins to benefit from their perks.",
-      "step_two_cta": "Edit profile",
-      "step_three_title": "Select a strategy",
-      "step_three_copy": "Pick between different automated strategies that match your risk appetite. Set and forget.",
-      "step_three_cta": "Explore strategies"
-     },
+    "safetyFund": {
+      "title": "Safety Fund",
+      "body": "Portion of deposits to buffer unexpected events."
+    },
+    "farming": {
+      "title": "Farming Protocols",
+      "body": "Selective yield to diversify."
+    },
+    "buyback": {
+      "title": "Buyback Engine",
+      "body": "Periodic ecosystem buybacks."
+    },
+    "rewards": {
+      "title": "Rewards Center & Tiers",
+      "body": "Earn points, gain tiers, unlock benefits."
+    },
+    "reporting": {
+      "title": "Reporting & Syndicates",
+      "body": "Personal dashboards, public quarters, and syndicates."
+    }
+  },
+  "investor": {
+    "title": "Investor Relations",
+    "subtitle": "Explore opportunities to partner with Hyper Strategies at the ground floor.",
+    "seed": {
+      "title": "Seed Investment Opportunity",
+      "description": "We are offering up to 12% stake in the company for early seed investment. Please contact the team if this is of interest to you.",
+      "cta_telegram": "Contact via Telegram",
+      "cta_x": "Contact via X"
+    },
+    "presale": {
+      "title": "Platform Token Presale",
+      "description": "In order to participate in our upcoming token presale, your account must be tier 2 or above. Secure your spot in the future of the Hyper-Strategies ecosystem.",
+      "cta_loggedin": "View Presale Details",
+      "cta_loggedout": "Sign In to Check Eligibility"
+    }
+  },
+  "journey": {
+    "eyebrow": "Get started in 3 easy steps",
+    "title": "",
+    "subtitle": "",
+    "step_one_title": "Create your account",
+    "step_one_copy": "Register in under a minute to get access to Hyper-Strategies and make a deposit.",
+    "step_one_cta": "Start registration",
+    "step_two_title": "Configure your profile and pin loadout",
+    "step_two_copy": "Complete your profile and equip any available pins to benefit from their perks.",
+    "step_two_cta": "Edit profile",
+    "step_three_title": "Select a strategy",
+    "step_three_copy": "Pick between different automated strategies that match your risk appetite. Set and forget.",
+    "step_three_cta": "Explore strategies"
+  },
   "faq_page": {
     "title": "Frequently Asked Questions",
     "q1_title": "What are bonus points?",
@@ -468,7 +480,7 @@
     "q3_answer": "When you request a withdrawal from a strategy, a request is created to move your 'Tradable Capital' back to your main 'Available to Allocate' balance. This process can take up to 24 hours to complete. To withdraw funds from the platform to an external wallet, you must use the 'Withdraw Funds' feature on the Wallet page after your strategy withdrawal has been processed. That process should only take minutes."
   },
   "profile_page": {
-  "loading": "Loading Profile...",
+    "loading": "Loading Profile...",
     "error_load": "Could not load profile.",
     "error_update": "Update failed.",
     "error_unexpected": "An unexpected error occurred. Please try again.",
@@ -539,7 +551,6 @@
     "journey_step_three_cta": "Rewards",
     "view_leaderboard": "View Leaderboard"
   },
-  
   "pins_market": {
     "title": "Pins Marketplace",
     "coming_soon_title": "Peer-to-Peer Trading is Coming Soon",
@@ -563,205 +574,241 @@
     "cancelling": "Cancelling...",
     "cancel_listing_error": "Could not cancel the listing. Please try again."
   },
-
-"presale": {
-  "title": "Platform Token Presale",
-  "subtitle": "Your XP balance determines your eligibility and allocation. Secure your spot in the future of HyperStrategies.",
-  "table_round": "Round",
-  "table_allocation": "Allocation",
-  "table_price": "Price",
-  "round_private": "Private",
-  "round_private_price": "-",
-  "round_a": "Round A",
-  "round_a_price": "$0.20",
-  "round_b": "Round B",
-  "round_b_price": "$0.22",
-  "round_public": "Public",
-  "round_public_price": "$0.25",
-  "button_buy_tokens": "Buy Tokens",
-  "needs_xp": "Your account needs to be at least tier 2 to participate in the presale.",
-  "login_to_check": "Login to Check Your Eligibility"
-},
-  
-"forgot_password_page": {
-  "success_message": "If an account with that email exists, a password reset link has been sent.",
-  "title": "Reset Your Password",
-  "description": "Enter your account's email address and we will send you a link to reset your password.",
-  "email_label": "Email",
-  "button_send": "Send Reset Link",
-  "button_sending": "Sending...",
-  "error_failed": "An unexpected error occurred. Please try again.",
-  "success_title": "Check Your Email",
-  "back_to_login": "Back to Login"
-},
-"reset_password_page": {
-  "title": "Create New Password",
-  "description": "Please enter your new password below. Make sure it's secure.",
-  "password_label": "New Password",
-  "confirm_password_label": "Confirm New Password",
-  "button_update": "Update Password",
-  "button_updating": "Updating...",
-  "error_match": "Passwords do not match.",
-  "error_no_token": "Invalid or missing reset token. Please request a new link.",
-  "error_failed": "An unexpected error occurred. The link may have expired.",
-  "success_title": "Success!",
-  "login_now": "Login Now"
-},
-"xp_history": {
-  "deposit_bonus": "Earned {{amount}} XP for depositing in strategy {{vaultId}}.",
-  "referral_bonus": "Earned {{amount}} XP from your referral ({{username}}) making a deposit."
-},
-"bounties": {
-  "x_follow": {
-    "title": "Follow @hyperstrats on X",
-    "description": "Follow our official X account for the latest updates and announcements."
+  "presale": {
+    "title": "Platform Token Presale",
+    "subtitle": "Your XP balance determines your eligibility and allocation. Secure your spot in the future of HyperStrategies.",
+    "table_round": "Round",
+    "table_allocation": "Allocation",
+    "table_price": "Price",
+    "round_private": "Private",
+    "round_private_price": "-",
+    "round_a": "Round A",
+    "round_a_price": "$0.20",
+    "round_b": "Round B",
+    "round_b_price": "$0.22",
+    "round_public": "Public",
+    "round_public_price": "$0.25",
+    "button_buy_tokens": "Buy Tokens",
+    "needs_xp": "Your account needs to be at least tier 2 to participate in the presale.",
+    "login_to_check": "Login to Check Your Eligibility"
   },
-  "connect_telegram": {
-    "title": "Connect Your Telegram Account",
-    "description": "Link your Telegram account to participate in community-specific rewards."
+  "forgot_password_page": {
+    "success_message": "If an account with that email exists, a password reset link has been sent.",
+    "title": "Reset Your Password",
+    "description": "Enter your account's email address and we will send you a link to reset your password.",
+    "email_label": "Email",
+    "button_send": "Send Reset Link",
+    "button_sending": "Sending...",
+    "error_failed": "An unexpected error occurred. Please try again.",
+    "success_title": "Check Your Email",
+    "back_to_login": "Back to Login"
   },
-  "connect_x": {
-    "title": "Connect Your X Account",
-    "description": "Link your X (Twitter) account to prepare for future bounties."
+  "reset_password_page": {
+    "title": "Create New Password",
+    "description": "Please enter your new password below. Make sure it's secure.",
+    "password_label": "New Password",
+    "confirm_password_label": "Confirm New Password",
+    "button_update": "Update Password",
+    "button_updating": "Updating...",
+    "error_match": "Passwords do not match.",
+    "error_no_token": "Invalid or missing reset token. Please request a new link.",
+    "error_failed": "An unexpected error occurred. The link may have expired.",
+    "success_title": "Success!",
+    "login_now": "Login Now"
   },
-  "success_verify": "Bounty verified! Your XP reward is now available to claim.",
-  "error_not_complete": "Bounty not yet completed. Please try again after completing the action.",
-  "error_already_completed": "You have already completed this bounty.",
-  "error_unexpected": "An error occurred during verification."
-},
-"rewards_center": {
-  "title": "Rewards Center",
-  "loading": "Loading Rewards...",
-  "total_xp_label": "Total XP Awarded on Platform",
-  "leaderboard_button": "View Leaderboard",
-  "unclaimed_xp_title": "Unclaimed XP",
-  "unclaimed_xp_description": "This is XP you've earned from bounties and special events. Claim it to add it to your total XP balance.",
-  "claim_button": "Claim All XP",
-  "claiming_button": "Claiming...",
-  "claim_success": "XP claimed!",
-  "claim_failed": "Failed to claim XP.",
-  "error_loading": "Could not load your rewards data at this time.",
-  "presale_title": "Platform Presale",
-  "presale_description": "Your total XP balance determines your allocation in our upcoming token presale. Secure your spot!",
-  "learn_more_button": "Learn More About the Presale",
-  "bounties_title": "Available Bounties",
-  "bounties_description": "Complete these tasks to earn more XP, which will be added to your 'Unclaimed XP' total above.",
-  "bounty_task_link": "Go to Task →",
-  "bounty_verify_button": "Verify",
-  "bounty_verifying_button": "...",
-  "bounty_success": "Bounty verified! Your XP reward is now available to claim.",
-  "bounty_not_complete": "Bounty not yet completed. Please try again after completing the action.",
-  "bounty_failed": "Verification failed.",
-  "no_bounties": "No new bounties available right now. Check back soon!",
-  "ledger_title": "XP Ledger",
-  "ledger_description": "A chronological history of all XP you have earned.",
-  "ledger_empty": "You have no claimed XP history yet."
-},
-"vault": {
-      "yourPerformanceSnapshotTitle": "Your Performance Snapshot",
-       "actions": {
+  "xp_history": {
+    "deposit_bonus": "Earned {{amount}} XP for depositing in strategy {{vaultId}}.",
+    "referral_bonus": "Earned {{amount}} XP from your referral ({{username}}) making a deposit."
+  },
+  "bounties": {
+    "x_follow": {
+      "title": "Follow @hyperstrats on X",
+      "description": "Follow our official X account for the latest updates and announcements."
+    },
+    "connect_telegram": {
+      "title": "Connect Your Telegram Account",
+      "description": "Link your Telegram account to participate in community-specific rewards."
+    },
+    "connect_x": {
+      "title": "Connect Your X Account",
+      "description": "Link your X (Twitter) account to prepare for future bounties."
+    },
+    "success_verify": "Bounty verified! Your XP reward is now available to claim.",
+    "error_not_complete": "Bounty not yet completed. Please try again after completing the action.",
+    "error_already_completed": "You have already completed this bounty.",
+    "error_unexpected": "An error occurred during verification."
+  },
+  "rewards_center": {
+    "title": "Rewards Center",
+    "loading": "Loading Rewards...",
+    "total_xp_label": "Total XP Awarded on Platform",
+    "leaderboard_button": "View Leaderboard",
+    "unclaimed_xp_title": "Unclaimed XP",
+    "unclaimed_xp_description": "This is XP you've earned from bounties and special events. Claim it to add it to your total XP balance.",
+    "claim_button": "Claim All XP",
+    "claiming_button": "Claiming...",
+    "claim_success": "XP claimed!",
+    "claim_failed": "Failed to claim XP.",
+    "error_loading": "Could not load your rewards data at this time.",
+    "presale_title": "Platform Presale",
+    "presale_description": "Your total XP balance determines your allocation in our upcoming token presale. Secure your spot!",
+    "learn_more_button": "Learn More About the Presale",
+    "bounties_title": "Available Bounties",
+    "bounties_description": "Complete these tasks to earn more XP, which will be added to your 'Unclaimed XP' total above.",
+    "bounty_task_link": "Go to Task →",
+    "bounty_verify_button": "Verify",
+    "bounty_verifying_button": "...",
+    "bounty_success": "Bounty verified! Your XP reward is now available to claim.",
+    "bounty_not_complete": "Bounty not yet completed. Please try again after completing the action.",
+    "bounty_failed": "Verification failed.",
+    "no_bounties": "No new bounties available right now. Check back soon!",
+    "ledger_title": "XP Ledger",
+    "ledger_description": "A chronological history of all XP you have earned.",
+    "ledger_empty": "You have no claimed XP history yet."
+  },
+  "vault": {
+    "yourPerformanceSnapshotTitle": "Your Performance Snapshot",
+    "actions": {
       "investMore": "Invest More",
       "investNow": "Invest Now",
       "requestWithdrawal": "Request Withdrawal",
-      
-  "yourPerformanceSnapshotSubtext": "Based on your personal realized performance since your first deposit.",
-    "title": "Strategy Details",
-    "stats": {
-      "totalCapital": "Your Total Capital",
-      "totalCapitalSubtext": "Principal + Realized & Unrealized P&L",
-      "realizedPnl": "Realized P&L",
-      "realizedPnlSubtext": "Profits from closed trades.",
-      "unrealizedPnl": "Unrealized P&L",
-      "unrealizedPnlSubtext": "From currently open trades.",
-      "dailyReturn": "Avg. Daily Return",
-      "weeklyReturn": "Avg. Weekly Return",
-      "monthlyReturn": "Avg. Monthly Return",
-      "totalReturn": "Total Return (All-Time)"
-    },
-    "performanceSnapshotTitle": "Historical Performance Snapshot",
-    "performanceSnapshotSubtext": "Based on the average realized performance since strategy inception.",
-    "chart": {
-      "title": "Performance Journey",
-      "myAccountValue": "My Account Value",
-      "vaultPerformanceIndex": "Strategy Performance Index",
-      "compareAssets": "Compare Assets",
-      "legend": {
+      "yourPerformanceSnapshotSubtext": "Based on your personal realized performance since your first deposit.",
+      "title": "Strategy Details",
+      "stats": {
+        "totalCapital": "Your Total Capital",
+        "totalCapitalSubtext": "Principal + Realized & Unrealized P&L",
+        "realizedPnl": "Realized P&L",
+        "realizedPnlSubtext": "Profits from closed trades.",
+        "unrealizedPnl": "Unrealized P&L",
+        "unrealizedPnlSubtext": "From currently open trades.",
+        "dailyReturn": "Avg. Daily Return",
+        "weeklyReturn": "Avg. Weekly Return",
+        "monthlyReturn": "Avg. Monthly Return",
+        "totalReturn": "Total Return (All-Time)"
+      },
+      "performanceSnapshotTitle": "Historical Performance Snapshot",
+      "performanceSnapshotSubtext": "Based on the average realized performance since strategy inception.",
+      "chart": {
+        "title": "Performance Journey",
         "myAccountValue": "My Account Value",
-        "vaultIndex": "{{vaultName}} Index",
-        "withUnrealized": "With Unrealized P&L",
-        "btc": "BTC Performance",
-        "eth": "ETH Performance",
-        "sol": "SOL Performance"
+        "vaultPerformanceIndex": "Strategy Performance Index",
+        "compareAssets": "Compare Assets",
+        "legend": {
+          "myAccountValue": "My Account Value",
+          "vaultIndex": "{{vaultName}} Index",
+          "withUnrealized": "With Unrealized P&L",
+          "btc": "BTC Performance",
+          "eth": "ETH Performance",
+          "sol": "SOL Performance"
+        }
+      },
+      "assetBreakdown": {
+        "title": "Asset Breakdown",
+        "asset": "Asset",
+        "livePrice": "Live Price"
+      },
+      "ledger": {
+        "title": "Your Ledger",
+        "date": "Date",
+        "type": "Type",
+        "amount": "Amount"
+      },
+      "notInvested": {
+        "title": "You are not currently invested in this strategy.",
+        "description": "To see your performance, make a deposit from your dashboard."
+      },
+      "errors": {
+        "loadDetails": "Could not load strategy details. This strategy may be inactive or you may not have a position yet.",
+        "noData": "No data available for this strategy.",
+        "noChartData": "Insufficient historical data to render chart."
+      },
+      "closed": {
+        "title": "Investment Closed",
+        "description": "This vault is not currently accepting new deposits."
       }
     },
-    "assetBreakdown": {
-      "title": "Asset Breakdown",
-      "asset": "Asset",
-      "livePrice": "Live Price"
+    "ledgerTypes": {
+      "DEPOSIT": "Deposit",
+      "WITHDRAWAL_REQUEST": "Withdrawal Request",
+      "PNL_DISTRIBUTION": "P&L Distribution"
     },
-    "ledger": {
-      "title": "Your Ledger",
-      "date": "Date",
-      "type": "Type",
-      "amount": "Amount"
-    },
-    "notInvested": {
-      "title": "You are not currently invested in this strategy.",
-      "description": "To see your performance, make a deposit from your dashboard."
-    },
-    "errors": {
-      "loadDetails": "Could not load strategy details. This strategy may be inactive or you may not have a position yet.",
-      "noData": "No data available for this strategy.",
-      "noChartData": "Insufficient historical data to render chart."
-    },
-    "closed": {
-      "title": "Investment Closed",
-      "description": "This vault is not currently accepting new deposits."
+    "pins_page": {
+      "loading": "Loading your pins...",
+      "error_load": "We could not load your pins. Please try again.",
+      "retry_button": "Try again",
+      "no_slots_alert": "All of your pin slots are full. Unequip a pin first.",
+      "save_error": "We could not save your loadout. Please try again.",
+      "eyebrow": "",
+      "title": "Pin Loadout",
+      "subtitle": "Equip pins to benefit from their various perks.",
+      "active_summary": "Active Loadout",
+      "active_summary_hint": "Equip pins to maximise your benefits.",
+      "collection_summary": "Collection",
+      "collection_summary_hint": "Your pin collection.",
+      "marketplace_summary": "Marketplace",
+      "marketplace_access": "Unlocked",
+      "marketplace_locked": "Tier 2 required",
+      "marketplace_summary_hint": "Access to Marketplace granted after tier 2.",
+      "management_title": "Active Pin Loadout",
+      "management_copy": "Drag pins into your active slots to apply their bonuses instantly. Prefer a simpler setup? Enable auto-equip and we will optimise for you.",
+      "auto_equip_label": "Auto-equip best pins",
+      "empty_slot": "Empty slot",
+      "locked_slots": "Next slot unlocks at tier {{tier}}",
+      "saving": "Saving...",
+      "save_button": "Save loadout",
+      "auto_equip_helper": "Auto-equip keeps your strongest combination active. Disable it to take full manual control.",
+      "collection_title": "Pin inventory",
+      "collection_copy": "Tap any pin to inspect its traits, lore, and marketplace options.",
+      "list_button": "List selected pins",
+      "empty_collection": "You have no pins in reserve right now.",
+      "playbook_title": "Pin playbook",
+      "playbook_step_one_title": "1. Acquire pins",
+      "playbook_step_one_copy": "Collect various pins through Hyper-Strategies initiatives, the Shop or the P2P Marketplace(Tier 2).",
+      "playbook_step_two_title": "2. Upgrade your loadout",
+      "playbook_step_two_copy": "Upgrade your loadout to activate and benefit from your best available pins.",
+      "playbook_step_three_title": "3. Acquire more pins",
+      "playbook_step_three_copy": "Use Hyper-Strategies products and engage with initiatives or trade in the P2P Marketplace."
     }
   },
-  "ledgerTypes": {
-    "DEPOSIT": "Deposit",
-    "WITHDRAWAL_REQUEST": "Withdrawal Request",
-    "PNL_DISTRIBUTION": "P&L Distribution"
- },
-
-"pins_page": {
-  "loading": "Loading your pins...",
-  "error_load": "We could not load your pins. Please try again.",
-  "retry_button": "Try again",
-  "no_slots_alert": "All of your pin slots are full. Unequip a pin first.",
-  "save_error": "We could not save your loadout. Please try again.",
-  "eyebrow": "",
-  "title": "Pin Loadout",
-  "subtitle": "Equip pins to benefit from their various perks.",
-  "active_summary": "Active Loadout",
-  "active_summary_hint": "Equip pins to maximise your benefits.",
-  "collection_summary": "Collection",
-  "collection_summary_hint": "Your pin collection.",
-  "marketplace_summary": "Marketplace",
-  "marketplace_access": "Unlocked",
-  "marketplace_locked": "Tier 2 required",
-  "marketplace_summary_hint": "Access to Marketplace granted after tier 2.",
-  "management_title": "Active Pin Loadout",
-  "management_copy": "Drag pins into your active slots to apply their bonuses instantly. Prefer a simpler setup? Enable auto-equip and we will optimise for you.",
-  "auto_equip_label": "Auto-equip best pins",
-  "empty_slot": "Empty slot",
-  "locked_slots": "Next slot unlocks at tier {{tier}}",
-  "saving": "Saving...",
-  "save_button": "Save loadout",
-  "auto_equip_helper": "Auto-equip keeps your strongest combination active. Disable it to take full manual control.",
-  "collection_title": "Pin inventory",
-  "collection_copy": "Tap any pin to inspect its traits, lore, and marketplace options.",
-  "list_button": "List selected pins",
-  "empty_collection": "You have no pins in reserve right now.",
-  "playbook_title": "Pin playbook",
-  "playbook_step_one_title": "1. Acquire pins",
-  "playbook_step_one_copy": "Collect various pins through Hyper-Strategies initiatives, the Shop or the P2P Marketplace(Tier 2).",
-  "playbook_step_two_title": "2. Upgrade your loadout",
-  "playbook_step_two_copy": "Upgrade your loadout to activate and benefit from your best available pins.",
-  "playbook_step_three_title": "3. Acquire more pins",
-  "playbook_step_three_copy": "Use Hyper-Strategies products and engage with initiatives or trade in the P2P Marketplace."
+  "cta": {
+    "connect": "Connect wallet",
+    "explore": "Explore strategies"
+  },
+  "scenes": {
+    "0": {
+      "headline": "Let your capital move intelligently.",
+      "body": "Deposit once. Hyper Strategies automatically routes capital between strategies and safety mechanisms."
+    },
+    "1": {
+      "headline": "The money flow.",
+      "body": "80% to active strategies. 20% to Safety Fund, Farming, and Token Seeding."
+    },
+    "2": {
+      "headline": "Our strategies.",
+      "body": "Core Strategy (balanced) and High-Risk (volatile pairs)."
+    },
+    "3": {
+      "headline": "Inside a strategy.",
+      "body": "Signals → positions → risk controls → rebalance → realize PnL → compound."
+    },
+    "4": {
+      "headline": "Security & protection.",
+      "body": "Safety Fund, selective Farming, and Token Seeding for alignment."
+    },
+    "5": {
+      "headline": "Fees & high-watermark.",
+      "body": "20% performance fee only on profits above your high-watermark."
+    },
+    "6": {
+      "headline": "Rewards, XP & tiers.",
+      "body": "Earn through Rewards Center, level up with XP, and climb tiers."
+    },
+    "7": {
+      "headline": "Reporting & syndicates.",
+      "body": "Personal and public reports, plus community syndicates."
+    }
+  },
+  "tooltips": {
+    "hwm": "Fees only on new profits above your highest equity peak."
+  }
 }
-}
-}
-
