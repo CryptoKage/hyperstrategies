@@ -5,7 +5,6 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { useTranslation } from 'react-i18next';
 import copy from '../../data/site_copy.json';
-import { useTranslation } from 'react-i18next';
 
 const DEFAULT_FLOW = {
   main: 0.8,
@@ -246,12 +245,12 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
         description: formatPercent(flows.token * 100),
       },
       buyback: {
-        title: T('cards.buyback.title', locale),
-        description: T('cards.buyback.body', locale),
+        title: t('cards.buyback.title'),
+        description: t('cards.buyback.body'),
       },
       rewards: {
-        title: T('cards.rewards.title', locale),
-        description: T('cards.rewards.body', locale),
+        title: t('cards.rewards.title'),
+        description: t('cards.rewards.body'),
       },
       userOut: {
         title: t('howItWorks.labels.userOut'),
@@ -262,7 +261,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
         description: t('howItWorks.descriptions.innerLoop'),
       },
     };
-  }, [flows, formatPercent, locale, t]);
+  }, [flows, formatPercent, t]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
