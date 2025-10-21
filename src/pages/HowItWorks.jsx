@@ -25,10 +25,11 @@ const HowItWorks = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [sceneAPI, setSceneAPI] = useState(null);
   const [activeScene, setActiveScene] = useState(0);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
-  const [locale, setLocale] = useState(() =>
-    SUPPORTED_LOCALES.includes(i18n.language) ? i18n.language : 'en'
+  const locale = useMemo(
+    () => (SUPPORTED_LOCALES.includes(i18n.language) ? i18n.language : 'en'),
+    [i18n.language]
   );
 
   const canvasRef = useRef(null);
@@ -43,32 +44,31 @@ const HowItWorks = () => {
     }
   }, [i18n, location.search]);
 
-  useEffect(() => {
-    const handleLanguageChange = (lang) => {
-      setLocale(SUPPORTED_LOCALES.includes(lang) ? lang : 'en');
-    };
-
-    handleLanguageChange(i18n.language);
-    i18n.on('languageChanged', handleLanguageChange);
-    return () => {
-      i18n.off('languageChanged', handleLanguageChange);
-    };
-  }, [i18n]);
-
   const scenes = useMemo(
     () =>
       (copy.scenes || []).map((scene) => {
         const baseKey = scene.key || `scenes.${scene.id}`;
         return {
           ...scene,
-          headline: T(`${baseKey}.headline`, locale),
-          body: T(`${baseKey}.body`, locale),
+          headline: t(`${baseKey}.headline`, { defaultValue: scene.headline }),
+          body: t(`${baseKey}.body`, { defaultValue: scene.body }),
         };
       }),
-    [locale]
+    [t]
   );
 
-  const infoCards = useMemo(() => copy.infoCards || [], []);
+  const infoCards = useMemo(
+    () =>
+      (copy.infoCards || []).map((card) => ({
+        ...card,
+        title: t(`cards.${card.id}.title`, { defaultValue: card.title }),
+        body: t(`cards.${card.id}.body`, { defaultValue: card.body }),
+        badge: card.badge
+          ? t(`cards.${card.id}.badge`, { defaultValue: card.badge })
+          : null,
+      })),
+    [t]
+  );
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) {
@@ -196,22 +196,19 @@ const HowItWorks = () => {
             aria-labelledby="howitworks-cards-title"
           >
             <div className="howitworks-cards__header">
-              <h2 id="howitworks-cards-title">{T('cta.explore', locale)}</h2>
-              <p>{T('cta.connect', locale)}</p>
+              <h2 id="howitworks-cards-title">{t('cta.explore')}</h2>
+              <p>{t('cta.connect')}</p>
             </div>
             <div className="howitworks-cards__grid">
-              {infoCards.map((card) => {
-                const title = T(`cards.${card.id}.title`, locale);
-                const body = T(`cards.${card.id}.body`, locale);
-                const badge = card.badge ? T(`cards.${card.id}.badge`, locale) : null;
-                return (
-                  <article key={card.id} className="howitworks-card">
-                    {badge && <span className="howitworks-card__badge">{badge}</span>}
-                    <h3>{title}</h3>
-                    <p>{body}</p>
-                  </article>
-                );
-              })}
+              {infoCards.map((card) => (
+                <article key={card.id} className="howitworks-card">
+                  {card.badge && (
+                    <span className="howitworks-card__badge">{card.badge}</span>
+                  )}
+                  <h3>{card.title}</h3>
+                  <p>{card.body}</p>
+                </article>
+              ))}
             </div>
           </section>
         )}
