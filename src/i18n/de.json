@@ -112,16 +112,16 @@
     "terms_link": "Rechtliches"
   },
   "reserveVault": {
-  "yourHoldings": "Deine Bestände",
-  "avgCost": "Durchschnittliche Kostenbasis"
-},
+    "yourHoldings": "Deine Bestände",
+    "avgCost": "Durchschnittliche Kostenbasis"
+  },
   "dashboard": {
     "explore_strategy": "Strategie erkunden",
     "invest_now": "Investieren",
-  "manage_position": "Position verwalten",
-   "welcome_title": "Legen wir los!",
-  "welcome_subtitle": "Deine Reise beginnt mit deiner ersten Einzahlung. Gehe zu deiner Wallet, um dein Konto aufzuladen und Strategien zu entdecken.",
-  "welcome_cta": "Wallet aufladen",
+    "manage_position": "Position verwalten",
+    "welcome_title": "Legen wir los!",
+    "welcome_subtitle": "Deine Reise beginnt mit deiner ersten Einzahlung. Gehe zu deiner Wallet, um dein Konto aufzuladen und Strategien zu entdecken.",
+    "welcome_cta": "Wallet aufladen",
     "avg_monthly_return": "Durchschn. Monatsrendite",
     "all_time_pnl": "Performance (Allzeit)",
     "unrealized_pnl": "Nicht realisierter P&L",
@@ -192,7 +192,6 @@
     "processing_notice": "Übertragungsanfrage eingereicht! Dieser Prozess ist manuell und kann 3-48 Stunden dauern. Den Status kannst du auf deinem Dashboard verfolgen.",
     "error_failed": "Übertragungsanforderung fehlgeschlagen. Bitte versuche es erneut."
   },
-
   "vault_withdraw_modal": {
     "title": "Auszahlung aus {{vaultName}} anfordern",
     "subtitle": "Dadurch wird deine gesamte Position von <strong>${{amount}}</strong> zur Auszahlung in die Warteschlange gestellt.",
@@ -406,23 +405,39 @@
     "sign_in": "Anmelden"
   },
   "cards": {
-    "title": "Hyper-Strategies entdecken",
-    "airdrop": {
-      "title": "XP, Tiers & Leaderboard",
-      "text": "Nimm an der Plattform teil, um XP zu verdienen, Account-Tiers aufzusteigen, von deinem Pin-Loadout zu profitieren und um künftige Token-Zuteilungen zu konkurrieren.",
-      "button": "LEADERBOARD ANSEHEN",
-      "link": "/xpleaderboard"
+    "core": {
+      "title": "Core-Strategie",
+      "body": "Flaggschiff-Algo + Diskretion, Trailing Stops, High-Cap-Paare.",
+      "badge": "Mittleres Risiko"
     },
-    "self": {
-      "title": "Strategy-Builder-Engine",
-      "text": "Bald verfügbar: Eine leistungsfähige Engine, um eigene automatisierte Handelsstrategien zu bauen, zu backtesten und zu deployen.",
-      "button": "Bald verfügbar"
+    "highRisk": {
+      "title": "High-Risk-Strategie",
+      "body": "Volatilere Paare – höhere Chancen & Drawdowns.",
+      "badge": "Hohes Risiko"
     },
-    "managed": {
-      "title": "In verwaltete Strategien investieren",
-      "text": "Einzahlen und unsere Systeme für dich arbeiten lassen – mit kuratierten, leistungsstarken Strategien.",
-      "button": "ZUM DASHBOARD",
-      "link": "/login"
+    "feeStructure": {
+      "title": "Gebührenstruktur",
+      "body": "20 % Performancegebühr nach High-Watermark."
+    },
+    "safetyFund": {
+      "title": "Sicherheitsfonds",
+      "body": "Ein Teil der Einzahlungen dient als Puffer."
+    },
+    "farming": {
+      "title": "Farming-Protokolle",
+      "body": "Selektive Renditestrategien zur Diversifikation."
+    },
+    "buyback": {
+      "title": "Buyback-Engine",
+      "body": "Periodische Rückkäufe zur Unterstützung des Ökosystems."
+    },
+    "rewards": {
+      "title": "Rewards & Stufen",
+      "body": "Sammle Punkte, steige Stufen auf, schalte Vorteile frei."
+    },
+    "reporting": {
+      "title": "Reporting & Syndikate",
+      "body": "Persönliche Dashboards, Quartalsberichte und Syndikate."
     }
   },
   "investor": {
@@ -503,7 +518,7 @@
     "xp_label": "Deine XP",
     "claim_xp_button": "Belohnungen",
     "xp_rate_label": "Tägliche XP-Rate",
-     "view_leaderboard": "Leaderboard ansehen",
+    "view_leaderboard": "Leaderboard ansehen",
     "xp_rate_per_day": "/ Tag",
     "referral_code_label": "Dein Empfehlungscode",
     "copy_link_button": "Empfehlungslink kopieren",
@@ -657,7 +672,6 @@
       "investNow": "Jetzt investieren",
       "requestWithdrawal": "Auszahlung beantragen"
     },
-    
     "yourPerformanceSnapshotTitle": "Dein Performance-Schnappschuss",
     "yourPerformanceSnapshotSubtext": "Basierend auf deiner persönlichen realisierten Performance seit deiner ersten Einzahlung.",
     "title": "Strategiedetails",
@@ -689,7 +703,7 @@
         "sol": "SOL-Performance"
       }
     },
-     "closed": {
+    "closed": {
       "title": "Investitionen geschlossen",
       "description": "Dieses Vault akzeptiert derzeit keine neuen Einzahlungen."
     },
@@ -755,5 +769,43 @@
     "playbook_step_two_copy": "Verbessere dein Loadout, um von deinen besten verfügbaren Pins zu profitieren.",
     "playbook_step_three_title": "3. Weitere Pins beschaffen",
     "playbook_step_three_copy": "Nutze Hyper-Strategies-Produkte, nimm an Initiativen teil oder handle auf dem P2P-Marktplatz."
+  },
+  "cta": {
+    "connect": "Wallet verbinden",
+    "explore": "Strategien erkunden"
+  },
+  "scenes": {
+    "0": {
+      "headline": "Lass dein Kapital intelligent bewegen.",
+      "body": "Einmal einzahlen. Hyper Strategies routet Kapital automatisch zwischen Strategien und Sicherheitsmechanismen."
+    },
+    "1": {
+      "headline": "Der Geldfluss.",
+      "body": "80 % in aktive Strategien. 20 % in Sicherheitsfonds, Farming und Token-Seeding."
+    },
+    "2": {
+      "headline": "Unsere Strategien.",
+      "body": "Core-Strategie (ausgewogen) und High-Risk (volatilere Paare)."
+    },
+    "3": {
+      "headline": "Im Inneren einer Strategie.",
+      "body": "Signale → Positionen → Risikokontrollen → Rebalancing → PnL realisieren → Zinseszinseffekt."
+    },
+    "4": {
+      "headline": "Sicherheit & Schutz.",
+      "body": "Sicherheitsfonds, selektives Farming und Token-Seeding zur Ausrichtung."
+    },
+    "5": {
+      "headline": "Gebühren & High-Watermark.",
+      "body": "20 % Performancegebühr nur auf Gewinne über deiner High-Watermark."
+    },
+    "6": {
+      "headline": "Rewards, XP & Stufen.",
+      "body": "Verdiene im Rewards Center, steige mit XP auf und klettere die Stufen."
+    },
+    "7": {
+      "headline": "Reporting & Syndikate.",
+      "body": "Persönliche und öffentliche Reports sowie Community-Syndikate."
+    }
   }
 }

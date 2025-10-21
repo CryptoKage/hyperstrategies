@@ -156,6 +156,86 @@
   padding-right: clamp(24px, 6vw, 64px);
 }
 
+.howitworks-cards {
+  position: relative;
+  z-index: 3;
+  width: min(1080px, 94vw);
+  margin: clamp(64px, 12vw, 120px) auto clamp(96px, 16vw, 160px);
+  padding: 0 clamp(16px, 5vw, 48px);
+  display: grid;
+  gap: clamp(24px, 4vw, 48px);
+}
+
+.howitworks-cards__header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 520px;
+}
+
+.howitworks-cards__header h2 {
+  margin: 0;
+  font-size: clamp(28px, 3.6vw, 40px);
+  color: #f2ffff;
+}
+
+.howitworks-cards__header p {
+  margin: 0;
+  color: #9fe6ff;
+  font-size: clamp(16px, 1.6vw, 20px);
+}
+
+.howitworks-cards__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(20px, 3vw, 32px);
+}
+
+.howitworks-card {
+  position: relative;
+  background: rgba(5, 21, 36, 0.82);
+  border-radius: 20px;
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid rgba(0, 198, 230, 0.25);
+  box-shadow: 0 18px 40px rgba(4, 16, 28, 0.45);
+  display: grid;
+  gap: 12px;
+  color: #d4f7ff;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.howitworks-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(111, 168, 201, 0.55);
+  box-shadow: 0 24px 48px rgba(4, 16, 28, 0.55);
+}
+
+.howitworks-card h3 {
+  margin: 0;
+  font-size: clamp(20px, 2.5vw, 26px);
+  color: #f2ffff;
+}
+
+.howitworks-card p {
+  margin: 0;
+  font-size: clamp(15px, 1.5vw, 19px);
+  color: #b9d6e5;
+}
+
+.howitworks-card__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0, 198, 230, 0.18);
+  color: #9fe6ff;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .panel {
   min-height: 100vh;
   display: grid;
@@ -244,6 +324,16 @@
 
   .howitworks-sidebar {
     display: none;
+  }
+
+  .howitworks-cards {
+    margin: clamp(48px, 12vw, 96px) auto;
+    padding: 0 clamp(16px, 8vw, 32px);
+  }
+
+  .howitworks-cards__header {
+    align-items: center;
+    text-align: center;
   }
 }
 

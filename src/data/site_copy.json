@@ -1,24 +1,52 @@
 {
   "scenes": [
     {
-      "id": "overview",
+      "id": 0,
+      "key": "scenes.0",
       "headline": "Let your capital move intelligently.",
-      "body": "Deposit once. Hyper Strategies automatically routes capital between vaults, safety funds, and upcoming initiatives — so your money is always working."
+      "body": "Deposit once. Hyper Strategies automatically routes capital between strategies and safety mechanisms."
     },
     {
-      "id": "moneyFlow",
+      "id": 1,
+      "key": "scenes.1",
       "headline": "The money flow.",
-      "body": "On deposit, 80% enters active strategies and 20% routes to the Safety Fund, farming protocols, and our token seeding pool."
+      "body": "80% to active strategies. 20% to Safety Fund, Farming, and Token Seeding."
     },
     {
-      "id": "strategyHub",
+      "id": 2,
+      "key": "scenes.2",
       "headline": "Our strategies.",
-      "body": "Two vaults today: the Core Strategy for balanced growth, and a High-Risk Strategy for amplified exposure on more volatile pairs."
+      "body": "Core Strategy (balanced, high-cap focus) and High-Risk (volatile pairs, higher drawdown tolerance)."
     },
     {
-      "id": "innerLoop",
+      "id": 3,
+      "key": "scenes.3",
       "headline": "Inside a strategy.",
-      "body": "Signals → positions → risk controls → rebalance → realize PnL → compound. Algorithmic trading with discretionary overlays and dynamic trailing stops."
+      "body": "Signals → positions → risk controls → rebalance → realize PnL → compound."
+    },
+    {
+      "id": 4,
+      "key": "scenes.4",
+      "headline": "Security & protection.",
+      "body": "Deposit split reinforces Safety Fund and selective Farming; token seeding aligns long-term incentives."
+    },
+    {
+      "id": 5,
+      "key": "scenes.5",
+      "headline": "Fees & high-watermark.",
+      "body": "20% performance fee only on new profits above your highest equity peak."
+    },
+    {
+      "id": 6,
+      "key": "scenes.6",
+      "headline": "Rewards, XP & tiers.",
+      "body": "Earn through Rewards Center, climb Account Tiers with XP, and track Leaderboards."
+    },
+    {
+      "id": 7,
+      "key": "scenes.7",
+      "headline": "Reporting & syndicates.",
+      "body": "Personal dashboards, public quarterly reports, and community syndicates. Withdrawals flow back to you."
     }
   ],
   "flow": {
@@ -35,6 +63,50 @@
       "token": "Token Seeding"
     }
   },
+  "infoCards": [
+    {
+      "id": "core",
+      "title": "Core Strategy",
+      "body": "Flagship algo + discretionary overlays, trailing stops, high-market-cap pairs.",
+      "badge": "Moderate risk"
+    },
+    {
+      "id": "highRisk",
+      "title": "High-Risk Strategy",
+      "body": "Same toolkit on more volatile pairs—amplified opportunity & drawdowns.",
+      "badge": "High risk"
+    },
+    {
+      "id": "feeStructure",
+      "title": "Fee Structure",
+      "body": "20% performance fee after high-watermark. No fee without new profits."
+    },
+    {
+      "id": "safetyFund",
+      "title": "Safety Fund",
+      "body": "Part of deposits accrue to a fund designed to buffer unexpected events."
+    },
+    {
+      "id": "farming",
+      "title": "Farming Protocols",
+      "body": "Selective yield strategies to diversify income streams."
+    },
+    {
+      "id": "buyback",
+      "title": "Buyback Engine",
+      "body": "Directs revenue to periodic buybacks to support the ecosystem."
+    },
+    {
+      "id": "rewards",
+      "title": "Rewards Center & Tiers",
+      "body": "Earn points, level up tiers with XP, and unlock benefits."
+    },
+    {
+      "id": "reporting",
+      "title": "Reporting & Syndicates",
+      "body": "Personal reports, public quarters, and collaborative syndicate options."
+    }
+  ],
   "strategies": [
     {
       "id": "core",

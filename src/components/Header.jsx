@@ -89,7 +89,6 @@ const Header = () => {
           <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
             <option value="en">EN</option>
             <option value="de">DE</option>
-            <option value="eu">EU</option>
             <option value="troll">Troll</option>
           </select>
 
@@ -140,7 +139,6 @@ const Header = () => {
                       <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
                           <option value="en">EN</option>
                           <option value="de">DE</option>
-                          <option value="eu">EU</option>
                           <option value="troll">Troll</option>
                       </select>
                   </div>

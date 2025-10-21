@@ -5,6 +5,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { useTranslation } from 'react-i18next';
 import copy from '../../data/site_copy.json';
+import { T } from '@/utils/i18n';
 
 const DEFAULT_FLOW = {
   main: 0.8,
@@ -39,6 +40,8 @@ const palette = {
   token: new THREE.Color('#9B5CF6'),
   user: new THREE.Color('#E6F7FF'),
   edges: new THREE.Color('#6FA8C9'),
+  buyback: new THREE.Color('#FF7A59'),
+  rewards: new THREE.Color('#6FA8C9'),
 };
 
 const HUB_DEFS = [
@@ -50,6 +53,8 @@ const HUB_DEFS = [
   { id: 'safety', pos: [1.6, 0.55, 0.6], color: palette.safety },
   { id: 'farming', pos: [1.6, -0.25, -0.55], color: palette.farming },
   { id: 'token', pos: [1.6, 0.25, 0.0], color: palette.token },
+  { id: 'buyback', pos: [1.4, -0.55, 0.55], color: palette.buyback },
+  { id: 'rewards', pos: [1.4, 0.55, -0.55], color: palette.rewards },
   { id: 'userOut', pos: [-2.4, -0.2, -0.2], color: palette.user },
 ];
 
@@ -61,11 +66,15 @@ const EDGE_DEFS = [
   { id: 'deposit_token', from: 'deposit', to: 'token', kind: 'side', color: palette.token },
   { id: 'strategies_core', from: 'strategies', to: 'core', kind: 'internal', color: palette.main },
   { id: 'strategies_high', from: 'strategies', to: 'high', kind: 'internal', color: palette.token },
+  { id: 'strategies_rewards', from: 'strategies', to: 'rewards', kind: 'program', color: palette.rewards },
   { id: 'core_userOut', from: 'core', to: 'userOut', kind: 'out', color: palette.main },
   { id: 'high_userOut', from: 'high', to: 'userOut', kind: 'out', color: palette.token },
+  { id: 'core_buyback', from: 'core', to: 'buyback', kind: 'revenue', color: palette.buyback },
+  { id: 'high_buyback', from: 'high', to: 'buyback', kind: 'revenue', color: palette.buyback },
   { id: 'safety_userOut', from: 'safety', to: 'userOut', kind: 'out', color: palette.safety },
   { id: 'farming_userOut', from: 'farming', to: 'userOut', kind: 'out', color: palette.farming },
   { id: 'token_userOut', from: 'token', to: 'userOut', kind: 'out', color: palette.token },
+  { id: 'rewards_userOut', from: 'rewards', to: 'userOut', kind: 'benefit', color: palette.rewards },
 ];
 
 const MAIN_SPLIT = { core: 0.6, high: 0.4 };
@@ -78,18 +87,38 @@ const HUB_DWELL = {
   token: 1,
   core: 0.9,
   high: 1.1,
+  buyback: 1.4,
+  rewards: 1.3,
   userOut: 1.5,
 };
 
 const ROUTE_VARIANTS = {
-  main: [
-    ['userIn_deposit', 'deposit_strategies', 'strategies_core', 'core_userOut'],
-    ['userIn_deposit', 'deposit_strategies', 'strategies_high', 'high_userOut'],
-  ],
+  main: {
+    coreOut: ['userIn_deposit', 'deposit_strategies', 'strategies_core', 'core_userOut'],
+    highOut: ['userIn_deposit', 'deposit_strategies', 'strategies_high', 'high_userOut'],
+    coreBuyback: ['userIn_deposit', 'deposit_strategies', 'strategies_core', 'core_buyback'],
+    highBuyback: ['userIn_deposit', 'deposit_strategies', 'strategies_high', 'high_buyback'],
+    rewards: ['userIn_deposit', 'deposit_strategies', 'strategies_rewards', 'rewards_userOut'],
+  },
   safety: [['userIn_deposit', 'deposit_safety', 'safety_userOut']],
   farming: [['userIn_deposit', 'deposit_farming', 'farming_userOut']],
   token: [['userIn_deposit', 'deposit_token', 'token_userOut']],
 };
+
+const MAIN_ROUTE_SEQUENCE = [
+  ROUTE_VARIANTS.main.coreOut,
+  ROUTE_VARIANTS.main.coreOut,
+  ROUTE_VARIANTS.main.highOut,
+  ROUTE_VARIANTS.main.coreOut,
+  ROUTE_VARIANTS.main.coreBuyback,
+  ROUTE_VARIANTS.main.highOut,
+  ROUTE_VARIANTS.main.coreOut,
+  ROUTE_VARIANTS.main.highBuyback,
+  ROUTE_VARIANTS.main.coreOut,
+  ROUTE_VARIANTS.main.highOut,
+  ROUTE_VARIANTS.main.rewards,
+  ROUTE_VARIANTS.main.coreOut,
+];
 
 const clamp01 = (value) => Math.min(1, Math.max(0, value));
 
@@ -120,6 +149,21 @@ function buildEdgeCurve(from, to, kind) {
       mid.y -= 0.25;
       mid.x -= 0.35;
       break;
+    case 'revenue':
+      mid.y -= 0.2;
+      mid.x += 0.25;
+      mid.z += (end.z - start.z) * 0.4;
+      break;
+    case 'program':
+      mid.y += 0.25;
+      mid.x += 0.4;
+      mid.z += (end.z - start.z) * 0.6;
+      break;
+    case 'benefit':
+      mid.y -= 0.12;
+      mid.x -= 0.45;
+      mid.z += (end.z - start.z) * 0.2;
+      break;
     default:
       break;
   }
@@ -149,23 +193,25 @@ function generateSlots(position, capacity = 27) {
   return offsets;
 }
 
-export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
+export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale = 'en' }) {
   const animationState = useRef({ frame: null });
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const flows = copy.flow?.distribution || DEFAULT_FLOW;
 
   const numberFormatter = useMemo(
     () =>
-      new Intl.NumberFormat(i18n.language, {
+      new Intl.NumberFormat(locale, {
         maximumFractionDigits: 0,
       }),
-    [i18n.language]
+    [locale]
+  );
+
+  const formatPercent = useMemo(
+    () => (value) => t('howItWorks.percent', { value: numberFormatter.format(Math.round(value)) }),
+    [numberFormatter, t]
   );
 
   const labelCopy = useMemo(() => {
-    const formatPercent = (value) =>
-      t('howItWorks.percent', { value: numberFormatter.format(Math.round(value)) });
-
     return {
       userIn: {
         title: t('howItWorks.labels.user'),
@@ -199,6 +245,14 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
         title: t('howItWorks.labels.tokenSeeding'),
         description: formatPercent(flows.token * 100),
       },
+      buyback: {
+        title: T('cards.buyback.title', locale),
+        description: T('cards.buyback.body', locale),
+      },
+      rewards: {
+        title: T('cards.rewards.title', locale),
+        description: T('cards.rewards.body', locale),
+      },
       userOut: {
         title: t('howItWorks.labels.userOut'),
         description: t('howItWorks.descriptions.userOut'),
@@ -208,7 +262,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
         description: t('howItWorks.descriptions.innerLoop'),
       },
     };
-  }, [flows, numberFormatter, t]);
+  }, [flows, formatPercent, locale, t]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -347,20 +401,16 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
       flowParticles[key] = [];
     });
 
-    const selectRoute = (flowKey, index, total) => {
+    const selectRoute = (flowKey, index) => {
       if (flowKey !== 'main') {
         return ROUTE_VARIANTS[flowKey][0];
       }
-      const coreCap = Math.round(total * MAIN_SPLIT.core);
-      if (index < coreCap) {
-        return ROUTE_VARIANTS.main[0];
-      }
-      return ROUTE_VARIANTS.main[1];
+      return MAIN_ROUTE_SEQUENCE[index % MAIN_ROUTE_SEQUENCE.length];
     };
 
     Object.entries(FLOW_COUNTS).forEach(([flowKey, count]) => {
       for (let i = 0; i < count; i += 1) {
-        const route = selectRoute(flowKey, i, count);
+        const route = selectRoute(flowKey, i);
         flowParticles[flowKey].push({
           key: flowKey,
           index: i,
@@ -415,7 +465,14 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
 
     const labelElements = [];
 
-    const createLabel = (id, hubId, title, description, interactive = false) => {
+    const createLabel = (
+      id,
+      hubId,
+      title,
+      description,
+      interactive = false,
+      anchorOverride = null
+    ) => {
       const element = document.createElement('div');
       element.className = `howitworks-label${interactive ? ' howitworks-label--interactive' : ''}`;
       element.dataset.labelId = id;
@@ -442,7 +499,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
         });
       }
 
-      const anchor = hubMeshes.get(hubId);
+      const anchor = anchorOverride || hubMeshes.get(hubId);
       labelElements.push({ id, hubId, element, anchor, visible: true });
     };
 
@@ -454,7 +511,50 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
     createLabel('safety', 'safety', labelCopy.safety.title, labelCopy.safety.description);
     createLabel('farming', 'farming', labelCopy.farming.title, labelCopy.farming.description);
     createLabel('token', 'token', labelCopy.token.title, labelCopy.token.description);
+    createLabel('buyback', 'buyback', labelCopy.buyback.title, labelCopy.buyback.description, true);
+    createLabel('rewards', 'rewards', labelCopy.rewards.title, labelCopy.rewards.description, true);
     createLabel('userOut', 'userOut', labelCopy.userOut.title, labelCopy.userOut.description);
+
+    const percentLabelConfigs = [
+      {
+        id: 'edge-deposit_strategies',
+        edgeId: 'deposit_strategies',
+        title: t('howItWorks.labels.strategiesHub'),
+        value: formatPercent(flows.main * 100),
+      },
+      {
+        id: 'edge-deposit_safety',
+        edgeId: 'deposit_safety',
+        title: t('howItWorks.labels.safetyFund'),
+        value: formatPercent(flows.safety * 100),
+      },
+      {
+        id: 'edge-deposit_farming',
+        edgeId: 'deposit_farming',
+        title: t('howItWorks.labels.farming'),
+        value: formatPercent(flows.farming * 100),
+      },
+      {
+        id: 'edge-deposit_token',
+        edgeId: 'deposit_token',
+        title: t('howItWorks.labels.tokenSeeding'),
+        value: formatPercent(flows.token * 100),
+      },
+    ];
+
+    percentLabelConfigs.forEach(({ id, edgeId, title, value }) => {
+      const edge = edgesById.get(edgeId);
+      if (!edge) return;
+      const anchor = new THREE.Object3D();
+      const point = edge.curve.getPoint(0.45);
+      anchor.position.copy(point);
+      rootGroup.add(anchor);
+      createLabel(id, edgeId, title, value, false, anchor);
+      const last = labelElements[labelElements.length - 1];
+      if (last) {
+        last.anchor = anchor;
+      }
+    });
 
     const innerLoopGroup = new THREE.Group();
     innerLoopGroup.position.set(0.95, 0.12, 0.08);
@@ -482,9 +582,33 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
 
     const flowVisible = {
       overview: ['userIn', 'deposit'],
-      moneyFlow: ['userIn', 'deposit', 'strategies', 'safety', 'farming', 'token'],
-      strategyHub: ['strategies', 'core', 'high', 'safety', 'farming', 'token'],
+      moneyFlow: [
+        'userIn',
+        'deposit',
+        'strategies',
+        'safety',
+        'farming',
+        'token',
+        'edge-deposit_strategies',
+        'edge-deposit_safety',
+        'edge-deposit_farming',
+        'edge-deposit_token',
+      ],
+      strategyHub: ['strategies', 'core', 'high', 'buyback', 'rewards'],
       innerLoop: ['userOut', 'core', 'high', 'innerLoop'],
+      security: [
+        'strategies',
+        'safety',
+        'farming',
+        'token',
+        'buyback',
+        'edge-deposit_safety',
+        'edge-deposit_farming',
+        'edge-deposit_token',
+      ],
+      fees: ['deposit', 'core', 'high', 'buyback', 'userOut'],
+      rewards: ['strategies', 'rewards', 'userOut', 'edge-deposit_strategies'],
+      reporting: ['userOut', 'rewards', 'buyback'],
     };
 
     let currentEvent = '';
@@ -554,6 +678,48 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
         case 'innerLoop':
           hubPulseTargets.set('core', 1.12);
           hubPulseTargets.set('high', 1.06);
+          break;
+        case 'security':
+          updateFlowTargets({
+            main: flows.main * 0.6,
+            safety: flows.safety,
+            farming: flows.farming,
+            token: flows.token,
+          });
+          hubPulseTargets.set('safety', 1.2);
+          hubPulseTargets.set('farming', 1.18);
+          hubPulseTargets.set('token', 1.16);
+          break;
+        case 'fees':
+          updateFlowTargets({
+            main: flows.main * 0.5,
+            safety: flows.safety * 0.4,
+            farming: flows.farming * 0.4,
+            token: flows.token * 0.4,
+          });
+          hubPulseTargets.set('buyback', 1.22);
+          hubPulseTargets.set('core', 1.08);
+          hubPulseTargets.set('high', 1.05);
+          break;
+        case 'rewards':
+          updateFlowTargets({
+            main: flows.main * 0.55,
+            safety: flows.safety * 0.35,
+            farming: flows.farming * 0.35,
+            token: flows.token * 0.35,
+          });
+          hubPulseTargets.set('rewards', 1.24);
+          break;
+        case 'reporting':
+          updateFlowTargets({
+            main: flows.main * 0.45,
+            safety: flows.safety * 0.3,
+            farming: flows.farming * 0.3,
+            token: flows.token * 0.3,
+          });
+          hubPulseTargets.set('userOut', 1.2);
+          hubPulseTargets.set('buyback', 1.1);
+          hubPulseTargets.set('rewards', 1.08);
           break;
         default:
           break;
@@ -724,6 +890,14 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
           case 'high_userOut':
             target = flowState.main.current * MAIN_SPLIT.high;
             break;
+          case 'strategies_rewards':
+          case 'rewards_userOut':
+            target = flowState.main.current * 0.4;
+            break;
+          case 'core_buyback':
+          case 'high_buyback':
+            target = flowState.main.current * 0.25;
+            break;
           case 'deposit_safety':
           case 'safety_userOut':
             target = flowState.safety.current;
@@ -856,7 +1030,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady }) {
       api.dispose();
       onReady?.(null);
     };
-  }, [canvasRef, overlayRef, onReady, labelCopy, flows, t]);
+  }, [canvasRef, overlayRef, onReady, labelCopy, flows, formatPercent, t]);
 
   return null;
 }

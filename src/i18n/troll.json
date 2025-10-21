@@ -108,15 +108,15 @@
     "terms_link": "DA BIG RULEZ"
   },
   "reserveVault": {
-  "yourHoldings": "YER PILE OF SHINIES",
-  "avgCost": "HOW MANY TEEFS PER SHINY"
-},
+    "yourHoldings": "YER PILE OF SHINIES",
+    "avgCost": "HOW MANY TEEFS PER SHINY"
+  },
   "dashboard": {
     "explore_strategy": "SEE DA STOMPA",
-  "manage_position": "BOSS YER BOYZ",
-  "welcome_title": "GET TA KRUMPIN'!",
-  "welcome_subtitle": "YA CAN'T FIGHT WIF NO TEEF. GO TO DA TEEF PILE, GET SOME SHINIES, DEN GO PICK A STOMPA.",
-  "welcome_cta": "GO TO DA TEEF PILE",
+    "manage_position": "BOSS YER BOYZ",
+    "welcome_title": "GET TA KRUMPIN'!",
+    "welcome_subtitle": "YA CAN'T FIGHT WIF NO TEEF. GO TO DA TEEF PILE, GET SOME SHINIES, DEN GO PICK A STOMPA.",
+    "welcome_cta": "GO TO DA TEEF PILE",
     "welcome": "OI, {{username}}, GET BACK TA KRUMPIN'!",
     "no_data": "COULDN'T GET DA INFO. PROBABLY SNEAKY GITS.",
     "error_fetch": "COULDN'T GET DA INFO. PROBABLY SNEAKY GITS.",
@@ -279,6 +279,80 @@
     "notInvested": {
       "title": "YA AIN'T GOT NO BOYZ IN DIS STOMPA.",
       "description": "GO TO DA BOSS HUT AND SEND SOME BOYZ IN TA SEE DA FIGHT."
+    }
+  },
+  "cta": {
+    "connect": "bonk wallet",
+    "explore": "poke strategies"
+  },
+  "scenes": {
+    "0": {
+      "headline": "Coins do lil’ walkies.",
+      "body": "Drop once. System yeets cubes between boxes n’ safety bits."
+    },
+    "1": {
+      "headline": "Money go brrr.",
+      "body": "80% go zoom to strategies. 20% goes to boop fund + farm + token seeds."
+    },
+    "2": {
+      "headline": "Two brain modes.",
+      "body": "Core = sensible cube. High-Risk = spicy cube."
+    },
+    "3": {
+      "headline": "Inside the cube loop.",
+      "body": "Signal → Position → Risk bonk → Rebalance → PnL → Loop again."
+    },
+    "4": {
+      "headline": "Armor & snacks.",
+      "body": "Safety fund armor, farm snacks, token seedlings."
+    },
+    "5": {
+      "headline": "Fees but only if win.",
+      "body": "20% after big-number watermark. No win? No fee."
+    },
+    "6": {
+      "headline": "Shiny points & flex.",
+      "body": "Get points, level up, top the board. Much wow."
+    },
+    "7": {
+      "headline": "Reports & frens.",
+      "body": "Charts for nerds, syndicates for frens. Withdraw cube back to you."
+    }
+  },
+  "cards": {
+    "core": {
+      "title": "Core Cube",
+      "body": "Algo + human wiggles. Big-cap pairs. Chill vibes.",
+      "badge": "Chill"
+    },
+    "highRisk": {
+      "title": "Spicy Cube",
+      "body": "Volatile pairs. Fast up, fast down. Hold tight.",
+      "badge": "Spicy"
+    },
+    "feeStructure": {
+      "title": "Fee Thing",
+      "body": "20% only if new highs. Otherwise nada."
+    },
+    "safetyFund": {
+      "title": "Boop Fund",
+      "body": "Tiny stash for oopsies."
+    },
+    "farming": {
+      "title": "Farm Time",
+      "body": "Grow yield beans elsewhere."
+    },
+    "buyback": {
+      "title": "Buyback Go Vroom",
+      "body": "Revenue → buy tokens → vibes."
+    },
+    "rewards": {
+      "title": "Points Machine",
+      "body": "XP, tiers, bragging rights."
+    },
+    "reporting": {
+      "title": "Nerd Charts",
+      "body": "Numbers so you nod wisely."
     }
   }
 }

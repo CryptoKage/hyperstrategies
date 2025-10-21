@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-export default function ParallaxFallback({ copy }) {
+export default function ParallaxFallback({ scenes = [] }) {
   const containerRef = useRef(null);
   const layersRef = useRef([]);
 
@@ -51,7 +51,7 @@ export default function ParallaxFallback({ copy }) {
         }}
       >
         <ul>
-          {copy.scenes.slice(0, 4).map((scene) => (
+          {scenes.slice(0, 4).map((scene) => (
             <li key={scene.id}>
               <h3>{scene.headline}</h3>
               <p>{scene.body}</p>
