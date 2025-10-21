@@ -393,22 +393,22 @@
       "text": "Einzahlen und unsere Systeme für dich arbeiten lassen – mit kuratierten, leistungsstarken Strategien.",
       "button": "ZUM DASHBOARD",
       "link": "/login"
+    }
+  },
+  "investor": {
+    "title": "Investor Relations",
+    "subtitle": "Erkunde Partnerschaftsmöglichkeiten mit Hyper Strategies von Anfang an.",
+    "seed": {
+      "title": "Seed-Investment-Möglichkeit",
+      "description": "Für frühe Seed-Investments bieten wir bis zu 12% Beteiligung am Unternehmen. Bitte kontaktiere das Team bei Interesse.",
+      "cta_telegram": "Kontakt über Telegram",
+      "cta_x": "Kontakt über X"
     },
-    "investor": {
-      "title": "Investor Relations",
-      "subtitle": "Erkunde Partnerschaftsmöglichkeiten mit Hyper Strategies von Anfang an.",
-      "seed": {
-        "title": "Seed-Investment-Möglichkeit",
-        "description": "Für frühe Seed-Investments bieten wir bis zu 12% Beteiligung am Unternehmen. Bitte kontaktiere das Team bei Interesse.",
-        "cta_telegram": "Kontakt über Telegram",
-        "cta_x": "Kontakt über X"
-      },
-      "presale": {
-        "title": "Token-Presale der Plattform",
-        "description": "Um am kommenden Token-Presale teilzunehmen, muss dein Account mindestens Tier 2 sein. Sichere dir deinen Platz in der Zukunft des Hyper-Strategies-Ökosystems.",
-        "cta_loggedin": "Presale-Details ansehen",
-        "cta_loggedout": "Anmelden, um Berechtigung zu prüfen"
-      }
+    "presale": {
+      "title": "Token-Presale der Plattform",
+      "description": "Um am kommenden Token-Presale teilzunehmen, muss dein Account mindestens Tier 2 sein. Sichere dir deinen Platz in der Zukunft des Hyper-Strategies-Ökosystems.",
+      "cta_loggedin": "Presale-Details ansehen",
+      "cta_loggedout": "Anmelden, um Berechtigung zu prüfen"
     }
   },
   "journey": {
