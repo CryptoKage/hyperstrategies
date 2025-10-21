@@ -87,6 +87,7 @@
 },
   "dashboard": {
     "explore_strategy": "Strategie erkunden",
+    "invest_now": "Jetzt investieren",
   "manage_position": "Position verwalten",
    "welcome_title": "Legen wir los!",
   "welcome_subtitle": "Deine Reise beginnt mit deiner ersten Einzahlung. Gehe zu deiner Wallet, um dein Konto aufzuladen und Strategien zu entdecken.",
@@ -618,6 +619,12 @@
     "ledger_empty": "Du hast noch keinen eingeforderten XP-Verlauf."
   },
   "vault": {
+    "actions": {
+      "investMore": "Mehr investieren",
+      "investNow": "Jetzt investieren",
+      "requestWithdrawal": "Auszahlung beantragen"
+    },
+    
     "yourPerformanceSnapshotTitle": "Dein Performance-Schnappschuss",
     "yourPerformanceSnapshotSubtext": "Basierend auf deiner persönlichen realisierten Performance seit deiner ersten Einzahlung.",
     "title": "Strategiedetails",
@@ -648,6 +655,10 @@
         "eth": "ETH-Performance",
         "sol": "SOL-Performance"
       }
+    },
+     "closed": {
+      "title": "Investitionen geschlossen",
+      "description": "Dieses Vault akzeptiert derzeit keine neuen Einzahlungen."
     },
     "assetBreakdown": {
       "title": "Asset-Aufschlüsselung",
