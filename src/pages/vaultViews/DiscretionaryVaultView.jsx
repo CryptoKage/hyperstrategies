@@ -1,11 +1,11 @@
-// src/pages/vaultViews/DiscretionaryVaultView.jsx
+// src/pages/vaultViews/DiscretionaryVaultView.jsx - CLEANED UP
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
-import VaultModal from '../../components/VaultModal';
 
+// StatCard remains the same
 const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, className = '' }) => {
     const { t } = useTranslation();
     return (
@@ -20,15 +20,8 @@ const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, class
 const DiscretionaryVaultView = ({ pageData }) => {
     const { t } = useTranslation();
     
-    // Destructure all the data we need from the parent component's prop
-    const { vaultInfo = {}, userPosition = null, dashboardData } = pageData;
+    const { vaultInfo = {}, userPosition = null } = pageData;
     const isInvested = userPosition && userPosition.principal > 0;
-
-    // State to control the visibility of the investment modal
-    const [isAllocateModalOpen, setAllocateModalOpen] = useState(false);
-
-    // Logic to determine if the vault is open for new investments
-    const canInvest = vaultInfo.is_user_investable && vaultInfo.status === 'active';
     
     return (
         <div className="vault-detail-container">
@@ -38,21 +31,10 @@ const DiscretionaryVaultView = ({ pageData }) => {
             </div>
             <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
             
-            {/* Action buttons are now always visible at the top */}
-            <div className="vault-actions">
-                {canInvest && (
-                    <button className="btn-primary" onClick={() => setAllocateModalOpen(true)}>
-                        {isInvested ? t('vault.actions.investMore') : t('vault.actions.investNow')}
-                    </button>
-                )}
-                {isInvested && (
-                    // This can be wired up to a withdrawal modal in the future
-                    <button className="btn-secondary">{t('vault.actions.requestWithdrawal')}</button>
-                )}
-            </div>
+            {/* The action buttons and VaultModal have been completely removed from this component. */}
 
             {isInvested ? (
-                // --- VIEW FOR INVESTED USERS ---
+                // --- VIEW FOR INVESTED USERS (Informational Only) ---
                 <>
                     <div className="vault-detail-grid">
                         <div className="vault-detail-column">
@@ -70,33 +52,19 @@ const DiscretionaryVaultView = ({ pageData }) => {
                     />
                 </>
             ) : ( 
-                // --- VIEW FOR NON-INVESTED USERS ---
-                !canInvest ? (
-                    // If the vault is closed to new investment
-                    <div className="profile-card text-center">
-                        <h2>{t('vault.closed.title', 'Investment Closed')}</h2>
-                        <p>{t('vault.closed.description', 'This vault is not currently accepting new deposits.')}</p>
+                // --- VIEW FOR NON-INVESTED USERS (Guide them back to Dashboard) ---
+                <div className="profile-card text-center">
+                    <h2>{t('vault.notInvested.title', 'You are not invested in this vault')}</h2>
+                    <p>{t('vault.notInvested.description_go_back', 'Go back to the dashboard to invest.')}</p>
+                    <div style={{ marginTop: '24px' }}>
+                        <Link to="/dashboard" className="btn-primary" style={{ width: 'auto', padding: '12px 24px' }}>
+                            {t('common.goToDashboard')}
+                        </Link>
                     </div>
-                ) : (
-                    // If the vault is open, but the user is not yet invested
-                    <div className="profile-card text-center">
-                        <h2>{t('vault.notInvested.title', 'You are not invested in this vault')}</h2>
-                        <p>{t('vault.notInvested.description', 'Click "Invest Now" to allocate funds from your available balance.')}</p>
-                    </div>
-                )
+                </div> 
             )}
 
-            {/* The Modal for investing, which is always available in the DOM */}
-            {dashboardData && canInvest && (
-                <VaultModal
-                    isOpen={isAllocateModalOpen}
-                    onClose={() => setAllocateModalOpen(false)}
-                    vault={vaultInfo}
-                    availableBalance={dashboardData.availableBalance}
-                    userTier={dashboardData.accountTier}
-                    onAllocationSuccess={() => window.location.reload()} // Reload the page on success to see updated balances
-                />
-            )}
+            {/* The VaultModal is no longer needed here. */}
         </div>
     );
 };
