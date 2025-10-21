@@ -45,8 +45,8 @@ const SnapshotItem = ({ labelKey, value, className = '' }) => {
 
   return (
     <div className="performance-snapshot-item">
-      <span className={`value ${className}`}>{numericValue.toFixed(2)}</span>
-      <span className="label">{t(labelKey)}</span>
+      <span className={`value ${className}`}>{numericValue.toFixed(2)}%</span>
+      <span className="label">{t(labelKey)}</span> 
     </div>
   );
 };
