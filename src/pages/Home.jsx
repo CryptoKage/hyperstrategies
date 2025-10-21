@@ -28,6 +28,7 @@ const Home = () => {
           <div className="button-row">
             <Link to="/register" className="btn-primary btn-large">{t('home.hero.register_now', 'Register Now')}</Link>
             <Link to="/login" className="btn-outline btn-large">{t('home.hero.sign_in', 'Sign In')}</Link>
+            <Link to="/how-it-works" className="btn-link btn-large">{t('home.hero.how_it_works', 'How it works')}</Link>
           </div>
         </section>
 
