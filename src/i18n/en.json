@@ -396,23 +396,23 @@
         "text": "Deposit and let our Systems work for you with curated, high-performance strategies.",
         "button": "VISIT DASHBOARD",
         "link": "/login"
+      }
+    },
+    "investor": {
+      "title": "Investor Relations",
+      "subtitle": "Explore opportunities to partner with Hyper Strategies at the ground floor.",
+      "seed": {
+        "title": "Seed Investment Opportunity",
+        "description": "We are offering up to 12% stake in the company for early seed investment. Please contact the team if this is of interest to you.",
+        "cta_telegram": "Contact via Telegram",
+        "cta_x": "Contact via X"
       },
-     "investor": {
-  "title": "Investor Relations",
-  "subtitle": "Explore opportunities to partner with Hyper Strategies at the ground floor.",
-  "seed": {
-    "title": "Seed Investment Opportunity",
-    "description": "We are offering up to 12% stake in the company for early seed investment. Please contact the team if this is of interest to you.",
-    "cta_telegram": "Contact via Telegram",
-    "cta_x": "Contact via X"
-  },
-  "presale": {
-    "title": "Platform Token Presale",
-    "description": "In order to participate in our upcoming token presale, your account must be tier 2 or above. Secure your spot in the future of the Hyper-Strategies ecosystem.",
-    "cta_loggedin": "View Presale Details",
-    "cta_loggedout": "Sign In to Check Eligibility"
-  }
-} 
+      "presale": {
+        "title": "Platform Token Presale",
+        "description": "In order to participate in our upcoming token presale, your account must be tier 2 or above. Secure your spot in the future of the Hyper-Strategies ecosystem.",
+        "cta_loggedin": "View Presale Details",
+        "cta_loggedout": "Sign In to Check Eligibility"
+      }
     },
      "journey": {
       "eyebrow": "Get started in 3 easy steps",
