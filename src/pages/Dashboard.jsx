@@ -21,6 +21,8 @@ import btcVaultBg from '../assets/btcvault.png';
 import farmVaultBg from '../assets/Farm.png';
 import newBtcVaultBg from '../assets/btc.png';
 import buybackEngineBg from '../assets/buyback.png';
+import highriskBg from '../assets/highrisk.png';
+
 
 const vaultImageMap = {
   'core.png': coreVaultBg,
@@ -30,6 +32,7 @@ const vaultImageMap = {
   'Farm.png': farmVaultBg,
   'btc.png': newBtcVaultBg,
   'buyback.png': buybackEngineBg,
+  'highrisk.png' : highriskBg.png,
 };
 
 const SnapshotItem = ({ labelKey, value, className = '' }) => {
