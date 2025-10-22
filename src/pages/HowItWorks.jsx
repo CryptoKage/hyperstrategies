@@ -5,6 +5,7 @@ import ScrollSceneController from '../components/HowItWorks3D/ScrollSceneControl
 import copy from '../data/site_copy.json';
 import { useTranslation } from 'react-i18next';
 import '../styles/how-it-works-rail.css';
+import { T } from '../utils/i18n';
 
 const SUPPORTED_LOCALES = ['en', 'de', 'troll'];
 
