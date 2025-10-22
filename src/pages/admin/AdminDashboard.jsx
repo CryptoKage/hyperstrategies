@@ -462,6 +462,13 @@ const renderContent = () => {
              <Link to="/admin/animations" className="btn-primary btn-sm">Animation Controls</Link>
              <Link to="/admin/reports/builder" className="btn-primary btn-sm">Report Builder</Link>
              <Link to="/admin/desk-results" className="btn-primary btn-sm">Desk Results</Link>
+             <Link to="/admin/reports/review" className="admin-dashboard-card">
+    <h3>Review Reports</h3>
+    <p>Review and publish monthly performance reports.</p>
+    {draftReportCount > 0 && (
+        <span className="notification-badge">{draftReportCount}</span>
+    )}
+</Link>
           </div>
         </div>
         {renderContent()}
