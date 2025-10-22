@@ -26,21 +26,25 @@ const AdminDashboard = () => {
   const [reportsForApproval, setReportsForApproval] = useState([]);
   const [reviewingId, setReviewingId] = useState(null);
 
+  const [draftReportCount, setDraftReportCount] = useState(0);
+
   const navigate = useNavigate();
 
   const fetchAdminStats = useCallback(async () => {
     setLoading(true);
     try {
       // Fetch both sets of data in parallel
-      const [statsResponse, transfersResponse, reportsResponse] = await Promise.all([
+      const [statsResponse, transfersResponse, reportsResponse, draftCountResponse] = await Promise.all([
         api.get('/admin/dashboard-stats'),
         api.get('/admin/transfers/pending'),
-          api.get('/admin/reports/pending-approval') 
+          api.get('/admin/reports/pending-approval') ,
+          api.get('/admin/reports/draft-count')
       ]);
       
       setStats(statsResponse.data);
       setPendingTransfers(transfersResponse.data);
       setReportsForApproval(reportsResponse.data);
+      setDraftReportCount(draftCountResponse.data.draftCount);
       setError('');
     } catch (err) {
       console.error("Failed to fetch admin data:", err);
