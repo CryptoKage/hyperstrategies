@@ -50,6 +50,18 @@
     "percent": "{{value}}%",
     "aria": {
       "label": "{{label}} spot, {{detail}}"
+    },
+    "edgeLabels": {
+      "toStrategies": "SEND IT TA DA STRATEGY HUB",
+      "toSafety": "TOSS SOME TA DA SAFE STACK",
+      "toFarming": "DRIBBLE TA DA FARM PIT",
+      "toToken": "SLING TA DA TOKEN SHOWER",
+      "coreRouting": "CORE STOMPA PIPE",
+      "highRouting": "MAD STOMPA PIPE",
+      "toRewards": "PAY DA REWARD GITZ",
+      "toBuyback": "FILL DA BUYBACK BUCKET",
+      "toUsers": "BACK TA DA GITZ",
+      "flow": "DA FLOW"
     }
   },
   "home": {
