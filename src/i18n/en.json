@@ -50,6 +50,18 @@
     "percent": "{{value}}%",
     "aria": {
       "label": "{{label}} hub, {{detail}}"
+    },
+    "edgeLabels": {
+      "toStrategies": "Routing to strategies",
+      "toSafety": "To Safety Fund",
+      "toFarming": "To Farming",
+      "toToken": "To Token",
+      "coreRouting": "Core strategy routing",
+      "highRouting": "High-volatility routing",
+      "toRewards": "To Rewards",
+      "toBuyback": "To Buyback",
+      "toUsers": "Back to users",
+      "flow": "Flow"
     }
   },
   "home": {

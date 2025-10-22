@@ -50,6 +50,18 @@
     "percent": "{{value}}%",
     "aria": {
       "label": "{{label}}-Knoten, {{detail}}"
+    },
+    "edgeLabels": {
+      "toStrategies": "Routing zu Strategien",
+      "toSafety": "Zum Sicherheitsfonds",
+      "toFarming": "Zum Farming",
+      "toToken": "Zum Token-Pool",
+      "coreRouting": "Core-Strategie-Routing",
+      "highRouting": "High-Risk-Routing",
+      "toRewards": "Zu den Rewards",
+      "toBuyback": "Zum Buyback",
+      "toUsers": "Zurück zu den Nutzern",
+      "flow": "Fluss"
     }
   },
   "home": {
