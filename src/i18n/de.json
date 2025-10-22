@@ -20,7 +20,8 @@
     "logout": "Abmelden",
     "signin": "Anmelden",
     "register": "Registrieren",
-    "alt_logo": "Hyper-Strategies Logo"
+    "alt_logo": "Hyper-Strategies Logo",
+    "how_it_works": "So funktioniert es"
   },
   "howItWorks": {
     "labels": {
@@ -62,7 +63,68 @@
       "toBuyback": "Zum Buyback",
       "toUsers": "Zurück zu den Nutzern",
       "flow": "Fluss"
-    }
+    },
+     "hero": {
+      "readDocs": "Dokumentation lesen",
+      "body": "Hyper Strategies wurde für Leute entwickelt, die disziplinierte Automatisierung wollen, ohne auf Transparenz zu verzichten. Erfahre, wie Einzahlungen geleitet, Risiken verwaltet und Community-Belohnungen generiert werden.",
+      "reducedMotion": "Animationen werden aufgrund deiner Systemeinstellungen minimiert."
+    },
+    "links": {
+      "riskDisclosure": "Risikohinweis lesen"
+    },
+    "steps": {
+      "disclaimer": "Die Automatisierung wird durch diskretionäre Aufsicht ergänzt. Kontrollen pausieren Strategien bei extremen Markt- oder Börsenereignissen."
+    },
+    "community": {
+      "body": "Syndikate teilen kuratierte Updates, On-Chain-Dashboards und Empfehlungs-Boosts. Die Teilnahme bringt XP und eine Umsatzbeteiligung, die an verifizierte Wachstumsmeilensteine gekoppelt ist.",
+      "bulletOne": "On-Chain-Belohnungen werden mit transparenten Berechnungen verteilt.",
+      "bulletTwo": "Community-Richtlinien erfordern ein verantwortungsvolles Teilen der Performance.",
+      "bulletThree": "Die Abstimmung mit dem Sicherheitsfonds und den Rückkaufprogrammen hält die Anreize im Gleichgewicht.",
+      "cta": "Mehr über das Investor-Onboarding"
+    },
+    "final": {
+      "body": "Bereit, Hyper Strategies zu erleben? Verbinde deine Wallet, wähle einen Vault und überwache die Leistung mit transparenter Berichterstattung.",
+      "launch": "App starten",
+      "faq": "FAQ besuchen",
+      "footnote": "Die Verfügbarkeit kann je nach Gerichtsbarkeit und Nutzerberechtigung variieren. Digitale Vermögenswerte sind hochvolatil; investiere niemals mehr, als du dir leisten kannst zu verlieren."
+    },
+    "innerLoop": [
+        "Signal",
+        "Position",
+        "Risiko",
+        "Zinseszins"
+    ]
+  },
+  "flow": {
+    "deposit": "Einzahlung",
+    "labels": {
+      "main": "Aktive Strategien",
+      "safety": "Sicherheitsfonds",
+      "farming": "Farming",
+      "token": "Token-Seeding"
+    },
+    "notes": [
+      "Wir weisen 20% der Einlagen auf den Sicherheitsfonds, Farming-Protokolle und Token-Seeding auf.",
+      "Bei erfolgreichen Trades wird eine Performancegebühr von 20% auf Gewinne über der High-Watermark erhoben."
+    ]
+  },
+  "protections": {
+    "safety-fund": {
+      "title": "Sicherheitsfonds",
+      "body": "Ein Teil der Einlagen fließt in einen Sicherheitsfonds, der unerwartete Ereignisse abfedern soll."
+    },
+    "farming": {
+      "title": "Farming-Protokolle",
+      "body": "Selektives Farming zur Diversifizierung der Einnahmequellen und zur Unterstützung der Nachhaltigkeit."
+    },
+    "buyback": {
+      "title": "Buyback-Engine",
+      "body": "Gezielte Einnahmen unterstützen periodische Rückkäufe, um Anreize mit dem Ökosystem in Einklang zu bringen."
+    },
+    "risk-controls": {
+      "title": "Risikokontrollen",
+      "body": "Dynamische Stop-Losses, Positionsgrößenbestimmung und kontinuierliche Überwachung zielen darauf ab, das Engagement innerhalb strenger Parameter zu halten."
+    }  
   },
   "home": {
     "hero": {
@@ -561,7 +623,20 @@
     "journey_step_two_cta": "Pins-Hub bald verfügbar",
     "journey_step_three": "Sammle XP und steigere dein Tier",
     "journey_step_three_copy": "Claim XP für verschiedene Aktivitäten, steigere dein Tier, um mehr Pins auszurüsten, mehr Perks zu erhalten und Zugang zum Token-Presale freizuschalten.",
-    "journey_step_three_cta": "Belohnungen"
+    "journey_step_three_cta": "Belohnungen",
+    "tab_overview": "Übersicht",
+      "tab_referrals": "Empfehlungen",
+      "tab_settings": "Einstellungen",
+      "tab_activity": "Aktivität",
+      "account_details_title": "Kontodetails",
+      "email_label": "E-Mail",
+      "value_missing": "Nicht festgelegt",
+      "referral_title": "Empfehlungs-Toolkit",
+      "referral_copy": "Teile deinen personalisierten Link und passe deinen Einladungscode an deine Marke an.",
+      "referral_qr_placeholder": "Füge einen Code hinzu, um deinen QR-Link zu generieren",
+      "referral_qr_caption": "Lade den QR-Code herunter oder mache einen Screenshot, um deine Einladung zu teilen.",
+      "profile_form_copy": "Dein Benutzername ist in Bestenlisten und auf den kommenden sozialen Ebenen sichtbar.",
+      "history_heading": "Letzte XP-Aktivität"
   },
   "pins_market": {
     "title": "Pins-Marktplatz",

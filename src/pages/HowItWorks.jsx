@@ -127,7 +127,7 @@ const HowItWorks = () => {
     () => [
       {
         label: t('howItWorks.metrics.netDeposits', { defaultValue: 'Net deposits' }),
-        value: 1250000,
+        value: 40000,
         suffix: '+',
         description: t('howItWorks.metrics.netDepositsDescription', {
           defaultValue: 'Illustrative cumulative deposits across Hyper Strategies vaults.',
@@ -135,7 +135,7 @@ const HowItWorks = () => {
       },
       {
         label: t('howItWorks.metrics.winRate', { defaultValue: 'Win rate' }),
-        value: 63,
+        value: 29.8,
         suffix: '%',
         description: t('howItWorks.metrics.winRateDescription', {
           defaultValue: 'Representative win rate from algorithmic and discretionary blends.',
@@ -143,7 +143,7 @@ const HowItWorks = () => {
       },
       {
         label: t('howItWorks.metrics.maxDrawdown', { defaultValue: 'Max drawdown' }),
-        value: 18,
+        value: 2,
         suffix: '%',
         description: t('howItWorks.metrics.maxDrawdownDescription', {
           defaultValue: 'Target maximum drawdown under stressed conditions.',
