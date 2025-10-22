@@ -5475,3 +5475,9 @@ opacity: 0.3;
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
+
+.vault-header-actions {
+  display: flex;
+  gap: 1rem; /* Adds space between the buttons */
+  align-items: center;
+}
