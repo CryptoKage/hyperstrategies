@@ -1,11 +1,12 @@
-// src/pages/vaultViews/DiscretionaryVaultView.jsx - CLEANED UP
+// src/pages/vaultViews/DiscretionaryVaultView.jsx - FINAL VERSION
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
+import api from '../../api/api';
 
-// StatCard remains the same
+// StatCard component remains the same
 const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, className = '' }) => {
     const { t } = useTranslation();
     return (
@@ -22,17 +23,39 @@ const DiscretionaryVaultView = ({ pageData }) => {
     
     const { vaultInfo = {}, userPosition = null } = pageData;
     const isInvested = userPosition && userPosition.principal > 0;
+
+    // --- NEW: State and effect to check for report eligibility ---
+    const [isReportEligible, setIsReportEligible] = useState(false);
+
+    useEffect(() => {
+        // Only run the check if the user is invested in this vault.
+        if (isInvested) {
+            api.get('/user/report-eligibility')
+                .then(res => {
+                    if (res.data.eligible) {
+                        setIsReportEligible(true);
+                    }
+                })
+                .catch(err => console.error("Failed to fetch report eligibility", err));
+        }
+    }, [isInvested]); // This effect will re-run if the user's investment status changes.
     
     return (
         <div className="vault-detail-container">
             <div className="vault-detail-header">
                 <h1>{vaultInfo.name || t('vault.title')}</h1>
-                <Link to="/dashboard" className="btn-secondary btn-sm">← {t('common.backToDashboard')}</Link>
+                {/* --- NEW: Button Group for Actions --- */}
+                <div className="vault-header-actions">
+                    {isReportEligible && (
+                        <Link to="/reports" className="btn-primary btn-sm">
+                            {t('vault.actions.myReports', 'My Reports')}
+                        </Link>
+                    )}
+                    <Link to="/dashboard" className="btn-secondary btn-sm">← {t('common.backToDashboard')}</Link>
+                </div>
             </div>
             <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
             
-            {/* The action buttons and VaultModal have been completely removed from this component. */}
-
             {isInvested ? (
                 // --- VIEW FOR INVESTED USERS (Informational Only) ---
                 <>
@@ -63,8 +86,6 @@ const DiscretionaryVaultView = ({ pageData }) => {
                     </div>
                 </div> 
             )}
-
-            {/* The VaultModal is no longer needed here. */}
         </div>
     );
 };
