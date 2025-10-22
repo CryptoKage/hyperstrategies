@@ -36,7 +36,7 @@ import ReportsPage from './ReportsPage';
 import DeskResultsPage from './admin/DeskResultsPage';
 import FarmingPipelinePage from './admin/FarmingPipelinePage';
 import HowItWorks from './HowItWorks';
-
+import ReportReviewPage from './admin/ReportReviewPage';
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -85,6 +85,7 @@ const Router = () => {
       <Route path="/admin/reports/builder" element={<AdminRoute><ReportBuilderPage /></AdminRoute>} />
       <Route path="/admin/desk-results" element={<AdminRoute><DeskResultsPage /></AdminRoute>} />
       <Route path="/admin/farming-pipeline" element={<AdminRoute><FarmingPipelinePage /></AdminRoute>} />
+            <Route path="/admin/reports/review" element={<AdminRoute><ReportReviewPage /></AdminRoute>} />
     </Routes>
      </> 
   );
