@@ -4,7 +4,6 @@ import FlowSceneCubes from '../components/HowItWorks3D/FlowSceneCubes';
 import ScrollSceneController from '../components/HowItWorks3D/ScrollSceneController';
 import copy from '../data/site_copy.json';
 import { useTranslation } from 'react-i18next';
-import { T } from '../utils/i18n';
 import '../styles/how-it-works-rail.css';
 
 const SUPPORTED_LOCALES = ['en', 'de', 'troll'];
