@@ -1,4 +1,4 @@
-// src/pages/ReportsPage.jsx - FINAL VERSION
+// src/pages/ReportsPage.jsx 
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import api from '../api/api';
 import LoadingSpinner from '../components/LoadingSpinner';
+import html2canvas from 'html2canvas'; 
+import jsPDF from 'jspdf';
 
 const ReportPreview = ({ reportData }) => {
     if (!reportData) return null;

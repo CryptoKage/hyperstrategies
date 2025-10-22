@@ -39,6 +39,8 @@ const ReportReviewPage = () => {
     const [error, setError] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
+     const [isDeleting, setIsDeleting] = useState(false);
+
 
     useEffect(() => {
         fetchDrafts();
@@ -66,6 +68,25 @@ const ReportReviewPage = () => {
 
     const handleDataChange = (field, value) => {
         setEditableData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleDelete = async () => {
+        if (!selectedReport || !window.confirm(`Are you sure you want to permanently delete the draft report for ${selectedReport.username}?`)) {
+            return;
+        }
+        setIsDeleting(true);
+        setError('');
+        setSuccessMessage('');
+        try {
+            const response = await api.delete(`/admin/reports/${selectedReport.report_id}`);
+            setSuccessMessage(response.data.message);
+            // Refresh the list to remove the deleted item
+            fetchDrafts();
+        } catch (err) {
+            setError(err.response?.data?.error || 'Failed to delete report.');
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     const handleSave = async (newStatus) => {
@@ -137,6 +158,9 @@ const ReportReviewPage = () => {
 
                                 {successMessage && <p className="admin-message success">{successMessage}</p>}
                                 <div className="modal-actions" style={{ marginTop: '24px' }}>
+                                     <button onClick={handleDelete} className="btn-danger-outline" disabled={isSaving || isDeleting}>
+                                        {isDeleting ? 'Deleting...' : 'Delete Draft'}
+                                    </button>
                                     <button onClick={() => handleSave('DRAFT')} className="btn-secondary" disabled={isSaving}>{isSaving ? '...' : 'Save Changes'}</button>
                                     <button onClick={() => handleSave('APPROVED')} className="btn-primary" disabled={isSaving}>{isSaving ? '...' : 'Approve & Publish'}</button>
                                 </div>
