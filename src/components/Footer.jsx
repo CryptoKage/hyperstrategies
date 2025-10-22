@@ -20,11 +20,11 @@ const Footer = () => {
       </div>
 
       <div className="footer__legal">
-        <a href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/" target="_blank" rel="noopener noreferrer">
+        <a href="https://hs0-3.gitbook.io/hs-docs/" target="_blank" rel="noopener noreferrer">
           {t('footer.documentation', 'Docs')}
         </a>
         <span className="separator">|</span>
-        <a href="https://hyper-strategies.gitbook.io/hyper-strategies-docs/user-guide/user-guide-getting-started" target="_blank" rel="noopener noreferrer">
+        <a href="https://hs0-3.gitbook.io/hs-docs/" target="_blank" rel="noopener noreferrer">
           {t('footer.user_guide', 'User Guide')}
         </a>
         <span className="separator">|</span>
