@@ -1,18 +1,14 @@
-export type Locale = 'en' | 'de' | 'troll';
+import en from '../i18n/en.json';
+import de from '../i18n/de.json';
+import troll from '../i18n/troll.json';
 
-import en from '@/i18n/en.json';
-import de from '@/i18n/de.json';
-import troll from '@/i18n/troll.json';
+const dict = { en, de, troll };
 
-type Dictionary = Record<Locale, any>;
-
-const dict: Dictionary = { en, de, troll };
-
-export const T = (key: string, locale: Locale = 'en'): string => {
+export const T = (key, locale = 'en') => {
   const segments = key.split('.');
 
-  const resolve = (lang: Locale) => {
-    let value: any = dict[lang];
+  const resolve = (lang) => {
+    let value = dict[lang];
     for (const segment of segments) {
       if (value == null) {
         return undefined;
@@ -30,3 +26,5 @@ export const T = (key: string, locale: Locale = 'en'): string => {
   const fallback = resolve('en');
   return typeof fallback === 'string' ? fallback : key;
 };
+
+export const SUPPORTED_LOCALES = Object.keys(dict);

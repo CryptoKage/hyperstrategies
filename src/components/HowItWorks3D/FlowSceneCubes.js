@@ -5,6 +5,7 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { useTranslation } from 'react-i18next';
 import copy from '../../data/site_copy.json';
+import { T } from '../../utils/i18n';
 
 const DEFAULT_FLOW = {
   main: 0.8,
@@ -121,9 +122,67 @@ const MAIN_ROUTE_SEQUENCE = [
 
 const clamp01 = (value) => Math.min(1, Math.max(0, value));
 
+const FLOW_EDGE_INFLUENCE = {
+  deposit_strategies: { main: 1 },
+  deposit_safety: { safety: 1 },
+  deposit_farming: { farming: 1 },
+  deposit_token: { token: 1 },
+};
+
 const emitTelemetry = (name, detail) => {
   if (typeof window === 'undefined') return;
   window.dispatchEvent(new CustomEvent(name, { detail }));
+};
+
+const EDGE_LABEL_KEYS = {
+  deposit_strategies: 'howItWorks.edgeLabels.toStrategies',
+  deposit_safety: 'howItWorks.edgeLabels.toSafety',
+  deposit_farming: 'howItWorks.edgeLabels.toFarming',
+  deposit_token: 'howItWorks.edgeLabels.toToken',
+  strategies_core: 'howItWorks.edgeLabels.coreRouting',
+  strategies_high: 'howItWorks.edgeLabels.highRouting',
+  strategies_rewards: 'howItWorks.edgeLabels.toRewards',
+  core_buyback: 'howItWorks.edgeLabels.toBuyback',
+  high_buyback: 'howItWorks.edgeLabels.toBuyback',
+  rewards_userOut: 'howItWorks.edgeLabels.toUsers',
+  core_userOut: 'howItWorks.edgeLabels.toUsers',
+  high_userOut: 'howItWorks.edgeLabels.toUsers',
+  safety_userOut: 'howItWorks.edgeLabels.toUsers',
+  farming_userOut: 'howItWorks.edgeLabels.toUsers',
+  token_userOut: 'howItWorks.edgeLabels.toUsers',
+};
+
+const resolvePercent = (edge, flows) => {
+  if (!edge) return 0;
+  const base = typeof edge.percent === 'number' ? edge.percent : undefined;
+  if (Number.isFinite(base)) {
+    return base;
+  }
+  if (edge.percentRef) {
+    const segments = edge.percentRef.split('.');
+    let cursor = flows;
+    for (const segment of segments) {
+      if (cursor == null) return 0;
+      cursor = cursor[segment];
+    }
+    if (Number.isFinite(cursor)) {
+      return cursor;
+    }
+  }
+  return 0;
+};
+
+const formatEdgeLabel = (edge, flows, locale = 'en') => {
+  if (!edge) return '';
+  const key = EDGE_LABEL_KEYS[edge.edgeId || edge.id];
+  if (key) {
+    const value = T(key, locale);
+    if (value && value !== key) {
+      return value;
+    }
+  }
+  const percent = resolvePercent(edge, flows);
+  return `${Math.round(percent * 100)}%`;
 };
 
 function buildEdgeCurve(from, to, kind) {
@@ -192,23 +251,10 @@ function generateSlots(position, capacity = 27) {
   return offsets;
 }
 
-export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale = 'en' }) {
+export default function FlowSceneCubes({ containerRef, canvasRef, onReady, locale = 'en' }) {
   const animationState = useRef({ frame: null });
   const { t } = useTranslation();
   const flows = copy.flow?.distribution || DEFAULT_FLOW;
-
-  const numberFormatter = useMemo(
-    () =>
-      new Intl.NumberFormat(locale, {
-        maximumFractionDigits: 0,
-      }),
-    [locale]
-  );
-
-  const formatPercent = useMemo(
-    () => (value) => t('howItWorks.percent', { value: numberFormatter.format(Math.round(value)) }),
-    [numberFormatter, t]
-  );
 
   const labelCopy = useMemo(() => {
     return {
@@ -222,27 +268,27 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
       },
       strategies: {
         title: t('howItWorks.labels.strategiesHub'),
-        description: formatPercent(flows.main * 100),
+        description: t('howItWorks.descriptions.strategiesHub'),
       },
       core: {
         title: t('howItWorks.labels.coreStrategy'),
-        description: formatPercent(MAIN_SPLIT.core * 100),
+        description: t('howItWorks.descriptions.coreStrategy'),
       },
       high: {
         title: t('howItWorks.labels.highStrategy'),
-        description: formatPercent(MAIN_SPLIT.high * 100),
+        description: t('howItWorks.descriptions.highStrategy'),
       },
       safety: {
         title: t('howItWorks.labels.safetyFund'),
-        description: formatPercent(flows.safety * 100),
+        description: t('howItWorks.descriptions.safetyFund'),
       },
       farming: {
         title: t('howItWorks.labels.farming'),
-        description: formatPercent(flows.farming * 100),
+        description: t('howItWorks.descriptions.farming'),
       },
       token: {
         title: t('howItWorks.labels.tokenSeeding'),
-        description: formatPercent(flows.token * 100),
+        description: t('howItWorks.descriptions.tokenSeeding'),
       },
       buyback: {
         title: t('cards.buyback.title'),
@@ -261,27 +307,31 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
         description: t('howItWorks.descriptions.innerLoop'),
       },
     };
-  }, [flows, formatPercent, t]);
+  }, [t]);
 
   useEffect(() => {
+    const container = containerRef?.current;
     const canvas = canvasRef.current;
-    const overlay = overlayRef?.current;
 
-    if (!canvas || !overlay) {
+    if (!canvas || !container) {
       return undefined;
     }
 
+    const overlay = document.createElement('div');
+    overlay.className = 'hw-rail-overlay';
+    container.appendChild(overlay);
+
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.shadowMap.enabled = false;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x050f19, 0.075);
+    scene.fog = new THREE.FogExp2(0x06101a, 0.08);
 
-    const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 120);
-    camera.position.set(0, 2.2, 6.2);
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0.6, 1.1, 3.2);
+    camera.lookAt(0.2, 0.2, 0.0);
 
     const ambient = new THREE.AmbientLight(0x22485c, 0.6);
     scene.add(ambient);
@@ -294,11 +344,27 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
     scene.add(dir);
 
     const rootGroup = new THREE.Group();
+    rootGroup.position.set(-0.1, 0, 0);
+    rootGroup.scale.setScalar(0.82);
     scene.add(rootGroup);
 
     const hubMeshes = new Map();
     const slotLayouts = new Map();
     const hubPulseTargets = new Map();
+
+    const lines = [];
+
+    const setRendererSize = () => {
+      const rect = container.getBoundingClientRect();
+      const width = Math.max(1, rect.width);
+      const height = Math.max(1, rect.height);
+      renderer.setSize(width, height, false);
+      camera.aspect = width / Math.max(1, height);
+      camera.updateProjectionMatrix();
+      lines.forEach((edge) => {
+        edge.material.resolution.set(width, height);
+      });
+    };
 
     const hubGeometry = new THREE.CylinderGeometry(0.22, 0.22, 0.32, 14, 1, true);
     HUB_DEFS.forEach((hub) => {
@@ -327,7 +393,6 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
     });
 
     const edgesById = new Map();
-    const lines = [];
 
     EDGE_DEFS.forEach((edge) => {
       const fromHub = HUB_DEFS.find((hub) => hub.id === edge.from);
@@ -353,7 +418,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
         dashSize: 0.25,
         gapSize: 0.45,
       });
-      material.resolution.set(window.innerWidth, window.innerHeight);
+      material.resolution.set(1, 1);
 
       const line = new Line2(geometry, material);
       line.computeLineDistances();
@@ -367,11 +432,39 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
         strength: 0,
         targetStrength: 0,
         dashSpeed: edge.kind === 'main' ? 0.5 : 0.35,
+        overrideStrength: null,
       };
 
       edgesById.set(edge.id, edgeEntry);
       lines.push(edgeEntry);
     });
+
+    const resizeObserver = new ResizeObserver(setRendererSize);
+    resizeObserver.observe(container);
+    setRendererSize();
+
+    const setFlowIntensity = (edgeKey, intensity) => {
+      const id = edgeKey.replace(/->/g, '_');
+      const edge = edgesById.get(id);
+      if (!Number.isFinite(intensity)) {
+        if (edge) {
+          edge.overrideStrength = null;
+        }
+        return;
+      }
+      const normalized = clamp01(intensity);
+      if (edge) {
+        edge.overrideStrength = normalized;
+      }
+      const influence = FLOW_EDGE_INFLUENCE[id];
+      if (influence) {
+        Object.entries(influence).forEach(([flowKey, weight]) => {
+          if (flowState[flowKey]) {
+            flowState[flowKey].target = clamp01(normalized * weight);
+          }
+        });
+      }
+    };
 
     const cubeGeometry = new THREE.BoxGeometry(CUBE_SIZE, CUBE_SIZE, CUBE_SIZE);
     const instancedMeshes = {};
@@ -464,6 +557,12 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
 
     const labelElements = [];
 
+    const setLabelOpacity = (id, opacity) => {
+      const label = labelElements.find((item) => item.id === id);
+      if (!label) return;
+      label.alpha = clamp01(typeof opacity === 'number' ? opacity : 0);
+    };
+
     const createLabel = (
       id,
       hubId,
@@ -499,7 +598,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
       }
 
       const anchor = anchorOverride || hubMeshes.get(hubId);
-      labelElements.push({ id, hubId, element, anchor, visible: true });
+      labelElements.push({ id, hubId, element, anchor, visible: true, alpha: 1 });
     };
 
     createLabel('userIn', 'userIn', labelCopy.userIn.title, labelCopy.userIn.description);
@@ -519,25 +618,25 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
         id: 'edge-deposit_strategies',
         edgeId: 'deposit_strategies',
         title: t('howItWorks.labels.strategiesHub'),
-        value: formatPercent(flows.main * 100),
+        value: formatEdgeLabel({ id: 'deposit_strategies', percent: flows.main }, flows, locale),
       },
       {
         id: 'edge-deposit_safety',
         edgeId: 'deposit_safety',
         title: t('howItWorks.labels.safetyFund'),
-        value: formatPercent(flows.safety * 100),
+        value: formatEdgeLabel({ id: 'deposit_safety', percent: flows.safety }, flows, locale),
       },
       {
         id: 'edge-deposit_farming',
         edgeId: 'deposit_farming',
         title: t('howItWorks.labels.farming'),
-        value: formatPercent(flows.farming * 100),
+        value: formatEdgeLabel({ id: 'deposit_farming', percent: flows.farming }, flows, locale),
       },
       {
         id: 'edge-deposit_token',
         edgeId: 'deposit_token',
         title: t('howItWorks.labels.tokenSeeding'),
-        value: formatPercent(flows.token * 100),
+        value: formatEdgeLabel({ id: 'deposit_token', percent: flows.token }, flows, locale),
       },
     ];
 
@@ -622,31 +721,23 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
     const updateFlowTargets = (mix) => {
       if (!mix) return;
       if (typeof mix.main === 'number') {
-        flowState.main.target = clamp01(
-          mix.main / Math.max(flows.main || 1, 0.0001)
-        );
+        flowState.main.target = clamp01(mix.main);
       }
       if (typeof mix.safety === 'number') {
-        flowState.safety.target = clamp01(mix.safety / Math.max(flows.safety || 1, 0.0001));
+        flowState.safety.target = clamp01(mix.safety);
       }
       if (typeof mix.farming === 'number') {
-        flowState.farming.target = clamp01(mix.farming / Math.max(flows.farming || 1, 0.0001));
+        flowState.farming.target = clamp01(mix.farming);
       }
       if (typeof mix.token === 'number') {
-        flowState.token.target = clamp01(mix.token / Math.max(flows.token || 1, 0.0001));
+        flowState.token.target = clamp01(mix.token);
       }
     };
 
-    const setGroupOpacity = (opacity) => {
-      rootGroup.traverse((child) => {
-        if (child.material) {
-          child.material.opacity = opacity;
-          child.material.transparent = opacity < 1;
-        }
-      });
-      lines.forEach((edge) => {
-        edge.material.opacity = opacity * 0.8;
-      });
+    const pulseHub = (id, strength = 1.15) => {
+      if (!hubPulseTargets.has(id)) return;
+      const current = hubPulseTargets.get(id) ?? 1;
+      hubPulseTargets.set(id, Math.max(current, strength));
     };
 
     const triggerEvent = (event) => {
@@ -658,8 +749,8 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
       switch (event) {
         case 'overview':
           updateFlowTargets({ main: 0, safety: 0, farming: 0, token: 0 });
-          hubPulseTargets.set('deposit', 1.08);
-          hubPulseTargets.set('strategies', 1);
+          pulseHub('deposit', 1.08);
+          pulseHub('strategies', 1);
           break;
         case 'moneyFlow':
           updateFlowTargets({
@@ -668,15 +759,15 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
             farming: flows.farming,
             token: flows.token,
           });
-          hubPulseTargets.set('deposit', 1);
-          hubPulseTargets.set('strategies', 1.1);
+          pulseHub('deposit', 1);
+          pulseHub('strategies', 1.1);
           break;
         case 'strategyHub':
-          hubPulseTargets.set('strategies', 1.18);
+          pulseHub('strategies', 1.18);
           break;
         case 'innerLoop':
-          hubPulseTargets.set('core', 1.12);
-          hubPulseTargets.set('high', 1.06);
+          pulseHub('core', 1.12);
+          pulseHub('high', 1.06);
           break;
         case 'security':
           updateFlowTargets({
@@ -685,9 +776,9 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
             farming: flows.farming,
             token: flows.token,
           });
-          hubPulseTargets.set('safety', 1.2);
-          hubPulseTargets.set('farming', 1.18);
-          hubPulseTargets.set('token', 1.16);
+          pulseHub('safety', 1.2);
+          pulseHub('farming', 1.18);
+          pulseHub('token', 1.16);
           break;
         case 'fees':
           updateFlowTargets({
@@ -696,9 +787,9 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
             farming: flows.farming * 0.4,
             token: flows.token * 0.4,
           });
-          hubPulseTargets.set('buyback', 1.22);
-          hubPulseTargets.set('core', 1.08);
-          hubPulseTargets.set('high', 1.05);
+          pulseHub('buyback', 1.22);
+          pulseHub('core', 1.08);
+          pulseHub('high', 1.05);
           break;
         case 'rewards':
           updateFlowTargets({
@@ -707,7 +798,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
             farming: flows.farming * 0.35,
             token: flows.token * 0.35,
           });
-          hubPulseTargets.set('rewards', 1.24);
+          pulseHub('rewards', 1.24);
           break;
         case 'reporting':
           updateFlowTargets({
@@ -716,9 +807,9 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
             farming: flows.farming * 0.3,
             token: flows.token * 0.3,
           });
-          hubPulseTargets.set('userOut', 1.2);
-          hubPulseTargets.set('buyback', 1.1);
-          hubPulseTargets.set('rewards', 1.08);
+          pulseHub('userOut', 1.2);
+          pulseHub('buyback', 1.1);
+          pulseHub('rewards', 1.08);
           break;
         default:
           break;
@@ -726,6 +817,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
     };
 
     triggerEvent('overview');
+    labelUpdate();
 
     const clock = new THREE.Clock();
 
@@ -855,64 +947,74 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
     };
 
     const labelUpdate = () => {
-      const { clientWidth, clientHeight } = canvas;
+      const rect = container.getBoundingClientRect();
+      const width = Math.max(1, rect.width);
+      const height = Math.max(1, rect.height);
       labelElements.forEach((item) => {
         if (!item.anchor) return;
         item.anchor.getWorldPosition(tmpVector);
         tmpProjected.copy(tmpVector);
         tmpProjected.project(camera);
-        const x = (tmpProjected.x * 0.5 + 0.5) * clientWidth;
-        const y = (-tmpProjected.y * 0.5 + 0.5) * clientHeight;
-        const visible = tmpProjected.z > -1 && tmpProjected.z < 1 && item.visible;
-        item.element.style.opacity = visible ? '1' : '0';
-        item.element.classList.toggle('is-visible', visible);
-        const scale = visible ? 1 : 0.9;
+        const x = (tmpProjected.x * 0.5 + 0.5) * width;
+        const y = (-tmpProjected.y * 0.5 + 0.5) * height;
+        const inView = tmpProjected.z > -1 && tmpProjected.z < 1;
+        const alpha = inView && item.visible ? clamp01(item.alpha) : 0;
+        item.element.style.opacity = `${alpha}`;
+        item.element.classList.toggle('is-visible', alpha > 0.01);
+        const scale = alpha > 0 ? 1 : 0.9;
         item.element.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
       });
     };
 
     const updateLines = (delta) => {
       lines.forEach((edge) => {
-        let target = 0;
-        switch (edge.id) {
-          case 'userIn_deposit':
-            target = clamp01(
-              flowState.main.current + flowState.safety.current * 0.6 + flowState.farming.current * 0.6 + flowState.token.current * 0.6
-            );
-            break;
-          case 'deposit_strategies':
-          case 'strategies_core':
-          case 'core_userOut':
-            target = flowState.main.current;
-            break;
-          case 'strategies_high':
-          case 'high_userOut':
-            target = flowState.main.current * MAIN_SPLIT.high;
-            break;
-          case 'strategies_rewards':
-          case 'rewards_userOut':
-            target = flowState.main.current * 0.4;
-            break;
-          case 'core_buyback':
-          case 'high_buyback':
-            target = flowState.main.current * 0.25;
-            break;
-          case 'deposit_safety':
-          case 'safety_userOut':
-            target = flowState.safety.current;
-            break;
-          case 'deposit_farming':
-          case 'farming_userOut':
-            target = flowState.farming.current;
-            break;
-          case 'deposit_token':
-          case 'token_userOut':
-            target = flowState.token.current;
-            break;
-          default:
-            target = 0;
+        let target;
+        if (typeof edge.overrideStrength === 'number') {
+          target = edge.overrideStrength;
+        } else {
+          switch (edge.id) {
+            case 'userIn_deposit':
+              target = clamp01(
+                flowState.main.current +
+                  flowState.safety.current * 0.6 +
+                  flowState.farming.current * 0.6 +
+                  flowState.token.current * 0.6
+              );
+              break;
+            case 'deposit_strategies':
+            case 'strategies_core':
+            case 'core_userOut':
+              target = flowState.main.current;
+              break;
+            case 'strategies_high':
+            case 'high_userOut':
+              target = flowState.main.current * MAIN_SPLIT.high;
+              break;
+            case 'strategies_rewards':
+            case 'rewards_userOut':
+              target = flowState.main.current * 0.4;
+              break;
+            case 'core_buyback':
+            case 'high_buyback':
+              target = flowState.main.current * 0.25;
+              break;
+            case 'deposit_safety':
+            case 'safety_userOut':
+              target = flowState.safety.current;
+              break;
+            case 'deposit_farming':
+            case 'farming_userOut':
+              target = flowState.farming.current;
+              break;
+            case 'deposit_token':
+            case 'token_userOut':
+              target = flowState.token.current;
+              break;
+            default:
+              target = 0;
+          }
         }
-        edge.targetStrength = clamp01(target);
+        edge.targetStrength = clamp01(target ?? 0);
         edge.strength = lerp(edge.strength, edge.targetStrength, 0.12);
         edge.material.linewidth = 0.0018 + edge.strength * 0.0035;
         edge.material.opacity = 0.12 + edge.strength * 0.65;
@@ -977,28 +1079,15 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
 
     animationState.current.frame = requestAnimationFrame(animateLoop);
 
-    const handleResize = () => {
-      const { innerWidth, innerHeight } = window;
-      renderer.setSize(innerWidth, innerHeight);
-      camera.aspect = innerWidth / innerHeight;
-      camera.updateProjectionMatrix();
-      lines.forEach((edge) => {
-        edge.material.resolution.set(innerWidth, innerHeight);
-      });
-      labelUpdate();
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    const api = {
-      camera,
-      flowDistribution: flows,
-      setFlowMix: updateFlowTargets,
-      setGroupOpacity,
-      triggerEvent,
+      const api = {
+        camera,
+        triggerEvent,
+        setFlowIntensity,
+        setLabelOpacity,
+      pulseHub,
       dispose: () => {
         cancelAnimationFrame(animationState.current.frame);
-        window.removeEventListener('resize', handleResize);
+        resizeObserver.disconnect();
         renderer.dispose();
         cubeGeometry.dispose();
         Object.values(instancedMeshes).forEach((mesh) => {
@@ -1020,6 +1109,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
           marker.material.dispose();
         });
         labelElements.forEach(({ element }) => element.remove());
+        overlay.remove();
       },
     };
 
@@ -1029,7 +1119,7 @@ export default function FlowSceneCubes({ canvasRef, overlayRef, onReady, locale 
       api.dispose();
       onReady?.(null);
     };
-  }, [canvasRef, overlayRef, onReady, labelCopy, flows, formatPercent, t]);
+  }, [containerRef, canvasRef, onReady, labelCopy, flows, locale, t]);
 
   return null;
 }
