@@ -6,28 +6,26 @@ import Layout from '../components/Layout';
 
 const FAQ = () => {
   const { t } = useTranslation(); // 2. Initialize
+  const questions = t('faq_page.questions', { returnObjects: true });
+  const questionList = Array.isArray(questions) ? questions : [];
 
   return (
     <Layout>
       <div className="faq-container">
         <h1>{t('faq_page.title')}</h1>
 
-        <div className="faq-item">
-          <h2>{t('faq_page.q1_title')}</h2>
-          <p>{t('faq_page.q1_answer')}</p>
-        </div>
+        {questionList.map((faq, index) => {
+          if (!faq || !faq.question || !faq.answer) {
+            return null;
+          }
 
-        <div className="faq-item">
-          <h2>{t('faq_page.q2_title')}</h2>
-          <p>{t('faq_page.q2_answer')}</p>
-        </div>
-
-        <div className="faq-item">
-          <h2>{t('faq_page.q3_title')}</h2>
-          <p>{t('faq_page.q3_answer')}</p>
-        </div>
-
-        {/* You can easily add more questions here by adding q4_title, q4_answer, etc. to your translation.json */}
+          return (
+            <div className="faq-item" key={faq.question ?? index}>
+              <h2>{faq.question}</h2>
+              <p>{faq.answer}</p>
+            </div>
+          );
+        })}
 
       </div>
     </Layout>
