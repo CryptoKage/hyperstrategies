@@ -2,17 +2,23 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
-import { PinImage } from '../../components/UserPins'; // Corrected path assuming UserPins is in components
+import LoadingSpinner from '../../components/LoadingSpinner'; // Import LoadingSpinner
 
 const UserDetailPage = () => {
   const { userId } = useParams();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('activity'); // 'activity' or 'nameHistory'
+  
+  // --- NEW: State for tabs and user reports ---
+  const [activeTab, setActiveTab] = useState('activity'); // Default tab
+  const [userReports, setUserReports] = useState([]);
+  const [loadingReports, setLoadingReports] = useState(false);
+  const [reportError, setReportError] = useState('');
+  // --- END NEW ---
 
   const fetchUserDetails = useCallback(async () => {
-    if (!userId) { return; }
+    if (!userId) return;
     setLoading(true);
     setError('');
     try {
@@ -26,14 +32,48 @@ const UserDetailPage = () => {
     }
   }, [userId]);
 
-  useEffect(() => {
-    if (userId) {
-      fetchUserDetails();
+  // --- NEW: Function to fetch user reports ---
+  const fetchUserReports = useCallback(async () => {
+    if (!userId) return;
+    setLoadingReports(true);
+    setReportError('');
+    try {
+        const response = await api.get(`/admin/users/${userId}/reports`);
+        setUserReports(response.data);
+    } catch (err) {
+        setReportError('Failed to fetch user reports.');
+        console.error(err);
+    } finally {
+        setLoadingReports(false);
     }
-  }, [userId, fetchUserDetails]);
+  }, [userId]);
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [fetchUserDetails]);
+
+  // Fetch reports when the component mounts or when the user changes
+  useEffect(() => {
+    fetchUserReports();
+  }, [fetchUserReports]);
+
+  // --- NEW: Handler to delete a report ---
+  const handleDeleteReport = async (reportId) => {
+    if (!window.confirm('Are you sure you want to permanently delete this report? This action cannot be undone.')) {
+        return;
+    }
+    try {
+        await api.delete(`/admin/reports/${reportId}`);
+        alert('Report deleted successfully.');
+        // Refresh the list of reports after deletion
+        fetchUserReports();
+    } catch (err) {
+        alert('Failed to delete report: ' + (err.response?.data?.error || 'Unknown error'));
+    }
+  };
 
   if (loading) {
-    return <Layout><div className="admin-container"><h1>Loading User Details...</h1></div></Layout>;
+    return <Layout><div className="admin-container"><LoadingSpinner /></div></Layout>;
   }
   if (error) {
     return <Layout><div className="admin-container"><p className="error-message">{error}</p></div></Layout>;
@@ -69,8 +109,6 @@ const UserDetailPage = () => {
               <div className="detail-item"><strong>Referral Code:</strong><span>{details.referral_code}</span></div>
               <div className="detail-item"><strong>Joined:</strong><span>{new Date(details.created_at).toLocaleDateString()}</span></div>
             </div>
-            {/* The Pin display needs to use the full pin objects from the API */}
-            {/* We will adjust this once the backend sends the full pin objects */}
           </div>
 
           <div className="admin-card">
@@ -93,20 +131,19 @@ const UserDetailPage = () => {
           </div>
         </div>
 
- {details.pins && details.pins.length > 0 && (
-              <div className="user-pins-admin-list">
-                <h4 style={{ marginTop: '20px', marginBottom: '10px' }}>Owned Pins ({details.pins.length})</h4>
-                <ul>
-                  {details.pins.map(pinName => (
-                    <li key={pinName}>{pinName}</li>
-                  ))}
+        {details.pins && details.pins.length > 0 && (
+            <div className="admin-card">
+                <h4 style={{ marginTop: '0', marginBottom: '10px' }}>Owned Pins ({details.pins.length})</h4>
+                <ul className="user-pins-admin-list">
+                    {details.pins.map(pinName => (<li key={pinName}>{pinName}</li>))}
                 </ul>
-              </div>
-            )}
+            </div>
+        )}
 
         <div className="admin-card">
           <div className="tabs">
             <button className={`tab-button ${activeTab === 'activity' ? 'active' : ''}`} onClick={() => setActiveTab('activity')}>Recent Activity</button>
+            <button className={`tab-button ${activeTab === 'reports' ? 'active' : ''}`} onClick={() => setActiveTab('reports')}>Reports</button>
             <button className={`tab-button ${activeTab === 'nameHistory' ? 'active' : ''}`} onClick={() => setActiveTab('nameHistory')}>Username History</button>
           </div>
           <div className="tab-content">
@@ -132,6 +169,50 @@ const UserDetailPage = () => {
                 ) : <p>No recent activity found.</p>}
               </>
             )}
+            
+            {/* --- NEW REPORTS TAB PANEL --- */}
+            {activeTab === 'reports' && (
+              <>
+                <h3>User Reports</h3>
+                {loadingReports ? <LoadingSpinner /> : reportError ? <p className="error-message">{reportError}</p> : 
+                userReports && userReports.length > 0 ? (
+                  <div className="table-responsive-wrapper">
+                    <table className="activity-table">
+                      <thead>
+                        <tr>
+                          <th>Report Date</th>
+                          <th>Title</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {userReports.map(report => (
+                          <tr key={report.report_id}>
+                            <td>{new Date(report.report_date).toLocaleDateString()}</td>
+                            <td>{report.title}</td>
+                            <td>
+                              <span className={`status-badge status-${report.status.toLowerCase()}`}>
+                                {report.status}
+                              </span>
+                            </td>
+                            <td>
+                              <button 
+                                className="btn-danger-outline btn-sm"
+                                onClick={() => handleDeleteReport(report.report_id)}
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : <p>No reports found for this user.</p>}
+              </>
+            )}
+
             {activeTab === 'nameHistory' && (
               <>
                 <h3>Username Change History</h3>

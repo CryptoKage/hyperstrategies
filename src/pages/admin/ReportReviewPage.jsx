@@ -1,17 +1,20 @@
 // src/pages/admin/ReportReviewPage.jsx
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
-// We reuse the same ReportPreview component. You should consider moving this
-// to a shared component file, e.g., src/components/reports/ReportPreview.jsx
+// We reuse the same ReportPreview component.
 const ReportPreview = ({ reportData }) => {
     if (!reportData) return null;
     const { summary } = reportData;
     const formatDate = (dateString) => new Date(dateString + 'T00:00:00Z').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    
+    // --- NEW: Add Buyback Gains to the preview ---
+    const hasBuybackGains = summary.buybackGains && summary.buybackGains > 0;
+
     return (
         <div className="report-preview">
             <h2>{reportData.title}</h2>
@@ -19,7 +22,16 @@ const ReportPreview = ({ reportData }) => {
             <div className="report-preview-section"><p>{reportData.openingRemarks}</p></div>
             <div className="report-preview-section summary-grid">
                 <div className="summary-item"><span>Starting Capital (as of {formatDate(reportData.startDate)})</span><span>{summary.startingCapital.toFixed(2)} USDC</span></div>
-                <div className="summary-item"><span>Performance ({summary.pnlPercentage >= 0 ? '+' : ''}{summary.pnlPercentage}%)</span><span className={summary.pnlAmount >= 0 ? 'text-positive' : 'text-negative'}>{summary.pnlAmount >= 0 ? '+' : ''} {summary.pnlAmount.toFixed(2)} USDC</span></div>
+                <div className="summary-item"><span>Strategy Performance ({summary.pnlPercentage >= 0 ? '+' : ''}{summary.pnlPercentage}%)</span><span className={summary.pnlAmount >= 0 ? 'text-positive' : 'text-negative'}>{summary.pnlAmount >= 0 ? '+' : ''} {summary.pnlAmount.toFixed(2)} USDC</span></div>
+                
+                {/* --- NEW: Display Buyback Gains --- */}
+                {hasBuybackGains && (
+                    <div className="summary-item">
+                        <span>Buyback Engine Gains</span>
+                        <span className="text-positive">+ {summary.buybackGains.toFixed(2)} USDC</span>
+                    </div>
+                )}
+                
                 {summary.periodDeposits > 0 && (<div className="summary-item"><span>Deposits this period</span><span>+ {summary.periodDeposits.toFixed(2)} USDC</span></div>)}
                 {summary.periodWithdrawals > 0 && (<div className="summary-item"><span>Withdrawals this period</span><span>- {summary.periodWithdrawals.toFixed(2)} USDC</span></div>)}
                 <div className="summary-item total"><span>Ending Capital (as of {formatDate(reportData.endDate)})</span><span>{summary.endingCapital.toFixed(2)} USDC</span></div>
@@ -31,7 +43,7 @@ const ReportPreview = ({ reportData }) => {
 
 
 const ReportReviewPage = () => {
-    const [draftReports, setDraftReports] = useState([]);
+    const [reports, setReports] = useState([]);
     const [selectedReport, setSelectedReport] = useState(null);
     const [editableData, setEditableData] = useState(null);
 
@@ -39,30 +51,36 @@ const ReportReviewPage = () => {
     const [error, setError] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
-     const [isDeleting, setIsDeleting] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
 
+    // --- NEW: State for status filtering ---
+    const [filterStatus, setFilterStatus] = useState('DRAFT');
 
-    useEffect(() => {
-        fetchDrafts();
-    }, []);
-
-    const fetchDrafts = () => {
+    const fetchReports = useCallback(() => {
         setLoading(true);
         setError('');
-        api.get('/admin/reports/pending-approval?status=DRAFT') // We need to update the backend for this
+        setReports([]); // Clear old reports
+        setSelectedReport(null); // Deselect report
+        setEditableData(null);
+        
+        // Pass the filter status to the backend endpoint
+        api.get(`/admin/reports/pending-approval?status=${filterStatus}`)
             .then(res => {
-                setDraftReports(res.data);
+                setReports(res.data);
                 if (res.data.length > 0) {
                     handleSelectReport(res.data[0]);
                 }
             })
-            .catch(err => setError('Could not load draft reports.'))
+            .catch(err => setError(`Could not load reports with status: ${filterStatus}.`))
             .finally(() => setLoading(false));
-    };
+    }, [filterStatus]); // Re-run this function whenever the filterStatus changes
+
+    useEffect(() => {
+        fetchReports();
+    }, [fetchReports]);
     
     const handleSelectReport = (report) => {
         setSelectedReport(report);
-        // The full data is already in the 'report_data' field from the list endpoint
         setEditableData(report.report_data); 
     };
 
@@ -71,7 +89,7 @@ const ReportReviewPage = () => {
     };
 
     const handleDelete = async () => {
-        if (!selectedReport || !window.confirm(`Are you sure you want to permanently delete the draft report for ${selectedReport.username}?`)) {
+        if (!selectedReport || !window.confirm(`Are you sure you want to permanently delete the report for ${selectedReport.username}?`)) {
             return;
         }
         setIsDeleting(true);
@@ -81,7 +99,7 @@ const ReportReviewPage = () => {
             const response = await api.delete(`/admin/reports/${selectedReport.report_id}`);
             setSuccessMessage(response.data.message);
             // Refresh the list to remove the deleted item
-            fetchDrafts();
+            fetchReports();
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to delete report.');
         } finally {
@@ -95,16 +113,13 @@ const ReportReviewPage = () => {
         setError('');
         setSuccessMessage('');
         try {
-            // This endpoint will save and update status
             const response = await api.post(`/admin/reports/${selectedReport.report_id}/publish`, {
                 reportData: editableData,
                 newStatus: newStatus
             });
             setSuccessMessage(response.data.message);
             // Refresh the list after saving
-            fetchDrafts();
-            setSelectedReport(null);
-            setEditableData(null);
+            fetchReports();
         } catch(err) {
             setError(err.response?.data?.error || 'Failed to save report.');
         } finally {
@@ -116,19 +131,25 @@ const ReportReviewPage = () => {
         <Layout>
             <div className="admin-container">
                 <div className="admin-header">
-                    <h1>Review & Publish Reports</h1>
+                    <h1>Report Management Suite</h1>
                     <Link to="/admin" className="btn-secondary btn-sm">← Back to Mission Control</Link>
+                </div>
+
+                {/* --- NEW: Filter Buttons --- */}
+                <div className="admin-card tabs" style={{ marginBottom: '24px' }}>
+                    <button className={`tab-button ${filterStatus === 'DRAFT' ? 'active' : ''}`} onClick={() => setFilterStatus('DRAFT')}>Drafts</button>
+                    <button className={`tab-button ${filterStatus === 'APPROVED' ? 'active' : ''}`} onClick={() => setFilterStatus('APPROVED')}>Approved / Published</button>
                 </div>
                 
                 {loading ? <LoadingSpinner /> : error ? <p className="error-message">{error}</p> :
-                draftReports.length === 0 ? (
-                    <div className="admin-card text-center"><p>No draft reports are currently awaiting review.</p></div>
+                reports.length === 0 ? (
+                    <div className="admin-card text-center"><p>No reports found with status: {filterStatus}.</p></div>
                 ) : (
                     <div className="report-builder-grid">
                         <div className="admin-card">
-                            <h3>Draft Reports Queue ({draftReports.length})</h3>
+                            <h3>{filterStatus} Reports ({reports.length})</h3>
                             <div className="draft-list">
-                                {draftReports.map(draft => (
+                                {reports.map(draft => (
                                     <div 
                                         key={draft.report_id} 
                                         className={`draft-item ${selectedReport?.report_id === draft.report_id ? 'active' : ''}`}
@@ -157,15 +178,17 @@ const ReportReviewPage = () => {
                                 </div>
 
                                 {successMessage && <p className="admin-message success">{successMessage}</p>}
-                                <div className="modal-actions" style={{ marginTop: '24px' }}>
-                                     <button onClick={handleDelete} className="btn-danger-outline" disabled={isSaving || isDeleting}>
-                                        {isDeleting ? 'Deleting...' : 'Delete Draft'}
+                                <div className="modal-actions" style={{ marginTop: '24px', justifyContent: 'space-between' }}>
+                                    <button onClick={handleDelete} className="btn-danger-outline" disabled={isSaving || isDeleting}>
+                                        {isDeleting ? 'Deleting...' : 'Delete'}
                                     </button>
-                                    <button onClick={() => handleSave('DRAFT')} className="btn-secondary" disabled={isSaving}>{isSaving ? '...' : 'Save Changes'}</button>
-                                    <button onClick={() => handleSave('APPROVED')} className="btn-primary" disabled={isSaving}>{isSaving ? '...' : 'Approve & Publish'}</button>
+                                    <div>
+                                        <button onClick={() => handleSave('DRAFT')} className="btn-secondary" disabled={isSaving}>{isSaving ? '...' : 'Save Changes'}</button>
+                                        <button onClick={() => handleSave('APPROVED')} className="btn-primary" disabled={isSaving}>{isSaving ? '...' : 'Approve & Publish'}</button>
+                                    </div>
                                 </div>
                             </div>
-                        ) : <p>Select a draft to review.</p>}
+                        ) : !loading && <p className="admin-card text-center">Select a report from the list to review.</p>}
                     </div>
                 )}
             </div>
