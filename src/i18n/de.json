@@ -4,7 +4,13 @@
     "backToDashboard": "Zurück zum Dashboard",
     "goToDashboard": "Zum Dashboard",
     "max": "Max",
-    "pending_withdrawal_tooltip": "Eine Strategie-Auszahlung wird derzeit verarbeitet. Dein Kontostand wird nach Abschluss aktualisiert."
+    "pending_withdrawal_tooltip": "Eine Strategie-Auszahlung wird derzeit verarbeitet. Dein Kontostand wird nach Abschluss aktualisiert.",
+    "time": {
+      "days": "Tage",
+      "hours": "Stunden",
+      "minutes": "Minuten",
+      "seconds": "Sekunden"
+    }
   },
   "nav": {
     "marketplace": "Marktplatz",
@@ -757,7 +763,8 @@
     "actions": {
       "investMore": "Mehr investieren",
       "investNow": "Jetzt investieren",
-      "requestWithdrawal": "Auszahlung beantragen"
+      "requestWithdrawal": "Auszahlung beantragen",
+      "myReports": "Meine Reports"
     },
     "yourPerformanceSnapshotTitle": "Dein Performance-Schnappschuss",
     "yourPerformanceSnapshotSubtext": "Basierend auf deiner persönlichen realisierten Performance seit deiner ersten Einzahlung.",
@@ -807,12 +814,39 @@
     },
     "notInvested": {
       "title": "Du bist derzeit nicht in diese Strategie investiert.",
-      "description": "Um deine Performance zu sehen, tätige eine Einzahlung über dein Dashboard."
+      "description": "Um deine Performance zu sehen, tätige eine Einzahlung über dein Dashboard.",
+      "description_go_back": "Gehe zurück zum Dashboard, um zu investieren."
     },
     "errors": {
       "loadDetails": "Strategiedetails konnten nicht geladen werden. Diese Strategie ist möglicherweise inaktiv oder du hast noch keine Position.",
       "noData": "Für diese Strategie sind keine Daten verfügbar.",
       "noChartData": "Unzureichende historische Daten für das Diagramm."
+    }
+  },
+  "farmingVault": {
+    "buybackCountdown": {
+      "title": "Nächster Bonuspunkt-Buyback",
+      "subtitle": "Verbleibende Zeit bis zum Ende von Q1:",
+      "completed": "Buyback-Fenster abgeschlossen"
+    },
+    "stats": {
+      "currentBuybackPool": "Aktueller Buyback-Pool",
+      "yourBonusPoints": "Deine Bonuspunkte",
+      "estimatedPayout": "Deine geschätzte Auszahlung",
+      "estimatedPayoutSubtext": "Basierend auf deinem Anteil von {{share}}% an den Gesamtpunkten"
+    },
+    "monthlyProfits": {
+      "title": "Monatliche dem Pool hinzugefügte Gewinne",
+      "month": "Monat",
+      "profit": "Erzielter Gewinn",
+      "empty": "Es wurden noch keine Gewinne dem Pool hinzugefügt."
+    },
+    "activities": {
+      "title": "Aktivitäten hinter dem Buyback",
+      "activeTitle": "Aktiv im Farming",
+      "seedingTitle": "Auf dem Radar (Seeding)",
+      "noActive": "Keine aktiven Farms.",
+      "noPipeline": "Nichts in der Pipeline."
     }
   },
   "ledgerTypes": {
