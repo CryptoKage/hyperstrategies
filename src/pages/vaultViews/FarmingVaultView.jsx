@@ -8,15 +8,20 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import { useAuth } from '../../context/AuthContext'; // To get user's bonus points
 
 // --- Sub-components for a cleaner layout ---
-const StatCard = ({ label, value, subtext = null }) => (
-    <div className="profile-card">
-        <h3>{label}</h3>
-        <p className="stat-value-large">{value}</p>
-        {subtext && <p className="stat-subtext">{subtext}</p>}
-    </div>
-);
+const StatCard = ({ labelKey, value, subtextKey = null, subtextValues = {} }) => {
+    const { t } = useTranslation();
+
+    return (
+        <div className="profile-card">
+            <h3>{t(labelKey)}</h3>
+            <p className="stat-value-large">{value}</p>
+            {subtextKey && <p className="stat-subtext">{t(subtextKey, subtextValues)}</p>}
+        </div>
+    );
+};
 
 const CountdownTimer = ({ targetDate }) => {
+    const { t, i18n } = useTranslation();
     const calculateTimeLeft = () => {
         const difference = +new Date(targetDate) - +new Date();
         let timeLeft = {};
@@ -37,23 +42,30 @@ const CountdownTimer = ({ targetDate }) => {
         return () => clearTimeout(timer);
     });
 
+    const units = ['days', 'hours', 'minutes', 'seconds'];
+    const hasTime = units.some(unit => timeLeft[unit] !== undefined);
+
     return (
         <div className="countdown-timer">
-            {Object.entries(timeLeft).map(([unit, value]) => (
-                <div key={unit} className="timer-segment">
-                    <span className="timer-value">{value.toString().padStart(2, '0')}</span>
-                    <span className="timer-label">{unit}</span>
-                </div>
-            ))}
+            {hasTime ? (
+                units.map(unit => (
+                    <div key={unit} className="timer-segment">
+                        <span className="timer-value">{(timeLeft[unit] ?? 0).toString().padStart(2, '0')}</span>
+                        <span className="timer-label">{t(`common.time.${unit}`)}</span>
+                    </div>
+                ))
+            ) : (
+                <span className="timer-label">{t('farmingVault.buybackCountdown.completed')}</span>
+            )}
         </div>
     );
 };
 
 
 const FarmingVaultView = ({ pageData }) => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { vaultInfo } = pageData;
-    
+
     // --- State for our new data ---
     const [buybackStats, setBuybackStats] = useState({ poolBalance: 0, totalBonusPoints: 1 });
     const [farmingProfits, setFarmingProfits] = useState({});
@@ -62,6 +74,19 @@ const FarmingVaultView = ({ pageData }) => {
 
     // Hardcoded target date for the Q1 buyback
     const Q1_BUYBACK_DATE = "2026-01-01T00:00:00Z";
+
+    const locale = i18n.language === 'de' ? 'de-DE' : 'en-US';
+    const currencyFormatter = new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+
+    const formatCurrency = (value) =>
+        typeof value === 'number'
+            ? currencyFormatter.format(value)
+            : value;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -89,6 +114,12 @@ const FarmingVaultView = ({ pageData }) => {
     // Calculate the user's estimated payout
     const userShare = (buybackStats.totalBonusPoints > 0) ? (userBonusPoints / buybackStats.totalBonusPoints) : 0;
     const estimatedPayout = userShare * buybackStats.poolBalance;
+    const formattedPoolBalance = formatCurrency(buybackStats.poolBalance);
+    const formattedBonusPoints = typeof userBonusPoints === 'number'
+        ? userBonusPoints.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        : userBonusPoints;
+    const formattedEstimatedPayout = formatCurrency(estimatedPayout);
+    const userSharePercent = (userShare * 100).toFixed(4);
 
     if (loading) {
         return (
@@ -99,49 +130,60 @@ const FarmingVaultView = ({ pageData }) => {
     }
 
     return (
-        <div className="vault-detail-container">
+            <div className="vault-detail-container">
             <div className="vault-detail-header">
                 <h1>{vaultInfo.name}</h1>
                 <Link to="/dashboard" className="btn-secondary btn-sm">← {t('common.backToDashboard')}</Link>
             </div>
             <p className="vault-detail-subtitle">{vaultInfo.strategy_description || vaultInfo.description}</p>
-            
+
             {/* Buyback Countdown Section */}
             <div className="profile-card text-center" style={{ marginBottom: '24px', background: 'var(--color-surface-accent)' }}>
-                <h2>Next Bonus Point Buyback</h2>
-                <p>Time remaining until the end of Q1:</p>
+                <h2>{t('farmingVault.buybackCountdown.title')}</h2>
+                <p>{t('farmingVault.buybackCountdown.subtitle')}</p>
                 <CountdownTimer targetDate={Q1_BUYBACK_DATE} />
             </div>
 
             {/* User-specific Stats */}
             <div className="vault-detail-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'}}>
-                <StatCard label="Current Buyback Pool" value={`$${buybackStats.poolBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} />
-                <StatCard label="Your Bonus Points" value={userBonusPoints.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} />
-                <StatCard label="Your Est. Payout" value={`$${estimatedPayout.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} subtext={`Based on your ${ (userShare * 100).toFixed(4) }% share of total points`} />
+                <StatCard
+                    labelKey="farmingVault.stats.currentBuybackPool"
+                    value={formattedPoolBalance}
+                />
+                <StatCard
+                    labelKey="farmingVault.stats.yourBonusPoints"
+                    value={formattedBonusPoints}
+                />
+                <StatCard
+                    labelKey="farmingVault.stats.estimatedPayout"
+                    value={formattedEstimatedPayout}
+                    subtextKey="farmingVault.stats.estimatedPayoutSubtext"
+                    subtextValues={{ share: userSharePercent }}
+                />
             </div>
 
             {/* Monthly Profit History */}
             <div className="admin-card" style={{ marginTop: '32px' }}>
-                <h3>Monthly Profits Added to Pool</h3>
+                <h3>{t('farmingVault.monthlyProfits.title')}</h3>
                 <div className="table-responsive">
                     <table className="activity-table">
                         <thead>
                             <tr>
-                                <th>Month</th>
-                                <th className="amount">Profit Generated</th>
+                                <th>{t('farmingVault.monthlyProfits.month')}</th>
+                                <th className="amount">{t('farmingVault.monthlyProfits.profit')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {Object.keys(farmingProfits).length > 0 ? (
                                 Object.entries(farmingProfits).map(([month, profit]) => (
                                     <tr key={month}>
-                                        <td>{new Date(month + '-02').toLocaleString('default', { month: 'long', year: 'year' })}</td>
-                                        <td className="amount text-positive">+${profit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                        <td>{new Date(`${month}-02`).toLocaleString(locale, { month: 'long', year: 'numeric' })}</td>
+                                        <td className="amount text-positive">{`${profit >= 0 ? '+' : ''}${currencyFormatter.format(profit)}`}</td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
-                                    <td colSpan="2" style={{textAlign: 'center'}}>No profits have been added to the pool yet.</td>
+                                    <td colSpan="2" style={{textAlign: 'center'}}>{t('farmingVault.monthlyProfits.empty')}</td>
                                 </tr>
                             )}
                         </tbody>
@@ -149,32 +191,32 @@ const FarmingVaultView = ({ pageData }) => {
                 </div>
             </div>
             <div style={{ marginTop: '32px' }}>
-    <h3>Activities Powering the Buyback</h3>
-    <div className="farming-pipeline-grid">
-        <div className="pipeline-column">
-            <h4>Actively Farming</h4>
-            <div className="protocol-list">
-                {pageData.farmingProtocols?.filter(p => p.status === 'FARMING').map(p => (
-                    <div key={p.protocol_id} className="protocol-card">
-                        <h5>{p.name} ({p.chain})</h5>
-                        <p>{p.description}</p>
+                <h3>{t('farmingVault.activities.title')}</h3>
+                <div className="farming-pipeline-grid">
+                    <div className="pipeline-column">
+                        <h4>{t('farmingVault.activities.activeTitle')}</h4>
+                        <div className="protocol-list">
+                            {pageData.farmingProtocols?.filter(p => p.status === 'FARMING').map(p => (
+                                <div key={p.protocol_id} className="protocol-card">
+                                    <h5>{p.name} ({p.chain})</h5>
+                                    <p>{p.description}</p>
+                                </div>
+                            )) || <p>{t('farmingVault.activities.noActive')}</p>}
+                        </div>
                     </div>
-                )) || <p>No active farms.</p>}
-            </div>
-        </div>
-        <div className="pipeline-column">
-            <h4>On the Radar (Seeding)</h4>
-            <div className="protocol-list">
-                {pageData.farmingProtocols?.filter(p => p.status === 'SEEDING').map(p => (
-                     <div key={p.protocol_id} className="protocol-card">
-                        <h5>{p.name} ({p.chain})</h5>
-                        <p>{p.description}</p>
+                    <div className="pipeline-column">
+                        <h4>{t('farmingVault.activities.seedingTitle')}</h4>
+                        <div className="protocol-list">
+                            {pageData.farmingProtocols?.filter(p => p.status === 'SEEDING').map(p => (
+                                 <div key={p.protocol_id} className="protocol-card">
+                                    <h5>{p.name} ({p.chain})</h5>
+                                    <p>{p.description}</p>
+                                </div>
+                            )) || <p>{t('farmingVault.activities.noPipeline')}</p>}
+                        </div>
                     </div>
-                )) || <p>Nothing in the pipeline.</p>}
+                </div>
             </div>
-        </div>
-    </div>
-</div>
         </div>
     );
 };

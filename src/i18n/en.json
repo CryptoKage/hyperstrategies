@@ -4,7 +4,13 @@
     "backToDashboard": "Back to Dashboard",
     "goToDashboard": "Go to Dashboard",
     "max": "Max",
-    "pending_withdrawal_tooltip": "A strategy withdrawal is currently being processed. Your balance will update upon completion."
+    "pending_withdrawal_tooltip": "A strategy withdrawal is currently being processed. Your balance will update upon completion.",
+    "time": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds"
+    }
   },
   "nav": {
     "marketplace": "Marketplace",
@@ -679,65 +685,67 @@
     "ledger_empty": "You have no claimed XP history yet."
   },
   "vault": {
-    "yourPerformanceSnapshotTitle": "Your Performance Snapshot",
     "actions": {
       "investMore": "Invest More",
       "investNow": "Invest Now",
       "requestWithdrawal": "Request Withdrawal",
-      "yourPerformanceSnapshotSubtext": "Based on your personal realized performance since your first deposit.",
-      "title": "Strategy Details",
-      "stats": {
-        "totalCapital": "Your Total Capital",
-        "totalCapitalSubtext": "Principal + Realized & Unrealized P&L",
-        "realizedPnl": "Realized P&L",
-        "realizedPnlSubtext": "Profits from closed trades.",
-        "unrealizedPnl": "Unrealized P&L",
-        "unrealizedPnlSubtext": "From currently open trades.",
-        "dailyReturn": "Avg. Daily Return",
-        "weeklyReturn": "Avg. Weekly Return",
-        "monthlyReturn": "Avg. Monthly Return",
-        "totalReturn": "Total Return (All-Time)"
-      },
-      "performanceSnapshotTitle": "Historical Performance Snapshot",
-      "performanceSnapshotSubtext": "Based on the average realized performance since strategy inception.",
-      "chart": {
-        "title": "Performance Journey",
+      "myReports": "My Reports"
+    },
+    "title": "Strategy Details",
+    "yourPerformanceSnapshotTitle": "Your Performance Snapshot",
+    "yourPerformanceSnapshotSubtext": "Based on your personal realized performance since your first deposit.",
+    "stats": {
+      "totalCapital": "Your Total Capital",
+      "totalCapitalSubtext": "Principal + Realized & Unrealized P&L",
+      "realizedPnl": "Realized P&L",
+      "realizedPnlSubtext": "Profits from closed trades.",
+      "unrealizedPnl": "Unrealized P&L",
+      "unrealizedPnlSubtext": "From currently open trades.",
+      "dailyReturn": "Avg. Daily Return",
+      "weeklyReturn": "Avg. Weekly Return",
+      "monthlyReturn": "Avg. Monthly Return",
+      "totalReturn": "Total Return (All-Time)"
+    },
+    "performanceSnapshotTitle": "Historical Performance Snapshot",
+    "performanceSnapshotSubtext": "Based on the average realized performance since strategy inception.",
+    "chart": {
+      "title": "Performance Journey",
+      "myAccountValue": "My Account Value",
+      "vaultPerformanceIndex": "Strategy Performance Index",
+      "compareAssets": "Compare Assets",
+      "legend": {
         "myAccountValue": "My Account Value",
-        "vaultPerformanceIndex": "Strategy Performance Index",
-        "compareAssets": "Compare Assets",
-        "legend": {
-          "myAccountValue": "My Account Value",
-          "vaultIndex": "{{vaultName}} Index",
-          "withUnrealized": "With Unrealized P&L",
-          "btc": "BTC Performance",
-          "eth": "ETH Performance",
-          "sol": "SOL Performance"
-        }
-      },
-      "assetBreakdown": {
-        "title": "Asset Breakdown",
-        "asset": "Asset",
-        "livePrice": "Live Price"
-      },
-      "ledger": {
-        "title": "Your Ledger",
-        "date": "Date",
-        "type": "Type",
-        "amount": "Amount"
-      },
-      "notInvested": {
-        "title": "You are not currently invested in this strategy.",
-        "description": "To see your performance, make a deposit from your dashboard."
-      },
-      "errors": {
-        "loadDetails": "Could not load strategy details. This strategy may be inactive or you may not have a position yet.",
-        "noData": "No data available for this strategy.",
-        "noChartData": "Insufficient historical data to render chart."
-      },
-      "closed": {
-        "title": "Investment Closed",
-        "description": "This vault is not currently accepting new deposits."
+        "vaultIndex": "{{vaultName}} Index",
+        "withUnrealized": "With Unrealized P&L",
+        "btc": "BTC Performance",
+        "eth": "ETH Performance",
+        "sol": "SOL Performance"
       }
+    },
+    "assetBreakdown": {
+      "title": "Asset Breakdown",
+      "asset": "Asset",
+      "livePrice": "Live Price"
+    },
+    "ledger": {
+      "title": "Your Ledger",
+      "date": "Date",
+      "type": "Type",
+      "amount": "Amount"
+    },
+    "notInvested": {
+      "title": "You are not currently invested in this strategy.",
+      "description": "To see your performance, make a deposit from your dashboard.",
+      "description_go_back": "Go back to the dashboard to invest."
+    },
+    "errors": {
+      "loadDetails": "Could not load strategy details. This strategy may be inactive or you may not have a position yet.",
+      "noData": "No data available for this strategy.",
+      "noChartData": "Insufficient historical data to render chart."
+    },
+    "closed": {
+      "title": "Investment Closed",
+      "description": "This vault is not currently accepting new deposits."
     },
     "ledgerTypes": {
       "DEPOSIT": "Deposit",
@@ -780,6 +788,32 @@
       "playbook_step_two_copy": "Upgrade your loadout to activate and benefit from your best available pins.",
       "playbook_step_three_title": "3. Acquire more pins",
       "playbook_step_three_copy": "Use Hyper-Strategies products and engage with initiatives or trade in the P2P Marketplace."
+    }
+  },
+  "farmingVault": {
+    "buybackCountdown": {
+      "title": "Next Bonus Point Buyback",
+      "subtitle": "Time remaining until the end of Q1:",
+      "completed": "Buyback window complete"
+    },
+    "stats": {
+      "currentBuybackPool": "Current Buyback Pool",
+      "yourBonusPoints": "Your Bonus Points",
+      "estimatedPayout": "Your Est. Payout",
+      "estimatedPayoutSubtext": "Based on your {{share}}% share of total points"
+    },
+    "monthlyProfits": {
+      "title": "Monthly Profits Added to Pool",
+      "month": "Month",
+      "profit": "Profit Generated",
+      "empty": "No profits have been added to the pool yet."
+    },
+    "activities": {
+      "title": "Activities Powering the Buyback",
+      "activeTitle": "Actively Farming",
+      "seedingTitle": "On the Radar (Seeding)",
+      "noActive": "No active farms.",
+      "noPipeline": "Nothing in the pipeline."
     }
   },
   "cta": {
