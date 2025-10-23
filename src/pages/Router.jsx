@@ -37,7 +37,7 @@ import DeskResultsPage from './admin/DeskResultsPage';
 import FarmingPipelinePage from './admin/FarmingPipelinePage';
 import HowItWorks from './HowItWorks';
 import ReportReviewPage from './admin/ReportReviewPage';
-import PlatformReportsPage from '/admin/PlatformReportsPage';
+import PlatformReportsPage from './admin/PlatformReportsPage';
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
