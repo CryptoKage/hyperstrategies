@@ -954,7 +954,10 @@
       "buybackGains": "Gewinne aus Buyback Engine",
       "deposits": "Einzahlungen in diesem Zeitraum",
       "withdrawals": "Auszahlungen in diesem Zeitraum",
-      "endingCapital": "Endkapital (Stand: {{date}})"
+      "endingCapital": "Endkapital (Stand: {{date}})",
+      "performanceFees": "Gezahlte Performancegebühren",
+"endingBonusPoints": "Endguthaben Bonuspunkte",
+"totalAccountValue": "Gesamter Kontowert"
     }
   }
 }

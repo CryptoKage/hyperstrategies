@@ -814,7 +814,10 @@
       "buybackGains": "Buyback Engine Gains",
       "deposits": "Deposits this period",
       "withdrawals": "Withdrawals this period",
-      "endingCapital": "Ending Capital (as of {{date}})"
+      "endingCapital": "Ending Capital (as of {{date}})",
+      "performanceFees": "Performance Fees Paid",
+"endingBonusPoints": "Ending Bonus Points Balance",
+"totalAccountValue": "Total Account Value"
     }
   },
   "farmingVault": {

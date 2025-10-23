@@ -6,37 +6,96 @@ import Layout from '../../components/Layout';
 import api from '../../api/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
-// We reuse the same ReportPreview component.
 const ReportPreview = ({ reportData }) => {
+    const { t } = useTranslation();
     if (!reportData) return null;
+    
     const { summary } = reportData;
     const formatDate = (dateString) => new Date(dateString + 'T00:00:00Z').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' });
-    
-    // --- NEW: Add Buyback Gains to the preview ---
-    const hasBuybackGains = summary.buybackGains && summary.buybackGains > 0;
+
+    // Define clear conditions for when to show each line item
+    const hasPnl = typeof summary.pnlAmount === 'number';
+    const hasBuybackGains = typeof summary.buybackGains === 'number' && summary.buybackGains > 0.001;
+    const hasDeposits = typeof summary.periodDeposits === 'number' && summary.periodDeposits > 0;
+    const hasWithdrawals = typeof summary.periodWithdrawals === 'number' && summary.periodWithdrawals > 0;
+    const hasPerformanceFees = typeof summary.performanceFeesPaid === 'number' && summary.performanceFeesPaid < -0.001; // Fees are negative
+    const hasBonusPoints = typeof summary.endingBonusPointsBalance === 'number' && summary.endingBonusPointsBalance > 0;
 
     return (
         <div className="report-preview">
             <h2>{reportData.title}</h2>
-            <p className="report-preview-subtitle">Performance Report: {formatDate(reportData.startDate)} - {formatDate(reportData.endDate)}</p>
-            <div className="report-preview-section"><p>{reportData.openingRemarks}</p></div>
+            <p className="report-preview-subtitle">{t('reports.preview.subtitle', 'Performance Report')}: {formatDate(reportData.startDate)} - {formatDate(reportData.endDate)}</p>
+            
+            <div className="report-preview-section">
+                <p>{reportData.openingRemarks}</p>
+            </div>
+            
             <div className="report-preview-section summary-grid">
-                <div className="summary-item"><span>Starting Capital (as of {formatDate(reportData.startDate)})</span><span>{summary.startingCapital.toFixed(2)} USDC</span></div>
-                <div className="summary-item"><span>Strategy Performance ({summary.pnlPercentage >= 0 ? '+' : ''}{summary.pnlPercentage}%)</span><span className={summary.pnlAmount >= 0 ? 'text-positive' : 'text-negative'}>{summary.pnlAmount >= 0 ? '+' : ''} {summary.pnlAmount.toFixed(2)} USDC</span></div>
-                
-                {/* --- NEW: Display Buyback Gains --- */}
-                {hasBuybackGains && (
+                {/* --- Balance Components --- */}
+                <div className="summary-item">
+                    <span>{t('reports.preview.startingCapital', 'Starting Capital (as of {{date}})', { date: formatDate(reportData.startDate) })}</span>
+                    <span>{summary.startingCapital.toFixed(2)} USDC</span>
+                </div>
+
+                {hasPnl && (
                     <div className="summary-item">
-                        <span>Buyback Engine Gains</span>
-                        <span className="text-positive">+ {summary.buybackGains.toFixed(2)} USDC</span>
+                        <span>{t('reports.preview.strategyPerformance', 'Strategy Performance ({{percentage}}%)', { percentage: summary.pnlPercentage >= 0 ? '+' + summary.pnlPercentage : summary.pnlPercentage })}</span>
+                        <span className={summary.pnlAmount >= 0 ? 'text-positive' : 'text-negative'}>
+                            {summary.pnlAmount >= 0 ? '+' : ''} {summary.pnlAmount.toFixed(2)} USDC
+                        </span>
                     </div>
                 )}
                 
-                {summary.periodDeposits > 0 && (<div className="summary-item"><span>Deposits this period</span><span>+ {summary.periodDeposits.toFixed(2)} USDC</span></div>)}
-                {summary.periodWithdrawals > 0 && (<div className="summary-item"><span>Withdrawals this period</span><span>- {summary.periodWithdrawals.toFixed(2)} USDC</span></div>)}
-                <div className="summary-item total"><span>Ending Capital (as of {formatDate(reportData.endDate)})</span><span>{summary.endingCapital.toFixed(2)} USDC</span></div>
+                {hasBuybackGains && (
+                    <div className="summary-item">
+                        <span>{t('reports.preview.buybackGains', 'Buyback Engine Gains')}</span>
+                        <span className="text-positive">+ {summary.buybackGains.toFixed(2)} USDC</span>
+                    </div>
+                )}
+
+                {hasDeposits && (
+                    <div className="summary-item">
+                        <span>{t('reports.preview.deposits', 'Deposits this period')}</span>
+                        <span>+ {summary.periodDeposits.toFixed(2)} USDC</span>
+                    </div>
+                )}
+
+                {hasWithdrawals && (
+                     <div className="summary-item">
+                        <span>{t('reports.preview.withdrawals', 'Withdrawals this period')}</span>
+                        <span>- {summary.periodWithdrawals.toFixed(2)} USDC</span>
+                    </div>
+                )}
+
+                {hasPerformanceFees && (
+                     <div className="summary-item">
+                        <span>{t('reports.preview.performanceFees', 'Performance Fees Paid')}</span>
+                        <span className="text-negative">{summary.performanceFeesPaid.toFixed(2)} USDC</span>
+                    </div>
+                )}
+                
+                {/* --- Totals --- */}
+                <div className="summary-item total">
+                    <span>{t('reports.preview.endingCapital', 'Ending Capital (as of {{date}})', { date: formatDate(reportData.endDate) })}</span>
+                    <span>{summary.endingCapital.toFixed(2)} USDC</span>
+                </div>
+
+                {hasBonusPoints && (
+                    <div className="summary-item">
+                        <span>{t('reports.preview.endingBonusPoints', 'Ending Bonus Points Balance')}</span>
+                        <span>{summary.endingBonusPointsBalance.toFixed(2)}</span>
+                    </div>
+                )}
+                
+                <div className="summary-item total" style={{ borderTop: '2px solid var(--border-color)', paddingTop: '10px' }}>
+                    <span>{t('reports.preview.totalAccountValue', 'Total Account Value')}</span>
+                    <span>{summary.totalAccountValue.toFixed(2)} USDC</span>
+                </div>
             </div>
-            <div className="report-preview-section"><p>{reportData.closingRemarks}</p></div>
+            
+            <div className="report-preview-section">
+                <p>{reportData.closingRemarks}</p>
+            </div>
         </div>
     );
 };
