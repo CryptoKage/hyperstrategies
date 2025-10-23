@@ -80,26 +80,52 @@ const ReportsPage = () => {
     }, [selectedReportId, t]);
 
     // --- FIX #1: PDF Download Logic is Updated ---
-    const handleDownloadPdf = () => {
+     const handleDownloadPdf = () => {
         if (!reportPreviewRef.current || isDownloadingPdf) return;
 
         setIsDownloadingPdf(true);
-        const reportElement = reportPreviewRef.current;
+        const originalElement = reportPreviewRef.current;
 
-        // Force a specific width for a professional document layout
-        html2canvas(reportElement, { scale: 2, width: 800 })
+        // 1. Clone the node to avoid altering the live display
+        const clonedElement = originalElement.cloneNode(true);
+        
+        // 2. Style the clone specifically for PDF generation
+        clonedElement.style.position = 'absolute';
+        clonedElement.style.left = '-9999px'; // Position it off-screen
+        clonedElement.style.width = '800px'; // A standard document width
+        clonedElement.style.padding = '40px'; // Add some nice padding
+        clonedElement.style.backgroundColor = 'white'; // Force a white background
+        clonedElement.style.color = 'black'; // Force black text for printing
+
+        // 3. Append the clone to the body to be rendered
+        document.body.appendChild(clonedElement);
+
+        html2canvas(clonedElement, { scale: 2 })
             .then((canvas) => {
                 const imgData = canvas.toDataURL('image/png');
                 
-                // Create a standard A4 PDF in portrait mode, using pixels as units
-                const pdf = new jsPDF('p', 'px', 'a4');
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                
-                // Calculate the aspect ratio to fit the image correctly
-                const canvasAspectRatio = canvas.height / canvas.width;
-                const scaledHeight = pdfWidth * canvasAspectRatio;
+                // Create a standard A4 PDF in portrait mode
+                const pdf = new jsPDF({
+                    orientation: 'p',
+                    unit: 'mm',
+                    format: 'a4'
+                });
 
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, scaledHeight);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                
+                const canvasAspectRatio = canvas.width / canvas.height;
+                const pdfAspectRatio = pdfWidth / pdfHeight;
+
+                let finalWidth, finalHeight;
+
+                // Fit image to the page width
+                finalWidth = pdfWidth;
+                finalHeight = pdfWidth / canvasAspectRatio;
+                
+                // Add a small margin
+                const margin = 10;
+                pdf.addImage(imgData, 'PNG', margin, margin, finalWidth - (margin * 2), finalHeight - (margin * 2));
                 
                 const fileName = `HyperStrategies_Report_${reportData.report_data.startDate}.pdf`;
                 pdf.save(fileName);
@@ -109,10 +135,12 @@ const ReportsPage = () => {
                 alert(t('reports.error.pdf', "Sorry, there was an error creating the PDF. Please try again."));
             })
             .finally(() => {
+                // 4. Clean up by removing the clone from the body
+                document.body.removeChild(clonedElement);
                 setIsDownloadingPdf(false);
             });
     };
-
+    
     return (
         <Layout>
             <div className="admin-container">
