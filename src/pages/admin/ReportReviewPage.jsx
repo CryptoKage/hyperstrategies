@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Layout from '../../components/Layout';
 import api from '../../api/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { useTranslation } from 'react-i18next';
 
 const ReportPreview = ({ reportData }) => {
     const { t } = useTranslation();
