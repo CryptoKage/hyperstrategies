@@ -928,5 +928,34 @@
       "headline": "Reporting & Syndikate.",
       "body": "Persönliche und öffentliche Reports sowie Community-Syndikate."
     }
+  },
+  
+  "reports": {
+    "title": "Meine Berichte",
+    "backToProfile": "← Zurück zum Profil",
+    "availablePeriods": "Verfügbare Zeiträume",
+    "reportDetails": "Berichtsdetails",
+    "downloadPdf": "Als PDF herunterladen",
+    "downloading": "Wird heruntergeladen...",
+    "taxSupport": "Steuerunterstützung (in Kürze)",
+    "noReports": {
+      "title": "Keine Berichte verfügbar",
+      "body": "Ihre monatlichen Leistungsberichte werden hier angezeigt, sobald sie erstellt und genehmigt wurden. Bitte schauen Sie später noch einmal vorbei."
+    },
+    "error": {
+      "loadList": "Verfügbare Berichte konnten nicht geladen werden.",
+      "loadSingle": "Der ausgewählte Bericht konnte nicht geladen werden.",
+      "pdf": "Beim Erstellen des PDFs ist leider ein Fehler aufgetreten. Bitte versuchen Sie es erneut."
+    },
+    "preview": {
+      "subtitle": "Leistungsbericht",
+      "startingCapital": "Anfangskapital (Stand: {{date}})",
+      "strategyPerformance": "Strategie-Performance ({{percentage}}%)",
+      "buybackGains": "Gewinne aus Buyback Engine",
+      "deposits": "Einzahlungen in diesem Zeitraum",
+      "withdrawals": "Auszahlungen in diesem Zeitraum",
+      "endingCapital": "Endkapital (Stand: {{date}})"
+    }
   }
 }
+

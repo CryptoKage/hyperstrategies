@@ -788,6 +788,33 @@
       "playbook_step_two_copy": "Upgrade your loadout to activate and benefit from your best available pins.",
       "playbook_step_three_title": "3. Acquire more pins",
       "playbook_step_three_copy": "Use Hyper-Strategies products and engage with initiatives or trade in the P2P Marketplace."
+    } 
+  },
+  "reports": {
+    "title": "My Reports",
+    "backToProfile": "← Back to Profile",
+    "availablePeriods": "Available Periods",
+    "reportDetails": "Report Details",
+    "downloadPdf": "Download as PDF",
+    "downloading": "Downloading...",
+    "taxSupport": "Tax Support (Coming Soon)",
+    "noReports": {
+      "title": "No Reports Available",
+      "body": "Your monthly performance reports will appear here once they have been generated and approved. Please check back later."
+    },
+    "error": {
+      "loadList": "Could not load available reports.",
+      "loadSingle": "Could not load the selected report.",
+      "pdf": "Sorry, there was an error creating the PDF. Please try again."
+    },
+    "preview": {
+      "subtitle": "Performance Report",
+      "startingCapital": "Starting Capital (as of {{date}})",
+      "strategyPerformance": "Strategy Performance ({{percentage}}%)",
+      "buybackGains": "Buyback Engine Gains",
+      "deposits": "Deposits this period",
+      "withdrawals": "Withdrawals this period",
+      "endingCapital": "Ending Capital (as of {{date}})"
     }
   },
   "farmingVault": {
@@ -816,6 +843,8 @@
       "noPipeline": "Nothing in the pipeline."
     }
   },
+
+  
   "cta": {
     "connect": "Connect wallet",
     "explore": "Explore strategies"
