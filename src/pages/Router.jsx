@@ -31,13 +31,13 @@ import RewardsCenter from './RewardsCenter';
 import Presale from './Presale';
 import Vault1Page from './Vault1Page';
 import AnimationControlsPage from './admin/AnimationControlsPage';
-import ReportBuilderPage from './admin/ReportBuilderPage';
 import ReportsPage from './ReportsPage';
 import DeskResultsPage from './admin/DeskResultsPage';
 import FarmingPipelinePage from './admin/FarmingPipelinePage';
 import HowItWorks from './HowItWorks';
 import ReportReviewPage from './admin/ReportReviewPage';
 import PlatformReportsPage from './admin/PlatformReportsPage';
+import MonthlyAuditPage from './admin/MonthlyAuditPage'; 
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -51,44 +51,43 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
-      <Route path="/investor" element={<Investor />} />
-      <Route path="/legal" element={<Legal />} />
-      <Route path="/faq" element={<FAQ />} />
-      <Route path="/oauth-success" element={<OAuthSuccess />} />
-      <Route path="/xpleaderboard" element={<XPLeaderboard />} /> 
-      <Route path="/fees" element={<FeeStructure />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} /> 
-      <Route path="/reset-password" element={<ResetPassword />} /> 
+        <Route path="/investor" element={<Investor />} />
+        <Route path="/legal" element={<Legal />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
+        <Route path="/xpleaderboard" element={<XPLeaderboard />} /> 
+        <Route path="/fees" element={<FeeStructure />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} /> 
+        <Route path="/reset-password" element={<ResetPassword />} /> 
 
-      {/* --- Guest-Only Routes (primarily for app.domain) --- */}
-      <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
-      <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
+        {/* --- Guest-Only Routes (primarily for app.domain) --- */}
+        <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+        <Route path="/register" element={<GuestRoute><Register /></GuestRoute>} />
       
-      {/* --- Standard Protected Routes (will be forced to app.domain) --- */}
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
-      <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-      {/* Pins, marketplace, and shop are temporarily disabled for launch */}
-      <Route path="/rewards" element={<ProtectedRoute><RewardsCenter /></ProtectedRoute>} />
-      <Route path="/presale-info" element={<ProtectedRoute><Presale /></ProtectedRoute>} />
-      <Route path="/vaults/:vaultId" element={<ProtectedRoute><Vault1Page /></ProtectedRoute>} />
-      <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
+        {/* --- Standard Protected Routes (will be forced to app.domain) --- */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/wallet" element={<ProtectedRoute><Wallet /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/rewards" element={<ProtectedRoute><RewardsCenter /></ProtectedRoute>} />
+        <Route path="/presale-info" element={<ProtectedRoute><Presale /></ProtectedRoute>} />
+        <Route path="/vaults/:vaultId" element={<ProtectedRoute><Vault1Page /></ProtectedRoute>} />
+        <Route path="/reports" element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
           
-      {/* --- ADMIN-ONLY Protected Routes --- */}
-      <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-      <Route path="/admin/user/:userId" element={<AdminRoute><UserDetailPage /></AdminRoute>} />
-      <Route path="/admin/financials" element={<AdminRoute><FinancialsPage /></AdminRoute>} />
-      <Route path="/admin/treasury" element={<AdminRoute><TreasuryPage /></AdminRoute>} />
-      <Route path="/admin/vaults" element={<AdminRoute><VaultManagementPage /></AdminRoute>} />
-      <Route path="/admin/pins" element={<AdminRoute><PinManagementPage /></AdminRoute>} />
-      <Route path="/admin/xp-awards" element={<AdminRoute><XPAwardsPage /></AdminRoute>} />
-      <Route path="/admin/animations" element={<AdminRoute><AnimationControlsPage /></AdminRoute>} />
-      <Route path="/admin/reports/builder" element={<AdminRoute><ReportBuilderPage /></AdminRoute>} />
-      <Route path="/admin/desk-results" element={<AdminRoute><DeskResultsPage /></AdminRoute>} />
-      <Route path="/admin/farming-pipeline" element={<AdminRoute><FarmingPipelinePage /></AdminRoute>} />
-      <Route path="/admin/reports/review" element={<AdminRoute><ReportReviewPage /></AdminRoute>} />
-      <Route path="/admin/platform-reports" element={<AdminRoute><PlatformReportsPage /></AdminRoute>} />
-    </Routes>
+        {/* --- ADMIN-ONLY Protected Routes --- */}
+        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+        <Route path="/admin/user/:userId" element={<AdminRoute><UserDetailPage /></AdminRoute>} />
+        <Route path="/admin/financials" element={<AdminRoute><FinancialsPage /></AdminRoute>} />
+        <Route path="/admin/treasury" element={<AdminRoute><TreasuryPage /></AdminRoute>} />
+        <Route path="/admin/vaults" element={<AdminRoute><VaultManagementPage /></AdminRoute>} />
+        <Route path="/admin/pins" element={<AdminRoute><PinManagementPage /></AdminRoute>} />
+        <Route path="/admin/xp-awards" element={<AdminRoute><XPAwardsPage /></AdminRoute>} />
+        <Route path="/admin/animations" element={<AdminRoute><AnimationControlsPage /></AdminRoute>} />
+        <Route path="/admin/desk-results" element={<AdminRoute><DeskResultsPage /></AdminRoute>} />
+        <Route path="/admin/farming-pipeline" element={<AdminRoute><FarmingPipelinePage /></AdminRoute>} />
+        <Route path="/admin/reports/review" element={<AdminRoute><ReportReviewPage /></AdminRoute>} />
+        <Route path="/admin/platform-reports" element={<AdminRoute><PlatformReportsPage /></AdminRoute>} />
+        <Route path="/admin/monthly-audit" element={<AdminRoute><MonthlyAuditPage /></AdminRoute>} />
+      </Routes>
      </> 
   );
 };

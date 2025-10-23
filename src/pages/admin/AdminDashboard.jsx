@@ -1,3 +1,5 @@
+// src/pages/admin/AdminDashboard.jsx
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; 
 import Layout from '../../components/Layout';
@@ -13,43 +15,27 @@ const AdminDashboard = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   
-  const [approvingId, setApprovingId] = useState(null);
   const [actionMessage, setActionMessage] = useState({ id: null, type: '', text: '' });
   const [completingId, setCompletingId] = useState(null);
-
-  const [blockToScan, setBlockToScan] = useState('');
-  const [userToScan, setUserToScan] = useState('');
-  const [isScanning, setIsScanning] = useState(false);
-  const [scanMessage, setScanMessage] = useState({ type: '', text: '' });
+  const [approvingId, setApprovingId] = useState(null);
   const [finalizingId, setFinalizingId] = useState(null);
-
-  const [reportsForApproval, setReportsForApproval] = useState([]);
-  const [reviewingId, setReviewingId] = useState(null);
-
-  const [draftReportCount, setDraftReportCount] = useState(0);
 
   const navigate = useNavigate();
 
   const fetchAdminStats = useCallback(async () => {
     setLoading(true);
     try {
-      // Fetch both sets of data in parallel
-      const [statsResponse, transfersResponse, reportsResponse, draftCountResponse] = await Promise.all([
+      const [statsResponse, transfersResponse] = await Promise.all([
         api.get('/admin/dashboard-stats'),
         api.get('/admin/transfers/pending'),
-          api.get('/admin/reports/pending-approval') ,
-          api.get('/admin/reports/draft-count')
       ]);
       
       setStats(statsResponse.data);
       setPendingTransfers(transfersResponse.data);
-      setReportsForApproval(reportsResponse.data);
-      setDraftReportCount(draftCountResponse.data.draftCount);
       setError('');
     } catch (err) {
       console.error("Failed to fetch admin data:", err);
       setError(err.response?.data?.error || "Could not load admin data.");
-      // Set default empty states on error
       setStats({ databaseConnected: false, alchemyConnected: false, pendingVaultWithdrawals: [], recentDeposits: [], recentWithdrawals: [] });
       setPendingTransfers([]);
     } finally {
@@ -61,52 +47,11 @@ const AdminDashboard = () => {
     fetchAdminStats();
   }, [fetchAdminStats]);
 
-  const handleApproveWithdrawal = async (activityId) => {
-    setApprovingId(activityId);
-    setActionMessage({ id: activityId, text: 'Approving...' });
-    try {
-      const response = await api.post(`/admin/approve-withdrawal/${activityId}`);
-      setActionMessage({ id: activityId, type: 'success', text: response.data.message });
-      setTimeout(fetchAdminStats, 2000);
-    } catch (err) {
-      setActionMessage({ id: activityId, type: 'error', text: err.response?.data?.message || 'Approval failed.' });
-    } finally {
-      setApprovingId(null);
-    }
-  };
-
-  const handleReviewReport = async (reportId, newStatus) => {
-  setReviewingId(reportId);
-  try {
-    await api.post(`/admin/reports/${reportId}/review`, { newStatus });
-    fetchAdminStats(); // Refresh the whole dashboard
-  } catch (err) {
-    alert('Failed to update report status.');
-  } finally {
-    setReviewingId(null);
-  }
-};
-
-  const handleForceScanBlock = async (e) => {
-    e.preventDefault();
-    setIsScanning(true);
-    setScanMessage({ text: 'Scanning block...' });
-    try {
-      const response = await api.post('/admin/force-scan-block', { blockNumber: blockToScan });
-      setScanMessage({ type: 'success', text: response.data.message });
-      setBlockToScan('');
-    } catch (err) {
-      setScanMessage({ type: 'error', text: err.response?.data?.message || 'Failed to scan block.' });
-    } finally {
-      setIsScanning(false);
-    }
-  };
-
   const handleSweepToUser = async (activityId) => {
     setApprovingId(activityId);
     setActionMessage({ id: activityId, text: 'Initiating sweep...' });
     try {
-      const response = await api.post(`/admin/withdrawals/${activityId}/sweep`);
+      await api.post(`/admin/withdrawals/${activityId}/sweep`);
       setActionMessage({ id: activityId, type: 'success', text: 'Sweep started. Awaiting confirmation.' });
       fetchAdminStats();
     } catch (err) {
@@ -130,21 +75,6 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleScanUserWallet = async (e) => {
-    e.preventDefault();
-    setIsScanning(true);
-    setScanMessage({ text: 'Scanning user wallet history...' });
-    try {
-      const response = await api.post('/admin/scan-user-wallet', { userId: userToScan });
-      setScanMessage({ type: 'success', text: response.data.message });
-      setUserToScan('');
-    } catch (err) {
-      setScanMessage({ type: 'error', text: err.response?.data?.message || 'Failed to scan wallet.' });
-    } finally {
-      setIsScanning(false);
-    }
-  };
-  
   const handleCompleteTransfer = async (transferId) => {
     setCompletingId(transferId);
     setActionMessage({ id: transferId, text: 'Processing...' });
@@ -155,6 +85,21 @@ const AdminDashboard = () => {
     } catch (err) {
       setActionMessage({ id: transferId, type: 'error', text: err.response?.data?.error || 'Processing failed.' });
       setCompletingId(null);
+    }
+  };
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    if (searchQuery.length < 3) return;
+    setIsSearching(true);
+    try {
+      const response = await api.get(`/admin/users/search?query=${searchQuery}`);
+      setSearchResults(response.data);
+    } catch (err) {
+      console.error("Search failed:", err);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -174,24 +119,9 @@ const AdminDashboard = () => {
       <span>{label}</span>
     </div>
   );
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (searchQuery.length < 3) return;
-    setIsSearching(true);
-    try {
-      const response = await api.get(`/admin/users/search?query=${searchQuery}`);
-      setSearchResults(response.data);
-    } catch (err) {
-      console.error("Search failed:", err);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  };
   
-const renderContent = () => {
-    if (loading) return <p>Loading Admin Dashboard...</p>;
+  const renderContent = () => {
+    if (loading) return <LoadingSpinner />;
     if (error && !stats) return <p className="error-message">{error}</p>;
     if (!stats) return <p>No data available.</p>;
     
@@ -210,20 +140,72 @@ const renderContent = () => {
           <StatCard label="Hot Wallet Gas (ETH)" value={parseFloat(stats.hotWalletBalance)} />
         </div>
         
+        {/* --- NEW: Grouped Navigation --- */}
+        <div className="admin-grid" style={{marginTop: '2rem'}}>
+            <div className="admin-actions-card">
+                <h3>Reporting & Month-End</h3>
+                <p>Tools for closing financial periods, generating reports, and auditing data.</p>
+                <div className="admin-tool-links">
+                    <Link to="/admin/desk-results" className="btn-secondary">Monthly Close Workflow</Link>
+                    <Link to="/admin/reports/review" className="btn-secondary">Report Management Suite</Link>
+                    <Link to="/admin/platform-reports" className="btn-secondary">Platform Aggregate Report</Link>
+                    <Link to="/admin/monthly-audit" className="btn-secondary">Monthly P&L Audit</Link>
+                    <Link to="/admin/treasury" className="btn-secondary">Treasury & Business Report</Link>
+                </div>
+            </div>
+            <div className="admin-actions-card">
+                <h3>Core Management</h3>
+                <p>Manage vaults, farming pipelines, and user-specific details.</p>
+                 <div className="admin-tool-links">
+                    <Link to="/admin/vaults" className="btn-secondary">Vault Management</Link>
+                    <Link to="/admin/farming-pipeline" className="btn-secondary">Farming Pipeline</Link>
+                    <Link to="/admin/financials" className="btn-secondary">Financial Ledgers</Link>
+                </div>
+            </div>
+             <div className="admin-actions-card">
+                <h3>Ecosystem & Gamification</h3>
+                <p>Manage pins, award XP, and run other community initiatives.</p>
+                 <div className="admin-tool-links">
+                    <Link to="/admin/pins" className="btn-secondary">Pin Management</Link>
+                    <Link to="/admin/xp-awards" className="btn-secondary">XP & Reward Tools</Link>
+                    <Link to="/admin/animations" className="btn-secondary">Animation Controls</Link>
+                </div>
+            </div>
+        </div>
+
         <div className="admin-actions-card">
-          <h3>Withdrawal Workflow</h3>
-          <p>Manage the multi-step process for user vault withdrawals.</p>
-          
+          <h3>User Lookup</h3>
+          <form onSubmit={handleSearch} className="admin-form">
+            <div className="form-group">
+              <input type="text" placeholder="Search by username, email, or wallet address..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            </div>
+            <button type="submit" className="btn-primary" disabled={isSearching || searchQuery.length < 3}>
+              {isSearching ? 'Searching...' : 'Search'}
+            </button>
+          </form>
+          {searchResults.length > 0 && (
+            <div className="search-results">
+              <h4>Search Results:</h4>
+              <ul className="results-list">
+                {searchResults.map(user => (
+                  <li key={user.user_id} onClick={() => navigate(`/admin/user/${user.user_id}`)}>
+                    <strong>{user.username}</strong> ({user.email})
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+        
+        {/* --- Action Queues --- */}
+        <div className="admin-actions-card">
+          <h3>Withdrawal Workflow Queue</h3>
           {stats.pendingVaultWithdrawals && stats.pendingVaultWithdrawals.length > 0 ? (
             <div className="table-responsive">
               <table className="activity-table">
                 <thead>
                   <tr>
-                    <th>User</th>
-                    <th>Description</th>
-                    <th className="amount">Amount</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>User</th><th>Description</th><th className="amount">Amount</th><th>Status</th><th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -239,16 +221,11 @@ const renderContent = () => {
                             {approvingId === item.activity_id ? '...' : 'Sweep to User'}
                           </button>
                         )}
-                        {item.status === 'PENDING_CONFIRMATION' && (
-                          <button className="btn-secondary btn-sm" disabled>Awaiting B/C</button>
-                        )}
+                        {item.status === 'PENDING_CONFIRMATION' && <button className="btn-secondary btn-sm" disabled>Awaiting B/C</button>}
                         {item.status === 'SWEEP_CONFIRMED' && (
                           <button className="btn-positive btn-sm" onClick={() => handleFinalizeWithdrawal(item.activity_id)} disabled={finalizingId === item.activity_id}>
                             {finalizingId === item.activity_id ? '...' : 'Finalize & Credit'}
                           </button>
-                        )}
-                        {item.status === 'SWEEP_FAILED' && (
-                          <button className="btn-danger-small" onClick={() => handleSweepToUser(item.activity_id)}>Retry Sweep</button>
                         )}
                       </td>
                     </tr>
@@ -257,67 +234,17 @@ const renderContent = () => {
               </table>
               {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
             </div>
-          ) : (
-            <p>There are currently no pending vault withdrawals.</p>
-          )}
+          ) : <p>No pending vault withdrawals.</p>}
         </div>
 
-<div className="admin-actions-card">
-  <h3>Report Approval Queue</h3>
-  {reportsForApproval && reportsForApproval.length > 0 ? (
-    <table className="activity-table">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Report Title</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {reportsForApproval.map(report => (
-          <tr key={report.report_id}>
-            <td>{report.username}</td>
-            <td>{report.title}</td>
-            <td className="actions-cell">
-              {/* We need a "View" button here. For now, it links nowhere. */}
-              <button className="btn-secondary btn-sm">View</button>
-              <button 
-                className="btn-positive btn-sm" 
-                onClick={() => handleReviewReport(report.report_id, 'APPROVED')}
-                disabled={reviewingId === report.report_id}
-              >
-                Approve
-              </button>
-              <button 
-                className="btn-danger-small"
-                onClick={() => handleReviewReport(report.report_id, 'DRAFT')}
-                disabled={reviewingId === report.report_id}
-              >
-                Reject
-              </button>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  ) : (
-    <p>No reports are currently awaiting approval.</p>
-  )}
-</div>
-
         <div className="admin-actions-card">
-          <h3>Pending Vault Transfers</h3>
-          <p>Process user requests to move capital between vaults.</p>
+          <h3>Pending Vault Transfers Queue</h3>
           {pendingTransfers && pendingTransfers.length > 0 ? (
             <div className="table-responsive">
               <table className="activity-table">
                 <thead>
                   <tr>
-                    <th>User</th>
-                    <th>Request</th>
-                    <th className="amount">Amount</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>User</th><th>Request</th><th className="amount">Amount</th><th>Status</th><th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -340,110 +267,7 @@ const renderContent = () => {
               </table>
               {actionMessage.id && <p className={`admin-message ${actionMessage.type}`}>{actionMessage.text}</p>}
             </div>
-          ) : (
-            <p>There are currently no pending vault transfers.</p>
-          )}
-        </div>
-        
-        <div className="admin-actions-card">
-          <h3>User Lookup</h3>
-          <p>Search for a user by their username, email, or wallet address.</p>
-          <form onSubmit={handleSearch} className="admin-form">
-            <div className="form-group">
-              <input type="text" placeholder="Enter search term (3+ characters)..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-            </div>
-            <button type="submit" className="btn-primary" disabled={isSearching || searchQuery.length < 3}>
-              {isSearching ? 'Searching...' : 'Search'}
-            </button>
-          </form>
-          {searchResults.length > 0 && (
-            <div className="search-results">
-              <h4>Search Results:</h4>
-              <ul className="results-list">
-                {searchResults.map(user => (
-                  <li key={user.user_id} onClick={() => navigate(`/admin/user/${user.user_id}`)}>
-                    <strong>{user.username}</strong> ({user.email})
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-
-
-        <div className="admin-grid">
-          <div className="activity-card">
-            <h3>Recent Deposits</h3>
-            {stats.recentDeposits && stats.recentDeposits.length > 0 ? (
-              <table className="activity-table">
-                <tbody>
-                  {stats.recentDeposits.map((item, index) => (
-                    <tr key={`dep-${index}`}>
-                      <td> <strong> <Link to={`/admin/user/${item.user_id}`} 
-                        className="admin-table-link">  {item.username}
-          </Link>
-        </strong> deposited
-      </td>
-      <td className="amount">${parseFloat(item.amount).toFixed(2)}</td>
-    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : <p>No recent deposits.</p>}
-          </div>
-          <div className="activity-card">
-            <h3>Recent Platform Withdrawals</h3>
-            {stats.recentWithdrawals && stats.recentWithdrawals.length > 0 ? (
-              <table className="activity-table">
-                <tbody>
-                 {stats.recentWithdrawals.map((item, index) => (
-                  <tr key={`wd-${index}`}>
-                    <td> <strong>
-        <Link to={`/admin/user/${item.user_id}`} className="admin-table-link">
-          {item.username}
-        </Link>
-      </strong> requested
-    </td>
-    <td className="amount">${parseFloat(item.amount).toFixed(2)}</td>
-  </tr>
-                ))}
-              </tbody>
-            </table>
-            ) : <p>No recent platform withdrawal requests.</p>}
-          </div>
-        </div>
-
-        <div className="admin-actions-card">
-          <h3>Diagnostic & Repair Tools</h3>
-          {scanMessage.text && <p className={`admin-message ${scanMessage.type}`}>{scanMessage.text}</p>}
-
-          <div className="admin-grid" style={{ marginTop: '20px' }}>
-            <div className="diagnostic-tool">
-              <h4>Force Re-Scan Block</h4>
-              <p>If the automated scanner missed a deposit, enter the block number here to force a re-scan.</p>
-              <form onSubmit={handleForceScanBlock} className="admin-form">
-                <div className="form-group">
-                  <input type="number" placeholder="Enter Block Number" value={blockToScan} onChange={(e) => setBlockToScan(e.target.value)} required />
-                </div>
-                <button type="submit" className="btn-secondary" disabled={isScanning || !blockToScan}>
-                  {isScanning ? 'Scanning...' : 'Scan Block'}
-                </button>
-              </form>
-            </div>
-            
-            <div className="diagnostic-tool">
-              <h4>Scan User Wallet History</h4>
-              <p>If a specific user's deposit is missing, enter their User ID (UUID) to scan their entire wallet history.</p>
-              <form onSubmit={handleScanUserWallet} className="admin-form">
-                <div className="form-group">
-                  <input type="text" placeholder="Enter User ID (UUID)" value={userToScan} onChange={(e) => setUserToScan(e.target.value)} required />
-                </div>
-                <button type="submit" className="btn-secondary" disabled={isScanning || !userToScan}>
-                  {isScanning ? 'Scanning...' : 'Scan Wallet'}
-                </button>
-              </form>
-            </div>
-          </div>
+          ) : <p>No pending vault transfers.</p>}
         </div>
       </>
     );
@@ -456,23 +280,8 @@ const renderContent = () => {
           <h1>Admin Mission Control</h1>
           <div className="admin-header-actions">
             <button onClick={fetchAdminStats} className="btn-secondary btn-sm" disabled={loading}>
-              {loading ? 'Refreshing...' : 'Refresh Stats'}
+              {loading ? 'Refreshing...' : 'Refresh Data'}
             </button>
-            <Link to="/admin/financials" className="btn-primary btn-sm">Financials & Auditing</Link>
-            <Link to="/admin/treasury" className="btn-primary btn-sm">Treasury Report</Link>
-            <Link to="/admin/vaults" className="btn-primary btn-sm">Vault Management</Link>
-            <Link to="/admin/pins" className="btn-primary btn-sm">Pin Management</Link>
-            <Link to="/admin/xp-awards" className="btn-primary btn-sm">XP Awards</Link>
-             <Link to="/admin/animations" className="btn-primary btn-sm">Animation Controls</Link>
-             <Link to="/admin/reports/builder" className="btn-primary btn-sm">Report Builder</Link>
-             <Link to="/admin/desk-results" className="btn-primary btn-sm">Desk Results</Link>
-             <Link to="/admin/reports/review" className="btn-primary btn-sm btn-with-badge">
-        Review Reports
-        {draftReportCount > 0 && (
-            <span className="notification-badge">{draftReportCount}</span>
-        )}
-    </Link>
-
           </div>
         </div>
         {renderContent()}

@@ -7,262 +7,181 @@ import api from '../../api/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 const DeskResultsPage = () => {
+    // --- State for Setup ---
     const [vaults, setVaults] = useState([]);
     const [selectedVaultId, setSelectedVaultId] = useState('');
     const [selectedMonth, setSelectedMonth] = useState('');
+    const [pnlPercentage, setPnlPercentage] = useState('');
 
-    const [loading, setLoading] = useState(false);
+    // --- State for Workflow Control ---
+    const [currentStep, setCurrentStep] = useState(1); // 1: Input PNL, 2: Review Fees, 3: Generate Reports
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const [supportingEvents, setSupportingEvents] = useState([]);
-
-    // State for Monthly Summary Form
-    const [monthlyPerf, setMonthlyPerf] = useState({ pnlPercentage: '', notes: '' });
-    const [isSavingSummary, setIsSavingSummary] = useState(false);
-    const [summaryMessage, setSummaryMessage] = useState({ type: '', text: '' });
-
-    // State for New Trade Form
-    const [newTrade, setNewTrade] = useState({ asset_symbol: '', direction: 'LONG', quantity: '', entry_price: '', contract_address: '', chain: 'ETHEREUM' });
-    const [isLoggingTrade, setIsLoggingTrade] = useState(false);
-
-    // State for New Vault Event Form
-    const [newEvent, setNewEvent] = useState({ eventType: 'AIRDROP_RECEIVED', description: '', valueUsd: '', txHash: '' });
-    const [isLoggingEvent, setIsLoggingEvent] = useState(false);
-
+    const [step2Data, setStep2Data] = useState(null); // To store results from fee calculation
 
     // Fetch list of all vaults on component mount
     useEffect(() => {
-        const fetchVaults = async () => {
-          try {
-            // Reusing the dashboard endpoint to get the vault list
-            const response = await api.get('/dashboard'); 
-            const activeVaults = response.data.vaults.filter(v => v.status === 'active');
+        api.get('/admin/vaults/all')
+          .then(res => {
+            const activeVaults = res.data.filter(v => v.status === 'active');
             setVaults(activeVaults);
             if (activeVaults.length > 0) {
               setSelectedVaultId(activeVaults[0].vault_id);
             }
-          } catch (err) {
-            setError('Could not fetch list of vaults.');
-          }
-        };
-        fetchVaults();
+          })
+          .catch(err => setError('Could not fetch list of vaults.'));
     }, []);
 
-    // Fetch supporting events when vault or month changes
-    const fetchSupportingEvents = useCallback(async () => {
-        if (!selectedVaultId || !selectedMonth) {
-            setSupportingEvents([]);
-            return;
-        }
-        setLoading(true);
+    // --- Step 1 Handler: Calculate Fees ---
+    const handleCalculateFees = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
         setError('');
         try {
             const monthDate = new Date(selectedMonth + '-01');
-            const startDate = monthDate.toISOString().split('T')[0];
-            const endDate = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 1).toISOString().split('T')[0];
-
-            const response = await api.get(`/admin/vaults/${selectedVaultId}/supporting-events?startDate=${startDate}&endDate=${endDate}`);
-            setSupportingEvents(response.data);
+            const formattedMonth = monthDate.toISOString().split('T')[0];
+            
+            const payload = { 
+                vaultId: selectedVaultId, 
+                month: formattedMonth, 
+                pnlPercentage: pnlPercentage
+            };
+            
+            const response = await api.post('/admin/calculate-and-post-fees', payload);
+            setStep2Data(response.data); // Save the results
+            setCurrentStep(2); // Move to the next step
         } catch (err) {
-            setError('Failed to fetch supporting events for this period.');
+            setError(err.response?.data?.error || 'Failed to calculate fees.');
         } finally {
-            setLoading(false);
-        }
-    }, [selectedVaultId, selectedMonth]);
-
-    useEffect(() => {
-        fetchSupportingEvents();
-    }, [fetchSupportingEvents]);
-
-
-    // Handlers for form submissions
-    // in src/pages/admin/DeskResultsPage.jsx
-
-const handleGenerateReports = async (e) => {
-    e.preventDefault();
-    if (!window.confirm(`Are you sure you want to generate all user reports for ${selectedMonth}? This will overwrite any existing drafts for this period.`)) {
-        return;
-    }
-
-    setIsSavingSummary(true);
-    setSummaryMessage({ type: '', text: '' });
-    try {
-        const monthDate = new Date(selectedMonth + '-01');
-        const formattedMonth = monthDate.toISOString().split('T')[0];
-        
-        const payload = { 
-            vaultId: selectedVaultId, 
-            month: formattedMonth, 
-            pnlPercentage: monthlyPerf.pnlPercentage,
-            notes: monthlyPerf.notes
-        };
-
-        // Call our NEW endpoint
-        const response = await api.post('/admin/reports/generate-monthly-drafts', payload);
-        
-        setSummaryMessage({ type: 'success', text: response.data.message });
-    } catch (err) {
-        setSummaryMessage({ type: 'error', text: err.response?.data?.error || 'Failed to generate reports.' });
-    } finally {
-        setIsSavingSummary(false);
-    }
-};
-
-    const handleLogTrade = async (e) => {
-        e.preventDefault();
-        setIsLoggingTrade(true);
-        try {
-            await api.post(`/admin/vaults/${selectedVaultId}/trades`, newTrade);
-            setNewTrade({ asset_symbol: '', direction: 'LONG', quantity: '', entry_price: '', contract_address: '', chain: 'ETHEREUM' });
-            fetchSupportingEvents(); // Refresh the log
-        } catch (err) {
-            alert('Failed to log trade: ' + (err.response?.data?.message || 'Unknown error'));
-        } finally {
-            setIsLoggingTrade(false);
+            setIsLoading(false);
         }
     };
-    
-    const handleLogEvent = async (e) => {
-        e.preventDefault();
-        setIsLoggingEvent(true);
+
+    // --- Step 3 Handler: Generate Reports ---
+    const handleGenerateReports = async () => {
+        setIsLoading(true);
+        setError('');
         try {
-            await api.post('/admin/vault-events', { vaultId: selectedVaultId, ...newEvent });
-            setNewEvent({ eventType: 'AIRDROP_RECEIVED', description: '', valueUsd: '', txHash: '' });
-            fetchSupportingEvents(); // Refresh the log
+            const monthDate = new Date(selectedMonth + '-01');
+            const formattedMonth = monthDate.toISOString().split('T')[0];
+            
+            const payload = { 
+                vaultId: selectedVaultId, 
+                month: formattedMonth, 
+                pnlPercentage: pnlPercentage,
+                notes: `Monthly report generated after automated fee calculation.` // Optional note
+            };
+
+            const response = await api.post('/admin/reports/generate-monthly-drafts', payload);
+            setStep2Data({ ...step2Data, finalMessage: response.data.message }); // Add final message to step 2 data
+            setCurrentStep(3); // Move to the final confirmation step
         } catch (err) {
-            alert('Failed to log event: ' + (err.response?.data?.error || 'Unknown error'));
+            setError(err.response?.data?.error || 'Failed to generate reports.');
         } finally {
-            setIsLoggingEvent(false);
+            setIsLoading(false);
         }
+    };
+
+    const resetWorkflow = () => {
+        setCurrentStep(1);
+        setStep2Data(null);
+        setError('');
+        setPnlPercentage('');
     };
 
     return (
         <Layout>
             <div className="admin-container">
                 <div className="admin-header">
-                    <h1>Trading Desk Results</h1>
+                    <h1>Monthly Close Workflow</h1>
                     <Link to="/admin" className="btn-secondary btn-sm">← Back to Mission Control</Link>
                 </div>
 
-                {/* --- Main Controls --- */}
-                <div className="admin-card" style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-                    <div className="form-group" style={{ flex: 1 }}>
-                        <label htmlFor="vaultSelect">Select Vault</label>
-                        <select id="vaultSelect" value={selectedVaultId} onChange={(e) => setSelectedVaultId(e.target.value)} className="admin-vault-select">
-                            {vaults.map((v) => <option key={v.vault_id} value={v.vault_id}>{v.name}</option>)}
-                        </select>
-                    </div>
-                    <div className="form-group" style={{ flex: 1 }}>
-                        <label htmlFor="monthSelect">Select Month</label>
-                        <input type="month" id="monthSelect" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} required />
-                    </div>
-                </div>
-
-                {/* --- Monthly Summary Section --- */}
-                <div className="admin-actions-card">
-                    <h3>Monthly Summary & Report Generation</h3>
-                    <p>Record the final, official P&L percentage. This will automatically generate a draft report for every active user in the vault for that month.</p>
-                    <form onSubmit={handleGenerateReports} className="admin-form">
-                        <div className="form-group">
-                            <label htmlFor="perf-pnl">Performance Percentage (e.g., 5.5 or -2.1)</label>
-                            <input id="perf-pnl" type="number" step="any" value={monthlyPerf.pnlPercentage} onChange={(e) => setMonthlyPerf({...monthlyPerf, pnlPercentage: e.target.value})} required />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="perf-notes">Notes / Commentary (Optional)</label>
-                            <textarea id="perf-notes" value={monthlyPerf.notes} onChange={(e) => setMonthlyPerf({...monthlyPerf, notes: e.target.value})} rows="3"></textarea>
-                        </div>
-                        <button type="submit" className="btn-primary" disabled={isSavingSummary || !selectedMonth || !monthlyPerf.pnlPercentage}>
-            {isSavingSummary ? 'Generating...' : 'Save & Generate Draft Reports'}
-        </button>
-    </form>
-    {summaryMessage.text && (
-                        <div className={`admin-message ${summaryMessage.type}`}>
-                            <p>{summaryMessage.text}</p>
-                            {summaryMessage.type === 'success' && (
-                                <Link to="/admin/reports/review" className="btn-secondary btn-sm" style={{ marginTop: '1rem' }}>
-                                    Go to Review & Publish →
-                                </Link>
-                            )}
-                        </div>   
-                    )}
-                </div>
-    
-
-                {/* --- Event Logging Forms --- */}
-                <div className="admin-grid">
-                    <div className="admin-card">
-                        <h4>Log New Trade</h4>
-                        <form onSubmit={handleLogTrade} className="admin-form">
-                            {/* Simplified form for brevity. You can add all fields. */}
-                            <input value={newTrade.asset_symbol} onChange={e => setNewTrade({...newTrade, asset_symbol: e.target.value})} placeholder="Symbol (e.g., ETH)" required />
-                            <input type="number" value={newTrade.quantity} onChange={e => setNewTrade({...newTrade, quantity: e.target.value})} placeholder="Quantity" required />
-                            <input type="number" value={newTrade.entry_price} onChange={e => setNewTrade({...newTrade, entry_price: e.target.value})} placeholder="Entry Price" required />
-                            <input value={newTrade.contract_address} onChange={e => setNewTrade({...newTrade, contract_address: e.target.value})} placeholder="Contract Address" required />
-                            <button type="submit" className="btn-secondary" disabled={isLoggingTrade}>{isLoggingTrade ? '...' : 'Log Trade'}</button>
-                        </form>
-                    </div>
-                    <div className="admin-card">
-                        <h4>Log Vault Event</h4>
-                        <form onSubmit={handleLogEvent} className="admin-form">
-                            <select value={newEvent.eventType} onChange={e => setNewEvent({...newEvent, eventType: e.target.value})}>
-                                <option value="AIRDROP_RECEIVED">Airdrop Received</option>
-                                <option value="FEE_INCURRED">Fee Incurred</option>
-                                <option value="MANUAL_ADJUSTMENT">Manual Adjustment</option>
+                {/* --- Workflow Header --- */}
+                <div className="admin-card">
+                    <div style={{ display: 'flex', gap: '24px', alignItems: 'center', opacity: currentStep > 1 ? 0.6 : 1 }}>
+                        <div className="form-group" style={{ flex: 1 }}>
+                            <label htmlFor="vaultSelect">Select Vault</label>
+                            <select id="vaultSelect" value={selectedVaultId} onChange={(e) => setSelectedVaultId(e.target.value)} disabled={currentStep > 1}>
+                                {vaults.map((v) => <option key={v.vault_id} value={v.vault_id}>{v.name}</option>)}
                             </select>
-                            <textarea value={newEvent.description} onChange={e => setNewEvent({...newEvent, description: e.target.value})} placeholder="Description (e.g., Received 10k ARB tokens)" required></textarea>
-                            <input type="number" value={newEvent.valueUsd} onChange={e => setNewEvent({...newEvent, valueUsd: e.target.value})} placeholder="Realized USD Value (if any)" />
-                            <button type="submit" className="btn-secondary" disabled={isLoggingEvent}>{isLoggingEvent ? '...' : 'Log Event'}</button>
-                        </form>
+                        </div>
+                        <div className="form-group" style={{ flex: 1 }}>
+                            <label htmlFor="monthSelect">Select Month</label>
+                            <input type="month" id="monthSelect" value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)} required disabled={currentStep > 1} />
+                        </div>
                     </div>
+                    {currentStep > 1 && <button onClick={resetWorkflow} className="btn-link" style={{marginTop: '1rem'}}>Start Over</button>}
                 </div>
                 
-                {/* --- Supporting Events Log --- */}
-               <div className="admin-card" style={{ marginTop: '24px' }}>
-    <h3>Chronological Events Log for Selected Period</h3>
-    {loading ? <LoadingSpinner /> : error ? <p className="error-message">{error}</p> :
-        <div className="table-responsive">
-            <table className="activity-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Details</th>
-                        <th className="amount">Value / P&L (USD)</th>
-                    </tr>
-                </thead>
-      <tbody>
-    {supportingEvents.length > 0 ? supportingEvents.map(event => (
-        <tr key={`${event.type}-${event.id}`}>
-            <td>{new Date(event.event_date).toLocaleString()}</td>
-            <td>
-                <span className={`status-badge status-${event.type.toLowerCase()}`}>
-                    {event.type.replace(/_/g, ' ')}
-                </span>
-            </td>
-            <td>
-                {(() => {
-                    switch (event.type) {
-                        case 'DEPOSIT':
-                            return `User '${event.username}' deposited ${parseFloat(event.total_deposit_amount).toFixed(2)} (Net: ${parseFloat(event.tradable_capital).toFixed(2)})`;
-                        case 'TRADE':
-                            return `${event.status} ${event.direction} ${event.quantity} ${event.asset_symbol} @ ${event.entry_price}`;
-                        default: // For AIRDROP_RECEIVED, etc.
-                            return event.description;
-                    }
-                })()}
-            </td>
-            <td className={`amount ${ (parseFloat(event.pnl_usd || event.value_usd || 0)) >= 0 ? 'text-positive' : 'text-negative'}`}>
-                { event.type === 'DEPOSIT' ? `+${parseFloat(event.total_deposit_amount).toFixed(2)}`
-                : (event.pnl_usd !== null && event.pnl_usd !== undefined) ? parseFloat(event.pnl_usd).toFixed(2)
-                : (event.value_usd !== null && event.value_usd !== undefined) ? parseFloat(event.value_usd).toFixed(2)
-                : 'N/A'}
-            </td>
-        </tr>
-    )) : <tr><td colSpan="4" style={{textAlign: 'center'}}>No events found for this period.</td></tr>}
-</tbody>
-            </table>
-        </div>
-    }
-</div>
+                {error && <p className="error-message admin-card">{error}</p>}
+
+                {/* --- Step 1: Input Gross PNL --- */}
+                {currentStep === 1 && (
+                    <div className="admin-actions-card">
+                        <h3>Step 1: Record Gross Performance</h3>
+                        <p>Enter the vault's gross (before-fees) P&L percentage for the selected month. This will be used to calculate fees against each user's high-water mark.</p>
+                        <form onSubmit={handleCalculateFees} className="admin-form">
+                            <div className="form-group">
+                                <label htmlFor="perf-pnl">Gross Performance Percentage (e.g., 8.5 or -2.1)</label>
+                                <input id="perf-pnl" type="number" step="any" value={pnlPercentage} onChange={(e) => setPnlPercentage(e.target.value)} required />
+                            </div>
+                            <button type="submit" className="btn-primary" disabled={isLoading || !selectedMonth || !pnlPercentage}>
+                                {isLoading ? 'Calculating...' : 'Calculate & Post Fees'}
+                            </button>
+                        </form>
+                    </div>
+                )}
+                
+                {/* --- Step 2: Review Fees --- */}
+                {currentStep >= 2 && step2Data && (
+                    <div className="admin-actions-card">
+                        <h3>Step 2: Review Posted Performance Fees</h3>
+                        <p>{step2Data.message}</p>
+                        <div className="table-responsive">
+                            <table className="activity-table">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Starting Capital</th>
+                                        <th>High-Water Mark</th>
+                                        <th>Gross PNL</th>
+                                        <th>New Account Value</th>
+                                        <th className="amount">Fee Calculated & Posted</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {step2Data.calculationResults.map(r => (
+                                        <tr key={r.userId}>
+                                            <td>{r.username}</td>
+                                            <td>${r.startingCapital.toFixed(2)}</td>
+                                            <td>${r.highWaterMark.toFixed(2)}</td>
+                                            <td className={r.grossPnl >= 0 ? 'text-positive' : 'text-negative'}>${r.grossPnl.toFixed(2)}</td>
+                                            <td>${r.newAccountValue.toFixed(2)}</td>
+                                            <td className="amount text-negative">${r.feeAmount.toFixed(2)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                        {currentStep === 2 && (
+                             <button onClick={handleGenerateReports} className="btn-primary" disabled={isLoading} style={{marginTop: '1.5rem'}}>
+                                {isLoading ? 'Generating...' : 'Confirm & Generate Final Reports'}
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {/* --- Step 3: Confirmation --- */}
+                {currentStep === 3 && step2Data?.finalMessage && (
+                     <div className="admin-card admin-message success">
+                        <h3>Step 3: Complete!</h3>
+                        <p>{step2Data.finalMessage}</p>
+                        <Link to="/admin/reports/review" className="btn-secondary btn-sm" style={{ marginTop: '1rem' }}>
+                            Go to Review & Publish →
+                        </Link>
+                    </div>
+                )}
             </div>
         </Layout>
     );
