@@ -12,6 +12,7 @@ import { Toaster } from 'react-hot-toast';
 import './i18n';
 import ReactGA from 'react-ga4';
 import ReactPixel from 'react-facebook-pixel'; 
+import './styles/reports.css';
 
 const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID;
 

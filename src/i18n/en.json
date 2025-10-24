@@ -490,12 +490,52 @@
   },
   "faq_page": {
     "title": "Frequently Asked Questions",
-    "q1_title": "What are bonus points?",
-    "q1_answer": "When depositing in our strategies, 20% of your deposit is credited to you as bonus points. We will periodically buy back these points for USDC (1:1), which will be added to your “Available to Allocate” balance for immediate withdrawal or reinvestment. Bonus Points may also be used in the Shop for significant discounts.",
-    "q2_title": "What is a high-water mark?",
-    "q2_answer": "A high water mark ensures that the performance fee is only applied to **new profits**, not on funds that are simply recovering from a previous loss.",
-    "q3_title": "How are withdrawals from strategies handled?",
-    "q3_answer": "When you request a withdrawal from a strategy, a request is created to move your 'Tradable Capital' back to your main 'Available to Allocate' balance. This process can take up to 24 hours to complete. To withdraw funds from the platform to an external wallet, you must use the 'Withdraw Funds' feature on the Wallet page after your strategy withdrawal has been processed. That process should only take minutes."
+     "questions": [
+      {
+        "question": "What strategy options does Hyper-Strategies offer?",
+        "answer": "Currently, Core Strategy: A multi-asset, discretionary strategy with adaptive, regime-based trading. The next strategy that we are working on is the High Risk Strategy, which follows the same strategy with different pairings on different exchanges."
+      },
+      {
+        "question": "Can I connect to Hyper-Strategies.com with my own crypto wallet?",
+        "answer": "This feature is coming soon!"
+      },
+      {
+        "question": "Do I need DeFi or crypto experience to use the strategies?",
+        "answer": "No technical knowledge is required. All our strategies are automated. \"Set and forget.\" Capital can be split between strategies to create your own curated portfolio to fit your risk appetite."
+      },
+      {
+        "question": "What are the fees to use the strategies?",
+        "answer": "Deposit fee: There is a 20% deposit fee which is credited back to you as Bonus Points. The platform will periodically buy back these Bonus Points for USDC.\n\nPerformance fee: Hyper-Strategies charges a 20% performance fee with a high water mark."
+      },
+      {
+        "question": "What are Bonus Points?",
+        "answer": "When depositing in our strategies, 20% of your deposit is credited to you as Bonus Points. We will periodically buy back these points for USDC, which will be added to your “Available to Allocate” balance for immediate withdrawal or reinvestment."
+      },
+      {
+        "question": "Why do I pay deposit & performance fees?",
+        "answer": "Deposit fees fund the system's infrastructure and are credited as Bonus Points (1:1). A major portion of the performance fee is put aside to safeguard the invested funds. Our users can be reassured that it is our number one priority to keep their funds safe.\n\nPerformance fees align our team’s outcomes with our users’ growth. We only win when our users win."
+      },
+      {
+        "question": "What is a high water mark?",
+        "answer": "A high water mark ensures that the performance fee is only applied to new profits, not on funds that are simply recovering from a previous loss. This is readjusted after withdrawals."
+      },
+      {
+        "question": "Are there measures in place to mitigate losses?",
+        "answer": "Yes. Our internal bots implement configurable stop-loss logic (including trailing stop-loss and OCO configurations) automatically through Hyperliquid's APIs. This is designed to minimize losses during unfavorable market developments."
+      },
+      {
+        "question": "Is Hyperliquid secure?",
+        "answer": "Hyperliquid is a decentralized protocol with audited smart contracts and user-controlled, non-custodial asset management. That said, any on-chain protocol carries inherent risk from bugs or oracle attacks—always exercise caution."
+      },
+      {
+        "question": "When can I withdraw?",
+        "answer": "The Core Strategy currently has a 1-month holding period. While we work to fully automate the withdrawal function, moving funds from the strategy to your wallet may take up to 48 hours. Users who require access to their funds within the 1-month holding period can contact us for earlier withdrawals in case of an emergency."
+      },
+      {
+        "question": "Do I need to verify my identity?",
+        "answer": "No, Hyper-Strategies does not have mandatory KYC across most jurisdictions."
+      }
+    ]
   },
   "profile_page": {
     "loading": "Loading Profile...",

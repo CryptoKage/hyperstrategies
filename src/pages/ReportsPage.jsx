@@ -80,52 +80,37 @@ const ReportsPage = () => {
     }, [selectedReportId, t]);
 
     // --- FIX #1: PDF Download Logic is Updated ---
-     const handleDownloadPdf = () => {
+    const handleDownloadPdf = () => {
         if (!reportPreviewRef.current || isDownloadingPdf) return;
 
         setIsDownloadingPdf(true);
         const originalElement = reportPreviewRef.current;
 
-        // 1. Clone the node to avoid altering the live display
+        // 1. Clone the node
         const clonedElement = originalElement.cloneNode(true);
         
-        // 2. Style the clone specifically for PDF generation
-        clonedElement.style.position = 'absolute';
-        clonedElement.style.left = '-9999px'; // Position it off-screen
-        clonedElement.style.width = '800px'; // A standard document width
-        clonedElement.style.padding = '40px'; // Add some nice padding
-        clonedElement.style.backgroundColor = 'white'; // Force a white background
-        clonedElement.style.color = 'black'; // Force black text for printing
+        // 2. Add our special "for-printing" class. The CSS will handle the styling.
+        clonedElement.classList.add('for-printing');
 
-        // 3. Append the clone to the body to be rendered
+        // 3. Style the clone for off-screen rendering
+        clonedElement.style.position = 'absolute';
+        clonedElement.style.left = '-9999px';
+        clonedElement.style.width = '800px';
+        clonedElement.style.padding = '40px';
+
+        // 4. Append the clone to the body to be rendered
         document.body.appendChild(clonedElement);
 
         html2canvas(clonedElement, { scale: 2 })
             .then((canvas) => {
                 const imgData = canvas.toDataURL('image/png');
-                
-                // Create a standard A4 PDF in portrait mode
-                const pdf = new jsPDF({
-                    orientation: 'p',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-
+                const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
                 const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                
                 const canvasAspectRatio = canvas.width / canvas.height;
-                const pdfAspectRatio = pdfWidth / pdfHeight;
+                const finalHeight = (pdfWidth - 20) / canvasAspectRatio;
 
-                let finalWidth, finalHeight;
-
-                // Fit image to the page width
-                finalWidth = pdfWidth;
-                finalHeight = pdfWidth / canvasAspectRatio;
-                
-                // Add a small margin
-                const margin = 10;
-                pdf.addImage(imgData, 'PNG', margin, margin, finalWidth - (margin * 2), finalHeight - (margin * 2));
+                // Add a 10mm margin on all sides
+                pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth - 20, finalHeight);
                 
                 const fileName = `HyperStrategies_Report_${reportData.report_data.startDate}.pdf`;
                 pdf.save(fileName);
@@ -135,7 +120,7 @@ const ReportsPage = () => {
                 alert(t('reports.error.pdf', "Sorry, there was an error creating the PDF. Please try again."));
             })
             .finally(() => {
-                // 4. Clean up by removing the clone from the body
+                // 5. Clean up by removing the clone
                 document.body.removeChild(clonedElement);
                 setIsDownloadingPdf(false);
             });

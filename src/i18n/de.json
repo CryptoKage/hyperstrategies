@@ -552,12 +552,52 @@
   },
   "faq_page": {
     "title": "Häufig gestellte Fragen",
-    "q1_title": "Was sind Bonuspunkte?",
-    "q1_answer": "Bei Einzahlungen in unsere Strategien werden dir 20% deiner Einzahlung als Bonuspunkte gutgeschrieben. Wir kaufen diese Punkte regelmäßig 1:1 gegen USDC zurück. Das USDC wird deinem „Verfügbar zum Allokieren“-Guthaben gutgeschrieben und kann sofort abgehoben oder reinvestiert werden. Bonuspunkte können außerdem im Shop für erhebliche Rabatte genutzt werden.",
-    "q2_title": "Was ist eine High-Water-Mark?",
-    "q2_answer": "Eine High-Water-Mark stellt sicher, dass die Performance-Gebühr nur auf **neue Gewinne** erhoben wird – nicht auf Kapital, das sich lediglich von früheren Verlusten erholt.",
-    "q3_title": "Wie funktionieren Auszahlungen aus Strategien?",
-    "q3_answer": "Wenn du eine Auszahlung aus einer Strategie anforderst, wird dein ‚Handelsfähiges Kapital‘ zurück auf dein Hauptguthaben ‚Verfügbar zum Allokieren‘ verschoben. Das kann bis zu 24 Stunden dauern. Um Gelder von der Plattform an eine externe Wallet auszuzahlen, nutze nach Abschluss der Strategie-Auszahlung die Funktion „Gelder auszahlen“ auf der Wallet-Seite. Das dauert in der Regel nur Minuten."
+      "questions": [
+      {
+        "question": "Welche Strategien bietet Hyper-Strategies an?",
+        "answer": "Derzeit die Core Strategy: eine multi-asset, diskretionäre Strategie mit adaptivem, regimespezifischem Trading. Die nächste Strategie, an der wir arbeiten, ist die High Risk Strategy, die dieselbe Methodik mit anderen Paaren auf verschiedenen Börsen verfolgt."
+      },
+      {
+        "question": "Kann ich Hyper-Strategies.com mit meiner eigenen Krypto-Wallet verbinden?",
+        "answer": "Diese Funktion kommt bald!"
+      },
+      {
+        "question": "Brauche ich DeFi- oder Krypto-Erfahrung, um die Strategien zu nutzen?",
+        "answer": "Nein, technisches Vorwissen ist nicht erforderlich. Alle unsere Strategien sind automatisiert – \"einrichten und laufen lassen\". Kapital kann zwischen Strategien aufgeteilt werden, um ein eigenes Portfolio passend zum persönlichen Risikoprofil zu erstellen."
+      },
+      {
+        "question": "Welche Gebühren fallen für die Nutzung der Strategien an?",
+        "answer": "Einzahlungsgebühr: Es gibt eine Einzahlungsgebühr von 20 %, die dir als Bonuspunkte gutgeschrieben wird. Die Plattform kauft diese Bonuspunkte regelmäßig gegen USDC zurück.\n\nPerformance-Gebühr: Hyper-Strategies erhebt eine Performance-Gebühr von 20 % mit High-Water-Mark."
+      },
+      {
+        "question": "Was sind Bonuspunkte?",
+        "answer": "Bei Einzahlungen in unsere Strategien werden dir 20 % deiner Einzahlung als Bonuspunkte gutgeschrieben. Wir kaufen diese Punkte regelmäßig gegen USDC zurück, das deinem Guthaben „Verfügbar zum Allokieren“ gutgeschrieben wird und sofort abgehoben oder reinvestiert werden kann."
+      },
+      {
+        "question": "Warum zahle ich Einzahlungs- und Performance-Gebühren?",
+        "answer": "Einzahlungsgebühren finanzieren die Infrastruktur des Systems und werden dir als Bonuspunkte (1:1) gutgeschrieben. Ein großer Teil der Performance-Gebühr wird zurückgelegt, um die investierten Mittel zu schützen. Die Sicherheit der Gelder unserer Nutzer hat höchste Priorität.\n\nPerformance-Gebühren richten die Ergebnisse unseres Teams an dem Wachstum unserer Nutzer aus. Wir gewinnen nur, wenn unsere Nutzer gewinnen."
+      },
+      {
+        "question": "Was ist eine High-Water-Mark?",
+        "answer": "Eine High-Water-Mark stellt sicher, dass die Performance-Gebühr nur auf neue Gewinne erhoben wird und nicht auf Kapital, das sich lediglich von früheren Verlusten erholt. Sie wird nach Auszahlungen neu festgelegt."
+      },
+      {
+        "question": "Gibt es Maßnahmen zur Verlustbegrenzung?",
+        "answer": "Ja. Unsere internen Bots setzen konfigurierbare Stop-Loss-Logiken (einschließlich Trailing-Stop-Loss und OCO-Konfigurationen) automatisch über die Hyperliquid-APIs um. Das soll Verluste bei ungünstigen Marktbewegungen minimieren."
+      },
+      {
+        "question": "Ist Hyperliquid sicher?",
+        "answer": "Hyperliquid ist ein dezentralisiertes Protokoll mit geprüften Smart Contracts und nutzerkontrolliertem, nicht verwahrtem Asset-Management. Dennoch birgt jedes On-Chain-Protokoll inhärente Risiken durch Bugs oder Oracle-Angriffe – handle stets mit Bedacht."
+      },
+      {
+        "question": "Wann kann ich auszahlen?",
+        "answer": "Die Core Strategy hat derzeit eine Haltedauer von einem Monat. Während wir die Auszahlungsfunktion vollständig automatisieren, kann es bis zu 48 Stunden dauern, bis Gelder von der Strategie in deine Wallet verschoben werden. Nutzer, die innerhalb der einmonatigen Haltedauer auf ihr Kapital zugreifen müssen, können uns in Notfällen für eine frühere Auszahlung kontaktieren."
+      },
+      {
+        "question": "Muss ich meine Identität verifizieren?",
+        "answer": "Nein, Hyper-Strategies verlangt in den meisten Jurisdiktionen keine verpflichtende KYC."
+      }
+    ]
   },
   "profile_page": {
     "loading": "Profil wird geladen...",

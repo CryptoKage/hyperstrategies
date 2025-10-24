@@ -1,0 +1,36 @@
+/* src/styles/reports.css */
+
+/* This is our special "theme" for PDF generation */
+.for-printing {
+    background-color: #ffffff !important;
+    color: #111111 !important;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Override all child elements to ensure they are dark */
+.for-printing h2,
+.for-printing p,
+.for-printing span {
+    color: #111111 !important;
+}
+
+/* Make the separator lines a light gray for print */
+.for-printing .report-preview-section {
+    border-top-color: #dddddd !important;
+}
+
+.for-printing .summary-item.total {
+    border-top-color: #cccccc !important;
+}
+
+/* --- CRITICAL: Override the positive/negative text colors --- */
+/* Use darker, printer-friendly shades of green and red */
+.for-printing .text-positive {
+    color: #0d6837 !important;
+}
+
+.for-printing .text-negative {
+    color: #a31621 !important;
+}
