@@ -1,7 +1,11 @@
 /* src/styles/reports.css */
 
-/* This is our special "theme" for PDF generation */
-.for-printing {
+/*
+  This is the new, more specific selector.
+  It targets an element that has BOTH the 'report-preview' class AND our 'for-printing' class.
+  This makes it much stronger and ensures it overrides the default dark-theme styles.
+*/
+.report-preview.for-printing {
     background-color: #ffffff !important;
     color: #111111 !important;
     border-radius: 12px;
@@ -9,28 +13,27 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* Override all child elements to ensure they are dark */
-.for-printing h2,
-.for-printing p,
-.for-printing span {
+/* This rule targets all text elements INSIDE the printing version */
+.report-preview.for-printing h2,
+.report-preview.for-printing p,
+.report-preview.for-printing span {
     color: #111111 !important;
 }
 
 /* Make the separator lines a light gray for print */
-.for-printing .report-preview-section {
+.report-preview.for-printing .report-preview-section {
     border-top-color: #dddddd !important;
 }
 
-.for-printing .summary-item.total {
+.report-preview.for-printing .summary-item.total {
     border-top-color: #cccccc !important;
 }
 
-/* --- CRITICAL: Override the positive/negative text colors --- */
-/* Use darker, printer-friendly shades of green and red */
-.for-printing .text-positive {
-    color: #0d6837 !important;
+/* --- CRITICAL: Override the positive/negative text colors for print --- */
+.report-preview.for-printing .text-positive {
+    color: #0d6837 !important; /* Dark green */
 }
 
-.for-printing .text-negative {
-    color: #a31621 !important;
+.report-preview.for-printing .text-negative {
+    color: #a31621 !important; /* Dark red */
 }
