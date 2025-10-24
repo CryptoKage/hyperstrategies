@@ -998,7 +998,12 @@
       "performanceFees": "Gezahlte Performancegebühren",
 "endingBonusPoints": "Endguthaben Bonuspunkte",
 "totalAccountValue": "Gesamter Kontowert"
-    }
+    },
+    "generated": {
+  "title": "Leistungsbericht für {{monthYear}}",
+  "openingRemarks": "Offizieller Leistungsbericht für {{monthYear}}.",
+  "closingRemarks": "Vielen Dank für Ihre fortgesetzte Partnerschaft. Bei Fragen können Sie sich gerne an uns wenden."
+}
   }
 }
 

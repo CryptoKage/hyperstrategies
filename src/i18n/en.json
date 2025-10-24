@@ -858,7 +858,12 @@
       "performanceFees": "Performance Fees Paid",
 "endingBonusPoints": "Ending Bonus Points Balance",
 "totalAccountValue": "Total Account Value"
-    }
+    },
+    "generated": {
+  "title": "Performance Report for {{monthYear}}",
+  "openingRemarks": "Official Performance Report for {{monthYear}}.",
+  "closingRemarks": "Thank you for your continued partnership. Please reach out with any questions."
+}
   },
   "farmingVault": {
     "buybackCountdown": {
