@@ -147,6 +147,7 @@ const AdminDashboard = () => {
                 <h3>Reporting & Month-End</h3>
                 <p>Tools for closing financial periods, generating reports, and auditing data.</p>
                 <div className="admin-tool-links">
+                    <Link to="/admin/pnl-reconciliation" className="btn-secondary">PNL Reconciliation</Link>
                     <Link to="/admin/desk-results" className="btn-secondary">Monthly Close Workflow</Link>
                     <Link to="/admin/reports/review" className="btn-secondary">Report Management Suite</Link>
                     <Link to="/admin/platform-reports" className="btn-secondary">Platform Aggregate Report</Link>

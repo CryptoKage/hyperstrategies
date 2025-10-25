@@ -38,6 +38,7 @@ import HowItWorks from './HowItWorks';
 import ReportReviewPage from './admin/ReportReviewPage';
 import PlatformReportsPage from './admin/PlatformReportsPage';
 import MonthlyAuditPage from './admin/MonthlyAuditPage'; 
+import PNLReconciliationPage from './admin/PNLReconciliationPage'; 
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -87,6 +88,7 @@ const Router = () => {
         <Route path="/admin/reports/review" element={<AdminRoute><ReportReviewPage /></AdminRoute>} />
         <Route path="/admin/platform-reports" element={<AdminRoute><PlatformReportsPage /></AdminRoute>} />
         <Route path="/admin/monthly-audit" element={<AdminRoute><MonthlyAuditPage /></AdminRoute>} />
+        <Route path="/admin/pnl-reconciliation" element={<AdminRoute><PNLReconciliationPage /></AdminRoute>} />
       </Routes>
      </> 
   );
