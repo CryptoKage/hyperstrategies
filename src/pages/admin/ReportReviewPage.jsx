@@ -7,7 +7,6 @@ import api from '../../api/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useTranslation } from 'react-i18next';
 
-// This component is now intelligent. It can translate key/vars objects or display raw strings.
 const ReportPreview = ({ reportData }) => {
     const { t } = useTranslation();
     if (!reportData) return null;
@@ -16,10 +15,9 @@ const ReportPreview = ({ reportData }) => {
         if (typeof field === 'object' && field !== null && field.key) {
             return t(field.key, field.vars || {});
         }
-        return field; // It's just a string, so return it as-is
+        return field;
     };
 
-    // The rest of the ReportPreview component remains the same as our last version...
     const { summary } = reportData;
     const formatDate = (dateString) => new Date(dateString + 'T00:00:00Z').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: '2-digit' });
     const hasPnl = typeof summary.pnlAmount === 'number';
@@ -52,11 +50,11 @@ const ReportPreview = ({ reportData }) => {
 
 
 const ReportReviewPage = () => {
-    const { t } = useTranslation(); // Now used in the main component
+    const { t } = useTranslation();
     const [reports, setReports] = useState([]);
     const [selectedReport, setSelectedReport] = useState(null);
     const [editableData, setEditableData] = useState(null);
-
+    const [selectedReportIds, setSelectedReportIds] = useState(new Set());
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [isSaving, setIsSaving] = useState(false);
@@ -65,12 +63,12 @@ const ReportReviewPage = () => {
     const [filterStatus, setFilterStatus] = useState('DRAFT');
 
     const fetchReports = useCallback(() => {
-        // ... (this function remains the same as before)
         setLoading(true);
         setError('');
         setReports([]);
         setSelectedReport(null);
         setEditableData(null);
+        setSelectedReportIds(new Set());
         api.get(`/admin/reports/pending-approval?status=${filterStatus}`)
             .then(res => {
                 setReports(res.data);
@@ -80,17 +78,14 @@ const ReportReviewPage = () => {
             })
             .catch(err => setError(`Could not load reports with status: ${filterStatus}.`))
             .finally(() => setLoading(false));
-    }, [filterStatus]);
+    }, [filterStatus, t]); // Added 't' to dependency array for safety with handleSelectReport
 
     useEffect(() => {
         fetchReports();
     }, [fetchReports]);
     
-    // --- THIS IS THE NEW LOGIC ---
     const handleSelectReport = (report) => {
         setSelectedReport(report);
-        
-        // Pre-translate the remarks for editing if they are key/vars objects
         const preTranslatedData = {
             ...report.report_data,
             openingRemarks: (typeof report.report_data.openingRemarks === 'object' && report.report_data.openingRemarks.key)
@@ -100,7 +95,6 @@ const ReportReviewPage = () => {
                 ? t(report.report_data.closingRemarks.key, report.report_data.closingRemarks.vars)
                 : report.report_data.closingRemarks,
         };
-        
         setEditableData(preTranslatedData); 
     };
     
@@ -108,20 +102,36 @@ const ReportReviewPage = () => {
         setEditableData(prev => ({ ...prev, [field]: value }));
     };
 
-    const handleDelete = async () => {
-        if (!selectedReport || !window.confirm(`Are you sure you want to permanently delete the report for ${selectedReport.username}?`)) {
+    const handleSelectOne = (reportId) => {
+        const newSelection = new Set(selectedReportIds);
+        if (newSelection.has(reportId)) {
+            newSelection.delete(reportId);
+        } else {
+            newSelection.add(reportId);
+        }
+        setSelectedReportIds(newSelection);
+    };
+
+    const handleSelectAll = () => {
+        if (selectedReportIds.size === reports.length) {
+            setSelectedReportIds(new Set());
+        } else {
+            setSelectedReportIds(new Set(reports.map(r => r.report_id)));
+        }
+    };
+
+    const handleDeleteSelected = async () => {
+        const idsToDelete = Array.from(selectedReportIds);
+        if (idsToDelete.length === 0 || !window.confirm(`Are you sure you want to permanently delete ${idsToDelete.length} selected reports?`)) {
             return;
         }
         setIsDeleting(true);
         setError('');
-        setSuccessMessage('');
         try {
-            const response = await api.delete(`/admin/reports/${selectedReport.report_id}`);
-            setSuccessMessage(response.data.message);
-            // Refresh the list to remove the deleted item
+            await api.delete('/admin/reports', { data: { reportIds: idsToDelete } });
             fetchReports();
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to delete report.');
+            setError(err.response?.data?.error || 'Failed to delete reports.');
         } finally {
             setIsDeleting(false);
         }
@@ -138,7 +148,6 @@ const ReportReviewPage = () => {
                 newStatus: newStatus
             });
             setSuccessMessage(response.data.message);
-            // Refresh the list after saving
             fetchReports();
         } catch(err) {
             setError(err.response?.data?.error || 'Failed to save report.');
@@ -155,7 +164,6 @@ const ReportReviewPage = () => {
                     <Link to="/admin" className="btn-secondary btn-sm">← Back to Mission Control</Link>
                 </div>
 
-                {/* --- NEW: Filter Buttons --- */}
                 <div className="admin-card tabs" style={{ marginBottom: '24px' }}>
                     <button className={`tab-button ${filterStatus === 'DRAFT' ? 'active' : ''}`} onClick={() => setFilterStatus('DRAFT')}>Drafts</button>
                     <button className={`tab-button ${filterStatus === 'APPROVED' ? 'active' : ''}`} onClick={() => setFilterStatus('APPROVED')}>Approved / Published</button>
@@ -167,16 +175,38 @@ const ReportReviewPage = () => {
                 ) : (
                     <div className="report-builder-grid">
                         <div className="admin-card">
-                            <h3>{filterStatus} Reports ({reports.length})</h3>
+                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                <h3>{filterStatus} Reports ({reports.length})</h3>
+                                {selectedReportIds.size > 0 && (
+                                    <button onClick={handleDeleteSelected} className="btn-danger-outline btn-sm" disabled={isDeleting}>
+                                        {isDeleting ? 'Deleting...' : `Delete Selected (${selectedReportIds.size})`}
+                                    </button>
+                                )}
+                            </div>
                             <div className="draft-list">
+                                <div className="draft-item select-all-item">
+                                    <input
+                                        type="checkbox"
+                                        onChange={handleSelectAll}
+                                        checked={reports.length > 0 && selectedReportIds.size === reports.length}
+                                        title="Select All"
+                                    />
+                                    <span>Select All</span>
+                                </div>
                                 {reports.map(draft => (
                                     <div 
                                         key={draft.report_id} 
                                         className={`draft-item ${selectedReport?.report_id === draft.report_id ? 'active' : ''}`}
-                                        onClick={() => handleSelectReport(draft)}
                                     >
-                                        <span>{draft.username}</span>
-                                        <small>{new Date(draft.report_date).toLocaleDateString()}</small>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedReportIds.has(draft.report_id)}
+                                            onChange={() => handleSelectOne(draft.report_id)}
+                                        />
+                                        <div className="draft-item-content" onClick={() => handleSelectReport(draft)}>
+                                            <span>{draft.username}</span>
+                                            <small>{new Date(draft.report_date).toLocaleDateString()}</small>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -199,8 +229,8 @@ const ReportReviewPage = () => {
 
                                 {successMessage && <p className="admin-message success">{successMessage}</p>}
                                 <div className="modal-actions" style={{ marginTop: '24px', justifyContent: 'space-between' }}>
-                                    <button onClick={handleDelete} className="btn-danger-outline" disabled={isSaving || isDeleting}>
-                                        {isDeleting ? 'Deleting...' : 'Delete'}
+                                    <button onClick={() => {}} className="btn-danger-outline" disabled={true} style={{visibility: 'hidden'}}>
+                                        Placeholder
                                     </button>
                                     <div>
                                         <button onClick={() => handleSave('DRAFT')} className="btn-secondary" disabled={isSaving}>{isSaving ? '...' : 'Save Changes'}</button>
