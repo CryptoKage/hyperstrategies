@@ -4535,7 +4535,7 @@ opacity: 0.3;
 /* Padding to prevent content from hiding behind the sticky header */
 .main-content {
   flex-grow: 1;
-  padding-top: 80px; /* Space for the sticky header */
+  padding-top: 20px; /* Space for the sticky header */
 }
 
 /* --- Keep all your other header styles exactly as they were --- */
