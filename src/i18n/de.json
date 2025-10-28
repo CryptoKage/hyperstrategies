@@ -141,7 +141,7 @@
     },
     "journey": {
       "eyebrow": "",
-      "title": "Starte in 3 einfachen Schritten",
+      "title": "Starte in 2 einfachen Schritten",
       "subtitle": "",
       "step_one_title": "Erstelle dein Konto",
       "step_one_copy": "Registriere dich in weniger als einer Minute, um Zugang zu Hyper-Strategies zu erhalten und eine Einzahlung zu tätigen.",
@@ -942,7 +942,7 @@
     "playbook_step_three_copy": "Nutze Hyper-Strategies-Produkte, nimm an Initiativen teil oder handle auf dem P2P-Marktplatz."
   },
   "cta": {
-    "connect": "Wallet verbinden",
+    "connect": "Konto erstellen",
     "explore": "Strategien erkunden"
   },
   "scenes": {

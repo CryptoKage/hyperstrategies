@@ -258,7 +258,7 @@ const HowItWorks = () => {
                       {t('cta.connect')}
                     </Link>
                     <a
-                      href="https://docs.hyper-strategies.com"
+                      href="https://hs0-3.gitbook.io/hs-docs/"
                       className="btn-outline"
                       target="_blank"
                       rel="noreferrer"
@@ -293,7 +293,7 @@ const HowItWorks = () => {
                 <div className="hiw-section__module">
                   <StrategyGrid strategies={strategiesData} />
                   <div className="hiw-links">
-                    <Link to="/strategies" className="btn-outline">
+                    <Link to="/dashboard" className="btn-outline">
                       {t('cta.explore')}
                     </Link>
                     <Link to="/legal" className="hiw-inline-link">

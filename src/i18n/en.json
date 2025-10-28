@@ -79,7 +79,7 @@
     },
     "journey": {
       "eyebrow": "",
-      "title": "Get started in 3 easy steps",
+      "title": "Get started in 2 easy steps",
       "subtitle": "",
       "step_one_title": "Create your account",
       "step_one_copy": "Register in under a minute to get access to Hyper-Strategies and make a deposit.",
@@ -906,7 +906,7 @@
 
   
   "cta": {
-    "connect": "Connect wallet",
+    "connect": "Create Account",
     "explore": "Explore strategies"
   },
   "scenes": {
