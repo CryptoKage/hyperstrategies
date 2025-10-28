@@ -37,7 +37,7 @@ const Login = () => {
       notifyByKey('success', 'toasts.RESET_PASSWORD_SUCCESS');
     }
     if (session === 'expired') {
-      notifyByKey('error', 'errors.SESSION_EXPIRED');
+      notifyByKey('error', 'login_page.session_expired');
     }
 
     // Clean the URL so the message doesn't reappear on refresh

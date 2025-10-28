@@ -122,14 +122,17 @@ const handleCopyLink = () => {
     }
   };
 
-  const handleTelegramAuth = async (user) => {
+   const handleTelegramAuth = async (user) => {
     try {
+     
       await api.post('/user/link-telegram', user);
       fetchProfile();
-      showSuccess(t('profile_page.toast_telegram_linked', 'Telegram account linked successfully.'));
+    
+      notifyByKey('success', 'profile_page.toast_telegram_linked');
     } catch (err) {
       console.error('Telegram linking failed:', err);
-      showError(t('profile_page.telegram_link_failed', 'Failed to link Telegram account.'));
+      
+      notifyByKey('error', 'profile_page.telegram_link_failed');
     }
   };
 
