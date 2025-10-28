@@ -6,7 +6,7 @@ import { initReactI18next } from 'react-i18next';
 // --- DIRECTLY IMPORT your JSON files ---
 import enTranslations from './en.json';
 import deTranslations from './de.json';
-import trollTranslations from './troll.json'; // --- THE FIX 1: Import the new troll translations ---
+//import trollTranslations from './troll.json'; // --- THE FIX 1: Import the new troll translations ---
 
 i18n
   .use(initReactI18next)
@@ -20,9 +20,9 @@ i18n
         translation: deTranslations
       },
       // --- THE FIX 2: Add the 'troll' language to the resources master list ---
-      troll: {
-        translation: trollTranslations
-      },
+    //  troll: {
+      //  translation: trollTranslations
+     // },
     },
     lng: 'en', // default language
     fallbackLng: 'en',
