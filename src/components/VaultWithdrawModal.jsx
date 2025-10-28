@@ -1,6 +1,8 @@
+// src/components/VaultWithdrawModal.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import api from '../api/api';
+import { request } from '../api/request'; // NEW: Import our request wrapper
 import InputField from './InputField';
 import CountdownTimer from './CountdownTimer'; 
 
@@ -9,32 +11,38 @@ const VaultWithdrawModal = ({ isOpen, onClose, vault, unlockDate, onWithdrawalSu
   
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  // REMOVED: Local error state is no longer needed
 
   const tradableCapital = parseFloat(vault?.tradable_capital) || 0;
   const isLocked = new Date(unlockDate) > new Date();
 
   useEffect(() => {
     if (isOpen) {
-      setError(''); setIsLoading(false); setAmount('');
+      setIsLoading(false); 
+      setAmount('');
     }
   }, [isOpen]);
 
   if (!isOpen || !vault) return null;
 
+  // --- REFACTORED: handleWithdrawRequest ---
   const handleWithdrawRequest = async (e) => {
     e.preventDefault();
-    setIsLoading(true); setError('');
+    setIsLoading(true);
     try {
-      await api.post('/vaults/withdraw', {
-        vaultId: vault.vault_id,
-        amount: parseFloat(amount),
+      // Use the new request wrapper. Success and error toasts are now automatic.
+      await request('/vaults/withdraw', {
+        method: 'POST',
+        data: {
+          vaultId: vault.vault_id,
+          amount: parseFloat(amount),
+        }
       });
-      alert(t('vault_withdraw_modal.processing_notice'));
       onWithdrawalSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.error || t('vault_withdraw_modal.error_failed'));
+      // Error toast is already handled by the request wrapper.
+      console.error('Vault withdrawal request failed:', err.message);
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +57,6 @@ const VaultWithdrawModal = ({ isOpen, onClose, vault, unlockDate, onWithdrawalSu
         <button onClick={onClose} className="modal-close-btn">×</button>
         <h2>{t('vault_withdraw_modal.title', { vaultName: vault.name || 'this vault' })}</h2>
         
-        {/* --- THE FIX: Display the lock status and countdown timer --- */}
         {isLocked ? (
             <div className="disclaimer warning">
                 <p><strong>Funds Locked</strong></p>
@@ -63,7 +70,7 @@ const VaultWithdrawModal = ({ isOpen, onClose, vault, unlockDate, onWithdrawalSu
         )}
         
         <form onSubmit={handleWithdrawRequest}>
-          {error && <p className="error-message">{error}</p>}
+          {/* Local error display is removed */}
           <InputField
             label={`Amount to Withdraw (Max: ${tradableCapital.toFixed(2)} USDC)`}
             id="withdrawAmount"
@@ -72,7 +79,7 @@ const VaultWithdrawModal = ({ isOpen, onClose, vault, unlockDate, onWithdrawalSu
             onChange={(e) => setAmount(e.target.value)}
             placeholder="e.g., 100.00"
             required
-            disabled={isLocked} // Disable input if locked
+            disabled={isLocked}
             onMaxClick={handleMaxClick}
           />
           <div className="modal-actions">

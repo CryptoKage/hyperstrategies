@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import api from '../api/api';
+import { request } from '../api/request'; // NEW: Import our request wrapper
 import InputField from './InputField';
-import InfoIcon from './InfoIcon';
 
 const VaultTransferModal = ({ isOpen, onClose, sourcePosition, allVaults, onTransferSuccess }) => {
   const { t } = useTranslation();
@@ -13,52 +12,49 @@ const VaultTransferModal = ({ isOpen, onClose, sourcePosition, allVaults, onTran
   const [destinationVaultId, setDestinationVaultId] = useState('');
   const [riskAcknowledged, setRiskAcknowledged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  // REMOVED: Local error state is no longer needed.
 
-  // Calculate the user's settled capital in the source vault
   const availableToTransfer = (sourcePosition?.tradable_capital || 0) - (sourcePosition?.pnl || 0);
-
-  // Filter the list of possible destination vaults
   const destinationOptions = allVaults.filter(v => 
-   v.is_user_investable && // Rule 1: MUST be investable
-    v.status === 'active' && // Rule 2: MUST be active
-    v.vault_id !== sourcePosition?.vault_id // Rule 3: Cannot be the same as the source vault
-    // We no longer need to check vault_type. The 'is_user_investable' flag handles it all.
-    // --- END OF FIX ---
-);
+    v.is_user_investable &&
+    v.status === 'active' &&
+    v.vault_id !== sourcePosition?.vault_id
+  );
 
   useEffect(() => {
     if (isOpen) {
-      setError('');
       setIsLoading(false);
       setAmount('');
       setRiskAcknowledged(false);
-      // Pre-select the first available destination if possible
       if (destinationOptions.length > 0) {
         setDestinationVaultId(destinationOptions[0].vault_id);
       } else {
         setDestinationVaultId('');
       }
     }
-  }, [isOpen, sourcePosition]); // Rerun effect if the source position changes
+  }, [isOpen, sourcePosition, destinationOptions]);
 
   if (!isOpen || !sourcePosition) return null;
 
+  // --- REFACTORED: handleRequestTransfer ---
   const handleRequestTransfer = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
     try {
-      await api.post('/vaults/request-transfer', {
-        fromVaultId: sourcePosition.vault_id,
-        toVaultId: parseInt(destinationVaultId),
-        amount: parseFloat(amount),
+      // Use the new request wrapper. Success and error toasts are now automatic.
+      await request('/vaults/request-transfer', {
+        method: 'POST',
+        data: {
+          fromVaultId: sourcePosition.vault_id,
+          toVaultId: parseInt(destinationVaultId),
+          amount: parseFloat(amount),
+        }
       });
-      alert(t('vault_transfer_modal.processing_notice'));
       onTransferSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.error || t('vault_transfer_modal.error_failed'));
+      // Error toast is already handled by the request wrapper.
+      console.error('Vault transfer request failed:', err.message);
     } finally {
       setIsLoading(false);
     }
@@ -85,8 +81,7 @@ const VaultTransferModal = ({ isOpen, onClose, sourcePosition, allVaults, onTran
         </p>
         
         <form onSubmit={handleRequestTransfer}>
-          {error && <p className="error-message">{error}</p>}
-
+          {/* Local error display is removed */}
           <InputField
             label={t('vault_transfer_modal.amount_label', { max: availableToTransfer.toFixed(2) })}
             id="transferAmount"

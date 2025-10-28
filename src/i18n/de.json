@@ -1009,12 +1009,26 @@
 
   "toasts": {
     "PROFILE_SAVED": "Profil erfolgreich aktualisiert!",
-    "REFERRAL_CODE_SAVED": "Dein neuer Empfehlungscode ist jetzt aktiv."
+    "REFERRAL_CODE_SAVED": "Dein neuer Empfehlungscode ist jetzt aktiv.",
+    "INVEST_SUCCESS": "Allokationsanfrage erfolgreich übermittelt!",
+  "VAULT_WITHDRAWAL_SUCCESS": "Auszahlungsanfrage zur Bearbeitung eingereicht.",
+  "TRANSFER_REQUEST_SUCCESS": "Übertragungsanfrage eingereicht. Dies kann bis zu 48 Stunden dauern.",
+  "REFERRAL_CODE_UNCHANGED": "Dies ist bereits Ihr Empfehlungscode."
+
   },
   "errors": {
     "USERNAME_TAKEN": "Dieser Benutzername ist bereits vergeben. Bitte wähle einen anderen.",
     "GENERIC_NETWORK": "Verbindung zum Server fehlgeschlagen. Bitte überprüfe deine Verbindung und versuche es erneut.",
-    "INVALID_REFERRAL_CODE": "Der Empfehlungscode muss 3–15 alphanumerische Zeichen haben."
+    "INVALID_REFERRAL_CODE": "Der Empfehlungscode muss 3–15 alphanumerische Zeichen haben.",
+     "INSUFFICIENT_FUNDS": "Der Allokationsbetrag übersteigt Ihr verfügbares Guthaben.",
+  "INVALID_AMOUNT": "Bitte geben Sie einen gültigen, positiven Betrag ein.",
+  "WITHDRAWAL_EXCEEDS_CAPITAL": "Der Auszahlungsbetrag übersteigt Ihr Kapital in diesem Vault.",
+  "INVALID_TRANSFER_REQUEST": "Ungültige Übertragungsanfrage. Bitte überprüfen Sie die Details.",
+  "TRANSFER_EXCEEDS_CAPITAL": "Der Übertragungsbetrag übersteigt Ihr verfügbares Kapital in diesem Vault.",
+  "DUPLICATE_TRANSFER_REQUEST": "Sie haben bereits eine ausstehende Übertragung für diesen Vault.",
+    "REFERRAL_CODE_REQUIRED": "Ein Empfehlungscode muss angegeben werden.",
+    "FUNDS_LOCKED": "Ihre Gelder in diesem Vault sind gesperrt und können erst am {{date}} abgehoben werden.",
+    "SAME_SOURCE_DESTINATION": "Quell- und Ziel-Vaults dürfen nicht identisch sein."
   }
 }
 }

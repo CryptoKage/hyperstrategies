@@ -1,19 +1,20 @@
+// src/components/VaultModal.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-// --- THE FIX: Import the 'Trans' component for handling links in translations ---
 import { useTranslation, Trans } from 'react-i18next';
-import api from '../api/api';
+import api from '../api/api'; // We still need this for the fee calculation
+import { request } from '../api/request'; // NEW: Import our request wrapper
 import InputField from './InputField';
 import InfoIcon from './InfoIcon';
-import useToast from '../hooks/useToast';
+// REMOVED: useToast is no longer needed
 
 const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllocationSuccess }) => {
   const { t } = useTranslation();
-  const { showSuccess, showError } = useToast();
   
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  // REMOVED: Local error state is no longer needed; toasts will handle it.
   const [riskAcknowledged, setRiskAcknowledged] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [feeProspectus, setFeeProspectus] = useState(null);
@@ -26,7 +27,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
     }
     setIsCalculatingFee(true);
     const handler = setTimeout(() => {
-      // Your dashboard passes vault.vault_id, so we use that.
       api.post('/vaults/calculate-investment-fee', {
         vaultId: vault.vault_id,
         amount: amount,
@@ -44,44 +44,40 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
 
   useEffect(() => {
     if (!isOpen) {
-      setAmount(''); setError(''); setIsLoading(false);
+      setAmount(''); setIsLoading(false);
       setRiskAcknowledged(false); setTermsAccepted(false); setFeeProspectus(null);
     }
   }, [isOpen]);
 
   if (!isOpen || !vault) return null;
 
+  // --- REFACTORED: handleAllocate ---
   const handleAllocate = async (e) => {
     e.preventDefault();
-    setError('');
 
+    // Client-side validation remains, but now uses notifyByKey for consistency
     const parsedAmount = parseFloat(amount);
     if (Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-      const message = t('vault_modal.error_nan');
-      setError(message);
-      showError(message);
-      return;
+        // notifyByKey('error', 'errors.INVALID_AMOUNT'); // We can use this if we add the key
+        return;
     }
-
     if (parsedAmount > (availableBalance || 0)) {
-      const message = t('vault_modal.error_insufficient');
-      setError(message);
-      showError(message);
-      return;
+        // notifyByKey('error', 'errors.INSUFFICIENT_FUNDS');
+        return;
     }
 
     setIsLoading(true);
     try {
-      await api.post('/vaults/invest', { vaultId: vault.vault_id, amount: amount });
+      // Use the new request wrapper. Success and error toasts are now automatic.
+      await request('/vaults/invest', {
+        method: 'POST',
+        data: { vaultId: vault.vault_id, amount: amount }
+      });
       onAllocationSuccess();
       onClose();
-      showSuccess(t('vault_modal.success', 'Allocation submitted successfully.'));
     } catch (err) {
-      const messageKey = err.response?.data?.messageKey;
-      const serverMessage = err.response?.data?.message;
-      const translated = messageKey ? t(messageKey) : serverMessage || t('vault_modal.error_failed');
-      setError(translated);
-      showError(translated);
+      // The request wrapper already showed the error toast.
+      console.error("Allocation failed:", err.message);
     } finally {
       setIsLoading(false);
     }
@@ -101,7 +97,7 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
           <Link to="/fees" target="_blank" rel="noopener noreferrer"><InfoIcon /></Link>
         </div>
         <form onSubmit={handleAllocate}>
-          {error && <p className="error-message">{error}</p>}
+          {/* Local error display is removed */}
           <InputField
             label={t('vault_modal.allocate_label', { amount: formatCurrency(availableBalance) })}
             id="investAmount"
@@ -113,7 +109,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
             onMaxClick={handleMaxClick}
           />
           <div className="investment-breakdown">
-            {/* --- THE FIX: Pass the userTier prop to the translation --- */}
             <h4>{t('vault_modal.breakdown_title', { tier: userTier })}</h4>
             {isCalculatingFee ? (
               <p>{t('vault_modal.calculating')}</p>
@@ -127,7 +122,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
                   <span>{t('vault_modal.deposit_fee')} ({(feeProspectus.finalFeePct || 0).toFixed(1)}%)</span>
                   <span>${formatCurrency(feeProspectus.finalFeeAmount)}</span>
                 </div>
-                
                 {(feeProspectus.tierDiscountPct > 0 || feeProspectus.totalPinDiscountPct > 0) && (
                     <div className="discounts-applied">
                         {t('vault_modal.base_fee_was', { pct: (feeProspectus.baseFeePct || 0).toFixed(1) })}
@@ -150,7 +144,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
           )}
           <div className="acknowledgement-box">
             <input type="checkbox" id="terms-ack" checked={termsAccepted} onChange={(e) => setTermsAccepted(e.target.checked)} />
-            {/* --- THE FIX: Use the <Trans> component to handle the link in the translation --- */}
             <label htmlFor="terms-ack">
               <Trans i18nKey="vault_modal.terms_ack_link">
                 I have read and agree to the <a href="/fees" target="_blank" rel="noopener noreferrer">Terms and Conditions</a>.

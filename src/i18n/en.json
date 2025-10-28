@@ -941,12 +941,27 @@
   
   "toasts": {
     "PROFILE_SAVED": "Profile updated successfully!",
-    "REFERRAL_CODE_SAVED": "Your new referral code is now active."
+    "REFERRAL_CODE_SAVED": "Your new referral code is now active.",
+    "INVEST_SUCCESS": "Allocation request submitted successfully!",
+  "VAULT_WITHDRAWAL_SUCCESS": "Withdrawal request submitted for processing.",
+  "TRANSFER_REQUEST_SUCCESS": "Transfer request submitted. This may take up to 48 hours.",
+   "REFERRAL_CODE_UNCHANGED": "This is already your referral code."
+   
+
   },
   "errors": {
     "USERNAME_TAKEN": "This username is already taken. Please choose another.",
     "GENERIC_NETWORK": "Could not connect to the server. Please check your connection and try again.",
-    "INVALID_REFERRAL_CODE": "Referral code must be 3-15 alphanumeric characters."
+    "INVALID_REFERRAL_CODE": "Referral code must be 3-15 alphanumeric characters.",
+     "INSUFFICIENT_FUNDS": "Allocation amount exceeds your available balance.",
+  "INVALID_AMOUNT": "Please enter a valid, positive amount.",
+  "WITHDRAWAL_EXCEEDS_CAPITAL": "Withdrawal amount exceeds your capital in this vault.",
+  "INVALID_TRANSFER_REQUEST": "Invalid transfer request. Please check the details and try again.",
+  "TRANSFER_EXCEEDS_CAPITAL": "Transfer amount exceeds your available capital in this vault.",
+  "DUPLICATE_TRANSFER_REQUEST": "You already have a pending transfer for this vault. Please wait for it to complete.",
+  "REFERRAL_CODE_REQUIRED": "A referral code must be provided.",
+    "FUNDS_LOCKED": "Your funds are locked in this vault and cannot be withdrawn until {{date}}.",
+    "SAME_SOURCE_DESTINATION": "Source and destination vaults cannot be the same."
   }
 }
   
