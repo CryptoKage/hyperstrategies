@@ -344,7 +344,6 @@ const handleCopyLink = () => {
     <Layout>
       <div className="profile-container profile-container--modern">
         <header className="profile-page-header">
-          <span className="eyebrow-text">{t('profile_page.eyebrow', 'Your journey')}</span>
           <h1>{t('profile_page.modern_title', 'Shape your Hyper Strategies identity')}</h1>
           <p>
             {t(
@@ -354,68 +353,9 @@ const handleCopyLink = () => {
           </p>
         </header>
 
-        <section className="profile-journey" aria-labelledby="profile-journey-title">
-          <div className="profile-section-heading">
-            <h2 id="profile-journey-title">{t('profile_page.journey_title', 'Your activation journey')}</h2>
-            <p>
-              {t(
-                'profile_page.journey_caption',
-                'We curated three simple milestones so you always know the next best action to take.'
-              )}
-            </p>
-          </div>
-          <div className="profile-journey__grid">
-            <article className="profile-journey__step">
-              <span className="profile-journey__badge">1</span>
-              <h3>{t('profile_page.journey_step_one', 'Complete your profile')}</h3>
-              <p>
-                {t(
-                  'profile_page.journey_step_one_copy',
-                  'Update your username and link messaging accounts so teammates can recognise you instantly.'
-                )}
-              </p>
-              <div className="profile-journey__actions">
-                <a href="#profile-settings" className="btn-link">
-                  {t('profile_page.journey_step_one_cta', 'Edit details')}
-                </a>
-              </div>
-            </article>
-            <article className="profile-journey__step">
-              <span className="profile-journey__badge">2</span>
-              <h3>{t('profile_page.journey_step_two', 'Curate your pins')}</h3>
-              <p>
-                {t(
-                  'profile_page.journey_step_two_copy',
-                  'Pin loadouts will return soon with streamlined management and trading.'
-                )}
-              </p>
-              <div className="profile-journey__actions">
-                <span className="profile-journey__coming-soon">
-                  {t('profile_page.journey_step_two_cta', 'Pins hub coming soon')}
-                </span>
-              </div>
-            </article>
-            <article className="profile-journey__step">
-              <span className="profile-journey__badge">3</span>
-              <h3>{t('profile_page.journey_step_three', 'Earn & celebrate')}</h3>
-              <p>
-                {t(
-                  'profile_page.journey_step_three_copy',
-                  'Track XP momentum, claim seasonal drops, and share your referral link once everything is set.'
-                )}
-              </p>
-              <div className="profile-journey__actions">
-                <Link to="/rewards" className="btn-link">
-                  {t('profile_page.journey_step_three_cta', 'Open rewards center')}
-                </Link>
-              </div>
-            </article>
-          </div>
-        </section>
-
-        <section className="profile-tabs" aria-labelledby="profile-tabs-title">
+            <section className="profile-tabs" aria-labelledby="profile-tabs-title">
           <div className="profile-tabs__header">
-            <h2 id="profile-tabs-title">{t('profile_page.overview_title', 'Account overview')}</h2>
+              <h2 id="profile-tabs-title">{t('profile_page.overview_title', 'Account overview')}</h2>
             <p>
               {t(
                 'profile_page.overview_caption',
@@ -427,10 +367,6 @@ const handleCopyLink = () => {
             <button
               id="profile-tab-button-overview"
               className={`profile-tabs__trigger ${activeTab === 'overview' ? 'profile-tabs__trigger--active' : ''}`}
-              role="tab"
-              type="button"
-              aria-selected={activeTab === 'overview'}
-              aria-controls="profile-tab-overview"
               onClick={() => setActiveTab('overview')}
             >
               {t('profile_page.tab_overview', 'Overview')}
@@ -438,10 +374,6 @@ const handleCopyLink = () => {
             <button
               id="profile-tab-button-referrals"
               className={`profile-tabs__trigger ${activeTab === 'referrals' ? 'profile-tabs__trigger--active' : ''}`}
-              role="tab"
-              type="button"
-              aria-selected={activeTab === 'referrals'}
-              aria-controls="profile-tab-referrals"
               onClick={() => setActiveTab('referrals')}
             >
               {t('profile_page.tab_referrals', 'Referral links')}
@@ -449,21 +381,13 @@ const handleCopyLink = () => {
             <button
               id="profile-tab-button-settings"
               className={`profile-tabs__trigger ${activeTab === 'settings' ? 'profile-tabs__trigger--active' : ''}`}
-              role="tab"
-              type="button"
-              aria-selected={activeTab === 'settings'}
-              aria-controls="profile-tab-settings"
               onClick={() => setActiveTab('settings')}
             >
               {t('profile_page.tab_settings', 'Profile settings')}
             </button>
             <button
               id="profile-tab-button-activity"
-              className={`profile-tabs__trigger ${activeTab === 'activity' ? 'profile-tabs__trigger--active' : ''}`}
-              role="tab"
-              type="button"
-              aria-selected={activeTab === 'activity'}
-              aria-controls="profile-tab-activity"
+              className={`profile-tabs__trigger ${activeTab === 'activity' ? 'active' : ''}`}
               onClick={() => setActiveTab('activity')}
             >
               {t('profile_page.tab_activity', 'Activity')}
