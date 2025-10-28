@@ -42,7 +42,6 @@ const DiscretionaryVaultView = ({ pageData }) => {
         }
     }, [isInvested]);
     
-    // --- NEW: Dynamic translation key for strategy gains ---
     const strategyGainsLabelKey = vaultInfo.name?.toLowerCase().includes('core')
         ? 'vault.stats.coreStrategyGains'
         : 'vault.stats.strategyGains';
