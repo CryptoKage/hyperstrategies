@@ -69,30 +69,32 @@ const DiscretionaryVaultView = ({ pageData }) => {
                         </div>
                         
                         <DetailStatCard
-                            label={t('vault.stats.totalDeposited')}
+                            labelKey="vault.stats.totalDeposited"
                             subtextKey="vault.stats.totalDepositedSubtext"
                             value={userPosition.principal}
                         />
 
+                        {/* --- THE FIX: We now use the correct data key from the backend --- */}
                         <DetailStatCard
-                            label={strategyGainsLabel} 
+                            labelKey="vault.stats.realizedPnl" // This now matches the translation key
                             subtextKey="vault.stats.strategyGainsSubtext"
-                            value={userPosition.strategyGains}
+                            value={userPosition.strategyGains} // Use the new data key
                             highlightClass={userPosition.strategyGains >= 0 ? 'highlight-positive' : 'highlight-negative'}
                         />
 
                         {userPosition.buybackGains > 0 && (
                             <DetailStatCard
-                                label={t('vault.stats.buybackGains')}
+                                labelKey="vault.stats.buybackGains"
                                 subtextKey="vault.stats.buybackGainsSubtext"
                                 value={userPosition.buybackGains}
                                 highlightClass="highlight-positive"
                             />
                         )}
 
+                        {/* --- THE FIX: This card will now appear correctly --- */}
                         {userPosition.totalXpFromVault > 0 && (
                              <DetailStatCard
-                                label={t('vault.stats.totalXpEarned')}
+                                labelKey="vault.stats.totalXpEarned"
                                 value={userPosition.totalXpFromVault}
                                 subtextKey="vault.stats.totalXpEarnedSubtext"
                                 isCurrency={false}

@@ -749,6 +749,7 @@
       "monthlyReturn": "Avg. Monthly Return",
       "totalReturn": "Total Return (All-Time)",
        "buybackGains": "Buyback Engine Gains",
+       
     "buybackGainsSubtext": "From platform rewards & buybacks.",
     "totalXpEarned": "Total XP Earned in Vault",
     "totalXpEarnedSubtext": "From deposits & daily staking.",
