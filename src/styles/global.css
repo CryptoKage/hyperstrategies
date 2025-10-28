@@ -1913,6 +1913,10 @@ textarea.input-field { resize: vertical; }
 
 /* --- Mobile Responsiveness for Your Existing Hero --- */
 @media (max-width: 768px) {
+  .vault-detail-grid {
+    grid-template-columns: 1fr; /* Switch to a single column */
+  }
+
   .hero-section {
     margin: 0 auto 80px auto;
   }
