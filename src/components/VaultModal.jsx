@@ -7,7 +7,7 @@ import api from '../api/api'; // We still need this for the fee calculation
 import { request } from '../api/request'; // NEW: Import our request wrapper
 import InputField from './InputField';
 import InfoIcon from './InfoIcon';
-// REMOVED: useToast is no longer needed
+import { notifyByKey } from '../utils/notify';
 
 const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllocationSuccess }) => {
   const { t } = useTranslation();

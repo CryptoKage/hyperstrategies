@@ -121,6 +121,9 @@ const FarmingVaultView = ({ pageData }) => {
     const formattedEstimatedPayout = formatCurrency(estimatedPayout);
     const userSharePercent = (userShare * 100).toFixed(4);
 
+     const activeFarms = pageData.farmingProtocols?.filter(p => p.status === 'FARMING') || [];
+    const seedingFarms = pageData.farmingProtocols?.filter(p => p.status === 'SEEDING') || [];
+
     if (loading) {
         return (
             <div className="vault-detail-container" style={{ textAlign: 'center', paddingTop: '5rem' }}>
