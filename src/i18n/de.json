@@ -821,7 +821,11 @@
       "dailyReturn": "Durchschn. Tagesrendite",
       "weeklyReturn": "Durchschn. Wochenrendite",
       "monthlyReturn": "Durchschn. Monatsrendite",
-      "totalReturn": "Gesamtrendite (Allzeit)"
+      "totalReturn": "Gesamtrendite (Allzeit)",
+          "buybackGains": "Gewinne aus Buyback Engine",
+    "buybackGainsSubtext": "Aus Plattformbelohnungen & Rückkäufen.",
+    "totalXpEarned": "Insgesamt im Vault verdiente XP",
+    "totalXpEarnedSubtext": "Aus Einzahlungen & täglichem Staking."
     },
     "performanceSnapshotTitle": "Historischer Performance-Schnappschuss",
     "performanceSnapshotSubtext": "Basierend auf der durchschnittlichen realisierten Performance seit Start der Strategie.",

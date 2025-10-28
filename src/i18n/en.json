@@ -122,6 +122,7 @@
       "description": "This section will track protocol contribution rewards generated through your share of the vault's trading volume."
     }
   },
+
   "reserveVault": {
     "yourHoldings": "Your Holdings",
     "avgCost": "Average Cost Basis"
@@ -746,7 +747,11 @@
       "dailyReturn": "Avg. Daily Return",
       "weeklyReturn": "Avg. Weekly Return",
       "monthlyReturn": "Avg. Monthly Return",
-      "totalReturn": "Total Return (All-Time)"
+      "totalReturn": "Total Return (All-Time)",
+       "buybackGains": "Buyback Engine Gains",
+    "buybackGainsSubtext": "From platform rewards & buybacks.",
+    "totalXpEarned": "Total XP Earned in Vault",
+    "totalXpEarnedSubtext": "From deposits & daily staking."
     },
     "performanceSnapshotTitle": "Historical Performance Snapshot",
     "performanceSnapshotSubtext": "Based on the average realized performance since strategy inception.",
