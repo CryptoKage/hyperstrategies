@@ -6,7 +6,8 @@ import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
 import api from '../../api/api';
 
-const DetailStatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, isXp = false, highlightClass = '' }) => {
+// This sub-component is simplified. It now receives the final translated label directly.
+const DetailStatCard = ({ label, value, subtextKey, isCurrency = true, isXp = false, highlightClass = '' }) => {
     const { t } = useTranslation();
     const formattedValue = typeof value === 'number'
         ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -14,7 +15,7 @@ const DetailStatCard = ({ labelKey, value, subtextKey = null, isCurrency = true,
         
     return (
         <div className={`profile-card ${highlightClass}`}>
-            <h3>{t(labelKey)}</h3>
+            <h3>{label}</h3>
             <p className="stat-value-large">
                 {isCurrency && (value >= 0 ? '+ $' : '- $')}
                 {isCurrency ? Math.abs(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : formattedValue}
@@ -42,10 +43,11 @@ const DiscretionaryVaultView = ({ pageData }) => {
         }
     }, [isInvested]);
     
-    const strategyGainsLabelKey = vaultInfo.name?.toLowerCase().includes('core')
-        ? 'vault.stats.coreStrategyGains'
-        : 'vault.stats.strategyGains';
-
+    // --- THIS IS THE FIX: We now generate the full, translated label here ---
+    const strategyGainsLabel = t(
+        vaultInfo.name?.toLowerCase().includes('core') ? 'vault.stats.coreStrategyGains' : 'vault.stats.strategyGains'
+    );
+    
     return (
         <div className="vault-detail-container">
             <div className="vault-detail-header">
@@ -60,42 +62,37 @@ const DiscretionaryVaultView = ({ pageData }) => {
             {isInvested ? (
                 <>
                     <div className="vault-detail-grid">
-                        {/* 1. Your Total Capital */}
                         <div className="profile-card highlight-primary">
                             <h3>{t('vault.stats.totalCapital')}</h3>
                             <p className="stat-value-large">${(userPosition.totalCapital || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                             <p className="stat-subtext">{t('vault.stats.totalCapitalSubtext')}</p>
                         </div>
                         
-                        {/* 2. Total Deposited */}
                         <DetailStatCard
-                            labelKey="vault.stats.totalDeposited"
+                            label={t('vault.stats.totalDeposited')}
                             subtextKey="vault.stats.totalDepositedSubtext"
                             value={userPosition.principal}
                         />
 
-                        {/* 3. Strategy Gains */}
                         <DetailStatCard
-                            labelKey={strategyGainsLabelKey}
+                            label={strategyGainsLabel} 
                             subtextKey="vault.stats.strategyGainsSubtext"
-                            value={userPosition.realizedPnl}
-                            highlightClass={userPosition.realizedPnl >= 0 ? 'highlight-positive' : 'highlight-negative'}
+                            value={userPosition.strategyGains}
+                            highlightClass={userPosition.strategyGains >= 0 ? 'highlight-positive' : 'highlight-negative'}
                         />
 
-                        {/* 4. Buyback Gains (conditional) */}
                         {userPosition.buybackGains > 0 && (
                             <DetailStatCard
-                                labelKey="vault.stats.buybackGains"
+                                label={t('vault.stats.buybackGains')}
                                 subtextKey="vault.stats.buybackGainsSubtext"
                                 value={userPosition.buybackGains}
                                 highlightClass="highlight-positive"
                             />
                         )}
 
-                        {/* 5. Total XP (conditional) */}
                         {userPosition.totalXpFromVault > 0 && (
                              <DetailStatCard
-                                labelKey="vault.stats.totalXpEarned"
+                                label={t('vault.stats.totalXpEarned')}
                                 value={userPosition.totalXpFromVault}
                                 subtextKey="vault.stats.totalXpEarnedSubtext"
                                 isCurrency={false}
