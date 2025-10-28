@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
 import api from '../../api/api';
 
-// This sub-component is simplified. It now receives the final translated label directly.
 const DetailStatCard = ({ label, value, subtextKey, isCurrency = true, isXp = false, highlightClass = '' }) => {
     const { t } = useTranslation();
     const formattedValue = typeof value === 'number'
@@ -15,7 +14,7 @@ const DetailStatCard = ({ label, value, subtextKey, isCurrency = true, isXp = fa
         
     return (
         <div className={`profile-card ${highlightClass}`}>
-            <h3>{label}</h3>
+            <h3>{label}</h3> {/* This now expects a final string */}
             <p className="stat-value-large">
                 {isCurrency && (value >= 0 ? '+ $' : '- $')}
                 {isCurrency ? Math.abs(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : formattedValue}
@@ -43,7 +42,6 @@ const DiscretionaryVaultView = ({ pageData }) => {
         }
     }, [isInvested]);
     
-    // --- THIS IS THE FIX: We now generate the full, translated label here ---
     const strategyGainsLabel = t(
         vaultInfo.name?.toLowerCase().includes('core') ? 'vault.stats.coreStrategyGains' : 'vault.stats.strategyGains'
     );
@@ -68,33 +66,33 @@ const DiscretionaryVaultView = ({ pageData }) => {
                             <p className="stat-subtext">{t('vault.stats.totalCapitalSubtext')}</p>
                         </div>
                         
+                        {/* --- THE FIX: Use t() before passing the label --- */}
                         <DetailStatCard
-                            labelKey="vault.stats.totalDeposited"
+                            label={t('vault.stats.totalDeposited')}
                             subtextKey="vault.stats.totalDepositedSubtext"
                             value={userPosition.principal}
                         />
 
-                        {/* --- THE FIX: We now use the correct data key from the backend --- */}
+                        {/* --- THIS LOGIC WAS ALREADY CORRECT, BUT NOW WE FOLLOW THE PATTERN --- */}
                         <DetailStatCard
-                            labelKey="vault.stats.realizedPnl" // This now matches the translation key
+                            label={strategyGainsLabel} 
                             subtextKey="vault.stats.strategyGainsSubtext"
-                            value={userPosition.strategyGains} // Use the new data key
+                            value={userPosition.strategyGains}
                             highlightClass={userPosition.strategyGains >= 0 ? 'highlight-positive' : 'highlight-negative'}
                         />
 
                         {userPosition.buybackGains > 0 && (
                             <DetailStatCard
-                                labelKey="vault.stats.buybackGains"
+                                label={t('vault.stats.buybackGains')}
                                 subtextKey="vault.stats.buybackGainsSubtext"
                                 value={userPosition.buybackGains}
                                 highlightClass="highlight-positive"
                             />
                         )}
 
-                        {/* --- THE FIX: This card will now appear correctly --- */}
                         {userPosition.totalXpFromVault > 0 && (
                              <DetailStatCard
-                                labelKey="vault.stats.totalXpEarned"
+                                label={t('vault.stats.totalXpEarned')}
                                 value={userPosition.totalXpFromVault}
                                 subtextKey="vault.stats.totalXpEarnedSubtext"
                                 isCurrency={false}
