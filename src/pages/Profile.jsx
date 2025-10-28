@@ -342,14 +342,16 @@ const handleCopyLink = () => {
 
   return (
     <Layout>
-      <div className="profile-container profile-container--modern">
-                   <section className="profile-tabs" aria-labelledby="profile-tabs-title">
+      <div className="profile-container">
+
+        {/* The section is now the main content, with a simpler header */}
+        <section className="profile-tabs" aria-labelledby="profile-tabs-title">
           <div className="profile-tabs__header">
-              <h2 id="profile-tabs-title">{t('profile_page.overview_title', 'Account overview')}</h2>
+            <h1 id="profile-tabs-title">{t('profile_page.overview_title', 'Account overview')}</h1>
             <p>
               {t(
                 'profile_page.overview_caption',
-                ''
+                'Navigate between your essentials, referral hub, account connections, and recent activity.'
               )}
             </p>
           </div>
