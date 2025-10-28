@@ -196,23 +196,31 @@ const FarmingVaultView = ({ pageData }) => {
                     <div className="pipeline-column">
                         <h4>{t('farmingVault.activities.activeTitle')}</h4>
                         <div className="protocol-list">
-                            {pageData.farmingProtocols?.filter(p => p.status === 'FARMING').map(p => (
-                                <div key={p.protocol_id} className="protocol-card">
-                                    <h5>{p.name} ({p.chain})</h5>
-                                    <p>{p.description}</p>
-                                </div>
-                            )) || <p>{t('farmingVault.activities.noActive')}</p>}
+                           {activeFarms.length > 0 ? (
+                                activeFarms.map(p => (
+                                    <div key={p.protocol_id} className="protocol-card">
+                                        <h5>{p.name} ({p.chain})</h5>
+                                        <p>{p.description}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>{t('farmingVault.activities.noActive')}</p>
+                            )}
                         </div>
                     </div>
                     <div className="pipeline-column">
                         <h4>{t('farmingVault.activities.seedingTitle')}</h4>
                         <div className="protocol-list">
-                            {pageData.farmingProtocols?.filter(p => p.status === 'SEEDING').map(p => (
-                                 <div key={p.protocol_id} className="protocol-card">
-                                    <h5>{p.name} ({p.chain})</h5>
-                                    <p>{p.description}</p>
-                                </div>
-                            )) || <p>{t('farmingVault.activities.noPipeline')}</p>}
+                            {seedingFarms.length > 0 ? (
+                                seedingFarms.map(p => (
+                                    <div key={p.protocol_id} className="protocol-card">
+                                        <h5>{p.name} ({p.chain})</h5>
+                                        <p>{p.description}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p>{t('farmingVault.activities.noPipeline')}</p>
+                            )}
                         </div>
                     </div>
                 </div>

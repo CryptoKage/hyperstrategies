@@ -1,22 +1,23 @@
-// src/pages/vaultViews/DiscretionaryVaultView.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
 import api from '../../api/api';
 
-const StatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, isXp = false, className = '' }) => {
+// We'll create a new, more specific Stat Card for this layout
+const DetailStatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, isXp = false, highlightClass = '' }) => {
     const { t } = useTranslation();
     const formattedValue = typeof value === 'number'
         ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
         : '0.00';
         
     return (
-        <div className={`profile-card ${className}`}>
+        <div className={`profile-card ${highlightClass}`}>
             <h3>{t(labelKey)}</h3>
             <p className="stat-value-large">
-                {isCurrency && '$'}{formattedValue}{isXp && ' XP'}
+                {isCurrency && (value >= 0 ? '+ $' : '- $')}
+                {isCurrency ? Math.abs(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : formattedValue}
+                {isXp && ' XP'}
             </p>
             {subtextKey && <p className="stat-subtext">{t(subtextKey)}</p>}
         </div>
@@ -57,31 +58,43 @@ const DiscretionaryVaultView = ({ pageData }) => {
             
             {isInvested ? (
                 <>
-                    {/* --- THIS IS THE UPDATED STATS GRID --- */}
+                    {/* --- NEW STATS GRID LAYOUT --- */}
                     <div className="vault-detail-grid">
-                        <StatCard 
-                            labelKey="vault.stats.totalCapital" 
-                            value={userPosition.totalCapital} 
-                            subtextKey="vault.stats.totalCapitalSubtext" 
+                        {/* Total Capital (Main Stat) */}
+                        <div className="profile-card highlight-primary">
+                            <h3>{t('vault.stats.totalCapital')}</h3>
+                            <p className="stat-value-large">${(userPosition.totalCapital || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            <p className="stat-subtext">{t('vault.stats.totalCapitalSubtext')}</p>
+                        </div>
+                        
+                        {/* Total Deposited */}
+                        <DetailStatCard
+                            labelKey="vault.stats.totalDeposited"
+                            subtextKey="vault.stats.totalDepositedSubtext"
+                            value={userPosition.principal}
                         />
-                        <StatCard 
-                            labelKey="vault.stats.realizedPnl" 
-                            value={userPosition.realizedPnl} 
-                            subtextKey="vault.stats.realizedPnlSubtext" 
-                            className={userPosition.realizedPnl >= 0 ? 'highlight-positive' : 'highlight-negative'}
+
+                        {/* Strategy Gains */}
+                        <DetailStatCard
+                            labelKey="vault.stats.strategyGains"
+                            subtextKey="vault.stats.strategyGainsSubtext"
+                            value={userPosition.realizedPnl}
+                            highlightClass={userPosition.realizedPnl >= 0 ? 'highlight-positive' : 'highlight-negative'}
                         />
-                        {/* NEW: Buyback Gains Card */}
+
+                        {/* Buyback Gains (only shows if there are any) */}
                         {userPosition.buybackGains > 0 && (
-                            <StatCard
+                            <DetailStatCard
                                 labelKey="vault.stats.buybackGains"
-                                value={userPosition.buybackGains}
                                 subtextKey="vault.stats.buybackGainsSubtext"
-                                className="highlight-positive"
+                                value={userPosition.buybackGains}
+                                highlightClass="highlight-positive"
                             />
                         )}
-                        {/* NEW: Total XP Card */}
+
+                        {/* Total XP (only shows if there is any) */}
                         {userPosition.totalXpFromVault > 0 && (
-                             <StatCard
+                             <DetailStatCard
                                 labelKey="vault.stats.totalXpEarned"
                                 value={userPosition.totalXpFromVault}
                                 subtextKey="vault.stats.totalXpEarnedSubtext"

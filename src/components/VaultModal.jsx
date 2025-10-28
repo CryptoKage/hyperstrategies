@@ -51,24 +51,22 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
 
   if (!isOpen || !vault) return null;
 
-  // --- REFACTORED: handleAllocate ---
-  const handleAllocate = async (e) => {
+ const handleAllocate = async (e) => {
     e.preventDefault();
 
-    // Client-side validation remains, but now uses notifyByKey for consistency
+    // Client-side validation now triggers specific toasts
     const parsedAmount = parseFloat(amount);
     if (Number.isNaN(parsedAmount) || parsedAmount <= 0) {
-        // notifyByKey('error', 'errors.INVALID_AMOUNT'); // We can use this if we add the key
+        notifyByKey('error', 'errors.INVALID_AMOUNT');
         return;
     }
     if (parsedAmount > (availableBalance || 0)) {
-        // notifyByKey('error', 'errors.INSUFFICIENT_FUNDS');
+        notifyByKey('error', 'errors.INSUFFICIENT_FUNDS');
         return;
     }
 
     setIsLoading(true);
     try {
-      // Use the new request wrapper. Success and error toasts are now automatic.
       await request('/vaults/invest', {
         method: 'POST',
         data: { vaultId: vault.vault_id, amount: amount }
@@ -76,7 +74,6 @@ const VaultModal = ({ isOpen, onClose, vault, availableBalance, userTier, onAllo
       onAllocationSuccess();
       onClose();
     } catch (err) {
-      // The request wrapper already showed the error toast.
       console.error("Allocation failed:", err.message);
     } finally {
       setIsLoading(false);

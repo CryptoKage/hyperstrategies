@@ -751,7 +751,11 @@
        "buybackGains": "Buyback Engine Gains",
     "buybackGainsSubtext": "From platform rewards & buybacks.",
     "totalXpEarned": "Total XP Earned in Vault",
-    "totalXpEarnedSubtext": "From deposits & daily staking."
+    "totalXpEarnedSubtext": "From deposits & daily staking.",
+    "totalDeposited": "Total Deposited",
+"totalDepositedSubtext": "Your principal capital in this vault.",
+"strategyGains": "Strategy Gains",
+"strategyGainsSubtext": "Realized P&L from trading activity."
     },
     "performanceSnapshotTitle": "Historical Performance Snapshot",
     "performanceSnapshotSubtext": "Based on the average realized performance since strategy inception.",
