@@ -1,10 +1,11 @@
+// src/pages/vaultViews/DiscretionaryVaultView.jsx
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
 import api from '../../api/api';
 
-// We'll create a new, more specific Stat Card for this layout
 const DetailStatCard = ({ labelKey, value, subtextKey = null, isCurrency = true, isXp = false, highlightClass = '' }) => {
     const { t } = useTranslation();
     const formattedValue = typeof value === 'number'
@@ -41,16 +42,17 @@ const DiscretionaryVaultView = ({ pageData }) => {
         }
     }, [isInvested]);
     
+    // --- NEW: Dynamic translation key for strategy gains ---
+    const strategyGainsLabelKey = vaultInfo.name?.toLowerCase().includes('core')
+        ? 'vault.stats.coreStrategyGains'
+        : 'vault.stats.strategyGains';
+
     return (
         <div className="vault-detail-container">
             <div className="vault-detail-header">
                 <h1>{vaultInfo.name || t('vault.title')}</h1>
                 <div className="vault-header-actions">
-                    {isReportEligible && (
-                        <Link to="/reports" className="btn-primary btn-sm">
-                            {t('vault.actions.myReports', 'My Reports')}
-                        </Link>
-                    )}
+                    {isReportEligible && ( <Link to="/reports" className="btn-primary btn-sm">{t('vault.actions.myReports', 'My Reports')}</Link> )}
                     <Link to="/dashboard" className="btn-secondary btn-sm">← {t('common.backToDashboard')}</Link>
                 </div>
             </div>
@@ -58,31 +60,30 @@ const DiscretionaryVaultView = ({ pageData }) => {
             
             {isInvested ? (
                 <>
-                    {/* --- NEW STATS GRID LAYOUT --- */}
                     <div className="vault-detail-grid">
-                        {/* Total Capital (Main Stat) */}
+                        {/* 1. Your Total Capital */}
                         <div className="profile-card highlight-primary">
                             <h3>{t('vault.stats.totalCapital')}</h3>
                             <p className="stat-value-large">${(userPosition.totalCapital || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                             <p className="stat-subtext">{t('vault.stats.totalCapitalSubtext')}</p>
                         </div>
                         
-                        {/* Total Deposited */}
+                        {/* 2. Total Deposited */}
                         <DetailStatCard
                             labelKey="vault.stats.totalDeposited"
                             subtextKey="vault.stats.totalDepositedSubtext"
                             value={userPosition.principal}
                         />
 
-                        {/* Strategy Gains */}
+                        {/* 3. Strategy Gains */}
                         <DetailStatCard
-                            labelKey="vault.stats.strategyGains"
+                            labelKey={strategyGainsLabelKey}
                             subtextKey="vault.stats.strategyGainsSubtext"
                             value={userPosition.realizedPnl}
                             highlightClass={userPosition.realizedPnl >= 0 ? 'highlight-positive' : 'highlight-negative'}
                         />
 
-                        {/* Buyback Gains (only shows if there are any) */}
+                        {/* 4. Buyback Gains (conditional) */}
                         {userPosition.buybackGains > 0 && (
                             <DetailStatCard
                                 labelKey="vault.stats.buybackGains"
@@ -92,7 +93,7 @@ const DiscretionaryVaultView = ({ pageData }) => {
                             />
                         )}
 
-                        {/* Total XP (only shows if there is any) */}
+                        {/* 5. Total XP (conditional) */}
                         {userPosition.totalXpFromVault > 0 && (
                              <DetailStatCard
                                 labelKey="vault.stats.totalXpEarned"
