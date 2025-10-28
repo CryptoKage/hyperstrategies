@@ -6,6 +6,105 @@ import Layout from '../../components/Layout';
 import api from '../../api/api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
+// This is the new component for handling the distribution workflow.
+const HybridRewardDistributionForm = () => {
+  const [allVaults, setAllVaults] = useState([]);
+  const [totalRewardUsd, setTotalRewardUsd] = useState('');
+  const [participatingVaultIds, setParticipatingVaultIds] = useState([]);
+  const [description, setDescription] = useState('');
+  
+  const [status, setStatus] = useState({ message: '', type: '' });
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  const [previewData, setPreviewData] = useState(null);
+  const [currentStep, setCurrentStep] = useState(1);
+
+  useEffect(() => {
+    api.get('/admin/vaults/all')
+      .then(res => {
+        const activeVaults = res.data.filter(v => v.status === 'active');
+        setAllVaults(activeVaults);
+      })
+      .catch(err => {
+        setStatus({ message: 'Failed to load vault list.', type: 'error' });
+      });
+  }, []);
+
+  const handleCheckboxChange = (vaultId) => {
+    setParticipatingVaultIds(prev =>
+      prev.includes(vaultId) ? prev.filter(id => id !== vaultId) : [...prev, vaultId]
+    );
+  };
+
+  const handlePreview = async (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+    setStatus({ message: '', type: '' });
+    setPreviewData(null);
+    try {
+      const payload = { totalRewardUsd: parseFloat(totalRewardUsd), participatingVaultIds };
+      const response = await api.post('/admin/rewards/preview-hybrid-distribution', payload);
+      setPreviewData(response.data);
+      setCurrentStep(2);
+    } catch (err) {
+      setStatus({ message: err.response?.data?.error || 'An unexpected error occurred during preview.', type: 'error' });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleExecute = async () => {
+    if (!window.confirm("Are you sure you want to execute this distribution? This action is irreversible.")) return;
+    setIsProcessing(true);
+    setStatus({ message: '', type: '' });
+    try {
+      const payload = { totalRewardUsd: parseFloat(totalRewardUsd), participatingVaultIds, description };
+      const response = await api.post('/admin/rewards/execute-hybrid-distribution', payload);
+      setStatus({ message: response.data.message, type: 'success' });
+      setCurrentStep(3);
+    } catch (err) {
+      setStatus({ message: err.response?.data?.error || 'An unexpected error occurred.', type: 'error' });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  
+  const resetForm = () => {
+    setTotalRewardUsd('');
+    setParticipatingVaultIds([]);
+    setDescription('');
+    setPreviewData(null);
+    setStatus({ message: '', type: '' });
+    setCurrentStep(1);
+  };
+
+  return (
+    <div className="admin-card" style={{ marginTop: '24px' }}>
+      <h3>Distribute Farming Profits</h3>
+      <p>Distribute funds from the Buyback Pool to users in selected vaults. The system prioritizes buying back Bonus Points first, then distributes any remainder based on user XP.</p>
+      
+      {currentStep === 1 && (
+        <form onSubmit={handlePreview} className="admin-form">
+          <div className="form-group"><label htmlFor="total-reward">Total Reward to Distribute (USDC)</label><input id="total-reward" type="number" step="0.01" value={totalRewardUsd} onChange={(e) => setTotalRewardUsd(e.target.value)} required /></div>
+          <div className="form-group"><label>Distribute to Users In:</label><div className="checkbox-group">{allVaults.length > 0 ? allVaults.map(vault => (<label key={vault.vault_id} className="checkbox-label"><input type="checkbox" checked={participatingVaultIds.includes(vault.vault_id)} onChange={() => handleCheckboxChange(vault.vault_id)} />{vault.name}</label>)) : <p>Loading vaults...</p>}</div></div>
+          <div className="form-group"><label htmlFor="reward-description">Description for User Activity Log</label><input id="reward-description" type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="e.g., Opensea Wave 1 Payout" required /></div>
+          <button type="submit" className="btn-primary" disabled={isProcessing || participatingVaultIds.length === 0 || !description}>{isProcessing ? 'Calculating...' : 'Preview Distribution'}</button>
+        </form>
+      )}
+      {currentStep === 2 && previewData && (
+        <div>
+          <h4 style={{marginTop: '2rem'}}>Distribution Preview</h4>
+          <div className="stats-grid-small"><div className="stat-card"><span className="stat-label">Total Pool</span><span className="stat-value">${previewData.summary.totalRewardPool.toFixed(2)}</span></div><div className="stat-card"><span className="stat-label">For Bonus Point Buyback</span><span className="stat-value">${previewData.summary.allocatedToBuyback.toFixed(2)}</span></div><div className="stat-card"><span className="stat-label">For XP-based Payout</span><span className="stat-value">${previewData.summary.allocatedToXp.toFixed(2)}</span></div></div>
+          <div className="table-responsive" style={{marginTop: '1rem'}}><table className="activity-table"><thead><tr><th>User</th><th className="amount">Bonus Point Payout</th><th className="amount">XP-Based Payout</th><th className="amount">Total Payout</th></tr></thead><tbody>{previewData.preview.map(item => (<tr key={item.userId}><td>{item.username}</td><td className="amount">${item.bonusPointPayout.toFixed(2)}</td><td className="amount">${item.xpBasedPayout.toFixed(2)}</td><td className="amount"><strong>${item.totalPayout.toFixed(2)}</strong></td></tr>))}</tbody></table></div>
+          <div className="modal-actions" style={{marginTop: '1.5rem'}}><button onClick={resetForm} className="btn-secondary" disabled={isProcessing}>Back</button><button onClick={handleExecute} className="btn-primary" disabled={isProcessing}>{isProcessing ? 'Executing...' : `Execute Distribution for ${previewData.summary.participantCount} Users`}</button></div>
+        </div>
+      )}
+      {currentStep === 3 && (<div className="admin-message success" style={{marginTop: '1.5rem'}}><h4>Distribution Complete!</h4><p>{status.message}</p><button onClick={resetForm} className="btn-secondary btn-sm" style={{marginTop: '1rem'}}>Start New Distribution</button></div>)}
+      {status.message && status.type === 'error' && <p className={`admin-message ${status.type}`}>{status.message}</p>}
+    </div>
+  );
+};
+
 // A sub-component for a single protocol card
 const ProtocolCard = ({ protocol, onMove, onReap }) => {
     return (
@@ -35,24 +134,15 @@ const FarmingPipelinePage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // State for the "Add New" form
     const [newProtocol, setNewProtocol] = useState({ name: '', chain: 'ETHEREUM', description: '', has_token: false });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Fetch all vaults that are of type 'FARMING'
    const fetchFarmingVaults = useCallback(async () => {
     try {
-        // --- THIS IS THE FIX ---
-        // We now call our new, dedicated admin endpoint.
         const response = await api.get('/admin/vaults/all');
-        
-        // We still filter for vault_type, but we no longer filter by status.
         const farmingVaults = response.data.filter(v => v.vault_type === 'FARMING');
-        // --- END OF FIX ---
-
         setVaults(farmingVaults);
         if (farmingVaults.length > 0) {
-            // Default to the first one in the list
             setSelectedVaultId(farmingVaults[0].vault_id);
         }
     } catch (err) {
@@ -61,7 +151,6 @@ const FarmingPipelinePage = () => {
     }
 }, []);
 
-    // Fetch the pipeline data for the selected vault
     const fetchPipeline = useCallback(async () => {
         if (!selectedVaultId) {
             setProtocols([]);
@@ -70,7 +159,6 @@ const FarmingPipelinePage = () => {
         }
         setLoading(true);
         try {
-            // NOTE: We need a new backend endpoint for this. Let's build it next.
             const response = await api.get(`/admin/farming-protocols?vaultId=${selectedVaultId}`);
             setProtocols(response.data);
         } catch (err) {
@@ -89,7 +177,7 @@ const FarmingPipelinePage = () => {
         try {
             await api.post('/admin/farming-protocols', { vaultId: selectedVaultId, ...newProtocol });
             setNewProtocol({ name: '', chain: 'ETHEREUM', description: '', has_token: false });
-            fetchPipeline(); // Refresh the list
+            fetchPipeline();
         } catch (err) {
             alert('Failed to add protocol.');
         } finally {
@@ -112,7 +200,8 @@ const FarmingPipelinePage = () => {
         
         try {
             await api.post(`/admin/farming-protocols/${protocol.protocol_id}/reap`, { realizedUsdValue: valueStr });
-            alert('Rewards successfully reaped and PNL distributed!');
+            // Corrected alert message for clarity
+            alert('Rewards successfully reaped and funds added to the Buyback Pool!');
             fetchPipeline();
         } catch (err) {
             alert('Failed to reap rewards: ' + (err.response?.data?.error || 'Unknown error'));
@@ -139,7 +228,6 @@ const FarmingPipelinePage = () => {
                 </div>
 
                 <div className="farming-pipeline-grid">
-                    {/* Column 1: Seeding */}
                     <div className="pipeline-column">
                         <h3>Seeding ({seeding.length})</h3>
                         <div className="protocol-list">
@@ -156,7 +244,6 @@ const FarmingPipelinePage = () => {
                         </div>
                     </div>
 
-                    {/* Column 2: Farming */}
                     <div className="pipeline-column">
                         <h3>Farming ({farming.length})</h3>
                         <div className="protocol-list">
@@ -164,15 +251,15 @@ const FarmingPipelinePage = () => {
                         </div>
                     </div>
 
-                    {/* Column 3: Reaped */}
                     <div className="pipeline-column">
                         <h3>Reaped ({reaped.length})</h3>
                         <div className="protocol-list">
-                            {reaped.map(p => <ProtocolCard key={p.protocol_id} protocol={p} />)}
+                            {loading ? <LoadingSpinner /> : reaped.map(p => <ProtocolCard key={p.protocol_id} protocol={p} />)}
                         </div>
                     </div>
                 </div>
 
+                <HybridRewardDistributionForm />
             </div>
         </Layout>
     );

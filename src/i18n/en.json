@@ -676,7 +676,9 @@
   },
   "xp_history": {
     "deposit_bonus": "Earned {{amount}} XP for depositing in strategy {{vaultId}}.",
-    "referral_bonus": "Earned {{amount}} XP from your referral ({{username}}) making a deposit."
+    "referral_bonus": "Earned {{amount}} XP from your referral ({{username}}) making a deposit.",
+    "staking_bonus": "Earned {{amount}} XP from daily staking rewards.",
+    "hybrid_buyback": "Earned XP from a platform buyback of {{amount}} Bonus Points."
   },
   "bounties": {
     "x_follow": {

@@ -751,7 +751,9 @@
   },
   "xp_history": {
     "deposit_bonus": "{{amount}} XP für Einzahlung in Strategie {{vaultId}} verdient.",
-    "referral_bonus": "{{amount}} XP verdient, weil dein Referral ({{username}}) eine Einzahlung getätigt hat."
+    "referral_bonus": "{{amount}} XP verdient, weil dein Referral ({{username}}) eine Einzahlung getätigt hat.",
+    "staking_bonus": "{{amount}} XP durch tägliche Staking-Belohnungen verdient.",
+    "hybrid_buyback": "XP verdient durch einen Plattform-Rückkauf von {{amount}} Bonuspunkten."
   },
   "bounties": {
     "x_follow": {
