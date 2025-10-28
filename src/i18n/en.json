@@ -933,7 +933,21 @@
       "body": "Personal and public reports, plus community syndicates."
     }
   },
+
+  
   "tooltips": {
     "hwm": "Fees only on new profits above your highest equity peak."
+  },
+  
+  "toasts": {
+    "PROFILE_SAVED": "Profile updated successfully!",
+    "REFERRAL_CODE_SAVED": "Your new referral code is now active."
+  },
+  "errors": {
+    "USERNAME_TAKEN": "This username is already taken. Please choose another.",
+    "GENERIC_NETWORK": "Could not connect to the server. Please check your connection and try again.",
+    "INVALID_REFERRAL_CODE": "Referral code must be 3-15 alphanumeric characters."
   }
 }
+  
+

@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import api from '../api/api';
+import { request } from '../api/request'; // NEW: Import our request wrapper
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import GoogleIcon from '../components/GoogleIcon';
 import InputField from '../components/InputField';
+import { notifyByKey } from '../utils/notify'; // NEW: For non-API messages
 
 const Login = () => {
   const { t } = useTranslation();
@@ -15,8 +16,6 @@ const Login = () => {
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   const { login } = useAuth();
@@ -26,40 +25,49 @@ const Login = () => {
   useEffect(() => {
     const status = searchParams.get('status');
     const session = searchParams.get('session');
+    const refCode = searchParams.get('ref');
 
-     const refCode = searchParams.get('ref');
-    if (refCode) {
-      setReferralCode(refCode);
-    }
+    if (refCode) setReferralCode(refCode);
 
+    // We now use our notification system for these messages
     if (status === 'registered') {
-      setSuccessMessage(t('login_page.success_message'));
+      notifyByKey('success', 'toasts.REGISTER_SUCCESS');
     }
     if (status === 'reset_success') {
-      setSuccessMessage(t('login_page.reset_success'));
+      notifyByKey('success', 'toasts.RESET_PASSWORD_SUCCESS');
     }
     if (session === 'expired') {
-      setError(t('login_page.session_expired'));
+      notifyByKey('error', 'errors.SESSION_EXPIRED');
     }
-  }, [searchParams, t]);
 
+    // Clean the URL so the message doesn't reappear on refresh
+    if (status || session) {
+      navigate('/login', { replace: true });
+    }
+  }, [searchParams, t, navigate]);
+
+  // --- REFACTORED: handleSubmit ---
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccessMessage('');
     setIsLoading(true);
 
     try {
-      const response = await api.post('/auth/login', { email, password });
+      // Use the new request wrapper. Success toast is automatic.
+      const response = await request('/auth/login', {
+        method: 'POST',
+        data: { email, password },
+      });
      
-        if (response.data.user) {
-            login(response.data.user); 
-navigate('/dashboard');
-        } else {
-             setError(t('login_page.error_failed'));
-        }
+      if (response && response.user) {
+        login(response.user); 
+        navigate('/dashboard');
+      } else {
+        // This is a fallback for an unexpected success response format
+        throw new Error('Login response was malformed.');
+      }
     } catch (err) {
-      setError(err.response?.data?.error || t('login_page.error_failed'));
+      // Error toast is already handled by the request wrapper.
+      console.error("Login failed:", err.message);
     } finally {
       setIsLoading(false);
     }
@@ -67,9 +75,9 @@ navigate('/dashboard');
 
   const handleGoogleLogin = () => {
     if (referralCode) {
-      window.location.href = `${api.defaults.baseURL}/auth/google?ref=${referralCode}`;
+      window.location.href = `${process.env.REACT_APP_API_URL}/auth/google?ref=${referralCode}`;
     } else {
-      window.location.href = `${api.defaults.baseURL}/auth/google`;
+      window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`;
     }
   };
 
@@ -79,8 +87,8 @@ navigate('/dashboard');
         <div className="auth-container">
           <form className="auth-form" onSubmit={handleSubmit}>
             <h2>{t('login_page.title')}</h2>
-            {successMessage && <p className="success-message">{successMessage}</p>}
-            {error && <p className="error-message">{error}</p>}
+            
+            {/* We no longer need the local error/success message paragraphs */}
             
             <InputField 
               label={t('login_page.email_label')} 

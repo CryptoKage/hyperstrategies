@@ -4,16 +4,18 @@ import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
+import { request } from '../api/request';   
 import XpHistoryList from '../components/XpHistoryList';
 import { createPkcePair } from '../utils/pkce';
 import TelegramLoginButton from '../components/TelegramLoginButton';
 import { QRCodeCanvas } from 'qrcode.react';
-import useToast from '../hooks/useToast';
+
+import { notifyByKey } from '../utils/notify';
 
 const Profile = () => {
   const { t } = useTranslation();
   const { checkAuthStatus } = useAuth();
-  const { showSuccess, showError } = useToast();
+
 
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +23,7 @@ const Profile = () => {
   const [username, setUsername] = useState('');
   const [customReferralInput, setCustomReferralInput] = useState('');
   const [isUpdatingReferral, setIsUpdatingReferral] = useState(false);
+   const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
   const [copySuccessMessage, setCopySuccessMessage] = useState('');
   const [activeTab, setActiveTab] = useState('overview');
 
@@ -46,48 +49,51 @@ const Profile = () => {
     setCopySuccessMessage(t('profile_page.copy_link_button'));
   }, [fetchProfile, t]);
 
-  const handleProfileUpdate = async (e) => {
+ const handleProfileUpdate = async (e) => {
     e.preventDefault();
-
+    setIsUpdatingUsername(true);
     try {
-      const response = await api.put('/user/profile', { username });
-      showSuccess(t(response.data.messageKey));
+      // Use the new request wrapper. Toasts are now automatic!
+      await request('/user/profile', {
+        method: 'PUT',
+        data: { username }, // For axios, the body is in the 'data' property
+      });
+      // On success, refresh the user's auth status to update their name in the header
       if (checkAuthStatus) {
         await checkAuthStatus();
       }
     } catch (err) {
-      const messageKey = err.response?.data?.messageKey || 'profile_page.error_unexpected';
-      showError(t(messageKey));
+      // The request wrapper already showed the toast. We can log the error if we want.
+      console.error("Update username failed:", err.message);
+    } finally {
+      setIsUpdatingUsername(false);
     }
   };
 
-  const handleUpdateReferralCode = async (e) => {
+   const handleUpdateReferralCode = async (e) => {
     e.preventDefault();
     setIsUpdatingReferral(true);
-
     try {
-      const response = await api.put('/user/referral-code', { desiredCode: customReferralInput });
-      showSuccess(t(response.data.messageKey));
-      setProfileData((prev) => ({ ...prev, referral_code: response.data.referralCode }));
+      // Use the new request wrapper.
+      const response = await request('/user/referral-code', {
+        method: 'PUT',
+        data: { desiredCode: customReferralInput },
+      });
+      // On success, update the local state with the new code from the response
+      setProfileData((prev) => ({ ...prev, referral_code: response.params.code }));
       setCustomReferralInput('');
     } catch (err) {
-      const messageKey = err.response?.data?.messageKey || 'profile_page.error_unexpected';
-      showError(t(messageKey));
+      console.error("Update referral code failed:", err.message);
     } finally {
       setIsUpdatingReferral(false);
     }
   };
 
-  const handleCopyLink = () => {
-    if (!referralLink) {
-      return;
-    }
+const handleCopyLink = () => {
+    if (!referralLink) return;
     navigator.clipboard.writeText(referralLink);
-    setCopySuccessMessage(t('profile_page.copied_button'));
-    showSuccess(t('profile_page.toast_copied_link', 'Referral link copied to clipboard.'));
-    setTimeout(() => {
-      setCopySuccessMessage(t('profile_page.copy_link_button'));
-    }, 2000);
+    // Use our new notifyByKey for a consistent look
+    notifyByKey('success', 'profile_page.toast_copied_link');
   };
 
   const referralLink = useMemo(() => {
@@ -297,8 +303,8 @@ const Profile = () => {
                     onChange={(event) => setUsername(event.target.value)}
                   />
                 </div>
-                <button type="submit" className="btn-primary">
-                  {t('profile_page.save_changes_button')}
+               <button type="submit" className="btn-primary" disabled={isUpdatingUsername}>
+                  {isUpdatingUsername ? t('profile_page.saving_button') : t('profile_page.save_changes_button')}
                 </button>
               </form>
             </article>

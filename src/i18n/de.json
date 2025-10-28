@@ -1005,7 +1005,17 @@
   "title": "Leistungsbericht für {{monthYear}}",
   "openingRemarks": "Offizieller Leistungsbericht für {{monthYear}}.",
   "closingRemarks": "Vielen Dank für Ihre fortgesetzte Partnerschaft. Bei Fragen können Sie sich gerne an uns wenden."
-}
+},
+
+  "toasts": {
+    "PROFILE_SAVED": "Profil erfolgreich aktualisiert!",
+    "REFERRAL_CODE_SAVED": "Dein neuer Empfehlungscode ist jetzt aktiv."
+  },
+  "errors": {
+    "USERNAME_TAKEN": "Dieser Benutzername ist bereits vergeben. Bitte wähle einen anderen.",
+    "GENERIC_NETWORK": "Verbindung zum Server fehlgeschlagen. Bitte überprüfe deine Verbindung und versuche es erneut.",
+    "INVALID_REFERRAL_CODE": "Der Empfehlungscode muss 3–15 alphanumerische Zeichen haben."
   }
+}
 }
 
