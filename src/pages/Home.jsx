@@ -77,21 +77,7 @@ const Home = () => {
               </div>
             </article>
 
-            <article className="home-journey__step">
-              <span className="home-journey__badge">3</span>
-              <h3>{t('home.journey.step_three_title', 'Equip pins & earn rewards')}</h3>
-              <p>
-                {t(
-                  'home.journey.step_three_copy',
-                  'Our refreshed pins experience will arrive soon with streamlined loadouts and improved rewards.'
-                )}
-              </p>
-              <div className="home-journey__actions">
-                <span className="btn-pill btn-pill--disabled">
-                  {t('home.journey.step_three_cta', 'Pins hub coming soon')}
-                </span>
-              </div>
-            </article>
+          
           </div>
         </section>
 
