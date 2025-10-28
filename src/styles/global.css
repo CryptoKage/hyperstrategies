@@ -2563,6 +2563,13 @@ textarea.input-field { resize: vertical; }
   text-decoration: underline;
 }
 
+.page-title {
+  font-size: 32px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 16px;
+}
+
 .pagination-controls {
   display: flex;
   justify-content: space-between;
@@ -2589,7 +2596,7 @@ textarea.input-field { resize: vertical; }
   align-items: center;
   margin-bottom: 32px;
   border-bottom: 1px solid var(--color-border);
-  padding-bottom: 16px;
+  padding-bottom: 10px;
 }
 
 .admin-header-actions {
