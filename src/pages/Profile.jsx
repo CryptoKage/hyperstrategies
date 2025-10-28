@@ -343,23 +343,13 @@ const handleCopyLink = () => {
   return (
     <Layout>
       <div className="profile-container profile-container--modern">
-        <header className="profile-page-header">
-          <h1>{t('profile_page.modern_title', 'Shape your Hyper Strategies identity')}</h1>
-          <p>
-            {t(
-              'profile_page.modern_subtitle',
-              'Complete the steps below to unlock the full ecosystem — from personalised referrals to collectible pins and seasonal rewards.'
-            )}
-          </p>
-        </header>
-
-            <section className="profile-tabs" aria-labelledby="profile-tabs-title">
+                   <section className="profile-tabs" aria-labelledby="profile-tabs-title">
           <div className="profile-tabs__header">
               <h2 id="profile-tabs-title">{t('profile_page.overview_title', 'Account overview')}</h2>
             <p>
               {t(
                 'profile_page.overview_caption',
-                'Navigate between your essentials, referral hub, account connections, and recent activity without losing context.'
+                ''
               )}
             </p>
           </div>
