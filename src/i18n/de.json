@@ -829,7 +829,9 @@
     "totalDeposited": "Gesamteinzahlung",
 "totalDepositedSubtext": "Ihr eingezahltes Kapital in diesem Vault.",
 "strategyGains": "Strategiegewinne",
-"strategyGainsSubtext": "Realisierter P&L aus Handelsaktivitäten."
+"strategyGainsSubtext": "Realisierter P&L aus Handelsaktivitäten.",
+"coreStrategyGains": "Gewinne der Kernstrategie",
+      "dailyXpRateSubtext": "Aktuelle tägliche Rate vom Staking in diesem Vault."
     },
     "performanceSnapshotTitle": "Historischer Performance-Schnappschuss",
     "performanceSnapshotSubtext": "Basierend auf der durchschnittlichen realisierten Performance seit Start der Strategie.",

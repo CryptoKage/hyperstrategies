@@ -6,13 +6,9 @@ import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
 import api from '../../api/api';
 
-// --- NEW: A reusable Stat Card component for this view ---
-const DetailStatCard = ({ label, value, subtextKey, isCurrency = true, isXp = false, highlightClass = '' }) => {
-    const { t } = useTranslation();
-    
-    // Gracefully handle null or undefined values
+// This component is now simplified to take a final subtext string.
+const DetailStatCard = ({ label, value, subtext, isCurrency = true, isXp = false, highlightClass = '' }) => {
     const numericValue = typeof value === 'number' ? value : 0;
-
     const formattedValue = numericValue.toLocaleString('en-US', { 
         minimumFractionDigits: isCurrency ? 2 : 4, 
         maximumFractionDigits: isCurrency ? 2 : 4 
@@ -26,11 +22,10 @@ const DetailStatCard = ({ label, value, subtextKey, isCurrency = true, isXp = fa
                 {isCurrency ? Math.abs(numericValue).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : formattedValue}
                 {isXp && ' XP'}
             </p>
-            {subtextKey && <p className="stat-subtext">{t(subtextKey)}</p>}
+            {subtext && <p className="stat-subtext">{subtext}</p>}
         </div>
     );
 };
-
 
 const DiscretionaryVaultView = ({ pageData }) => {
     const { t } = useTranslation();
@@ -42,14 +37,18 @@ const DiscretionaryVaultView = ({ pageData }) => {
     useEffect(() => {
         if (isInvested) {
             api.get('/user/report-eligibility')
-                .then(res => {
-                    if (res.data.eligible) setIsReportEligible(true);
-                })
+                .then(res => { if (res.data.eligible) setIsReportEligible(true); })
                 .catch(err => console.error("Failed to fetch report eligibility", err));
         }
     }, [isInvested]);
+
+    // --- NEW: Calculate Strategy Gains Percentage ---
+    let strategyGainsPercentage = 0;
+    if (isInvested && userPosition.principal > 0) {
+        strategyGainsPercentage = (userPosition.strategyGains / userPosition.principal) * 100;
+    }
+    // --- END NEW ---
     
-    // Make the label dynamic based on vault name
     const strategyGainsLabel = t(
         vaultInfo.name?.toLowerCase().includes('core') 
             ? 'vault.stats.coreStrategyGains' 
@@ -61,7 +60,7 @@ const DiscretionaryVaultView = ({ pageData }) => {
             <div className="vault-detail-header">
                 <h1>{vaultInfo.name || t('vault.title')}</h1>
                 <div className="vault-header-actions">
-                    {isReportEligible && ( <Link to="/reports" className="btn-primary btn-sm">{t('vault.actions.myReports', 'My Reports')}</Link> )}
+                    {isReportEligible && ( <Link to="/reports" className="btn-primary btn-sm">{t('vault.actions.myReports')}</Link> )}
                     <Link to="/dashboard" className="btn-secondary btn-sm">← {t('common.backToDashboard')}</Link>
                 </div>
             </div>
@@ -69,7 +68,6 @@ const DiscretionaryVaultView = ({ pageData }) => {
             
             {isInvested ? (
                 <>
-                    {/* --- THIS SECTION IS UPDATED TO USE THE NEW STAT CARDS --- */}
                     <div className="vault-detail-grid">
                         <div className="profile-card highlight-primary">
                             <h3>{t('vault.stats.totalCapital')}</h3>
@@ -79,46 +77,43 @@ const DiscretionaryVaultView = ({ pageData }) => {
                         
                         <DetailStatCard
                             label={t('vault.stats.totalDeposited')}
-                            subtextKey="vault.stats.totalDepositedSubtext"
+                            subtext={t('vault.stats.totalDepositedSubtext')}
                             value={userPosition.principal}
                         />
 
+                        {/* --- CORRECTED STRATEGY GAINS CARD --- */}
                         <DetailStatCard
                             label={strategyGainsLabel} 
-                            subtextKey="vault.stats.strategyGainsSubtext"
+                            subtext={`${strategyGainsPercentage.toFixed(2)}% ROI`}
                             value={userPosition.strategyGains}
                             highlightClass={userPosition.strategyGains >= 0 ? 'highlight-positive' : 'highlight-negative'}
                         />
 
-                        {/* Conditionally render Buyback Gains only if they exist */}
+                        {/* --- SEPARATE BUYBACK GAINS CARD (conditionally rendered) --- */}
                         {userPosition.buybackGains > 0 && (
                             <DetailStatCard
                                 label={t('vault.stats.buybackGains')}
-                                subtextKey="vault.stats.buybackGainsSubtext"
+                                subtext={t('vault.stats.buybackGainsSubtext')}
                                 value={userPosition.buybackGains}
                                 highlightClass="highlight-positive"
                             />
                         )}
 
-                        {/* Conditionally render the new XP cards */}
-                        {userPosition.totalXpFromVault > 0 && (
-                             <DetailStatCard
-                                label={t('vault.stats.totalXpEarned')}
-                                value={userPosition.totalXpFromVault}
-                                subtextKey="vault.stats.totalXpEarnedSubtext"
-                                isCurrency={false}
-                                isXp={true}
-                            />
-                        )}
-                        {userPosition.dailyXpRate > 0 && (
-                             <DetailStatCard
-                                label={t('profile_page.xp_rate_label')} // Reuse existing translation key
-                                value={userPosition.dailyXpRate}
-                                subtextKey="vault.stats.dailyXpRateSubtext" // You will need to add this key to en.json
-                                isCurrency={false}
-                                isXp={true}
-                            />
-                        )}
+                        <DetailStatCard
+                           label={t('vault.stats.totalXpEarned')}
+                           value={userPosition.totalXpFromVault}
+                           subtext={t('vault.stats.totalXpEarnedSubtext')}
+                           isCurrency={false}
+                           isXp={true}
+                        />
+                        
+                        <DetailStatCard
+                           label={t('profile_page.xp_rate_label')}
+                           value={userPosition.dailyXpRate}
+                           subtext={t('vault.stats.dailyXpRateSubtext')}
+                           isCurrency={false}
+                           isXp={true}
+                        />
                     </div>
                     
                     <ComingSoon 

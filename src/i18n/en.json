@@ -770,7 +770,9 @@
     "totalDeposited": "Total Deposited",
 "totalDepositedSubtext": "Your principal capital in this vault.",
 "strategyGains": "Strategy Gains",
-"strategyGainsSubtext": "Realized P&L from trading activity."
+"strategyGainsSubtext": "Realized P&L from trading activity.",
+ "coreStrategyGains": "Core Strategy Gains",
+      "dailyXpRateSubtext": "Current daily rate from staking in this vault."
     },
     "performanceSnapshotTitle": "Historical Performance Snapshot",
     "performanceSnapshotSubtext": "Based on the average realized performance since strategy inception.",
