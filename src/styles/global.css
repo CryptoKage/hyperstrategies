@@ -956,7 +956,7 @@ button {
 /* --- Wallet Page Styles --- */
 .wallet-container {
   max-width: 900px;
-  margin: 40px auto;
+  margin: 0 auto 40px;
   padding: 20px;
 }
 
@@ -1283,7 +1283,7 @@ button {
 /* --- FAQ Page Styles --- */
 .faq-container {
   max-width: 800px;
-  margin: 40px auto;
+  margin: 0 auto 40px;
   padding: 20px;
 }
 .faq-container h1 {
@@ -1400,7 +1400,7 @@ button {
 .profile-container {
   width: 100%;
   max-width: 1100px;
-  margin: 40px auto;
+  margin: 0 auto 40px;
   padding: 20px;
 }
 .profile-container--modern {
@@ -1703,7 +1703,7 @@ textarea.input-field { resize: vertical; }
 
 .leaderboard-container {
   max-width: 800px;
-  margin: 40px auto;
+  margin: 0 auto 40px;
   padding: 20px;
 }
 
@@ -2040,7 +2040,7 @@ textarea.input-field { resize: vertical; }
 
 .admin-container {
   max-width: 1200px;
-  margin: 40px auto;
+  margin: 0 auto 40px;
   padding: 20px;
 }
 
@@ -3104,7 +3104,7 @@ input:checked + .slider:before {
 /* --- PIN Marketplace --- */
 .pins-market-container {
   max-width: 900px; /* Give the page a max-width */
-  margin: 40px auto; /* Center the page with top/bottom margin */
+  margin: 0 auto 40px; /* Keep consistent spacing below the header */
   padding: 20px;
 }
 
@@ -3707,7 +3707,7 @@ opacity: 0.3;
 /* --- Main Page Container --- */
 .rewards-container {
   max-width: 900px;
-  margin: 40px auto;
+  margin: 0 auto 40px;
   padding: 20px;
 }
 .rewards-container h1 {
@@ -3846,7 +3846,7 @@ opacity: 0.3;
 .pins-page {
   width: 100%;
   max-width: 1100px;
-  margin: 40px auto 80px;
+  margin: 0 auto 80px;
   padding: 0 24px 64px;
 }
 .pins-page__header {
@@ -4092,7 +4092,7 @@ opacity: 0.3;
 /* ============================================================================== */
 .pins-market-container {
   max-width: 1200px;
-  margin: 40px auto;
+  margin: 0 auto 40px;
   padding: 20px;
 }
 .market-header {
@@ -4402,7 +4402,7 @@ opacity: 0.3;
 /* ============================================================================== */
 .presale-container {
   max-width: 900px;
-  margin: 40px auto;
+  margin: 0 auto 40px;
   padding: 20px;
    background-color: var(--color-background);
 }
@@ -4469,7 +4469,7 @@ opacity: 0.3;
 /* ============================================================================== */
 /* CSS for the new Vault Detail Page                                            */
 /* ============================================================================== */
-.vault-detail-container { max-width: 1000px; margin: 40px auto; padding: 20px; }
+.vault-detail-container { max-width: 1000px; margin: 0 auto 40px; padding: 20px; }
 .vault-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .vault-detail-subtitle { color: var(--color-text-secondary); margin-bottom: 32px; }
 .vault-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
