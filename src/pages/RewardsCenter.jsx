@@ -106,14 +106,13 @@ const RewardsCenter = () => {
                 start={0} 
                 end={rewardsData.totalXp} 
                 duration={2.5} 
-                decimals={4} 
+                // --- FIX: Standardize decimals to 2 ---
+                decimals={2} 
                 suffix=" XP" 
               />
             </div>
-            {/* --- FIX: Use new translation key --- */}
             <p>{t('rewards_center.total_xp_description')}</p>
             <button className="btn-primary" disabled={true} title="Coming Soon">
-              {/* --- FIX: Use new translation key --- */}
               {t('rewards_center.convert_button_text')}
             </button>
           </div>
@@ -128,8 +127,17 @@ const RewardsCenter = () => {
         </div>
         
         <div className="bounty-board-section">
-          <h2>{t('rewards_center.bounties_title')}</h2>
-          <p>{t('rewards_center.bounties_description')}</p>
+          <div className="bounty-header">
+            <div>
+              <h2>{t('rewards_center.bounties_title')}</h2>
+              <p>{t('rewards_center.bounties_description')}</p>
+            </div>
+            <div className="stat-box-small">
+              <span>{t('rewards_center.unclaimed_xp_title')}</span>
+              {/* --- FIX: Standardize decimals to 2 --- */}
+              <span className="unclaimed-xp-value">{rewardsData.unclaimedXp.toFixed(2)} XP</span>
+            </div>
+          </div>
           <div className="bounties-list">
             {bounties.length > 0 ? (
               bounties.map(bounty => (
@@ -138,7 +146,6 @@ const RewardsCenter = () => {
                     <h4>{t(bounty.title_key)}</h4>
                     <p>{t(bounty.description_key)}</p>
                     {bounty.target_url && (
-                      // --- FIX: Use new translation key and remove arrow ---
                       <a href={bounty.target_url} target="_blank" rel="noopener noreferrer" className="bounty-link">{t('rewards_center.bounty_task_link')}</a>
                     )}
                   </div>

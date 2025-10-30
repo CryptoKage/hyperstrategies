@@ -6,12 +6,15 @@ import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
 import api from '../../api/api';
 
-// The DetailStatCard component is correct and does not need to be changed.
 const DetailStatCard = ({ label, value, subtext, isCurrency = true, isXp = false, highlightClass = '' }) => {
     const numericValue = typeof value === 'number' ? value : 0;
+    
+    // --- FIX: Standardize all display values to 2 decimal places ---
+    const decimalPlaces = 2;
+
     const formattedValue = numericValue.toLocaleString('en-US', { 
-        minimumFractionDigits: isCurrency ? 2 : 4, 
-        maximumFractionDigits: isCurrency ? 2 : 4 
+        minimumFractionDigits: decimalPlaces, 
+        maximumFractionDigits: decimalPlaces 
     });
         
     return (
@@ -42,7 +45,6 @@ const DiscretionaryVaultView = ({ pageData }) => {
         }
     }, [isInvested]);
 
-    // --- CALCULATIONS ARE NOW SEPARATE ---
     let strategyGainsPercentage = 0;
     if (isInvested && userPosition.principal > 0) {
         strategyGainsPercentage = (userPosition.strategyGains / userPosition.principal) * 100;
@@ -80,7 +82,6 @@ const DiscretionaryVaultView = ({ pageData }) => {
                             value={userPosition.principal}
                         />
 
-                        {/* --- CARD 1: STRATEGY GAINS --- */}
                         <DetailStatCard
                             label={strategyGainsLabel} 
                             subtext={`${strategyGainsPercentage.toFixed(2)}% ROI`}
@@ -88,7 +89,6 @@ const DiscretionaryVaultView = ({ pageData }) => {
                             highlightClass={userPosition.strategyGains >= 0 ? 'highlight-positive' : 'highlight-negative'}
                         />
 
-                        {/* --- CARD 2: BUYBACK GAINS (SEPARATE & CONDITIONAL) --- */}
                         {userPosition.buybackGains > 0 && (
                             <DetailStatCard
                                 label={t('vault.stats.buybackGains')}
