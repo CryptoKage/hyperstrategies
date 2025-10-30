@@ -89,8 +89,7 @@ const Header = () => {
           <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
             <option value="en">EN</option>
             <option value="de">DE</option>
-            <option value="troll">Troll</option>
-          </select>
+                     </select>
 
           {user ? (
             <button onClick={handleLogout} className="header__button header__button--primary">{t('header.logout')}</button>
@@ -139,7 +138,7 @@ const Header = () => {
                       <select className="header__language-select" onChange={changeLanguage} value={i18n.language}>
                           <option value="en">EN</option>
                           <option value="de">DE</option>
-                          <option value="troll">Troll</option>
+                          
                       </select>
                   </div>
               </div>

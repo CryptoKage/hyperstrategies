@@ -1,12 +1,12 @@
-export type Locale = 'en' | 'de' | 'troll';
+export type Locale = 'en' | 'de';
 
 import en from '@/i18n/en.json';
 import de from '@/i18n/de.json';
-import troll from '@/i18n/troll.json';
+
 
 type Dictionary = Record<Locale, any>;
 
-const dict: Dictionary = { en, de, troll };
+const dict: Dictionary = { en, de };
 
 export const T = (key: string, locale: Locale = 'en'): string => {
   const segments = key.split('.');
