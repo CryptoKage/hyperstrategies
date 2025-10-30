@@ -1,4 +1,4 @@
-// src/pages/vaultViews/DiscretionaryVaultView.jsx
+// FILE: src/pages/vaultViews/DiscretionaryVaultView.jsx
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -6,24 +6,31 @@ import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
 import api from '../../api/api';
 
+// --- NEW: A reusable Stat Card component for this view ---
 const DetailStatCard = ({ label, value, subtextKey, isCurrency = true, isXp = false, highlightClass = '' }) => {
     const { t } = useTranslation();
-    const formattedValue = typeof value === 'number'
-        ? value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-        : '0.00';
+    
+    // Gracefully handle null or undefined values
+    const numericValue = typeof value === 'number' ? value : 0;
+
+    const formattedValue = numericValue.toLocaleString('en-US', { 
+        minimumFractionDigits: isCurrency ? 2 : 4, 
+        maximumFractionDigits: isCurrency ? 2 : 4 
+    });
         
     return (
         <div className={`profile-card ${highlightClass}`}>
-            <h3>{label}</h3> {/* This now expects a final string */}
+            <h3>{label}</h3>
             <p className="stat-value-large">
-                {isCurrency && (value >= 0 ? '+ $' : '- $')}
-                {isCurrency ? Math.abs(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : formattedValue}
+                {isCurrency && (numericValue >= 0 ? '+ $' : '- $')}
+                {isCurrency ? Math.abs(numericValue).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : formattedValue}
                 {isXp && ' XP'}
             </p>
             {subtextKey && <p className="stat-subtext">{t(subtextKey)}</p>}
         </div>
     );
 };
+
 
 const DiscretionaryVaultView = ({ pageData }) => {
     const { t } = useTranslation();
@@ -42,8 +49,11 @@ const DiscretionaryVaultView = ({ pageData }) => {
         }
     }, [isInvested]);
     
+    // Make the label dynamic based on vault name
     const strategyGainsLabel = t(
-        vaultInfo.name?.toLowerCase().includes('core') ? 'vault.stats.coreStrategyGains' : 'vault.stats.strategyGains'
+        vaultInfo.name?.toLowerCase().includes('core') 
+            ? 'vault.stats.coreStrategyGains' 
+            : 'vault.stats.strategyGains'
     );
     
     return (
@@ -59,6 +69,7 @@ const DiscretionaryVaultView = ({ pageData }) => {
             
             {isInvested ? (
                 <>
+                    {/* --- THIS SECTION IS UPDATED TO USE THE NEW STAT CARDS --- */}
                     <div className="vault-detail-grid">
                         <div className="profile-card highlight-primary">
                             <h3>{t('vault.stats.totalCapital')}</h3>
@@ -66,14 +77,12 @@ const DiscretionaryVaultView = ({ pageData }) => {
                             <p className="stat-subtext">{t('vault.stats.totalCapitalSubtext')}</p>
                         </div>
                         
-                        {/* --- THE FIX: Use t() before passing the label --- */}
                         <DetailStatCard
                             label={t('vault.stats.totalDeposited')}
                             subtextKey="vault.stats.totalDepositedSubtext"
                             value={userPosition.principal}
                         />
 
-                        {/* --- THIS LOGIC WAS ALREADY CORRECT, BUT NOW WE FOLLOW THE PATTERN --- */}
                         <DetailStatCard
                             label={strategyGainsLabel} 
                             subtextKey="vault.stats.strategyGainsSubtext"
@@ -81,6 +90,7 @@ const DiscretionaryVaultView = ({ pageData }) => {
                             highlightClass={userPosition.strategyGains >= 0 ? 'highlight-positive' : 'highlight-negative'}
                         />
 
+                        {/* Conditionally render Buyback Gains only if they exist */}
                         {userPosition.buybackGains > 0 && (
                             <DetailStatCard
                                 label={t('vault.stats.buybackGains')}
@@ -90,11 +100,21 @@ const DiscretionaryVaultView = ({ pageData }) => {
                             />
                         )}
 
+                        {/* Conditionally render the new XP cards */}
                         {userPosition.totalXpFromVault > 0 && (
                              <DetailStatCard
                                 label={t('vault.stats.totalXpEarned')}
                                 value={userPosition.totalXpFromVault}
                                 subtextKey="vault.stats.totalXpEarnedSubtext"
+                                isCurrency={false}
+                                isXp={true}
+                            />
+                        )}
+                        {userPosition.dailyXpRate > 0 && (
+                             <DetailStatCard
+                                label={t('profile_page.xp_rate_label')} // Reuse existing translation key
+                                value={userPosition.dailyXpRate}
+                                subtextKey="vault.stats.dailyXpRateSubtext" // You will need to add this key to en.json
                                 isCurrency={false}
                                 isXp={true}
                             />
