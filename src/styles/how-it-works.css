@@ -6,7 +6,7 @@
   display: grid;
   grid-template-columns: minmax(0, var(--hiw-nav-width)) minmax(0, 1fr);
   gap: 2.5rem;
-  padding: 4rem clamp(1.5rem, 2vw, 3rem) 6rem;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 2vw, 3rem) 6rem;
   color: var(--color-text-primary, #e6f7ff);
   background: linear-gradient(180deg, rgba(11, 17, 33, 0.96) 0%, rgba(10, 23, 45, 0.94) 100%);
 }
