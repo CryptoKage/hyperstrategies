@@ -984,7 +984,7 @@
   
   "reports": {
     "title": "Meine Berichte",
-    "backToProfile": "← Zurück zum Profil",
+    "backToProfile": "Zurück zum Profil",
     "availablePeriods": "Verfügbare Zeiträume",
     "reportDetails": "Berichtsdetails",
     "downloadPdf": "Als PDF herunterladen",

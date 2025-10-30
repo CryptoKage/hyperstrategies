@@ -860,7 +860,7 @@
   },
   "reports": {
     "title": "My Reports",
-    "backToProfile": "← Back to Profile",
+    "backToProfile": "Back to Profile",
     "availablePeriods": "Available Periods",
     "reportDetails": "Report Details",
     "downloadPdf": "Download as PDF",

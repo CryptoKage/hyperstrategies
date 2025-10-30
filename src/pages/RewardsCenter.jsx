@@ -14,7 +14,7 @@ const RewardsCenter = () => {
   const [bounties, setBounties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
+  
   const [platformTotalXp, setPlatformTotalXp] = useState(0);
   const [verifyingBountyId, setVerifyingBountyId] = useState(null);
   const [verificationMessage, setVerificationMessage] = useState({ id: null, type: '', text: '' });
@@ -22,20 +22,22 @@ const RewardsCenter = () => {
   const renderDescription = (description) => {
     try {
       const payload = JSON.parse(description);
-      return t(payload.key, payload.vars);
+      if (payload && payload.key) {
+        return t(payload.key, payload.vars || {});
+      }
+      return description;
     } catch (e) {
-      return description; // Fallback for old, non-JSON descriptions
+      return description;
     }
   };
 
   const fetchData = useCallback(async () => {
     try {
-      // Set loading to true only if it's the initial fetch
       if (loading) setLoading(true);
 
       const [rewardsRes, bountiesRes, statsRes] = await Promise.all([
         api.get('/user/rewards'),
-        api.get('/bounties'), // This now fetches only available bounties
+        api.get('/bounties'),
         api.get('/stats/total-xp-awarded') 
       ]);
       setPlatformTotalXp(statsRes.data.totalXpAwarded);
@@ -46,11 +48,11 @@ const RewardsCenter = () => {
     } finally {
       setLoading(false);
     }
-  }, [t, loading]); // Depend on 'loading' to avoid resetting it on subsequent fetches
+  }, [t, loading]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]); // This will now only run once on mount
+  }, [fetchData]);
   
   const handleVerifyBounty = async (bountyId) => {
     setVerifyingBountyId(bountyId);
@@ -62,12 +64,10 @@ const RewardsCenter = () => {
         type: response.data.success ? 'success' : 'error', 
         text: t(response.data.messageKey) 
       });
-      // Refresh all data on successful verification to update total XP and remove the bounty from the list.
       if (response.data.success) {
-        // Use a short delay to allow the user to read the success message
         setTimeout(() => {
             fetchData();
-            setVerificationMessage({ id: null, type: '', text: '' }); // Clear message after refresh
+            setVerificationMessage({ id: null, type: '', text: '' });
         }, 2000);
       }
     } catch (err) {
@@ -98,7 +98,6 @@ const RewardsCenter = () => {
           <Link to="/xpleaderboard" className="btn-outline">{t('rewards_center.leaderboard_button')}</Link>
         </div>
 
-        {/* --- REWORKED SECTION --- */}
         <div className="rewards-grid">
           <div className="profile-card rewards-card">
             <h3>{t('profile_page.xp_label')}</h3>
@@ -111,12 +110,13 @@ const RewardsCenter = () => {
                 suffix=" XP" 
               />
             </div>
+            {/* --- FIX: Use new translation key --- */}
             <p>{t('rewards_center.total_xp_description')}</p>
             <button className="btn-primary" disabled={true} title="Coming Soon">
+              {/* --- FIX: Use new translation key --- */}
               {t('rewards_center.convert_button_text')}
             </button>
           </div>
-          {/* --- END REWORK --- */}
 
           <div className="profile-card presale-card">
             <h3>{t('rewards_center.presale_title')}</h3>
@@ -138,6 +138,7 @@ const RewardsCenter = () => {
                     <h4>{t(bounty.title_key)}</h4>
                     <p>{t(bounty.description_key)}</p>
                     {bounty.target_url && (
+                      // --- FIX: Use new translation key and remove arrow ---
                       <a href={bounty.target_url} target="_blank" rel="noopener noreferrer" className="bounty-link">{t('rewards_center.bounty_task_link')}</a>
                     )}
                   </div>
@@ -158,7 +159,6 @@ const RewardsCenter = () => {
           <h2>{t('rewards_center.ledger_title')}</h2>
           <p>{t('rewards_center.ledger_description')}</p>
           <div className="xp-history-list-wrapper">
-            {/* Note: The 'claimedHistory' now represents a general XP log */}
             {rewardsData.claimedHistory.length > 0 ? (
               <ul className="xp-history-list">
                 {rewardsData.claimedHistory.map((item) => (
