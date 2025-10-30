@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import ComingSoon from '../../components/ComingSoon';
 import api from '../../api/api';
 
-// This component is now simplified to take a final subtext string.
+// The DetailStatCard component is correct and does not need to be changed.
 const DetailStatCard = ({ label, value, subtext, isCurrency = true, isXp = false, highlightClass = '' }) => {
     const numericValue = typeof value === 'number' ? value : 0;
     const formattedValue = numericValue.toLocaleString('en-US', { 
@@ -42,12 +42,11 @@ const DiscretionaryVaultView = ({ pageData }) => {
         }
     }, [isInvested]);
 
-    // --- NEW: Calculate Strategy Gains Percentage ---
+    // --- CALCULATIONS ARE NOW SEPARATE ---
     let strategyGainsPercentage = 0;
     if (isInvested && userPosition.principal > 0) {
         strategyGainsPercentage = (userPosition.strategyGains / userPosition.principal) * 100;
     }
-    // --- END NEW ---
     
     const strategyGainsLabel = t(
         vaultInfo.name?.toLowerCase().includes('core') 
@@ -81,7 +80,7 @@ const DiscretionaryVaultView = ({ pageData }) => {
                             value={userPosition.principal}
                         />
 
-                        {/* --- CORRECTED STRATEGY GAINS CARD --- */}
+                        {/* --- CARD 1: STRATEGY GAINS --- */}
                         <DetailStatCard
                             label={strategyGainsLabel} 
                             subtext={`${strategyGainsPercentage.toFixed(2)}% ROI`}
@@ -89,7 +88,7 @@ const DiscretionaryVaultView = ({ pageData }) => {
                             highlightClass={userPosition.strategyGains >= 0 ? 'highlight-positive' : 'highlight-negative'}
                         />
 
-                        {/* --- SEPARATE BUYBACK GAINS CARD (conditionally rendered) --- */}
+                        {/* --- CARD 2: BUYBACK GAINS (SEPARATE & CONDITIONAL) --- */}
                         {userPosition.buybackGains > 0 && (
                             <DetailStatCard
                                 label={t('vault.stats.buybackGains')}
