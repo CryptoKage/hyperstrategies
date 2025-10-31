@@ -2,11 +2,17 @@
   --hiw-nav-width: min(260px, 28vw);
 }
 
+.hiw-toggle-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 2vw, 3rem) 1rem;
+}
+
 .hiw-page {
   display: grid;
   grid-template-columns: minmax(0, var(--hiw-nav-width)) minmax(0, 1fr);
   gap: 2.5rem;
-  padding: clamp(1.5rem, 4vw, 3rem) clamp(1.5rem, 2vw, 3rem) 6rem;
+  padding: 0 clamp(1.5rem, 2vw, 3rem) 6rem;
   color: var(--color-text-primary, #e6f7ff);
   background: linear-gradient(180deg, rgba(11, 17, 33, 0.96) 0%, rgba(10, 23, 45, 0.94) 100%);
 }
@@ -465,11 +471,16 @@
 
   .hiw-page {
     grid-template-columns: 1fr;
+    padding-top: 0;
   }
 
   .hiw-nav {
     position: static;
     order: -1;
+  }
+
+  .hiw-toggle-wrapper {
+    justify-content: center;
   }
 }
 
@@ -493,6 +504,10 @@
   .hiw-cta-row {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .hiw-toggle-wrapper {
+    padding-inline: clamp(1rem, 5vw, 1.5rem);
   }
 }
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import anime from 'animejs';
+import { createTimeline } from 'animejs';
 
 const clamp01 = (value) => Math.min(1, Math.max(0, value));
 
@@ -31,7 +31,7 @@ export default function ScrollSceneController({ sceneAPI, scenes = [] }) {
     resetEdges();
     sceneAPI.triggerEvent?.('overview');
 
-    const timeline = anime.timeline({ autoplay: false, duration, easing: 'linear' });
+    const timeline = createTimeline({ autoplay: false, duration, playbackEase: 'linear' });
     timelineRef.current = timeline;
 
     const overview = getSegment('overview');
@@ -39,7 +39,7 @@ export default function ScrollSceneController({ sceneAPI, scenes = [] }) {
       timeline.add(
         {
           duration: (overview.end - overview.start) * duration,
-          begin: () => {
+          onBegin: () => {
             resetEdges();
             sceneAPI.triggerEvent?.('overview');
           },
@@ -53,9 +53,9 @@ export default function ScrollSceneController({ sceneAPI, scenes = [] }) {
       timeline.add(
         {
           duration: (moneyFlow.end - moneyFlow.start) * duration,
-          begin: () => sceneAPI.triggerEvent?.('moneyFlow'),
-          update: (anim) => {
-            const progress = anim.progress / 100;
+          onBegin: () => sceneAPI.triggerEvent?.('moneyFlow'),
+          onUpdate: (anim) => {
+            const progress = anim.progress;
             sceneAPI.setFlowIntensity?.('deposit->strategies', progress);
             sceneAPI.setFlowIntensity?.('deposit->safety', clamp01(progress * 0.25));
             sceneAPI.setFlowIntensity?.('deposit->farming', clamp01(progress * 0.125));
@@ -72,7 +72,7 @@ export default function ScrollSceneController({ sceneAPI, scenes = [] }) {
       timeline.add(
         {
           duration: (strategy.end - strategy.start) * duration,
-          begin: () => {
+          onBegin: () => {
             sceneAPI.triggerEvent?.('strategyHub');
             sceneAPI.pulseHub?.('strategies', 1.2);
             sceneAPI.pulseHub?.('core', 1.1);
@@ -88,12 +88,12 @@ export default function ScrollSceneController({ sceneAPI, scenes = [] }) {
       timeline.add(
         {
           duration: (innerLoop.end - innerLoop.start) * duration,
-          begin: () => {
+          onBegin: () => {
             sceneAPI.triggerEvent?.('innerLoop');
             sceneAPI.pulseHub?.('core', 1.18);
             sceneAPI.pulseHub?.('high', 1.12);
           },
-          complete: () => {
+          onComplete: () => {
             sceneAPI.setFlowIntensity?.('deposit->strategies', 0.4);
             sceneAPI.setFlowIntensity?.('deposit->safety', 0.12);
             sceneAPI.setFlowIntensity?.('deposit->farming', 0.08);

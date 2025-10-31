@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
 import PresaleBuyModal from '../components/PresaleBuyModal';
+import ViewToggle from '../components/ViewToggle';
 import { useTranslation } from 'react-i18next';
 
 const Presale = () => {
@@ -22,8 +23,28 @@ const Presale = () => {
   const availableBalance = parseFloat(user?.availableBalance || user?.balance || 0);
 
   return (
-      <Layout>
-        <div className="presale-container">
+    <Layout>
+      <div className="presale-toggle-wrapper">
+        <ViewToggle
+          label={t('presale3d.toggle.label', { defaultValue: 'Presale views' })}
+          alignment="end"
+          options={[
+            {
+              id: '2d',
+              label: t('presale3d.toggle.2d', { defaultValue: 'Presale overview' }),
+              to: '/presale-info',
+              isActive: true,
+            },
+            {
+              id: '3d',
+              label: t('presale3d.toggle.3d', { defaultValue: '3D journey' }),
+              to: '/presale-3d',
+              isActive: false,
+            },
+          ]}
+        />
+      </div>
+      <div className="presale-container">
           <h1>{t('presale.title')}</h1>
           <p className="presale-subtitle">
             {t('presale.subtitle')}

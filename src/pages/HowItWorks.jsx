@@ -6,6 +6,7 @@ import StrategyGrid from '../components/HowItWorks/StrategyGrid';
 import ProtectionsGrid from '../components/HowItWorks/ProtectionsGrid';
 import MetricsPanel from '../components/HowItWorks/MetricsPanel';
 import SceneNavigation from '../components/HowItWorks/SceneNavigation';
+import ViewToggle from '../components/ViewToggle';
 import flows from '../data/flows.json';
 import strategies from '../data/strategies.json';
 import protections from '../data/protections.json';
@@ -226,6 +227,26 @@ const HowItWorks = () => {
 
   return (
     <Layout showInteractiveBackground={false}>
+      <div className="hiw-toggle-wrapper">
+        <ViewToggle
+          label={t('howItWorks.toggle.label', { defaultValue: 'Choose your view' })}
+          alignment="end"
+          options={[
+            {
+              id: '2d',
+              label: t('howItWorks.toggle.2d', { defaultValue: 'Immersive 2D' }),
+              to: '/how-it-works',
+              isActive: true,
+            },
+            {
+              id: '3d',
+              label: t('howItWorks.toggle.3d', { defaultValue: 'Interactive 3D' }),
+              to: '/how-it-works-3d',
+              isActive: false,
+            },
+          ]}
+        />
+      </div>
       <div className="hiw-page">
         <SceneNavigation scenes={scenes} activeScene={activeScene} onJump={handleJump} />
 
@@ -258,7 +279,7 @@ const HowItWorks = () => {
                       {t('cta.connect')}
                     </Link>
                     <a
-                      href="https://hs0-3.gitbook.io/hs-docs/"
+                      href="https://docs.hyper-strategies.com"
                       className="btn-outline"
                       target="_blank"
                       rel="noreferrer"
@@ -293,7 +314,7 @@ const HowItWorks = () => {
                 <div className="hiw-section__module">
                   <StrategyGrid strategies={strategiesData} />
                   <div className="hiw-links">
-                    <Link to="/dashboard" className="btn-outline">
+                    <Link to="/strategies" className="btn-outline">
                       {t('cta.explore')}
                     </Link>
                     <Link to="/legal" className="hiw-inline-link">

@@ -4400,6 +4400,21 @@ opacity: 0.3;
 /* ============================================================================== */
 /* CSS for the new Presale Page                                                 */
 /* ============================================================================== */
+.presale-toggle-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem) 20px 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .presale-toggle-wrapper {
+    justify-content: center;
+    padding-inline: 20px;
+  }
+}
+
 .presale-container {
   max-width: 900px;
   margin: 0 auto 40px;

@@ -5,7 +5,6 @@ import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import { useTranslation } from 'react-i18next';
 import copy from '../../data/site_copy.json';
-import { T } from '../../utils/i18n';
 
 const DEFAULT_FLOW = {
   main: 0.8,
@@ -172,11 +171,11 @@ const resolvePercent = (edge, flows) => {
   return 0;
 };
 
-const formatEdgeLabel = (edge, flows, locale = 'en') => {
+const formatEdgeLabel = (edge, flows, translate) => {
   if (!edge) return '';
   const key = EDGE_LABEL_KEYS[edge.edgeId || edge.id];
-  if (key) {
-    const value = T(key, locale);
+  if (key && typeof translate === 'function') {
+    const value = translate(key, { defaultValue: key });
     if (value && value !== key) {
       return value;
     }
@@ -251,7 +250,7 @@ function generateSlots(position, capacity = 27) {
   return offsets;
 }
 
-export default function FlowSceneCubes({ containerRef, canvasRef, onReady, locale = 'en' }) {
+export default function FlowSceneCubes({ containerRef, canvasRef, onReady }) {
   const animationState = useRef({ frame: null });
   const { t } = useTranslation();
   const flows = copy.flow?.distribution || DEFAULT_FLOW;
@@ -618,25 +617,25 @@ export default function FlowSceneCubes({ containerRef, canvasRef, onReady, local
         id: 'edge-deposit_strategies',
         edgeId: 'deposit_strategies',
         title: t('howItWorks.labels.strategiesHub'),
-        value: formatEdgeLabel({ id: 'deposit_strategies', percent: flows.main }, flows, locale),
+        value: formatEdgeLabel({ id: 'deposit_strategies', percent: flows.main }, flows, t),
       },
       {
         id: 'edge-deposit_safety',
         edgeId: 'deposit_safety',
         title: t('howItWorks.labels.safetyFund'),
-        value: formatEdgeLabel({ id: 'deposit_safety', percent: flows.safety }, flows, locale),
+        value: formatEdgeLabel({ id: 'deposit_safety', percent: flows.safety }, flows, t),
       },
       {
         id: 'edge-deposit_farming',
         edgeId: 'deposit_farming',
         title: t('howItWorks.labels.farming'),
-        value: formatEdgeLabel({ id: 'deposit_farming', percent: flows.farming }, flows, locale),
+        value: formatEdgeLabel({ id: 'deposit_farming', percent: flows.farming }, flows, t),
       },
       {
         id: 'edge-deposit_token',
         edgeId: 'deposit_token',
         title: t('howItWorks.labels.tokenSeeding'),
-        value: formatEdgeLabel({ id: 'deposit_token', percent: flows.token }, flows, locale),
+        value: formatEdgeLabel({ id: 'deposit_token', percent: flows.token }, flows, t),
       },
     ];
 
@@ -1119,7 +1118,7 @@ export default function FlowSceneCubes({ containerRef, canvasRef, onReady, local
       api.dispose();
       onReady?.(null);
     };
-  }, [containerRef, canvasRef, onReady, labelCopy, flows, locale, t]);
+  }, [containerRef, canvasRef, onReady, labelCopy, flows, t]);
 
   return null;
 }

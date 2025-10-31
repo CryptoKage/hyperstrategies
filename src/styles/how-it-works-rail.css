@@ -1,3 +1,67 @@
+.parallax-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.parallax-layer {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.6s ease;
+}
+
+.parallax-layer--back {
+  background: radial-gradient(1200px 800px at 50% -20%, rgba(4, 12, 22, 0.95), rgba(2, 6, 12, 0.8));
+}
+
+.parallax-layer--mid {
+  background: radial-gradient(800px 600px at 30% 30%, rgba(0, 198, 230, 0.08), rgba(0, 0, 0, 0));
+}
+
+.parallax-layer--front {
+  position: relative;
+  padding: clamp(24px, 4vw, 48px);
+  display: grid;
+  gap: clamp(16px, 4vw, 28px);
+  align-content: center;
+  background: linear-gradient(180deg, rgba(10, 25, 44, 0.88), rgba(10, 25, 44, 0.6));
+  border: 1px solid rgba(120, 180, 220, 0.22);
+  border-radius: 24px;
+  max-width: 420px;
+  margin: 0 auto;
+  text-align: left;
+  pointer-events: auto;
+}
+
+.parallax-layer--front ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.parallax-layer--front h3 {
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  margin: 0 0 0.5rem 0;
+}
+
+.parallax-layer--front p {
+  margin: 0;
+  color: rgba(230, 247, 255, 0.78);
+  line-height: 1.5;
+}
+
+.hw-toggle-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 4vw, 3rem) 1rem;
+  background: radial-gradient(1200px 800px at 50% -10%, #0b223d, #06101a 70%);
+}
+
 .hw-root {
   display: grid;
   grid-template-columns: minmax(280px, 38vw) 1fr;
@@ -160,6 +224,10 @@
   }
   .hw-rail {
     display: none;
+  }
+  .hw-toggle-bar {
+    justify-content: center;
+    padding-inline: clamp(1rem, 6vw, 2rem);
   }
 }
 
