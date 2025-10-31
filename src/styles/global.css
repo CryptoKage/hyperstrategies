@@ -4470,14 +4470,53 @@ opacity: 0.3;
 /* CSS for the new Vault Detail Page                                            */
 /* ============================================================================== */
 .vault-detail-container { max-width: 1000px; margin: 0 auto 40px; padding: 20px; }
-.vault-detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.vault-detail-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
 .vault-detail-subtitle { color: var(--color-text-secondary); margin-bottom: 32px; }
-.vault-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.vault-detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
 .vault-detail-grid .profile-card.full-width { grid-column: 1 / -1; }
 .stat-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--color-border); font-size: 1rem; }
 .stat-item:last-child { border-bottom: none; }
 .stat-item span:first-child { color: var(--color-text-secondary); }
 .stat-item span:last-child { font-weight: 600; }
+
+@media (max-width: 900px) {
+  .vault-detail-container {
+    padding: 16px;
+  }
+
+  .vault-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .vault-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .vault-header-actions .btn-primary,
+  .vault-header-actions .btn-secondary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .vault-detail-container {
+    margin: 0 auto 24px;
+  }
+
+  .vault-detail-subtitle {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .vault-header-actions {
+    gap: 12px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
 /* ============================================================================== */
 
 
