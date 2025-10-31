@@ -6,6 +6,7 @@ import StrategyGrid from '../components/HowItWorks/StrategyGrid';
 import ProtectionsGrid from '../components/HowItWorks/ProtectionsGrid';
 import MetricsPanel from '../components/HowItWorks/MetricsPanel';
 import SceneNavigation from '../components/HowItWorks/SceneNavigation';
+import HowItWorks3DExperience from '../components/HowItWorks/HowItWorks3DExperience';
 import flows from '../data/flows.json';
 import strategies from '../data/strategies.json';
 import protections from '../data/protections.json';
@@ -36,6 +37,7 @@ const usePrefersReducedMotion = () => {
 const HowItWorks = () => {
   const reducedMotion = usePrefersReducedMotion();
   const [activeScene, setActiveScene] = useState(0);
+  const [viewMode, setViewMode] = useState('2d');
   const sectionRefs = useRef([]);
   const observerRef = useRef(null);
   const { t } = useTranslation();
@@ -162,12 +164,21 @@ const HowItWorks = () => {
   );
 
   useEffect(() => {
+    if (viewMode !== '2d') {
+      sectionRefs.current = [];
+      return;
+    }
+
     sectionRefs.current = sectionRefs.current.slice(0, scenes.length);
-  }, [scenes.length]);
+  }, [scenes.length, viewMode]);
 
   useEffect(() => {
     if (observerRef.current) {
       observerRef.current.disconnect();
+    }
+
+    if (viewMode !== '2d') {
+      return undefined;
     }
 
     const observer = new IntersectionObserver(
@@ -189,7 +200,7 @@ const HowItWorks = () => {
     observerRef.current = observer;
 
     return () => observer.disconnect();
-  }, [scenes.length]);
+  }, [scenes.length, viewMode]);
 
   const registerSection = (index) => (element) => {
     sectionRefs.current[index] = element;
@@ -226,10 +237,34 @@ const HowItWorks = () => {
 
   return (
     <Layout showInteractiveBackground={false}>
-      <div className="hiw-page">
-        <SceneNavigation scenes={scenes} activeScene={activeScene} onJump={handleJump} />
+      <div className="hiw-toggle-bar" role="group" aria-label={t('howItWorks.toggle.label', { defaultValue: 'Choose presentation mode' })}>
+        <div className="hiw-toggle">
+          <button
+            type="button"
+            className={`hiw-toggle__button ${viewMode === '2d' ? 'is-active' : ''}`}
+            onClick={() => setViewMode('2d')}
+            aria-pressed={viewMode === '2d'}
+          >
+            {t('howItWorks.toggle.twod', { defaultValue: '2D overview' })}
+          </button>
+          <button
+            type="button"
+            className={`hiw-toggle__button ${viewMode === '3d' ? 'is-active' : ''}`}
+            onClick={() => setViewMode('3d')}
+            aria-pressed={viewMode === '3d'}
+          >
+            {t('howItWorks.toggle.threed', { defaultValue: '3D walkthrough' })}
+          </button>
+        </div>
+      </div>
 
-        <div className="hiw-content">
+      {viewMode === '3d' ? (
+        <HowItWorks3DExperience scenes={scenes} />
+      ) : (
+        <div className="hiw-page">
+          <SceneNavigation scenes={scenes} activeScene={activeScene} onJump={handleJump} />
+
+          <div className="hiw-content">
           {scenes.map((scene, index) => (
             <section
               key={scene.id}
@@ -407,7 +442,8 @@ const HowItWorks = () => {
             </section>
           ))}
         </div>
-      </div>
+        </div>
+      )}
     </Layout>
   );
 };

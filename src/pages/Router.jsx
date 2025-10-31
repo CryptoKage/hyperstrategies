@@ -35,10 +35,11 @@ import ReportsPage from './ReportsPage';
 import DeskResultsPage from './admin/DeskResultsPage';
 import FarmingPipelinePage from './admin/FarmingPipelinePage';
 import HowItWorks from './HowItWorks';
+import Presale3D from './Presale3D';
 import ReportReviewPage from './admin/ReportReviewPage';
 import PlatformReportsPage from './admin/PlatformReportsPage';
-import MonthlyAuditPage from './admin/MonthlyAuditPage'; 
-import PNLReconciliationPage from './admin/PNLReconciliationPage'; 
+import MonthlyAuditPage from './admin/MonthlyAuditPage';
+import PNLReconciliationPage from './admin/PNLReconciliationPage';
 
 // --- Guard Components ---
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -52,6 +53,7 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/presale-3d" element={<Presale3D />} />
         <Route path="/investor" element={<Investor />} />
         <Route path="/legal" element={<Legal />} />
         <Route path="/faq" element={<FAQ />} />
